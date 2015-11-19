@@ -1,0 +1,1 @@
+alter table `arigasol`.`sforpa` add column `permitebonif` tinyint (1) UNSIGNED  DEFAULT '0' NOT NULL  after `contabilizasn`

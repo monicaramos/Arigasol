@@ -1,0 +1,17 @@
+////////////	<- this is comments
+// Icons
+////////////
+
+101  ICON  MOVEABLE PURE   "eixir.ico"
+102  ICON  MOVEABLE PURE   "users_family.ico"
+103  ICON  MOVEABLE PURE   "data_down.ico"
+104  ICON  MOVEABLE PURE   "document_into.ico"
+105  ICON  MOVEABLE PURE   "index_view.ico"
+106  ICON  MOVEABLE PURE   "pawn_view.ico"
+107  ICON  MOVEABLE PURE   "car_sedan_blue.ico"
+108  ICON  MOVEABLE PURE   "cashier.ico"
+109  ICON  MOVEABLE PURE   "conters.ico"
+110  ICON  MOVEABLE PURE   "folder_document.ico"
+111  ICON  MOVEABLE PURE   "id_cards.ico"
+112  ICON  MOVEABLE PURE   "creditcards.ico"
+

@@ -1,0 +1,13 @@
+Línea 19: la clase MSComDlg.CommonDialog del control cd1 no era una clase de control cargada.
+Línea 32: la clase MSComDlg.CommonDialog del control CommonDialog1 no era una clase de control cargada.
+Línea 134: la clase MSComctlLib.ProgressBar del control Pb1 no era una clase de control cargada.
+Línea 22: el nombre de la propiedad _ExtentX de cd1 no es válido.
+Línea 23: el nombre de la propiedad _ExtentY de cd1 no es válido.
+Línea 24: el nombre de la propiedad _Version de cd1 no es válido.
+Línea 35: el nombre de la propiedad _ExtentX de CommonDialog1 no es válido.
+Línea 36: el nombre de la propiedad _ExtentY de CommonDialog1 no es válido.
+Línea 37: el nombre de la propiedad _Version de CommonDialog1 no es válido.
+Línea 38: el nombre de la propiedad DefaultExt de CommonDialog1 no es válido.
+Línea 140: el nombre de la propiedad _ExtentX de Pb1 no es válido.
+Línea 141: el nombre de la propiedad _ExtentY de Pb1 no es válido.
+Línea 142: el nombre de la propiedad _Version de Pb1 no es válido.
