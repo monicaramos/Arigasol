@@ -225,7 +225,7 @@ Dim indCodigo As Integer 'indice para txtCodigo
 Dim Codigo As String 'Código para FormulaSelection de Crystal Report
 Dim TipCod As String
 Dim cad As String
-Dim cadTABLA As String
+Dim cadTabla As String
 
 Dim vContad As Long
 
@@ -245,7 +245,7 @@ Dim i As Byte
 Dim cadWHERE As String
 Dim b As Boolean
 Dim NomFic As String
-Dim cadena As String
+Dim Cadena As String
 Dim cadena1 As String
 
 On Error GoTo eError
@@ -253,8 +253,16 @@ On Error GoTo eError
 
     If Not DatosOk Then Exit Sub
     
+    If vParamAplic.Cooperativa = 2 Then
+    
+    
+        TraspasoRegaixo
+        Unload Me
+        Exit Sub
+    End If
+    
     Me.CommonDialog1.DefaultExt = "TXT"
-    cadena = Format(CDate(txtcodigo(0).Text), FormatoFecha)
+    Cadena = Format(CDate(txtcodigo(0).Text), FormatoFecha)
     CommonDialog1.FilterIndex = 1
     CommonDialog1.CancelError = True
     If vParamAplic.Cooperativa = 5 Then
@@ -291,7 +299,7 @@ On Error GoTo eError
                         Exit Sub
                     End If
                 Else
-                    cadTABLA = "tmpinformes"
+                    cadTabla = "tmpinformes"
                     cadFormula = "{tmpinformes.codusu} = " & vSesion.Codigo
                     
                     Sql = "select count(*) from tmpinformes where codusu = " & vSesion.Codigo
@@ -306,7 +314,7 @@ On Error GoTo eError
         InicializarTabla
 'fin
           If ProcesarFichero2(Me.CommonDialog1.FileName) Then
-                cadTABLA = "tmpinformes"
+                cadTabla = "tmpinformes"
                 cadFormula = "{tmpinformes.codusu} = " & vSesion.Codigo
                 
                 Sql = "select count(*) from tmpinformes where codusu = " & vSesion.Codigo
@@ -387,8 +395,118 @@ eError:
 '    End If
 End Sub
 
+    
+
+
+Private Function TraspasoRegaixo() As Boolean
+Dim Sql As String
+Dim b As Boolean
+Dim Cadena As String
+Dim i As Integer
+
+    On Error GoTo eTraspasoRegaixo
+    
+    TraspasoRegaixo = False
+
+
+    Me.CommonDialog1.DefaultExt = "XLS"
+    Cadena = Format(CDate(txtcodigo(0).Text), FormatoFecha)
+    CommonDialog1.FilterIndex = 1
+    CommonDialog1.CancelError = True
+    
+    Me.CommonDialog1.ShowOpen
+    
+    If Me.CommonDialog1.FileName <> "" Then
+        InicializarVbles
+        InicializarTabla
+
+        Kill App.path & "\trasarigasol.z"
+
+        Shell App.path & "\trasarigasol.exe /I|" & vSesion.CadenaConexion & "|" & vSesion.Codigo & "|" & Me.CommonDialog1.FileName & "|", vbNormalFocus
+
+            
+        i = 0
+        While Dir(App.path & "\trasarigasol.z") = "" And i < 300
+            Me.lblProgres(0).Caption = "Procesando Insercion "
+            DoEvents
+            
+            espera 1
+            
+            i = i + 1
+        Wend
+        
+        
+        If Dir(App.path & "\trasarigasol.z") = "" Then
+        
+            Dim NF As Integer
+            NF = FreeFile
+            Open App.path & "\trasarigasol.z" For Output As #NF
+            Print #NF, "0"
+    '        Line Input #NF, cad
+            Close #NF
+                    
+            Unload Me
+            Exit Function
+        End If
+        
+        
+        Sql = "select count(*) from tmptraspaso where codusu = " & vSesion.Codigo
+        
+        If TotalRegistros(Sql) <> 0 Then
+    
+            InicializarTabla
+              If ProcesarFicheroRegaixo2() Then
+                    cadTabla = "tmpinformes"
+                    cadFormula = "{tmpinformes.codusu} = " & vSesion.Codigo
+                    
+                    Sql = "select count(*) from tmpinformes where codusu = " & vSesion.Codigo
+                    Sql = Sql & " and importeb1 = 0 "
+                    
+                    If TotalRegistros(Sql) <> 0 Then
+                        MsgBox "Hay errores en el Traspaso de Postes. Revise.", vbExclamation
+                        cadTitulo = "Errores de Traspaso de Poste"
+                        cadNombreRPT = "rErroresTrasPoste3.rpt"
+                        LlamarImprimir
+                    End If
+                    
+                    Conn.BeginTrans
+                    b = ProcesarFicheroRegaixo()
+                    If b Then
+                        Conn.CommitTrans
+                    Else
+                        Conn.RollbackTrans
+                    End If
+              End If
+        Else
+            MsgBox "No ha seleccionado ningún fichero", vbExclamation
+            Exit Function
+        End If
+                 
+    End If
+    
+eTraspasoRegaixo:
+    If Err.Number <> 0 Or Not b Then
+        If Err.Number = 32755 Then Exit Function
+        
+        MsgBox "No se ha podido realizar el proceso. LLame a Ariadna.", vbExclamation
+    Else
+        TraspasoRegaixo = True
+        MsgBox "Proceso realizado correctamente.", vbExclamation
+        Pb1.visible = False
+        lblProgres(0).Caption = ""
+        lblProgres(1).Caption = ""
+        cmdCancel_Click
+    End If
+    
+End Function
+
+
 Private Sub cmdCancel_Click()
     Unload Me
+End Sub
+
+Private Sub Cmdleer_Click()
+
 End Sub
 
 Private Sub Form_Activate()
@@ -636,29 +754,29 @@ End Function
 
 
 Private Function RecuperaFichero() As Boolean
-Dim nf As Integer
+Dim NF As Integer
 
     RecuperaFichero = False
-    nf = FreeFile
-    Open App.path For Input As #nf ' & "\BV" & Format(CDate(txtcodigo(0).Text), "ddmmyy") & "." & Format(txtcodigo(1).Text, "000") For Input As #NF
-    Line Input #nf, cad
-    Close #nf
+    NF = FreeFile
+    Open App.path For Input As #NF ' & "\BV" & Format(CDate(txtcodigo(0).Text), "ddmmyy") & "." & Format(txtcodigo(1).Text, "000") For Input As #NF
+    Line Input #NF, cad
+    Close #NF
     If cad <> "" Then RecuperaFichero = True
     
 End Function
 
 
 Private Function ProcesarFichero(nomFich As String) As Boolean
-Dim nf As Long
+Dim NF As Long
 Dim cad As String
 Dim i As Integer
 Dim longitud As Long
 Dim Rs As ADODB.Recordset
-Dim Rs1 As ADODB.Recordset
+Dim RS1 As ADODB.Recordset
 Dim Numreg As Long
 Dim Sql As String
-Dim SQL1 As String
-Dim Total As Long
+Dim Sql1 As String
+Dim total As Long
 Dim v_cant As Currency
 Dim v_impo As Currency
 Dim v_prec As Currency
@@ -666,11 +784,11 @@ Dim b As Boolean
 Dim NomFic As String
 
     ProcesarFichero = False
-    nf = FreeFile
+    NF = FreeFile
     
-    Open nomFich For Input As #nf ' & "\BV" & Format(CDate(txtcodigo(0).Text), "ddmmyy") & "." & Format(txtcodigo(1).Text, "000") For Input As #NF
+    Open nomFich For Input As #NF ' & "\BV" & Format(CDate(txtcodigo(0).Text), "ddmmyy") & "." & Format(txtcodigo(1).Text, "000") For Input As #NF
     
-    Line Input #nf, cad
+    Line Input #NF, cad
     i = 0
     
     lblProgres(0).Caption = "Procesando Fichero: " & nomFich
@@ -682,7 +800,7 @@ Dim NomFic As String
     Me.Pb1.Value = 0
         
     b = True
-    While Not EOF(nf)
+    While Not EOF(NF)
         i = i + 1
         
         Me.Pb1.Value = Me.Pb1.Value + Len(cad)
@@ -713,9 +831,9 @@ Dim NomFic As String
             Exit Function
         End If
         
-        Line Input #nf, cad
+        Line Input #NF, cad
     Wend
-    Close #nf
+    Close #NF
     
     If cad <> "" Then
         '[Monica]09/01/2013: Nueva cooperativa Ribarroja
@@ -764,16 +882,16 @@ Dim NomFic As String
 End Function
                 
 Private Function ProcesarFichero2(nomFich As String) As Boolean
-Dim nf As Long
+Dim NF As Long
 Dim cad As String
 Dim i As Integer
 Dim longitud As Long
 Dim Rs As ADODB.Recordset
-Dim Rs1 As ADODB.Recordset
+Dim RS1 As ADODB.Recordset
 Dim Numreg As Long
 Dim Sql As String
-Dim SQL1 As String
-Dim Total As Long
+Dim Sql1 As String
+Dim total As Long
 Dim v_cant As Currency
 Dim v_impo As Currency
 Dim v_prec As Currency
@@ -783,10 +901,10 @@ Dim b As Boolean
     
     ProcesarFichero2 = False
     
-    nf = FreeFile
-    Open nomFich For Input As #nf ' & "\BV" & Format(CDate(txtcodigo(0).Text), "ddmmyy") & "." & Format(txtcodigo(1).Text, "000") For Input As #NF
+    NF = FreeFile
+    Open nomFich For Input As #NF ' & "\BV" & Format(CDate(txtcodigo(0).Text), "ddmmyy") & "." & Format(txtcodigo(1).Text, "000") For Input As #NF
     
-    Line Input #nf, cad
+    Line Input #NF, cad
     i = 0
     
     lblProgres(0).Caption = "Insertando en Tabla temporal: " & nomFich
@@ -800,7 +918,7 @@ Dim b As Boolean
 
     b = True
 
-    While Not EOF(nf) And b
+    While Not EOF(NF) And b
         i = i + 1
         
         Me.Pb1.Value = Me.Pb1.Value + Len(cad)
@@ -815,9 +933,9 @@ Dim b As Boolean
             b = ComprobarRegistro(cad)
         End If
         
-        Line Input #nf, cad
+        Line Input #NF, cad
     Wend
-    Close #nf
+    Close #NF
     
     If cad <> "" Then
         i = i + 1
@@ -1928,11 +2046,228 @@ eComprobarRegistroRib:
     End If
 End Function
             
+Private Function ComprobarRegistroReg(ByRef Rs As Recordset) As Boolean
+Dim Sql As String
+
+Dim Base As String
+Dim NombreBase As String
+Dim Turno As String
+Dim NumAlbaran As String
+Dim NumFactura As String
+Dim IdVendedor As String
+Dim NombreVendedor As String
+Dim FechaHora As String
+Dim CodigoCliente As String
+Dim NombreCliente As String
+Dim Matricula As String
+Dim CodigoProducto As String
+Dim Surtidor As String
+Dim Manguera As String
+Dim PrecioLitro As String
+Dim PrecioSinDto As String
+Dim cantidad As String
+Dim Importe As String
+Dim IdTipoPago As String
+Dim DescrTipoPago As String
+Dim CodigoTipoPago As String
+Dim NifCliente As String
+Dim IdProducto As String
+Dim Tarjeta As String
+Dim Tarje As String
+
+
+Dim c_Cantidad As Currency
+Dim c_Importe As Currency
+Dim c_Precio As Currency
+
+Dim Fecha As String
+Dim Hora As String
+
+Dim Mens As String
+Dim Kilometros As String
+
+
+Dim codsoc As String
+
+    On Error GoTo eComprobarRegistro
+
+    ComprobarRegistroReg = True
+
+    Turno = DBLet(Rs!Turno, "N")
+    
+    NumAlbaran = DBLet(Rs!Albaran, "N")
+    NumFactura = DBLet(Rs!Factura, "T")
+    FechaHora = DBLet(Rs!Fecha, "T")
+    Fecha = Mid(FechaHora, 7, 2) & "/" & Mid(FechaHora, 5, 2) & "/" & Mid(FechaHora, 1, 4)
+    Hora = Mid(FechaHora, 9, 6)
+    CodigoCliente = DBLet(Rs!CLIENTE, "N")
+    NombreCliente = DBLet(Rs!nomclien, "T")
+    Tarjeta = DBLet(Rs!Tarjeta, "N")
+    Matricula = DBLet(Rs!Matricula, "T")
+    IdProducto = DBLet(Rs!PRODUCTO, "N")
+    Surtidor = DBLet(Rs!Surtidor, "N")
+    Manguera = DBLet(Rs!Manguera, "N")
+    
+    
+    PrecioLitro = DBLet(Rs!Precio, "N")
+    
+    cantidad = DBLet(Rs!cantidad, "N")
+    Importe = DBLet(Rs!Importe, "N")
+    IdTipoPago = DBLet(Rs!IdTipoPago, "N")
+    DescrTipoPago = DBLet(Rs!desctipopago, "T")
+    CodigoTipoPago = DBLet(Rs!IdTipoPago, "N")
+    NifCliente = DBLet(Rs!NIF, "T")
+    
+    Kilometros = DBLet(Rs!km, "N")
+    
+    
+    If Trim(Importe) = "" Then
+        Exit Function
+    Else
+        If CCur(Importe) = 0 Then Exit Function
+    End If
+    
+    c_Cantidad = Round2(CCur(cantidad) / 100, 2)
+    c_Importe = Round2(CCur(Importe) / 100, 2)
+    c_Precio = Round2(CCur(PrecioLitro) / 100000, 5)
+    
+    If Trim(NumFactura) <> "" Then
+        'SOLAMENTE EN EL CASO DE QUE SEA FACTURA COMPRUEBO QUE EXISTA EL NIF DEL SOCIO
+        'Y SI NO EXISTE INTRODUCIRLO EN LA TABLA DE SOCIOS Y TARJETAS
+        Tarje = DevuelveDesdeBDNew(cPTours, "ssocio", "codsocio", "nifsocio", NifCliente, "T")
+        If Tarje = "" Then
+            Tarje = 900000
+            Tarje = SugerirCodigoSiguienteStr("ssocio", "codsocio", "codsocio >= 900000 and codsocio <= 999998")
+            
+'                CtaConta = ""
+'                CtaConta = DevuelveDesdeBD("ctaconta", "sparam", "codparam", "01", "N")
+            
+            Sql = "INSERT INTO ssocio (codsocio, codcoope, nomsocio, domsocio, codposta, pobsocio, " & _
+                  "prosocio, nifsocio, telsocio, faxsocio, movsocio, maisocio, wwwsocio, fechaalt, " & _
+                  "fechabaj, codtarif, codbanco, codsucur, digcontr, cuentaba, impfactu, dtolitro, " & _
+                  "codforpa, tipsocio, bonifbas, bonifesp, codsitua, codmacta, obssocio) VALUES (" & _
+                  DBSet(Tarje, "N") & "," & DBSet(vParamAplic.ColecDefecto, "N") & "," & DBSet(NombreCliente, "T") & ",'DESCONOCIDA','46','VALENCIA', " & _
+                  "'VALENCIA'," & DBSet(NifCliente, "T") & "," & ValorNulo & "," & ValorNulo & "," & ValorNulo & "," & ValorNulo & "," & ValorNulo & "," & _
+                  DBSet(txtcodigo(0).Text, "F") & "," & _
+                  ValorNulo & ",0," & ValorNulo & "," & ValorNulo & "," & ValorNulo & "," & ValorNulo & ",0,0," & _
+                  "0,0,0,0,0," & DBSet(vParamAplic.CtaContable, "T") & "," & ValorNulo & ")"
+                  
+            Conn.Execute Sql
+                  
+            Sql = "INSERT INTO starje (codsocio, numlinea, numtarje, nomtarje, codbanco, codsucur, " & _
+                  "digcontr, cuentaba, tiptarje) VALUES (" & DBSet(Tarje, "N") & ",1," & DBSet(Tarje, "N") & "," & DBSet(NombreCliente, "T") & "," & ValorNulo & "," & ValorNulo & "," & _
+                  ValorNulo & "," & ValorNulo & ",0)"
+            
+            Conn.Execute Sql
+        End If
+    End If
+    
+    'MIRAMOS SI EXISTE LA TARJETA
+    '[Monica]17/06/2013: añadida la condicion de que la tarjeta no venga con asteriscos: instr(1, Tarjeta, "*") = 0
+    If Mid(Tarjeta, 1, 4) <> "****" And Trim(Tarjeta) <> "" And InStr(1, Tarjeta, "*") = 0 Then
+        '++monica: 15/02/2008 las tarjetas profesionales tienen 16 caracteres solo analizo los 8 últimos
+        If Len(Trim(Tarjeta)) = 16 Then
+            Tarjeta = Mid(Tarjeta, 9, 16)
+        End If
+        '++
+        codsoc = ""
+        codsoc = DevuelveDesdeBD("codsocio", "starje", "numtarje", Tarjeta, "T")
+        If codsoc = "" Then
+            Mens = "Nro. Tarjeta no existe"
+            Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, importe4, importe5, nombre1) values (" & _
+                  vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N") & _
+                  "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(Tarjeta, "T") & "," & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
+                  
+            Conn.Execute Sql
+            
+        End If
+    End If
+    
+    'Comprobamos fechas
+    If Not EsFechaOK(Fecha) Then
+            Mens = "Fecha incorrecta"
+            Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, " & _
+                  "importe4, importe5, nombre1) values (" & _
+                  vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N")
+            Sql = Sql & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(Fecha, "T") & "," & _
+                  DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
+            
+            Conn.Execute Sql
+    Else
+        If CDate(Fecha) <> CDate(txtcodigo(0).Text) Or CByte(Turno) <> CByte(txtcodigo(1).Text) Then
+            Mens = "Fecha incorrecta" ' o no es del turno"
+            Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, " & _
+                  "importe4, importe5, nombre1) values (" & _
+                  vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N")
+            Sql = Sql & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(Fecha, "T") & "," & _
+                  DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
+            
+            Conn.Execute Sql
+        End If
+    End If
+    
+    
+    'Comprobamos que el articulo existe en sartic
+    Sql = ""
+    Sql = DevuelveDesdeBDNew(cPTours, "sartic", "codartic", "codartic", IdProducto, "N")
+    If Sql = "" Then
+        Mens = "No existe el artículo"
+        Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
+              "importe3, importe4, importe5, nombre1) values (" & _
+              vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N")
+        Sql = Sql & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(IdProducto, "T") & "," & _
+              DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
+              
+        Conn.Execute Sql
+    End If
+    
+    
+    'Comprobamos que el socio existe
+    If CodigoCliente <> "" Then
+        Sql = ""
+        Sql = DevuelveDesdeBDNew(cPTours, "ssocio", "codsocio", "codsocio", CodigoCliente, "N")
+        If Sql = "" Then
+            Mens = "No existe el cliente"
+            Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, " & _
+                  "importe4, importe5, nombre1) values (" & _
+                  vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N")
+            Sql = Sql & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(CodigoCliente, "T") & "," & _
+                    DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
+            
+            Conn.Execute Sql
+        End If
+    End If
+    
+    'Comprobamos que la forma de pago existe
+    If IdTipoPago <> "" Then
+        Sql = ""
+        Sql = DevuelveDesdeBDNew(cPTours, "sforpa", "codforpa", "forpaalvic", IdTipoPago, "N")
+        If Sql = "" Then
+            Mens = "No existe la forma de pago Alvic"
+            Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
+                  "importe3, importe4, importe5, nombre1) values (" & _
+                  vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N")
+            Sql = Sql & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(IdTipoPago, "T") & "," & _
+                    DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
+            
+            Conn.Execute Sql
+        End If
+    End If
+    
+eComprobarRegistro:
+    If Err.Number <> 0 Then
+        ComprobarRegistro = False
+    End If
+End Function
+            
+            
+            
+            
             
 Private Function InsertarLinea(cad As String) As Boolean
 Dim NumLin As String
 Dim codpro As String
-Dim articulo As String
+Dim Articulo As String
 Dim Familia As String
 Dim Precio As String
 Dim ImpDes As String
@@ -1987,7 +2322,7 @@ Dim forpa As String
 Dim Kilometros As String
 Dim NomArtic As String
 
-    On Error GoTo eInsertarLinea
+    On Error GoTo EInsertarLinea
 
     InsertarLinea = True
     
@@ -2135,7 +2470,7 @@ Dim NomArtic As String
  
     Conn.Execute Sql
     
-eInsertarLinea:
+EInsertarLinea:
     If Err.Number <> 0 Then
         InsertarLinea = False
         MsgBox "Error en Insertar Linea " & Err.Description, vbExclamation
@@ -2146,7 +2481,7 @@ End Function
 Private Function InsertarLineaAlz(cad As String) As Boolean
 Dim NumLin As String
 Dim codpro As String
-Dim articulo As String
+Dim Articulo As String
 Dim Familia As String
 Dim Precio As String
 Dim ImpDes As String
@@ -2454,7 +2789,7 @@ End Function
 Private Function InsertarLineaRib(cad As String) As Boolean
 Dim NumLin As String
 Dim codpro As String
-Dim articulo As String
+Dim Articulo As String
 Dim Familia As String
 Dim Precio As String
 Dim ImpDes As String
@@ -2964,7 +3299,7 @@ End Sub
 'End Sub
 
 Private Function InsertarRecaudacionAlz(fic As String) As Boolean
-Dim nf As Long
+Dim NF As Long
 Dim i As Long
 Dim longitud As Long
 
@@ -2990,11 +3325,11 @@ Dim Fic1 As String
             Exit Function
         End If
     Else
-        nf = FreeFile
+        NF = FreeFile
     
-        Open fic For Input As #nf '
+        Open fic For Input As #NF '
         
-        Line Input #nf, cad
+        Line Input #NF, cad
         i = 0
         
         lblProgres(0).Caption = "Procesando Fichero: " & fic
@@ -3005,7 +3340,7 @@ Dim Fic1 As String
         Me.Refresh
         Me.Pb1.Value = 0
         
-        While Not EOF(nf)
+        While Not EOF(NF)
             i = i + 1
             
             Me.Pb1.Value = Me.Pb1.Value + Len(cad)
@@ -3029,7 +3364,7 @@ Dim Fic1 As String
                 Conn.Execute Sql
             End If
             
-            Line Input #nf, cad
+            Line Input #NF, cad
         Wend
         If cad <> "" Then
             Me.Pb1.Value = Me.Pb1.Value + Len(cad)
@@ -3053,12 +3388,12 @@ Dim Fic1 As String
                 Conn.Execute Sql
             End If
         End If
-        Close #nf
+        Close #NF
     End If
         
     '****** PROCESAMOS EL FICHERO DE CAJA
   
-    nf = FreeFile
+    NF = FreeFile
 
     Fic1 = Replace(fic, "totales", "caja")
     
@@ -3068,9 +3403,9 @@ Dim Fic1 As String
             Exit Function
         End If
     Else
-        Open Fic1 For Input As #nf '
+        Open Fic1 For Input As #NF '
     
-        Line Input #nf, cad
+        Line Input #NF, cad
     
         i = 0
     
@@ -3081,7 +3416,7 @@ Dim Fic1 As String
         Me.Pb1.Max = longitud
         Me.Refresh
         Me.Pb1.Value = 0
-        While Not EOF(nf)
+        While Not EOF(NF)
             i = i + 1
     
             Me.Pb1.Value = Me.Pb1.Value + Len(cad)
@@ -3137,7 +3472,7 @@ Dim Fic1 As String
             End If
     
     
-            Line Input #nf, cad
+            Line Input #NF, cad
         Wend
         If cad <> "" Then
             i = i + 1
@@ -3194,7 +3529,7 @@ Dim Fic1 As String
                 Conn.Execute Sql
             End If
         
-        Close #nf
+        Close #NF
         
         End If
     End If
@@ -3207,7 +3542,7 @@ End Function
 
 
 Private Function InsertarLineaTurnoNew(fic As String) As Boolean
-Dim nf As Long
+Dim NF As Long
 Dim i As Long
 Dim longitud As Long
 
@@ -3238,14 +3573,14 @@ Dim vFinal As Currency
         End If
     Else
 
-        nf = FreeFile
+        NF = FreeFile
         
         
         '****** PROCESAMOS EL FICHERO DE TOTALES
         
-        Open fic For Input As #nf '
+        Open fic For Input As #NF '
         
-        Line Input #nf, cad
+        Line Input #NF, cad
         i = 0
         
         lblProgres(0).Caption = "Procesando Fichero: " & fic
@@ -3256,7 +3591,7 @@ Dim vFinal As Currency
         Me.Refresh
         Me.Pb1.Value = 0
         
-        While Not EOF(nf)
+        While Not EOF(NF)
             i = i + 1
             
             Me.Pb1.Value = Me.Pb1.Value + Len(cad)
@@ -3286,9 +3621,9 @@ Dim vFinal As Currency
                 Conn.Execute Sql
             End If
             
-            Line Input #nf, cad
+            Line Input #NF, cad
         Wend
-        Close #nf
+        Close #NF
     End If
 eInsertarLineaTurnoNew:
     If Err.Number <> 0 Then
@@ -3375,16 +3710,16 @@ End Function
 
 
 Private Function ProcesarFicheroCompras(nomFich As String) As Boolean
-Dim nf As Long
+Dim NF As Long
 Dim cad As String
 Dim i As Integer
 Dim longitud As Long
 Dim Rs As ADODB.Recordset
-Dim Rs1 As ADODB.Recordset
+Dim RS1 As ADODB.Recordset
 Dim Numreg As Long
 Dim Sql As String
-Dim SQL1 As String
-Dim Total As Long
+Dim Sql1 As String
+Dim total As Long
 Dim v_cant As Currency
 Dim v_impo As Currency
 Dim v_prec As Currency
@@ -3395,11 +3730,11 @@ Dim MensError As String
     On Error GoTo eProcesarFicheroCompras
 
 
-    nf = FreeFile
+    NF = FreeFile
     
-    Open nomFich For Input As #nf ' & "\BV" & Format(CDate(txtcodigo(0).Text), "ddmmyy") & "." & Format(txtcodigo(1).Text, "000") For Input As #NF
+    Open nomFich For Input As #NF ' & "\BV" & Format(CDate(txtcodigo(0).Text), "ddmmyy") & "." & Format(txtcodigo(1).Text, "000") For Input As #NF
     
-    Line Input #nf, cad
+    Line Input #NF, cad
     i = 0
     
     lblProgres(0).Caption = "Procesando Fichero Compras: " & nomFich
@@ -3422,7 +3757,7 @@ Dim MensError As String
         
     b = True
     MensError = "Error Insertando Linea de Albarán de Compras:"
-    While Not EOF(nf) And b
+    While Not EOF(NF) And b
         i = i + 1
         
         Me.Pb1.Value = Me.Pb1.Value + Len(cad)
@@ -3431,9 +3766,9 @@ Dim MensError As String
         
         b = InsertarLineaCompras(cad, MensError)
         
-        Line Input #nf, cad
+        Line Input #NF, cad
     Wend
-    Close #nf
+    Close #NF
     
     If cad <> "" And b Then
         b = InsertarLineaCompras(cad, MensError)
@@ -3505,7 +3840,7 @@ Dim Codmacta As String
 Dim Codmaccl As String
 Dim Rsf As ADODB.Recordset
 
-    On Error GoTo eInsertarLinea
+    On Error GoTo EInsertarLinea
 
     InsertarLineaCompras = False
     
@@ -3655,7 +3990,7 @@ Dim Rsf As ADODB.Recordset
     InsertarLineaCompras = True
     Exit Function
     
-eInsertarLinea:
+EInsertarLinea:
     InsertarLineaCompras = False
     MensError = MensError & Err.Description
 End Function
@@ -3756,21 +4091,21 @@ On Error GoTo ePasar
     Set Rs = New ADODB.Recordset
     Rs.Open Sql, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
     While Not Rs.EOF
-        Sql = "update sartic set ultpreci = " & DBSet(Rs!Precioar, "N") & _
+        Sql = "update sartic set ultpreci = " & DBSet(Rs!precioar, "N") & _
               ", ultfecha = " & DBSet(txtcodigo(0).Text, "F") & _
-              " where codartic = " & DBSet(Rs!codartic, "N") & _
+              " where codartic = " & DBSet(Rs!codArtic, "N") & _
               " and ultfecha < " & DBSet(txtcodigo(0).Text, "F")
         Conn.Execute Sql
 '        ' solo si tiene control de stock
 '        If DevuelveValor("select ctrstock from sartic where codartic = " & DBSet(RS!codArtic, "N")) = 1 Then
             Sql = "update sartic set canstock = canstock + " & DBSet(Rs!cantidad, "N") & _
-                  " where codartic = " & DBSet(Rs!codartic, "N")
+                  " where codartic = " & DBSet(Rs!codArtic, "N")
             Conn.Execute Sql
 '        End If
         ' falta insertar en la smoval
         Sql = "insert into smoval (codartic,codalmac,fechamov,horamovi,tipomovi,detamovi,cantidad,impormov,codigope,letraser,document,numlinea) values ("
-        Sql = Sql & DBSet(Rs!codartic, "N") & ",1,"
-        Sql = Sql & DBSet(Rs!fechaalb, "F") & ","
+        Sql = Sql & DBSet(Rs!codArtic, "N") & ",1,"
+        Sql = Sql & DBSet(Rs!FechaAlb, "F") & ","
         Sql = Sql & DBSet(Rs!FechaHora, "FH") & ","
         Sql = Sql & "'S','ALC'," & DBSet(Rs!cantidad, "N") & ","
         Sql = Sql & DBSet(Rs!importel, "N") & ","
@@ -3826,16 +4161,16 @@ End Function
 
 
 Private Function ComprobarFechaAlbaran(nomFich As String) As Boolean
-Dim nf As Long
+Dim NF As Long
 Dim cad As String
 Dim i As Integer
 Dim longitud As Long
 Dim Rs As ADODB.Recordset
-Dim Rs1 As ADODB.Recordset
+Dim RS1 As ADODB.Recordset
 Dim Numreg As Long
 Dim Sql As String
-Dim SQL1 As String
-Dim Total As Long
+Dim Sql1 As String
+Dim total As Long
 Dim v_cant As Currency
 Dim v_impo As Currency
 Dim v_prec As Currency
@@ -3849,10 +4184,10 @@ Dim b As Boolean
     Conn.Execute Sql
     
     
-    nf = FreeFile
-    Open nomFich For Input As #nf ' & "\BV" & Format(CDate(txtcodigo(0).Text), "ddmmyy") & "." & Format(txtcodigo(1).Text, "000") For Input As #NF
+    NF = FreeFile
+    Open nomFich For Input As #NF ' & "\BV" & Format(CDate(txtcodigo(0).Text), "ddmmyy") & "." & Format(txtcodigo(1).Text, "000") For Input As #NF
     
-    Line Input #nf, cad
+    Line Input #NF, cad
     i = 0
     
     lblProgres(0).Caption = "Insertando en Tabla temporal: " & nomFich
@@ -3866,7 +4201,7 @@ Dim b As Boolean
 
     b = True
 
-    While Not EOF(nf) And b
+    While Not EOF(NF) And b
         i = i + 1
         
         Me.Pb1.Value = Me.Pb1.Value + Len(cad)
@@ -3875,9 +4210,9 @@ Dim b As Boolean
         
         b = ComprobarFecha(cad)
         
-        Line Input #nf, cad
+        Line Input #NF, cad
     Wend
-    Close #nf
+    Close #NF
     
     If cad <> "" Then
         i = i + 1
@@ -3951,4 +4286,167 @@ eComprobarFecha:
     End If
 End Function
 
+
+Private Function ProcesarFicheroRegaixo2() As Boolean
+Dim NF As Long
+Dim cad As String
+Dim i As Integer
+Dim longitud As Long
+Dim Rs As ADODB.Recordset
+Dim RS1 As ADODB.Recordset
+Dim Numreg As Long
+Dim Sql As String
+Dim Sql1 As String
+Dim total As Long
+Dim v_cant As Currency
+Dim v_impo As Currency
+Dim v_prec As Currency
+Dim b As Boolean
+
+    On Error GoTo eProcesarFichero2
+    
+    ProcesarFicheroRegaixo2 = False
+    
+    Sql = "select * from tmptraspaso where codusu = " & vSesion.Codigo
+    
+    
+    i = 0
+    
+    lblProgres(0).Caption = "Insertando en Tabla temporal: "
+    longitud = TotalRegistros(Sql)
+    
+    Pb1.visible = True
+    Me.Pb1.Max = longitud
+    Me.Refresh
+    Me.Pb1.Value = 0
+    ' PROCESO DEL FICHERO VENTAS.TXT
+
+    b = True
+
+    Set Rs = New ADODB.Recordset
+    Rs.Open Sql, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+    
+    While Not Rs.EOF And b
+        i = i + 1
+        
+        Me.Pb1.Value = Me.Pb1.Value + 1
+        lblProgres(1).Caption = "Linea " & i
+        Me.Refresh
+        b = ComprobarRegistroReg(Rs)
+        
+        Line Input #NF, cad
+    Wend
+    
+    Pb1.visible = False
+    lblProgres(0).Caption = ""
+    lblProgres(1).Caption = ""
+
+    ProcesarFicheroRegaixo2 = b
+    Exit Function
+
+eProcesarFichero2:
+    ProcesarFicheroRegaixo2 = False
+End Function
+
+Private Function ProcesarFicheroRegaixo(nomFich As String) As Boolean
+Dim NF As Long
+Dim cad As String
+Dim i As Integer
+Dim longitud As Long
+Dim Rs As ADODB.Recordset
+Dim RS1 As ADODB.Recordset
+Dim Numreg As Long
+Dim Sql As String
+Dim Sql1 As String
+Dim total As Long
+Dim v_cant As Currency
+Dim v_impo As Currency
+Dim v_prec As Currency
+Dim b As Boolean
+Dim NomFic As String
+
+    ProcesarFicheroRegaixo = False
+    NF = FreeFile
+    
+    i = 0
+    
+    Sql = "select * from tmtptraspaso where codusu = " & vSesion.Codigo
+    
+    lblProgres(0).Caption = "Procesando Fichero: " & nomFich
+    longitud = TotalRegistros(Sql)
+    
+    Pb1.visible = True
+    Me.Pb1.Max = longitud
+    Me.Refresh
+    Me.Pb1.Value = 0
+        
+    b = True
+    While Not Rs.EOF
+        i = i + 1
+        
+        Me.Pb1.Value = Me.Pb1.Value + 1
+        lblProgres(1).Caption = "Linea " & i
+        Me.Refresh
+        
+        b = InsertarLinea(cad)
+        
+        '[Monica]09/01/2013: nueva cooperativa de Ribarroja
+        If vParamAplic.Cooperativa <> 1 And vParamAplic.Cooperativa <> 5 Then ' regaixo
+            If b Then b = InsertarRecaudacion(cad)
+        End If
+        
+        If b = False Then
+            ProcesarFichero = False
+            Exit Function
+        End If
+        
+        Line Input #NF, cad
+    Wend
+    Close #NF
+    
+    If cad <> "" Then
+        '[Monica]09/01/2013: Nueva cooperativa Ribarroja
+        If vParamAplic.Cooperativa = 1 Then
+            b = InsertarLineaAlz(cad)
+        ElseIf vParamAplic.Cooperativa = 5 Then
+            b = InsertarLineaRib(cad)
+        Else
+            b = InsertarLinea(cad)
+        End If
+'--monica: insertamos recaudacion leyendo de fichero al final del proceso y solo para Alzira
+'        If b Then b = InsertarRecaudacion(cad)
+
+'++monica: en regaixo hemos de insertar en srecau para la contabilizacion de turno lo habiamos quitado
+'          para alzira
+        '[Monica]09/01/2013: nueva cooperativa de Ribarroja
+        If vParamAplic.Cooperativa <> 1 And vParamAplic.Cooperativa <> 5 Then ' regaixo
+            If b Then b = InsertarRecaudacion(cad)
+        End If
+
+        If b = False Then
+            ProcesarFichero = False
+            Exit Function
+        End If
+    End If
+    
+    '++monica: insertamos recaudacion solo para alzira
+    '[Monica]09/01/2013: nueva cooperativa de Ribarroja
+    If vParamAplic.Cooperativa = 1 Then
+        NomFic = LCase(nomFich)
+        If b Then b = InsertarRecaudacionAlz(Replace(NomFic, "ventas", "totales"))
+    End If
+    
+    '++monica: insertamos en sturno tanto para alzira como para regaixo
+    If vParamAplic.Cooperativa <> 5 Then
+        NomFic = LCase(nomFich)
+        If b Then b = InsertarLineaTurnoNew(Replace(NomFic, "ventas", "totaliza"))
+    End If
+    
+    ProcesarFichero = b
+    
+    Pb1.visible = False
+    lblProgres(0).Caption = ""
+    lblProgres(1).Caption = ""
+
+End Function
 

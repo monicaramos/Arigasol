@@ -2555,27 +2555,27 @@ Dim Sql As String
         ListView2.ColumnHeaders.Add , , "T.Alb", 660
         ListView2.ColumnHeaders.Add , , "Nº Alb", 840
         ListView2.ColumnHeaders.Add , , "Lin.", 450
-         ListView2.ColumnHeaders.Item(3).Alignment = lvwColumnRight
+         ListView2.ColumnHeaders.item(3).Alignment = lvwColumnRight
         ListView2.ColumnHeaders.Add , , "Alm", 460
         ListView2.ColumnHeaders.Add , , "Artic", 1380
         ListView2.ColumnHeaders.Add , , "Desc. Artic.", 2500
         ListView2.ColumnHeaders.Add , , "Cant.", 600
-        ListView2.ColumnHeaders.Item(7).Alignment = lvwColumnRight
+        ListView2.ColumnHeaders.item(7).Alignment = lvwColumnRight
         ListView2.ColumnHeaders.Add , , "Precio", 960
-        ListView2.ColumnHeaders.Item(8).Alignment = lvwColumnRight
+        ListView2.ColumnHeaders.item(8).Alignment = lvwColumnRight
         ListView2.ColumnHeaders.Add , , "Dto 1", 600
-        ListView2.ColumnHeaders.Item(9).Alignment = lvwColumnRight
+        ListView2.ColumnHeaders.item(9).Alignment = lvwColumnRight
         ListView2.ColumnHeaders.Add , , "Dto 2", 600
-        ListView2.ColumnHeaders.Item(10).Alignment = lvwColumnRight
+        ListView2.ColumnHeaders.item(10).Alignment = lvwColumnRight
         ListView2.ColumnHeaders.Add , , "Importe", 950
-        ListView2.ColumnHeaders.Item(11).Alignment = lvwColumnRight
+        ListView2.ColumnHeaders.item(11).Alignment = lvwColumnRight
     
         While Not Rs.EOF
              Set ItmX = ListView2.ListItems.Add
              ItmX.Text = Rs!codtipoa 'cod tipo alb
              ItmX.Checked = False
              ItmX.SubItems(1) = Format(Rs!numalbar, "0000000") 'Nº Albaran
-             ItmX.SubItems(2) = Rs!numlinea 'linea Albaran
+             ItmX.SubItems(2) = Rs!NumLinea 'linea Albaran
              ItmX.SubItems(3) = Format(Rs!codAlmac, "000") 'cod almacen
              ItmX.SubItems(4) = Rs!codArtic 'Cod Articulo
              ItmX.SubItems(5) = Rs!NomArtic 'Nombre del Articulo
@@ -2635,7 +2635,7 @@ Dim Sql As String
         ListView1.ColumnHeaders.Add , , "Tipo", 700
         ListView1.ColumnHeaders.Add , , "Nº Albaran", 1000, 1
         ListView1.ColumnHeaders.Add , , "Fecha", 1100, 1
-        ListView1.ColumnHeaders.Item(3).Alignment = lvwColumnCenter
+        ListView1.ColumnHeaders.item(3).Alignment = lvwColumnCenter
         ListView1.ColumnHeaders.Add , , "Cod. Cli.", 900
         ListView1.ColumnHeaders.Add , , "Cliente", 3400
     
@@ -2684,7 +2684,7 @@ Dim Sql As String
         ListView5.ColumnHeaders.Add , , "Nº Palet", 1000
         ListView5.ColumnHeaders.Add , , "Lin.Conf.", 1000, 1
         ListView5.ColumnHeaders.Add , , "F.Inicio", 1100, 1
-        ListView5.ColumnHeaders.Item(3).Alignment = lvwColumnCenter
+        ListView5.ColumnHeaders.item(3).Alignment = lvwColumnCenter
         ListView5.ColumnHeaders.Add , , "Hora ", 900
         ListView5.ColumnHeaders.Add , , "F.Fin", 1100
         ListView5.ColumnHeaders.Add , , "Hora ", 900
@@ -2724,7 +2724,7 @@ Dim Prohibidas As String
 
     VerEmresasProhibidas Prohibidas
     
-    Sql = "Select * from usuarios.empresasariagro order by codempre"
+    Sql = "Select * from usuarios.empresasarigasol order by codempre"
     Set ListView2.SmallIcons = frmPpal.ImageListB
     ListView2.Width = 5000
     ListView2.ColumnHeaders.Clear
@@ -2745,7 +2745,7 @@ Dim Prohibidas As String
                 ItmX.Checked = True
                 I = ItmX.Index
             End If
-            ItmX.ToolTipText = Rs!Ariagro
+            ItmX.ToolTipText = Rs!AriGasol
         End If
         Rs.MoveNext
     Wend
@@ -3244,7 +3244,7 @@ Dim Sql As String
 
         ListView6.ColumnHeaders.Add , , "Nº Pedido", 1000
         ListView6.ColumnHeaders.Add , , "Fecha", 1100, 1
-        ListView6.ColumnHeaders.Item(2).Alignment = lvwColumnCenter
+        ListView6.ColumnHeaders.item(2).Alignment = lvwColumnCenter
         ListView6.ColumnHeaders.Add , , "Código", 900
         ListView6.ColumnHeaders.Add , , "Cliente", 2100
         ListView6.ColumnHeaders.Add , , "Código  ", 700

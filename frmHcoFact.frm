@@ -2005,7 +2005,7 @@ Private Sub frmFpa_DatoSeleccionado(CadenaSeleccion As String)
 'Mantenimiento de Formas de Pago
     Text1(5).Text = RecuperaValor(CadenaSeleccion, 1) 'codforpa
     FormateaCampo Text1(5)
-    text2(5).Text = RecuperaValor(CadenaSeleccion, 2)
+    Text2(5).Text = RecuperaValor(CadenaSeleccion, 2)
 End Sub
 
 Private Sub frmCli_DatoSeleccionado(CadenaSeleccion As String)
@@ -2014,7 +2014,7 @@ Dim cad As String, Datos As String
 
     Text1(3).Text = RecuperaValor(CadenaSeleccion, 1) 'codclien
     FormateaCampo Text1(3)
-    text2(3).Text = RecuperaValor(CadenaSeleccion, 2) 'nomclien
+    Text2(3).Text = RecuperaValor(CadenaSeleccion, 2) 'nomclien
      
     'recuperar el Colectivo del cliente
     Datos = DevuelveDesdeBDNew(cPTours, "ssocio", "codcoope", "codsocio", Text1(3).Text, "N")
@@ -2024,7 +2024,7 @@ Dim cad As String, Datos As String
         Text1_LostFocus (4)
     Else
         Text1(4).Text = ""
-        text2(4).Text = ""
+        Text2(4).Text = ""
     End If
 End Sub
 
@@ -2182,6 +2182,7 @@ Dim Letra As String
     ' he añadido estas dos lineas para que llame al rpt correspondiente
 
     cadNombreRPT = nomDocu  ' "rFactgas.rpt"
+    
     cadFormula = "({" & NomTabla & ".letraser} = """ & Text1(0).Text & """) AND ({" & NomTabla & ".numfactu} = " & Text1(1).Text & ") and ({" & NomTabla & ".fecfactu} = cdate(""" & Text1(2).Text & """)) "
     
     '23022007 Monica: la separacion de la bonificacion solo la quieren en Alzira
@@ -2469,7 +2470,7 @@ Private Sub BotonRectificar()
     
     Set frmList = New frmListado
     'Añadiremos el boton de aceptar y demas objetos para insertar
-    frmList.CadTag = Text1(0).Text & "|" & Text1(1).Text & "|" & Text1(2).Text & "|" & Text1(3).Text & "|" & text2(3).Text & "|" & Format(Check1(1).Value, "0") & "|"
+    frmList.CadTag = Text1(0).Text & "|" & Text1(1).Text & "|" & Text1(2).Text & "|" & Text1(3).Text & "|" & Text2(3).Text & "|" & Format(Check1(1).Value, "0") & "|"
     frmList.OpcionListado = 12
     frmList.Show vbModal
 
@@ -2527,9 +2528,9 @@ Dim I As Integer
     
     'Recuperar Descripciones de los campos de Codigo
     '--------------------------------------------------
-    text2(3).Text = PonerNombreDeCod(Text1(3), "ssocio", "nomsocio")
-    text2(4).Text = PonerNombreDeCod(Text1(4), "scoope", "nomcoope")
-    text2(5).Text = PonerNombreDeCod(Text1(5), "sforpa", "nomforpa")
+    Text2(3).Text = PonerNombreDeCod(Text1(3), "ssocio", "nomsocio")
+    Text2(4).Text = PonerNombreDeCod(Text1(4), "scoope", "nomcoope")
+    Text2(5).Text = PonerNombreDeCod(Text1(5), "sforpa", "nomforpa")
 
     '-- Esto permanece para saber donde estamos
     lblIndicador.Caption = Data1.Recordset.AbsolutePosition & " de " & Data1.Recordset.RecordCount
@@ -2705,8 +2706,8 @@ Dim Suma As Currency
         Case 3 'Cliente
             If Text1(Index).Text <> "" Then
                 If PonerFormatoEntero(Text1(3)) Then
-                    text2(Index).Text = PonerNombreDeCod(Text1(Index), "ssocio", "nomsocio", "codsocio", "N")
-                    If text2(Index).Text = "" Then
+                    Text2(Index).Text = PonerNombreDeCod(Text1(Index), "ssocio", "nomsocio", "codsocio", "N")
+                    If Text2(Index).Text = "" Then
                         cad = "No existe el Cliente: " & Text1(Index).Text & vbCrLf
                         cad = cad & "¿Desea crearlo?" & vbCrLf
                         If MsgBox(cad, vbQuestion + vbYesNo) = vbYes Then
@@ -2723,7 +2724,7 @@ Dim Suma As Currency
                         PonerFoco Text1(Index)
                     End If
                 Else
-                    text2(Index).Text = ""
+                    Text2(Index).Text = ""
                 End If
                 'recuperar el Colectivo
                 If Modo = 1 Then Exit Sub
@@ -2734,14 +2735,14 @@ Dim Suma As Currency
                      Text1_LostFocus (4)
                  Else
                      Text1(4).Text = ""
-                     text2(4).Text = ""
+                     Text2(4).Text = ""
                  End If
             End If
             
         Case 4 'Colectivo
             If PonerFormatoEntero(Text1(4)) Then
-                text2(Index).Text = PonerNombreDeCod(Text1(Index), "scoope", "nomcoope", "codcoope", "N")
-                If text2(Index).Text = "" Then
+                Text2(Index).Text = PonerNombreDeCod(Text1(Index), "scoope", "nomcoope", "codcoope", "N")
+                If Text2(Index).Text = "" Then
                     cad = "No existe el Colectivo: " & Text1(Index).Text & vbCrLf
                     cad = cad & "¿Desea crearlo?" & vbCrLf
                     If MsgBox(cad, vbQuestion + vbYesNo) = vbYes Then
@@ -2758,13 +2759,13 @@ Dim Suma As Currency
                     PonerFoco Text1(Index)
                 End If
             Else
-                text2(Index).Text = ""
+                Text2(Index).Text = ""
             End If
         
         Case 5 'Forma pago
             If PonerFormatoEntero(Text1(5)) Then
-                text2(Index).Text = PonerNombreDeCod(Text1(Index), "sforpa", "nomforpa", "codforpa", "N")
-                If text2(Index).Text = "" Then
+                Text2(Index).Text = PonerNombreDeCod(Text1(Index), "sforpa", "nomforpa", "codforpa", "N")
+                If Text2(Index).Text = "" Then
                     cad = "No existe la Forma de Pago: " & Text1(Index).Text & vbCrLf
                     cad = cad & "¿Desea crearla?" & vbCrLf
                     If MsgBox(cad, vbQuestion + vbYesNo) = vbYes Then
@@ -2781,7 +2782,7 @@ Dim Suma As Currency
                     PonerFoco Text1(Index)
                 End If
             Else
-                text2(Index).Text = ""
+                Text2(Index).Text = ""
             End If
             
         Case 6, 9, 10, 13, 14, 17 'IMPORTES Base, IVA

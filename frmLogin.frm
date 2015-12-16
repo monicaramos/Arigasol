@@ -264,6 +264,9 @@ On Error Resume Next
 End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
+    '[Monica]14/12/2015: si no hay empresa seleccionada acabamos
+    If lw1.SelectedItem Is Nothing Then End
+
     NumeroEmpresaMemorizar False
 End Sub
 
