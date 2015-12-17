@@ -21,6 +21,56 @@ Begin VB.Form frmManFpago
       Appearance      =   0  'Flat
       BorderStyle     =   0  'None
       Height          =   290
+      Index           =   9
+      Left            =   11250
+      MaxLength       =   10
+      TabIndex        =   25
+      Tag             =   "Codigo FP Vale|N|S|||sforpa|codforpavale|000000||"
+      Top             =   5040
+      Width           =   735
+   End
+   Begin VB.CommandButton btnBuscar 
+      Appearance      =   0  'Flat
+      Caption         =   "+"
+      Height          =   300
+      Index           =   1
+      Left            =   9420
+      MaskColor       =   &H00000000&
+      TabIndex        =   24
+      ToolTipText     =   "Buscar cuenta contable"
+      Top             =   5010
+      Visible         =   0   'False
+      Width           =   195
+   End
+   Begin VB.TextBox txtAux2 
+      Appearance      =   0  'Flat
+      BackColor       =   &H80000018&
+      BorderStyle     =   0  'None
+      Enabled         =   0   'False
+      Height          =   285
+      Index           =   8
+      Left            =   9630
+      TabIndex        =   23
+      Top             =   5010
+      Visible         =   0   'False
+      Width           =   1815
+   End
+   Begin VB.TextBox txtAux 
+      Appearance      =   0  'Flat
+      BorderStyle     =   0  'None
+      Height          =   290
+      Index           =   8
+      Left            =   8790
+      MaxLength       =   10
+      TabIndex        =   22
+      Tag             =   "Codigo Socio|N|S|||sforpa|codsocio|000000||"
+      Top             =   4980
+      Width           =   735
+   End
+   Begin VB.TextBox txtAux 
+      Appearance      =   0  'Flat
+      BorderStyle     =   0  'None
+      Height          =   290
       Index           =   7
       Left            =   8040
       MaxLength       =   10
@@ -114,7 +164,7 @@ Begin VB.Form frmManFpago
       Enabled         =   0   'False
       Height          =   285
       Index           =   2
-      Left            =   10605
+      Left            =   12675
       TabIndex        =   20
       Top             =   5010
       Visible         =   0   'False
@@ -125,7 +175,7 @@ Begin VB.Form frmManFpago
       Caption         =   "+"
       Height          =   300
       Index           =   0
-      Left            =   10395
+      Left            =   12450
       MaskColor       =   &H00000000&
       TabIndex        =   19
       ToolTipText     =   "Buscar cuenta contable"
@@ -138,7 +188,7 @@ Begin VB.Form frmManFpago
       BorderStyle     =   0  'None
       Height          =   290
       Index           =   2
-      Left            =   9150
+      Left            =   11220
       MaxLength       =   10
       TabIndex        =   11
       Tag             =   "Cuenta Contable|T|S|||sforpa|codmacta|||"
@@ -1038,17 +1088,18 @@ Private Sub Form_Load()
     CadenaConsulta = CadenaConsulta & "cuadresn, CASE cuadresn WHEN 0 THEN ""No"" WHEN 1 THEN ""Si"" END, "
     CadenaConsulta = CadenaConsulta & "contabilizasn, CASE contabilizasn WHEN 0 THEN ""No"" WHEN 1 THEN ""Si"" END, "
     CadenaConsulta = CadenaConsulta & "permitebonif, CASE permitebonif WHEN 0 THEN ""No"" WHEN 1 THEN ""Si"" END, "
-    CadenaConsulta = CadenaConsulta & "sforpa.numerove, sforpa.diasvto, sforpa.restoven, sforpa.forpaalvic, sforpa.codexterno, sforpa.codmacta "
+    CadenaConsulta = CadenaConsulta & "sforpa.numerove, sforpa.diasvto, sforpa.restoven, sforpa.forpaalvic, sforpa.codexterno, "
+    CadenaConsulta = CadenaConsulta & "sforpa.codsocio, ssocio.nomsocio, sforpa.codforpavale, sforpa.codmacta "
     
     ' ### [Monica] 12/09/2006
     ' en caso de haber contabilidad muestro la descripcion de la cuenta
     If vParamAplic.NumeroConta <> 0 Then
         CadenaConsulta = CadenaConsulta & ", conta" & vParamAplic.NumeroConta & ".cuentas.nommacta "
-        CadenaConsulta = CadenaConsulta & "from sforpa left join conta" & DBSet(vParamAplic.NumeroConta, "N")
+        CadenaConsulta = CadenaConsulta & "from (sforpa left join ssocio on sforpa.codsocio = ssocio.codsocio) left join conta" & DBSet(vParamAplic.NumeroConta, "N")
         CadenaConsulta = CadenaConsulta & ".cuentas on (sforpa.`codmacta` = conta" & DBSet(vParamAplic.NumeroConta, "N") & ".cuentas.`codmacta`)"
     Else
     ' no hay contabilidad
-        CadenaConsulta = CadenaConsulta & "FROM sforpa"
+        CadenaConsulta = CadenaConsulta & "FROM (sforpa left join ssocio on sforpa.codsocio = ssocio.codsocio) "
     End If
     CadenaConsulta = CadenaConsulta & " WHERE 1 = 1 "
     '************************************************************************
@@ -1164,6 +1215,9 @@ Private Sub CargaGrid(Optional vSQL As String)
     tots = tots & "S|txtAux(6)|T|Resto|600|;"
     tots = tots & "S|txtAux(4)|T|Alvic|600|;"
     tots = tots & "S|txtAux(7)|T|Cod.Ext|1000|;"
+    tots = tots & "S|txtAux(8)|T|Socio|1000|;"
+    tots = tots & "S|btnBuscar(1)|B|||;S|txtAux2(8)|T|Nombre|2000|;"
+    tots = tots & "S|txtAux(9)|T|FPV|500|;"
     tots = tots & "S|txtAux(2)|T|Cta.Contable|1200|;"
     
     ' ### [Monica] 12/09/2006
