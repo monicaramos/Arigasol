@@ -8,13 +8,13 @@ Begin VB.Form frmManFpago
    ClientHeight    =   5925
    ClientLeft      =   45
    ClientTop       =   330
-   ClientWidth     =   16305
+   ClientWidth     =   19185
    Icon            =   "frmManFpago.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   5925
-   ScaleWidth      =   16305
+   ScaleWidth      =   19185
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.TextBox txtAux 
@@ -24,8 +24,8 @@ Begin VB.Form frmManFpago
       Index           =   9
       Left            =   11250
       MaxLength       =   10
-      TabIndex        =   25
-      Tag             =   "Codigo FP Vale|N|S|||sforpa|codforpavale|000000||"
+      TabIndex        =   12
+      Tag             =   "Codigo FP Vale|N|S|||sforpa|forpavale|00||"
       Top             =   5040
       Width           =   735
    End
@@ -36,8 +36,8 @@ Begin VB.Form frmManFpago
       Index           =   1
       Left            =   9420
       MaskColor       =   &H00000000&
-      TabIndex        =   24
-      ToolTipText     =   "Buscar cuenta contable"
+      TabIndex        =   25
+      ToolTipText     =   "Buscar socio"
       Top             =   5010
       Visible         =   0   'False
       Width           =   195
@@ -50,7 +50,7 @@ Begin VB.Form frmManFpago
       Height          =   285
       Index           =   8
       Left            =   9630
-      TabIndex        =   23
+      TabIndex        =   24
       Top             =   5010
       Visible         =   0   'False
       Width           =   1815
@@ -62,7 +62,7 @@ Begin VB.Form frmManFpago
       Index           =   8
       Left            =   8790
       MaxLength       =   10
-      TabIndex        =   22
+      TabIndex        =   11
       Tag             =   "Codigo Socio|N|S|||sforpa|codsocio|000000||"
       Top             =   4980
       Width           =   735
@@ -165,7 +165,7 @@ Begin VB.Form frmManFpago
       Height          =   285
       Index           =   2
       Left            =   12675
-      TabIndex        =   20
+      TabIndex        =   22
       Top             =   5010
       Visible         =   0   'False
       Width           =   1815
@@ -177,7 +177,7 @@ Begin VB.Form frmManFpago
       Index           =   0
       Left            =   12450
       MaskColor       =   &H00000000&
-      TabIndex        =   19
+      TabIndex        =   21
       ToolTipText     =   "Buscar cuenta contable"
       Top             =   5010
       Visible         =   0   'False
@@ -190,7 +190,7 @@ Begin VB.Form frmManFpago
       Index           =   2
       Left            =   11220
       MaxLength       =   10
-      TabIndex        =   11
+      TabIndex        =   13
       Tag             =   "Cuenta Contable|T|S|||sforpa|codmacta|||"
       Top             =   5010
       Width           =   1395
@@ -225,7 +225,7 @@ Begin VB.Form frmManFpago
       Caption         =   "&Aceptar"
       Height          =   375
       Left            =   13905
-      TabIndex        =   12
+      TabIndex        =   14
       Top             =   5325
       Visible         =   0   'False
       Width           =   1035
@@ -235,7 +235,7 @@ Begin VB.Form frmManFpago
       Caption         =   "&Cancelar"
       Height          =   375
       Left            =   15075
-      TabIndex        =   13
+      TabIndex        =   15
       Top             =   5325
       Visible         =   0   'False
       Width           =   1095
@@ -269,7 +269,7 @@ Begin VB.Form frmManFpago
       Caption         =   "&Regresar"
       Height          =   375
       Left            =   15075
-      TabIndex        =   18
+      TabIndex        =   20
       Top             =   5325
       Visible         =   0   'False
       Width           =   1095
@@ -278,7 +278,7 @@ Begin VB.Form frmManFpago
       Height          =   555
       Index           =   1
       Left            =   120
-      TabIndex        =   14
+      TabIndex        =   16
       Top             =   5190
       Width           =   2385
       Begin VB.Label lblIndicador 
@@ -295,7 +295,7 @@ Begin VB.Form frmManFpago
          EndProperty
          Height          =   255
          Left            =   40
-         TabIndex        =   15
+         TabIndex        =   17
          Top             =   240
          Width           =   2295
       End
@@ -351,10 +351,10 @@ Begin VB.Form frmManFpago
       Align           =   1  'Align Top
       Height          =   360
       Left            =   0
-      TabIndex        =   16
+      TabIndex        =   18
       Top             =   0
-      Width           =   16305
-      _ExtentX        =   28760
+      Width           =   19185
+      _ExtentX        =   33840
       _ExtentY        =   635
       ButtonWidth     =   609
       ButtonHeight    =   582
@@ -413,7 +413,7 @@ Begin VB.Form frmManFpago
          Caption         =   "Vista previa"
          Height          =   195
          Left            =   8400
-         TabIndex        =   17
+         TabIndex        =   19
          Top             =   120
          Visible         =   0   'False
          Width           =   1215
@@ -423,10 +423,10 @@ Begin VB.Form frmManFpago
       Bindings        =   "frmManFpago.frx":001C
       Height          =   4410
       Left            =   90
-      TabIndex        =   21
+      TabIndex        =   23
       Top             =   630
-      Width           =   16065
-      _ExtentX        =   28337
+      Width           =   18565
+      _ExtentX        =   32755
       _ExtentY        =   7779
       _Version        =   393216
       AllowUpdate     =   0   'False
@@ -587,7 +587,8 @@ Private CadB As String
 
 Private WithEvents frmCtas As frmCtasConta 'cuentas contables
 Attribute frmCtas.VB_VarHelpID = -1
-
+Private WithEvents frmB As frmBuscaGrid
+Attribute frmB.VB_VarHelpID = -1
 Dim Modo As Byte
 '----------- MODOS --------------------------------
 '   0.-  Formulari net sense cap camp ple
@@ -621,9 +622,13 @@ Dim b As Boolean
     txtAux(5).visible = Not b
     txtAux(6).visible = Not b
     txtAux(7).visible = Not b
+    txtAux(8).visible = Not b
+    txtAux(9).visible = Not b
+    btnBuscar(1).visible = Not b
     
     If vParamAplic.NumeroConta <> 0 Then
         txtAux2(2).visible = Not b
+        txtAux2(8).visible = Not b
         btnBuscar(0).visible = Not b
     End If
     
@@ -701,6 +706,8 @@ Private Sub BotonAnyadir()
     txtAux(4).Text = ""
     txtAux(6).Text = ""
     txtAux(7).Text = ""
+    txtAux(8).Text = ""
+    txtAux(9).Text = ""
     
     For i = 0 To Combo1.Count - 1
         Combo1(i).ListIndex = -1
@@ -763,8 +770,11 @@ Private Sub BotonModificar()
     txtAux(6).Text = DataGrid1.Columns(12).Text
     txtAux(4).Text = DataGrid1.Columns(13).Text
     txtAux(7).Text = DataGrid1.Columns(14).Text
+    txtAux(8).Text = DataGrid1.Columns(15).Text
+    txtAux2(8).Text = DataGrid1.Columns(16).Text
+    txtAux(9).Text = DataGrid1.Columns(17).Text
     
-    txtAux(2).Text = DataGrid1.Columns(15).Text
+    txtAux(2).Text = DataGrid1.Columns(18).Text
     
     ' ***** canviar-ho pel nom del camp del combo *********
 '    SelComboBool DataGrid1.Columns(2).Text, Combo1(0)
@@ -804,10 +814,14 @@ Private Sub LLamaLineas(alto As Single, xModo As Byte)
     txtAux(5).Top = alto
     txtAux(6).Top = alto
     txtAux(7).Top = alto
+    txtAux(8).Top = alto
+    txtAux(9).Top = alto
     
     ' ### [Monica] 12/09/2006
     txtAux2(2).Top = alto
+    txtAux2(8).Top = alto
     btnBuscar(0).Top = alto - 15
+    btnBuscar(1).Top = alto - 15
 End Sub
 
 Private Sub BotonEliminar()
@@ -863,6 +877,7 @@ Private Sub PonerLongCampos()
     PonerLongCamposGnral Me, Modo, 3
 End Sub
 
+
 Private Sub btnBuscar_Click(Index As Integer)
  TerminaBloquear
     
@@ -878,10 +893,39 @@ Private Sub btnBuscar_Click(Index As Integer)
             frmCtas.Show vbModal
             Set frmCtas = Nothing
             PonerFoco txtAux(indice)
-    
+        Case 1
+'            indice = Index + 7
+'            Set frmcli = New frmManClien
+'            frmcli.DatosADevolverBusqueda = "0|1|"
+'            frmcli.CodigoActual = txtAux(8).Text
+'            frmcli.Show vbModal
+'            Set frmcli = Nothing
+'            PonerFoco txtAux(8)
+            MandaBusquedaPrevia ""
     End Select
     
+    
     If Modo = 4 Then BLOQUEADesdeFormulario2 Me, Me.adodc1, 1
+End Sub
+
+Private Sub MandaBusquedaPrevia(CadB As String)
+Dim cad As String
+        'Llamamos a al form
+        cad = ""
+        cad = cad & "Socio|codsocio|T||15·"
+        cad = cad & "Nombre|nomsocio|T||80·"
+
+        Screen.MousePointer = vbHourglass
+        Set frmB = New frmBuscaGrid
+        frmB.vCampos = cad
+        frmB.vTabla = "ssocio"
+        frmB.vSQL = "" 'cad
+        frmB.vDevuelve = "0|1|" 'Campos de la tabla que devuelve
+        frmB.vTitulo = "Socios"
+        frmB.vSelElem = 1
+        frmB.Show vbModal
+        Set frmB = Nothing
+        
 End Sub
 
 
@@ -1059,19 +1103,19 @@ Private Sub Form_Load()
     ' ### [Monica] 12/09/2006
     ' dependiendo de si tiene o no contabilidad o no el formulario tendrá un tamaño u otro
     If vParamAplic.NumeroConta <> 0 Then
-        Me.Width = 15600 '12985
+        Me.Width = 18100 '15600 '12985
         Me.cmdCancelar.Left = 13410
         Me.cmdAceptar.Left = 12150
         Me.cmdRegresar.Left = 12090
-        Me.DataGrid1.Width = 15200
+        Me.DataGrid1.Width = 17700 '15200
         
     Else
     ' no hay conexion a la contabilidad
-        Me.Width = 12800 '9895
+        Me.Width = 15300 '12800 '9895
         Me.cmdCancelar.Left = 10440
         Me.cmdAceptar.Left = 9180
         Me.cmdRegresar.Left = 9120
-        Me.DataGrid1.Width = 12300
+        Me.DataGrid1.Width = 14800 '12300
     End If
     
     Me.Height = 6705
@@ -1089,7 +1133,7 @@ Private Sub Form_Load()
     CadenaConsulta = CadenaConsulta & "contabilizasn, CASE contabilizasn WHEN 0 THEN ""No"" WHEN 1 THEN ""Si"" END, "
     CadenaConsulta = CadenaConsulta & "permitebonif, CASE permitebonif WHEN 0 THEN ""No"" WHEN 1 THEN ""Si"" END, "
     CadenaConsulta = CadenaConsulta & "sforpa.numerove, sforpa.diasvto, sforpa.restoven, sforpa.forpaalvic, sforpa.codexterno, "
-    CadenaConsulta = CadenaConsulta & "sforpa.codsocio, ssocio.nomsocio, sforpa.codforpavale, sforpa.codmacta "
+    CadenaConsulta = CadenaConsulta & "sforpa.codsocio, ssocio.nomsocio, sforpa.forpavale, sforpa.codmacta "
     
     ' ### [Monica] 12/09/2006
     ' en caso de haber contabilidad muestro la descripcion de la cuenta
@@ -1118,6 +1162,14 @@ Private Sub Form_Unload(Cancel As Integer)
 '    CheckValueGuardar Me.Name, Me.chkVistaPrevia.Value
     Screen.MousePointer = vbDefault
 End Sub
+
+Private Sub frmB_Selecionado(CadenaDevuelta As String)
+'busqueda de codigo de socio
+    txtAux(8).Text = RecuperaValor(CadenaDevuelta, 1)
+    FormateaCampo txtAux(8)
+    txtAux2(8).Text = RecuperaValor(CadenaDevuelta, 2)
+End Sub
+
 
 Private Sub frmCtas_DatoSeleccionado(CadenaSeleccion As String)
 'Cuentas contables de la Contabilidad
@@ -1215,8 +1267,8 @@ Private Sub CargaGrid(Optional vSQL As String)
     tots = tots & "S|txtAux(6)|T|Resto|600|;"
     tots = tots & "S|txtAux(4)|T|Alvic|600|;"
     tots = tots & "S|txtAux(7)|T|Cod.Ext|1000|;"
-    tots = tots & "S|txtAux(8)|T|Socio|1000|;"
-    tots = tots & "S|btnBuscar(1)|B|||;S|txtAux2(8)|T|Nombre|2000|;"
+    tots = tots & "S|txtAux(8)|T|Socio|900|;"
+    tots = tots & "S|btnBuscar(1)|B|||;S|txtAux2(8)|T|Nombre|1100|;"
     tots = tots & "S|txtAux(9)|T|FPV|500|;"
     tots = tots & "S|txtAux(2)|T|Cta.Contable|1200|;"
     
@@ -1239,6 +1291,8 @@ End Sub
 
 
 Private Sub txtAux_LostFocus(Index As Integer)
+Dim Sql As String
+
     If Not PerderFocoGnral(txtAux(Index), Modo) Then Exit Sub
     
     Select Case Index
@@ -1251,7 +1305,20 @@ Private Sub txtAux_LostFocus(Index As Integer)
             If txtAux(Index).Text = "" Then Exit Sub
             txtAux2(Index).Text = PonerNombreCuenta(txtAux(Index), Modo)
             
-            
+        Case 8 ' codigo de socio
+            If PonerFormatoEntero(txtAux(Index)) Then
+                txtAux2(Index).Text = PonerNombreDeCod(txtAux(Index), "ssocio", "nomsocio", "codsocio", "N")
+            Else
+                txtAux2(Index).Text = ""
+            End If
+        Case 9 ' codigo de forma de pago
+            If PonerFormatoEntero(txtAux(Index)) Then
+                Sql = "select count(*) from sforpa where codforpa = " & DBSet(txtAux(9).Text, "N")
+                If TotalRegistros(Sql) = 0 Then
+                    MsgBox "Forma de pago  no existe. Reintroduzca.", vbExclamation
+                    PonerFoco txtAux(Index)
+                End If
+            End If
     End Select
     
 End Sub
