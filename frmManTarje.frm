@@ -8,13 +8,13 @@ Begin VB.Form frmManTarje
    ClientHeight    =   5925
    ClientLeft      =   45
    ClientTop       =   330
-   ClientWidth     =   9420
+   ClientWidth     =   9825
    Icon            =   "frmManTarje.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   5925
-   ScaleWidth      =   9420
+   ScaleWidth      =   9825
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.ComboBox Combo1 
@@ -77,12 +77,12 @@ Begin VB.Form frmManTarje
       Tag             =   "Nº Tarjeta|N|N|0|99999999|starje|numtarje|00000000||"
       Text            =   "Tarj"
       Top             =   4920
-      Width           =   915
+      Width           =   1315
    End
    Begin VB.CommandButton cmdAceptar 
       Caption         =   "&Aceptar"
       Height          =   375
-      Left            =   6300
+      Left            =   7350
       TabIndex        =   6
       Top             =   5340
       Visible         =   0   'False
@@ -92,7 +92,7 @@ Begin VB.Form frmManTarje
       Cancel          =   -1  'True
       Caption         =   "&Cancelar"
       Height          =   375
-      Left            =   7560
+      Left            =   8610
       TabIndex        =   7
       Top             =   5340
       Visible         =   0   'False
@@ -131,8 +131,8 @@ Begin VB.Form frmManTarje
       Left            =   240
       TabIndex        =   11
       Top             =   540
-      Width           =   9075
-      _ExtentX        =   16007
+      Width           =   9475
+      _ExtentX        =   16722
       _ExtentY        =   7779
       _Version        =   393216
       AllowUpdate     =   0   'False
@@ -198,7 +198,7 @@ Begin VB.Form frmManTarje
    Begin VB.CommandButton cmdRegresar 
       Caption         =   "&Regresar"
       Height          =   375
-      Left            =   7560
+      Left            =   8610
       TabIndex        =   10
       Top             =   5340
       Visible         =   0   'False
@@ -283,8 +283,8 @@ Begin VB.Form frmManTarje
       Left            =   0
       TabIndex        =   12
       Top             =   0
-      Width           =   9420
-      _ExtentX        =   16616
+      Width           =   9825
+      _ExtentX        =   17330
       _ExtentY        =   635
       ButtonWidth     =   609
       ButtonHeight    =   582
@@ -757,7 +757,7 @@ Private Sub CargaGrid(Optional vSQL As String)
     
     tots = "S|txtAux(0)|T|Código|900|;S|btnBuscar(0)|B|||;S|txtAux2(0)|T|Nombre Cliente|2600|;"
     tots = tots & "N||||0|;"
-    tots = tots & "S|txtAux(2)|T|Tarjeta|1000|;S|txtAux(3)|T|Nombre Tarjeta|2800|;"
+    tots = tots & "S|txtAux(2)|T|Tarjeta|1400|;S|txtAux(3)|T|Nombre Tarjeta|2800|;"
     tots = tots & "N||||0|;S|Combo1|C|Tipo Tarjeta|1100|;"
     arregla tots, DataGrid1, Me
     

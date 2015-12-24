@@ -148,25 +148,30 @@ Private Sub cmdAceptar_Click()
 'Obtener la cadena SQL para eliminar los registros seleccionados
 Dim cDesde As String 'Turno
 Dim fDesde As String 'Fecha
-Dim sql As String
+Dim SQL As String
 
     If Not DatosOk Then Exit Sub
 
 
     InicializarVbles
-    sql = ""
+    SQL = ""
     'Valores para Formula seleccion del informe
     cDesde = Trim(txtCodigo(0).Text)
     fDesde = Trim(txtCodigo(2).Text)
     
-    sql = tabla & ".fecalbar=" & "'" & Format(fDesde, FormatoFecha) & "'" & " AND "
-    sql = sql & tabla & ".codturno=" & cDesde
+    SQL = tabla & ".fecalbar=" & "'" & Format(fDesde, FormatoFecha) & "'"
+    
+    '[Monica]24/12/2015: el borrado es del día completo
+    If vParamAplic.Cooperativa <> 2 Then
+        SQL = SQL & " AND " & tabla & ".codturno=" & cDesde
+    End If
+    
 '    AnyadirAFormula cadFormula, sql
 '    AnyadirAFormula cadSelect, sql
     
     
     'en cadSelect tenemos el valor correcto de la WHERE para borrar los registros
-    EliminarSelTurno sql
+    EliminarSelTurno SQL
     
 End Sub
 
@@ -174,7 +179,7 @@ End Sub
 Private Function DatosOk() As Boolean
 Dim b As Boolean
 Dim Datos As String
-Dim sql As String
+Dim SQL As String
 
     On Error GoTo EDatosOK
 
@@ -188,16 +193,18 @@ Dim sql As String
         b = False
     End If
          
-    If b And txtCodigo(0).Text = "" Then
-        MsgBox "Debe introducir un turno. Revise.", vbExclamation
-        PonerFoco txtCodigo(0)
-        b = False
+    If vParamAplic.Cooperativa <> 2 Then
+        If b And txtCodigo(0).Text = "" Then
+            MsgBox "Debe introducir un turno. Revise.", vbExclamation
+            PonerFoco txtCodigo(0)
+            b = False
+        End If
     End If
     
     '[Monica]21/10/2015: si hay cargas de gasoleo profesional declaradas no podemos borrar turno
     If b Then
         If txtCodigo(0).Text <> "" And txtCodigo(2).Text <> "" Then
-            sql = "select count(*) " & _
+            SQL = "select count(*) " & _
                     " from scaalb as a, starje as b, ssocio as c, sartic as d" & _
                     " where a.numtarje in (select numtarje from starje where tiptarje = 2)" & _
                     " and a.codartic in (select codartic from sartic where gp = 1)" & _
@@ -208,7 +215,7 @@ Dim sql As String
                     " and a.fecalbar = '" & Format(txtCodigo(2).Text, "yyyy-mm-dd") & "'" & _
                     " and a.codturno = " & DBSet(txtCodigo(0).Text, "N")
 
-            If TotalRegistros(sql) <> 0 Then
+            If TotalRegistros(SQL) <> 0 Then
                 MsgBox "Hay cargas de Gasóleo Profesional en el turno que han sido declaradas. " & vbCrLf & vbCrLf & "No se permite borrar el turno.", vbExclamation
                 PonerFoco txtCodigo(2)
                 b = False
@@ -244,6 +251,13 @@ Private Sub Form_Load()
 '    CommitConexion
     
     tabla = "scaalb"
+    
+    '[Monica]24/12/2015: en Regaixo se borra el dia completo
+    Label1(0).visible = (vParamAplic.Cooperativa <> 2)
+    txtCodigo(0).visible = (vParamAplic.Cooperativa <> 2)
+    Label1(0).Enabled = (vParamAplic.Cooperativa <> 2)
+    txtCodigo(0).Enabled = (vParamAplic.Cooperativa <> 2)
+    
     
     'Esto se consigue poneinedo el cancel en el opcion k corresponda
     Me.cmdCancel.Cancel = True
@@ -349,14 +363,20 @@ Private Function EliminarSelTurno(cadW As String) As Boolean
 'Eliminar Albaranes de Fecha y Turno: Tabla (scaalb)
 'que cumplan los criterios seleccionados en la cadena WHERE cadW
 
-Dim cad As String, sql As String
-Dim rs As adodb.Recordset
+Dim cad As String, SQL As String
+Dim Rs As ADODB.Recordset
 Dim todasElim As Boolean
 
     On Error GoTo EEliminar
 
-    cad = "Va a eliminar el Turno seleccionado." & vbCrLf
-    cad = cad & vbCrLf & vbCrLf & "¿Desea Eliminarlo? "
+
+    If vParamAplic.Cooperativa <> 2 Then
+        cad = "Va a eliminar el Turno seleccionado." & vbCrLf
+        cad = cad & vbCrLf & vbCrLf & "¿Desea Eliminarlo? "
+    Else
+        cad = "Va a eliminar el día seleccionado." & vbCrLf
+        cad = cad & vbCrLf & vbCrLf & "¿Desea Eliminarlo? "
+    End If
     
     If MsgBox(cad, vbQuestion + vbYesNoCancel) = vbYes Then     'Borramos
         'Hay que eliminar
@@ -365,7 +385,11 @@ Dim todasElim As Boolean
         
         
         If EliminarTurno(txtCodigo(2).Text, txtCodigo(0).Text) Then
-            MsgBox "El turno seleccionado se eliminó correctamente.", vbInformation
+            If vParamAplic.Cooperativa <> 2 Then
+                MsgBox "El turno seleccionado se eliminó correctamente.", vbInformation
+            Else
+                MsgBox "El día seleccionado se eliminó correctamente.", vbInformation
+            End If
             Unload Me
         Else
             MsgBox "ATENCIÓN: Se ha producido un error al eliminar.", vbInformation
@@ -381,28 +405,35 @@ End Function
 
 Private Function EliminarTurno(fecAlbar As String, codTurno As String) As Boolean
 'Eliminar las lineas y la Cabecera de un Caja. Tablas: cajascab, cajaslin
-Dim sql As String
+Dim SQL As String
 Dim b As Boolean
 
     On Error GoTo EEliminarTur
     EliminarTurno = False
     b = False
-    sql = " WHERE  fecalbar='" & Format(fecAlbar, FormatoFecha) & "' AND "
-    sql = sql & " codturno=" & codTurno
+    SQL = " WHERE  fecalbar='" & Format(fecAlbar, FormatoFecha) & "'  "
     
+    '[Monica]24/12/2015: el borrado es de todo el dia
+    If vParamAplic.Cooperativa <> 2 Then
+        SQL = SQL & " AND codturno=" & codTurno
+    End If
     
     Conn.BeginTrans
     
     'Cabecera
-    Conn.Execute "DELETE FROM scaalb " & sql
+    Conn.Execute "DELETE FROM scaalb " & SQL
     
-    sql = " WHERE  fechatur='" & Format(fecAlbar, FormatoFecha) & "' AND "
-    sql = sql & " codturno=" & codTurno
+    SQL = " WHERE  fechatur='" & Format(fecAlbar, FormatoFecha) & "' "
+    
+    '[Monica]24/12/2015: el borrado es de todo el dia
+    If vParamAplic.Cooperativa <> 2 Then
+        SQL = SQL & " AND codturno=" & codTurno
+    End If
     
     ' añadido 20/03/2007 el tipo debe ser <= 2 (tanques, contadores y ventastipo)
     
-    Conn.Execute "DELETE FROM sturno " & sql & " and tiporegi <= 2 "
-    Conn.Execute "DELETE FROM srecau " & sql
+    Conn.Execute "DELETE FROM sturno " & SQL & " and tiporegi <= 2 "
+    Conn.Execute "DELETE FROM srecau " & SQL
     
     EliminarTurno = True
     b = True

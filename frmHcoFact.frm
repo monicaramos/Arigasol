@@ -727,7 +727,7 @@ Begin VB.Form frmHcoFact
          Left            =   4920
          MaxLength       =   8
          TabIndex        =   8
-         Tag             =   "Tarjeta|N|N|0|99999999|slhfac|numtarje|00000000||"
+         Tag             =   "Tarjeta|N|N|0|99999999|slhfac|numtarje|0000000000000||"
          Text            =   "tar"
          Top             =   1920
          Visible         =   0   'False
@@ -1392,8 +1392,8 @@ Private WithEvents frmCol As frmManCoope
 Attribute frmCol.VB_VarHelpID = -1
 Private WithEvents frmArt As frmManArtic
 Attribute frmArt.VB_VarHelpID = -1
-Private WithEvents frmFpa As frmManFpago
-Attribute frmFpa.VB_VarHelpID = -1
+Private WithEvents frmFPa As frmManFpago
+Attribute frmFPa.VB_VarHelpID = -1
 Private WithEvents frmTipIVA As frmTipIVAConta  'Tipos de IVA de la contabilidad
 Attribute frmTipIVA.VB_VarHelpID = -1
 Private WithEvents frmList As frmListado
@@ -1585,7 +1585,7 @@ Private Sub Form_Unload(Cancel As Integer)
 End Sub
 
 Private Sub Form_Load()
-Dim I As Integer
+Dim i As Integer
 Dim Sql2 As String
 
     PrimeraVez = True
@@ -1615,8 +1615,8 @@ Dim Sql2 As String
     End With
     
     'ICONITOS DE LAS BARRAS EN LOS TABS DE LINEA
-    For I = 0 To ToolAux.Count - 1
-        With Me.ToolAux(I)
+    For i = 0 To ToolAux.Count - 1
+        With Me.ToolAux(i)
             '.ImageList = frmPpal.imgListComun_VELL
             '  ### [Monica] 02/10/2006 acabo de comentarlo
             '.HotImageList = frmPpal.imgListComun_OM16
@@ -1626,18 +1626,18 @@ Dim Sql2 As String
             .Buttons(2).Image = 4   'Modificar
             .Buttons(3).Image = 5   'Borrar
         End With
-    Next I
+    Next i
     
     'cargar IMAGES de busqueda
-    For I = 0 To Me.imgBuscar.Count - 1
-        Me.imgBuscar(I).Picture = frmPpal.imgListImages16.ListImages(1).Picture
-    Next I
+    For i = 0 To Me.imgBuscar.Count - 1
+        Me.imgBuscar(i).Picture = frmPpal.imgListImages16.ListImages(1).Picture
+    Next i
    
     
     LimpiarCampos   'Limpia los campos TextBox
-    For I = 0 To DataGridAux.Count - 1 'neteje tots els grids de llinies
-        DataGridAux(I).ClearFields
-    Next I
+    For i = 0 To DataGridAux.Count - 1 'neteje tots els grids de llinies
+        DataGridAux(i).ClearFields
+    Next i
     
     '## A mano
     Select Case Tipo
@@ -1682,9 +1682,9 @@ Dim Sql2 As String
     
     ModoLineas = 0
     
-    For I = 0 To DataGridAux.Count - 1
-        CargaGrid I, (Modo = 2) 'carregue els datagrids de llinies
-    Next I
+    For i = 0 To DataGridAux.Count - 1
+        CargaGrid i, (Modo = 2) 'carregue els datagrids de llinies
+    Next i
     
     If letraserie <> "" Then
         Text1(0).Text = letraserie
@@ -1715,7 +1715,7 @@ End Sub
 '   En PONERMODO se habilitan, o no, los diverso campos del
 '   formulario en funcion del modo en k vayamos a trabajar
 Private Sub PonerModo(Kmodo As Byte)
-Dim I As Integer, NumReg As Byte
+Dim i As Integer, Numreg As Byte
 Dim b As Boolean
 On Error GoTo EPonerModo
  
@@ -1736,11 +1736,11 @@ On Error GoTo EPonerModo
     '=======================================
     b = (Modo = 2)
     'Poner Flechas de desplazamiento visibles
-    NumReg = 1
+    Numreg = 1
     If Not Data1.Recordset.EOF Then
-        If Data1.Recordset.RecordCount > 1 Then NumReg = 2 'Solo es para saber q hay + de 1 registro
+        If Data1.Recordset.RecordCount > 1 Then Numreg = 2 'Solo es para saber q hay + de 1 registro
     End If
-    DesplazamientoVisible Me.Toolbar1, btnPrimero, b, NumReg
+    DesplazamientoVisible Me.Toolbar1, btnPrimero, b, Numreg
     
 
     b = Modo <> 0 And Modo <> 2
@@ -1758,9 +1758,9 @@ On Error GoTo EPonerModo
        
     'Bloquear los campos de clave primaria, NO se puede modificar
     b = (Modo = 3) Or (Modo = 1)  'solo al insertar/buscar estará activo
-    For I = 0 To 2
-        BloquearTxt Text1(I), Not b
-    Next I
+    For i = 0 To 2
+        BloquearTxt Text1(i), Not b
+    Next i
     'Los % de IVA siempre bloqueados
     BloquearTxt Text1(8), True
     BloquearTxt Text1(12), True
@@ -1799,24 +1799,24 @@ On Error GoTo EPonerModo
     PonerLongCampos
                           
     If (Modo < 2) Or (Modo = 3) Then
-        For I = 0 To DataGridAux.Count - 1
-            CargaGrid I, False
-        Next I
+        For i = 0 To DataGridAux.Count - 1
+            CargaGrid i, False
+        Next i
     End If
     
     b = (Modo = 4) Or (Modo = 2)
-    For I = 0 To DataGridAux.Count - 1
-        DataGridAux(I).Enabled = b
-    Next I
+    For i = 0 To DataGridAux.Count - 1
+        DataGridAux(i).Enabled = b
+    Next i
     
     b = (Modo = 4)
     FrameTotFactu.Enabled = Not b
     
     b = (Modo = 5)
     
-    For I = 21 To 24
-        BloquearTxt Text1(I), (Modo <> 1)
-    Next I
+    For i = 21 To 24
+        BloquearTxt Text1(i), (Modo <> 1)
+    Next i
     
     PonerModoOpcionesMenu (Modo) 'Activar opciones menu según modo
     PonerOpcionesMenu   'Activar opciones de menu según nivel
@@ -1844,7 +1844,7 @@ End Sub
 Private Sub PonerModoOpcionesMenu(Modo)
 'Activas unas Opciones de Menu y Toolbar según el modo en que estemos
 Dim b As Boolean, bAux As Boolean
-Dim I As Byte
+Dim i As Byte
 
     '-----  TOOLBAR DE LA CABECERA
     '------------------------------------------
@@ -1882,12 +1882,12 @@ Dim I As Byte
     ' només es poden gastar quan inserte o modifique clients ****
     'b = (Modo = 3 Or Modo = 4)
     b = (Modo = 3 Or Modo = 4 Or Modo = 2)
-    For I = 0 To ToolAux.Count - 1
-        ToolAux(I).Buttons(1).Enabled = b
-        If b Then bAux = (b And Me.AdoAux(I).Recordset.RecordCount > 0)
-        ToolAux(I).Buttons(2).Enabled = bAux
-        ToolAux(I).Buttons(3).Enabled = bAux
-    Next I
+    For i = 0 To ToolAux.Count - 1
+        ToolAux(i).Buttons(1).Enabled = b
+        If b Then bAux = (b And Me.AdoAux(i).Recordset.RecordCount > 0)
+        ToolAux(i).Buttons(2).Enabled = bAux
+        ToolAux(i).Buttons(3).Enabled = bAux
+    Next i
     'Imprimir en pestaña Comisiones de Productos
 '    ToolAux(2).Buttons(6).Enabled = (Modo = 2) Or (Modo = 3) Or (Modo = 4) Or (Modo = 5 And ModoLineas = 0)
     ' ************************************************************
@@ -2032,7 +2032,7 @@ Private Sub frmList_DatoSeleccionado(CadenaSeleccion As String)
 
 End Sub
 
-Private Sub frmList_RectificarFactura(cliente As String, observaciones As String)
+Private Sub frmList_RectificarFactura(CLIENTE As String, observaciones As String)
 '    If CrearFacturaRectificativa(Text1(0).Text, Text1(1).Text, Text1(2).Text, observaciones, cliente) = 0 Then
 '        MsgBox "Proceso realizado correctamente", vbExclamation
 '    End If
@@ -2069,12 +2069,12 @@ Private Sub imgBuscar_Click(Index As Integer)
             
         Case 2 'forma de pago
             indice = 5
-            Set frmFpa = New frmManFpago
-            frmFpa.DatosADevolverBusqueda = "0|1|"
-            frmFpa.DeConsulta = True
-            frmFpa.CodigoActual = Text1(5).Text
-            frmFpa.Show vbModal
-            Set frmFpa = Nothing
+            Set frmFPa = New frmManFpago
+            frmFPa.DatosADevolverBusqueda = "0|1|"
+            frmFPa.DeConsulta = True
+            frmFPa.CodigoActual = Text1(5).Text
+            frmFPa.Show vbModal
+            Set frmFPa = Nothing
             
         Case 4, 5, 6 'tiposd de IVA (de la contabilidad)
             If Index = 3 Then Let indice = 7
@@ -2154,17 +2154,17 @@ Dim Letra As String
     ' ### [Monica] 11/09/2006
     '****************************
     Dim indRPT As Byte 'Indica el tipo de Documento en la tabla "scryst"
-    Dim nomDocu As String 'Nombre de Informe rpt de crystal
+    Dim nomdocu As String 'Nombre de Informe rpt de crystal
 
     indRPT = 1 'Facturas Clientes
 
-    If Not PonerParamRPT(indRPT, cadParam, numParam, nomDocu) Then Exit Sub
+    If Not PonerParamRPT(indRPT, cadParam, numParam, nomdocu) Then Exit Sub
     'Nombre fichero .rpt a Imprimir
     If Tipo = 1 Then
 '02/03/2007 he duplicado documentos
 '        nomDocu = Replace(nomDocu, ".rpt", "Ajena.rpt")
         
-        nomDocu = Replace(nomDocu, ".rpt", "Aj" & "C" & Format(Data1.Recordset!codcoope, "00") & ".rpt")
+        nomdocu = Replace(nomdocu, ".rpt", "Aj" & "C" & Format(Data1.Recordset!codcoope, "00") & ".rpt")
 
         cadTitulo = cadTitulo & " Ajenas"
     End If
@@ -2172,16 +2172,16 @@ Dim Letra As String
     If vParamAplic.Cooperativa = 4 Then
         Letra = DevuelveValor("select letraser from stipom where codtipom = 'FAC'")
         If Letra = Trim(Text1(0).Text) Then
-            nomDocu = Replace(nomDocu, ".rpt", "Cepsa.rpt")
+            nomdocu = Replace(nomdocu, ".rpt", "Cepsa.rpt")
             cadTitulo = cadTitulo & " de Cepsa"
         End If
     End If
     
     
-    frmImprimir.NombreRPT = nomDocu
+    frmImprimir.NombreRPT = nomdocu
     ' he añadido estas dos lineas para que llame al rpt correspondiente
 
-    cadNombreRPT = nomDocu  ' "rFactgas.rpt"
+    cadNombreRPT = nomdocu  ' "rFactgas.rpt"
     
     cadFormula = "({" & NomTabla & ".letraser} = """ & Text1(0).Text & """) AND ({" & NomTabla & ".numfactu} = " & Text1(1).Text & ") and ({" & NomTabla & ".fecfactu} = cdate(""" & Text1(2).Text & """)) "
     
@@ -2364,7 +2364,7 @@ End Sub
 Private Sub cmdRegresar_Click()
 Dim cad As String
 Dim Aux As String
-Dim I As Integer
+Dim i As Integer
 Dim J As Integer
 
     If Data1.Recordset.EOF Then
@@ -2373,16 +2373,16 @@ Dim J As Integer
     End If
     
     cad = ""
-    I = 0
+    i = 0
     Do
-        J = I + 1
-        I = InStr(J, DatosADevolverBusqueda, "|")
-        If I > 0 Then
-            Aux = Mid(DatosADevolverBusqueda, J, I - J)
+        J = i + 1
+        i = InStr(J, DatosADevolverBusqueda, "|")
+        If i > 0 Then
+            Aux = Mid(DatosADevolverBusqueda, J, i - J)
             J = Val(Aux)
             cad = cad & Text1(J).Text & "|"
         End If
-    Loop Until I = 0
+    Loop Until i = 0
     RaiseEvent DatoSeleccionado(cad)
     Unload Me
 End Sub
@@ -2415,13 +2415,13 @@ End Sub
 
 Private Sub BotonVerTodos()
 'Ver todos
-Dim I As Integer
+Dim i As Integer
 
     LimpiarCampos 'Limpia los Text1
     
-    For I = 0 To DataGridAux.Count - 1 'Limpias los DataGrid
-        CargaGrid I, False
-    Next I
+    For i = 0 To DataGridAux.Count - 1 'Limpias los DataGrid
+        CargaGrid i, False
+    Next i
     
     If chkVistaPrevia(0).Value = 1 Then
         MandaBusquedaPrevia ""
@@ -2517,14 +2517,14 @@ EEliminar:
 End Sub
 
 Private Sub PonerCampos()
-Dim I As Integer
+Dim i As Integer
 
     If Data1.Recordset.EOF Then Exit Sub
     PonerCamposForma2 Me, Data1, 1 'opcio=1: pone el formato o los campos de la cabecera
     
-    For I = 0 To DataGridAux.Count - 1
-        CargaGrid I, True
-    Next I
+    For i = 0 To DataGridAux.Count - 1
+        CargaGrid i, True
+    Next i
     
     'Recuperar Descripciones de los campos de Codigo
     '--------------------------------------------------
@@ -2538,7 +2538,7 @@ Dim I As Integer
 End Sub
 
 Private Sub cmdCancelar_Click()
-Dim I As Integer
+Dim i As Integer
 Dim V
 
     Select Case Modo
@@ -2769,12 +2769,12 @@ Dim Suma As Currency
                     cad = "No existe la Forma de Pago: " & Text1(Index).Text & vbCrLf
                     cad = cad & "¿Desea crearla?" & vbCrLf
                     If MsgBox(cad, vbQuestion + vbYesNo) = vbYes Then
-                        Set frmFpa = New frmManFpago
-                        frmFpa.DatosADevolverBusqueda = "0|1|"
+                        Set frmFPa = New frmManFpago
+                        frmFPa.DatosADevolverBusqueda = "0|1|"
                         Text1(Index).Text = ""
                         TerminaBloquear
-                        frmFpa.Show vbModal
-                        Set frmFpa = Nothing
+                        frmFPa.Show vbModal
+                        Set frmFPa = Nothing
                         If Modo = 4 Then BLOQUEADesdeFormulario2 Me, Data1, 1
                     Else
                         Text1(Index).Text = ""
@@ -3014,7 +3014,7 @@ End Sub
 
 Private Sub BotonModificarLinea(Index As Integer)
     Dim anc As Single
-    Dim I As Integer
+    Dim i As Integer
     Dim J As Integer
     
     If AdoAux(Index).Recordset.EOF Then Exit Sub
@@ -3032,8 +3032,8 @@ Private Sub BotonModificarLinea(Index As Integer)
     PonerModo 5
     
     If DataGridAux(Index).Bookmark < DataGridAux(Index).FirstRow Or DataGridAux(Index).Bookmark > (DataGridAux(Index).FirstRow + DataGridAux(Index).VisibleRows - 1) Then
-        I = DataGridAux(Index).Bookmark - DataGridAux(Index).FirstRow
-        DataGridAux(Index).Scroll 0, I
+        i = DataGridAux(Index).Bookmark - DataGridAux(Index).FirstRow
+        DataGridAux(Index).Scroll 0, i
         DataGridAux(Index).Refresh
     End If
       
@@ -3213,7 +3213,7 @@ Private Sub txtAux_GotFocus(Index As Integer)
     ConseguirFocoLin txtAux(Index)
 End Sub
 
-Private Function DatosOkLlin(nomFrame As String) As Boolean
+Private Function DatosOkLlin(nomframe As String) As Boolean
 Dim b As Boolean
 Dim SumLin As Currency
     
@@ -3221,7 +3221,7 @@ Dim SumLin As Currency
 
     DatosOkLlin = False
         
-    b = CompForm2(Me, 2, nomFrame) 'Comprobar formato datos ok
+    b = CompForm2(Me, 2, nomframe) 'Comprobar formato datos ok
     If Not b Then Exit Function
     
 ' ### [Monica] 29/09/2006
@@ -3270,9 +3270,9 @@ Dim tots As String
             'si es visible|control|tipo campo|nombre campo|ancho control|formato campo|
             tots = "N||||0|;N||||0|;N||||0|;N||||0|;"
             tots = tots & "S|txtAux(4)|T|Albaran|900|;S|txtAux(5)|T|Fecha|1000|;S|txtAux(6)|T|Hora|650|;"
-            tots = tots & "S|txtAux(7)|T|Tur.|400|;S|txtAux(8)|T|Tarjeta|900|;S|txtAux(9)|T|Articulo|800|;"
-            tots = tots & "S|btnBuscar(0)|B|||;S|txtAux2(0)|T|Denominación|2230|;S|txtAux(10)|T|Cantidad|1100|;"
-            tots = tots & "S|txtAux(11)|T|Precio|1000|;S|txtAux(12)|T|Importe|1200|;"
+            tots = tots & "S|txtAux(7)|T|Tur.|400|;S|txtAux(8)|T|Tarjeta|1400|;S|txtAux(9)|T|Articulo|800|;"
+            tots = tots & "S|btnBuscar(0)|B|||;S|txtAux2(0)|T|Denominación|2030|;S|txtAux(10)|T|Cantidad|1000|;"
+            tots = tots & "S|txtAux(11)|T|Precio|900|;S|txtAux(12)|T|Importe|1100|;"
             arregla tots, DataGridAux(Index), Me
 '           DataGridAux(Index).Columns(6).Alignment = dbgCenter
 '           DataGridAux(Index).Columns(9).Alignment = dbgRight
@@ -3307,11 +3307,11 @@ End Sub
 
 Private Sub ModificarLinea()
 'Modifica registro en las tablas de Lineas: provbanc, provdpto
-Dim nomFrame As String
+Dim nomframe As String
 Dim V As Currency
 
 ' variables para el recalculo de iva y totales
-    Dim I As Integer
+    Dim i As Integer
     Dim Imptot(2)
     Dim Tipiva(2)
     Dim Impbas(2) As Currency
@@ -3326,13 +3326,13 @@ Dim V As Currency
     On Error GoTo EModificarLin
 
     Select Case NumTabMto
-        Case 0: nomFrame = "FrameAux0" 'lineas de factura
+        Case 0: nomframe = "FrameAux0" 'lineas de factura
     End Select
     
-    If DatosOkLlin(nomFrame) Then
+    If DatosOkLlin(nomframe) Then
         TerminaBloquear
 '        conn.BeginTrans
-        If ModificaDesdeFormulario2(Me, 2, nomFrame) Then
+        If ModificaDesdeFormulario2(Me, 2, nomframe) Then
             If BLOQUEADesdeFormulario2(Me, Data1, 1) Then
             
             ' ### [Monica] 29/09/2006
@@ -3356,21 +3356,21 @@ Dim V As Currency
 
             
             '13/02/2007 iniacializo los txt
-            For I = 0 To 2
-                Text1(7 + (4 * I)).Text = ""
-                Text1(6 + (4 * I)).Text = ""
-                Text1(8 + (4 * I)).Text = ""
-                Text1(9 + (4 * I)).Text = ""
-            Next I
+            For i = 0 To 2
+                Text1(7 + (4 * i)).Text = ""
+                Text1(6 + (4 * i)).Text = ""
+                Text1(8 + (4 * i)).Text = ""
+                Text1(9 + (4 * i)).Text = ""
+            Next i
             
             '13/02/2007 he añadido las condiciones del for antes solo estaban las sentencias
-            For I = 0 To 2
-                 If Tipiva(I) <> 0 Then Text1(7 + (4 * I)).Text = Tipiva(I)
-                 If Impbas(I) <> 0 Then Text1(6 + (4 * I)).Text = Impbas(I)
-                 If PorIva(I) <> 0 Then Text1(8 + (4 * I)).Text = PorIva(I)
-                 If impiva(I) <> 0 Then Text1(9 + (4 * I)).Text = impiva(I)
+            For i = 0 To 2
+                 If Tipiva(i) <> 0 Then Text1(7 + (4 * i)).Text = Tipiva(i)
+                 If Impbas(i) <> 0 Then Text1(6 + (4 * i)).Text = Impbas(i)
+                 If PorIva(i) <> 0 Then Text1(8 + (4 * i)).Text = PorIva(i)
+                 If impiva(i) <> 0 Then Text1(9 + (4 * i)).Text = impiva(i)
                  'TotFac = Impbas(i) + impiva(i)
-            Next I
+            Next i
         
             Text1(19).Text = totimp
             Text1(20).Text = totimpSigaus
@@ -3416,7 +3416,7 @@ Private Function SumaLineas(NumLin As String) As String
 'Insertando o modificando que su valor sera el del txtaux(4).text
 'En el DatosOK de la factura sumamos todas las lineas
 Dim Sql As String
-Dim Rs As ADODB.Recordset
+Dim RS As ADODB.Recordset
 Dim SumLin As Currency
 
     SumLin = 0
@@ -3430,14 +3430,14 @@ Dim SumLin As Currency
     End Select
     Sql = Sql & ObtenerWhereCab(True)
     If NumLin <> "" Then Sql = Sql & " AND numlinea<>" & DBSet(txtAux(4).Text, "N") 'numlinea
-    Set Rs = New ADODB.Recordset
-    Rs.Open Sql, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
-    If Not Rs.EOF Then
+    Set RS = New ADODB.Recordset
+    RS.Open Sql, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+    If Not RS.EOF Then
         'En SumLin tenemos la suma de las lineas ya insertadas
-        SumLin = CCur(DBLet(Rs.Fields(0), "N"))
+        SumLin = CCur(DBLet(RS.Fields(0), "N"))
     End If
-    Rs.Close
-    Set Rs = Nothing
+    RS.Close
+    Set RS = Nothing
     SumaLineas = CStr(SumLin)
 End Function
 
@@ -3547,11 +3547,11 @@ End Sub
 
 
 Private Sub EliminarLinea()
-Dim nomFrame As String
+Dim nomframe As String
 Dim V As Currency
 
 ' variables para el recalculo de iva y totales
-    Dim I As Integer
+    Dim i As Integer
     Dim Imptot(2)
     Dim Tipiva(2)
     Dim Impbas(2) As Currency
@@ -3566,7 +3566,7 @@ Dim V As Currency
     On Error GoTo EEliminarLin
 
     Select Case NumTabMto
-        Case 0: nomFrame = "FrameAux0" 'lineas de factura
+        Case 0: nomframe = "FrameAux0" 'lineas de factura
     End Select
     
     TerminaBloquear
@@ -3594,21 +3594,21 @@ Dim V As Currency
 
             
             '13/02/2007 iniacializo los txt
-            For I = 0 To 2
-                Text1(7 + (4 * I)).Text = ""
-                Text1(6 + (4 * I)).Text = ""
-                Text1(8 + (4 * I)).Text = ""
-                Text1(9 + (4 * I)).Text = ""
-            Next I
+            For i = 0 To 2
+                Text1(7 + (4 * i)).Text = ""
+                Text1(6 + (4 * i)).Text = ""
+                Text1(8 + (4 * i)).Text = ""
+                Text1(9 + (4 * i)).Text = ""
+            Next i
             
             '13/02/2007 he añadido las condiciones del for antes solo estaban las sentencias
-            For I = 0 To 2
-                 If Tipiva(I) <> 0 Then Text1(7 + (4 * I)).Text = Tipiva(I)
-                 If Impbas(I) <> 0 Then Text1(6 + (4 * I)).Text = Impbas(I)
-                 If PorIva(I) <> 0 Then Text1(8 + (4 * I)).Text = PorIva(I)
-                 If impiva(I) <> 0 Then Text1(9 + (4 * I)).Text = impiva(I)
+            For i = 0 To 2
+                 If Tipiva(i) <> 0 Then Text1(7 + (4 * i)).Text = Tipiva(i)
+                 If Impbas(i) <> 0 Then Text1(6 + (4 * i)).Text = Impbas(i)
+                 If PorIva(i) <> 0 Then Text1(8 + (4 * i)).Text = PorIva(i)
+                 If impiva(i) <> 0 Then Text1(9 + (4 * i)).Text = impiva(i)
                  'TotFac = Impbas(i) + impiva(i)
-            Next I
+            Next i
             Text1(19).Text = totimp
             Text1(20).Text = totimpSigaus
             Text1(18).Text = TotFac

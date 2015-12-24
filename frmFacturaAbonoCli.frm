@@ -510,7 +510,7 @@ Dim h As Integer, w As Integer
 Dim List As Collection
 
     PrimeraVez = True
-    Limpiar Me
+    limpiar Me
 
     'IMAGES para busqueda
      Me.imgBuscar(0).Picture = frmPpal.imgListImages16.ListImages(1).Picture
@@ -989,7 +989,7 @@ Dim nRegs As Integer
 
 
      Set db = New BaseDatos
-     db.abrir "arigasol", "root", "aritel"
+     db.abrir vSesion.CadenaConexion, "root", "aritel"
      db.tipo = "MYSQL"
      db.AbrirTrans
 

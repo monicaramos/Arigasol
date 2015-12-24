@@ -366,8 +366,8 @@ Private Function TraspasoTPV(desde As String, hasta As String) As Boolean
                 " order by scaalb.numfactu, scaalb.numlinea"
                 
         Set db = New BaseDatos
-        db.abrir "arigasol", "root", "aritel"
-        db.tipo = "MYSQL"
+        db.abrir vSesion.CadenaConexion, "root", "aritel"
+        db.Tipo = "MYSQL"
                 
         If TraspasoHistoricoFacturas(db, sql, txtCodigo(2).Text, txtCodigo(3).Text, Pb1) Then TraspasoTPV = True
         

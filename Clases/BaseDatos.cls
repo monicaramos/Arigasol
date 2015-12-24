@@ -38,10 +38,14 @@ End Property
 Public Function abrir(vODBC As String, vUsu As String, vPass As String) As Boolean
     '-- Abrimos la conexión en función del ODBC pasado
     Set Conn = New adodb.Connection
-    Conn.ConnectionString = "Provider=MSDASQL.1;Persist Security Info=False;" & _
-                            "Data Source=" & vODBC & _
-                            ";UID=" & vUsu & _
-                            ";PWD=" & vPass
+
+'    Conn.ConnectionString = "Provider=MSDASQL.1;Persist Security Info=False;" & _
+'                            "Data Source=" & vODBC & _
+'                            ";UID=" & vUsu & _
+'                            ";PWD=" & vPass
+    Conn.ConnectionString = "DSN=arigasol;DESC=MySQL ODBC 3.51 Driver DSN;DESC=;DATABASE=" & vODBC & ";UID=" & vUsu & ";PASSWORD=" & vPass & ";PORT=3306;OPTION=3;STMT=;" & _
+                        ";Persist Security Info=true"
+
     Conn.Open
     abrir = True
 End Function

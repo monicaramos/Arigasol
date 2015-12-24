@@ -1136,7 +1136,7 @@ Dim Sql5 As String
                     CargarProgres Pb1, nRegs
                     
                     Set db = New BaseDatos
-                    db.abrir "arigasol", "root", "aritel"
+                    db.abrir vSesion.CadenaConexion, "root", "aritel"
                     db.Tipo = "MYSQL"
                     db.AbrirTrans
                     If Check1.Value = 1 Then ConnConta.BeginTrans
@@ -1277,7 +1277,7 @@ Dim h As Integer, w As Integer
 Dim List As Collection
 
     PrimeraVez = True
-    Limpiar Me
+    limpiar Me
 
     'IMAGES para busqueda
      Me.imgBuscar(0).Picture = frmPpal.imgListImages16.ListImages(1).Picture

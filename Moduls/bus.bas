@@ -118,6 +118,9 @@ Dim Sql As String
     Else
         If CadenaDesdeOtroForm = "OK" Then
             frmLogin.Show vbModal
+        Else
+        '[Monica]22/12/2015: añadida esta instruccion con el else
+            vSesion.CadenaConexion = "arigasol"
         End If
     End If
    

@@ -8,13 +8,13 @@ Begin VB.Form frmImpTarjetas
    ClientHeight    =   5925
    ClientLeft      =   45
    ClientTop       =   330
-   ClientWidth     =   9765
+   ClientWidth     =   10170
    Icon            =   "frmImpTarjetas.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   5925
-   ScaleWidth      =   9765
+   ScaleWidth      =   10170
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.CommandButton btnBuscar 
@@ -134,7 +134,7 @@ Begin VB.Form frmImpTarjetas
    Begin VB.CommandButton cmdAceptar 
       Caption         =   "&Aceptar"
       Height          =   375
-      Left            =   7215
+      Left            =   7665
       TabIndex        =   7
       Top             =   5340
       Visible         =   0   'False
@@ -144,7 +144,7 @@ Begin VB.Form frmImpTarjetas
       Cancel          =   -1  'True
       Caption         =   "&Cancelar"
       Height          =   375
-      Left            =   8475
+      Left            =   8925
       TabIndex        =   8
       Top             =   5340
       Visible         =   0   'False
@@ -156,7 +156,7 @@ Begin VB.Form frmImpTarjetas
       Height          =   290
       Index           =   1
       Left            =   3555
-      MaxLength       =   8
+      MaxLength       =   13
       TabIndex        =   1
       Tag             =   "Numero Tarjeta|N|N|||imptarjetas|numtarje|0||"
       Top             =   4950
@@ -181,8 +181,8 @@ Begin VB.Form frmImpTarjetas
       Left            =   60
       TabIndex        =   11
       Top             =   540
-      Width           =   9540
-      _ExtentX        =   16828
+      Width           =   9940
+      _ExtentX        =   17542
       _ExtentY        =   7779
       _Version        =   393216
       AllowUpdate     =   0   'False
@@ -248,7 +248,7 @@ Begin VB.Form frmImpTarjetas
    Begin VB.CommandButton cmdRegresar 
       Caption         =   "&Regresar"
       Height          =   375
-      Left            =   8445
+      Left            =   8925
       TabIndex        =   14
       Top             =   5340
       Visible         =   0   'False
@@ -333,8 +333,8 @@ Begin VB.Form frmImpTarjetas
       Left            =   0
       TabIndex        =   12
       Top             =   0
-      Width           =   9765
-      _ExtentX        =   17224
+      Width           =   10170
+      _ExtentX        =   17939
       _ExtentY        =   635
       ButtonWidth     =   609
       ButtonHeight    =   582
@@ -729,7 +729,7 @@ Dim i As Integer
 End Sub
 
 Private Sub BotonEliminar()
-Dim Sql As String
+Dim SQL As String
 Dim temp As Boolean
 
     On Error GoTo Error2
@@ -744,17 +744,17 @@ Dim temp As Boolean
     ' ***************************************************************************
     
     '*************** canviar els noms i el DELETE **********************************
-    Sql = "¿Seguro que desea eliminar el Registro de Impresión del Cliente?"
-    Sql = Sql & vbCrLf & "Código: " & adodc1.Recordset.Fields(0)
-    Sql = Sql & vbCrLf & "Nombre: " & adodc1.Recordset.Fields(1)
+    SQL = "¿Seguro que desea eliminar el Registro de Impresión del Cliente?"
+    SQL = SQL & vbCrLf & "Código: " & adodc1.Recordset.Fields(0)
+    SQL = SQL & vbCrLf & "Nombre: " & adodc1.Recordset.Fields(1)
     
-    If MsgBox(Sql, vbQuestion + vbYesNo) = vbYes Then
+    If MsgBox(SQL, vbQuestion + vbYesNo) = vbYes Then
         'Hay que eliminar
         NumRegElim = adodc1.Recordset.AbsolutePosition
-        Sql = "Delete from imptarjetas where codsocio= " & DBSet(adodc1.Recordset!codsocio, "N")
-        Sql = Sql & " and fecha = " & DBSet(adodc1.Recordset!Fecha, "F")
-        Sql = Sql & " and hora = " & DBSet(adodc1.Recordset!Hora, "FH")
-        Conn.Execute Sql
+        SQL = "Delete from imptarjetas where codsocio= " & DBSet(adodc1.Recordset!codsocio, "N")
+        SQL = SQL & " and fecha = " & DBSet(adodc1.Recordset!Fecha, "F")
+        SQL = SQL & " and hora = " & DBSet(adodc1.Recordset!Hora, "FH")
+        Conn.Execute SQL
         CargaGrid CadB
 '        If CadB <> "" Then
 '            CargaGrid CadB
@@ -1053,20 +1053,20 @@ Private Sub mnEliminar_Click()
 End Sub
 
 Private Sub mnImprimir_Click()
-Dim Sql As String
+Dim SQL As String
         
     If vParamAplic.Cooperativa = 2 Then
-        If Not (Mid(Format(adodc1.Recordset!Numtarje, "00000000"), 1, 4) = "3120" Or Mid(Format(adodc1.Recordset!Numtarje, "00000000"), 1, 4) = "3121" Or _
-           Mid(Format(adodc1.Recordset!Numtarje, "00000000"), 1, 4) = "3110" Or Mid(Format(adodc1.Recordset!Numtarje, "00000000"), 1, 4) = "3111" Or _
-           Mid(Format(adodc1.Recordset!Numtarje, "00000000"), 1, 4) = "3130" Or Mid(Format(adodc1.Recordset!Numtarje, "00000000"), 1, 4) = "3131") Then
+        If Not (Mid(Format(adodc1.Recordset!Numtarje, "0000000000000"), 2, 4) = "3120" Or Mid(Format(adodc1.Recordset!Numtarje, "0000000000000"), 2, 4) = "3121" Or _
+           Mid(Format(adodc1.Recordset!Numtarje, "0000000000000"), 2, 4) = "3110" Or Mid(Format(adodc1.Recordset!Numtarje, "0000000000000"), 2, 4) = "3111" Or _
+           Mid(Format(adodc1.Recordset!Numtarje, "0000000000000"), 2, 4) = "3130" Or Mid(Format(adodc1.Recordset!Numtarje, "0000000000000"), 2, 4) = "3131") Then
             MsgBox "El número de tarjeta a imprimir es incorrecto. Revise.", vbExclamation
             Exit Sub
         End If
     End If
     If CCur(adodc1.Recordset!impresa) = 1 Then
-        Sql = "La impresión de la Tarjeta correspondiente a este registro ya ha sido realizada." & vbCrLf & vbCrLf & _
+        SQL = "La impresión de la Tarjeta correspondiente a este registro ya ha sido realizada." & vbCrLf & vbCrLf & _
               "                            ¿Desea realizar una copia? "
-        If MsgBox(Sql, vbQuestion + vbYesNo + vbDefaultButton1) = vbNo Then Exit Sub
+        If MsgBox(SQL, vbQuestion + vbYesNo + vbDefaultButton1) = vbNo Then Exit Sub
     End If
       
      ' ### [Monica] 11/09/2006
@@ -1081,7 +1081,22 @@ Dim Sql As String
     ' he añadido estas dos lineas para que llame al rpt correspondiente
     frmImprimir.NombreRPT = nomDocu
     
-    ActivaTicket
+    
+     ActivaTicket
+   
+    
+'    With frmImprimir
+'        .FormulaSeleccion = "{starje.codsocio}=" & adodc1.Recordset!codsocio & " and {starje.numtarje}= " & adodc1.Recordset!Numtarje
+'        .OtrosParametros = "pEmpresa=""""|"
+'        .NumeroParametros = 1
+'        .SoloImprimir = False
+'        .Titulo = "prueba"
+'        .NombreRPT = nomDocu
+'        .Opcion = 0
+'        .Show vbModal
+'    End With
+'
+    
     
     With frmVisReport
         .FormulaSeleccion = "{starje.codsocio}=" & adodc1.Recordset!codsocio & " and {starje.numtarje}= " & adodc1.Recordset!Numtarje
@@ -1098,11 +1113,11 @@ Dim Sql As String
         .Show vbModal
     End With
 
-    Sql = "update imptarjetas set impresa = 1 where codsocio = " & adodc1.Recordset!codsocio
-    Sql = Sql & " and numtarje = " & adodc1.Recordset!Numtarje & " and fecha = " & DBSet(adodc1.Recordset!Fecha, "F")
-    Sql = Sql & " and hora = " & DBSet(adodc1.Recordset!Hora, "FH")
+    SQL = "update imptarjetas set impresa = 1 where codsocio = " & adodc1.Recordset!codsocio
+    SQL = SQL & " and numtarje = " & adodc1.Recordset!Numtarje & " and fecha = " & DBSet(adodc1.Recordset!Fecha, "F")
+    SQL = SQL & " and hora = " & DBSet(adodc1.Recordset!Hora, "FH")
 
-    Conn.Execute Sql
+    Conn.Execute SQL
 
     DesactivaTicket
 End Sub
@@ -1173,17 +1188,17 @@ End Sub
 
 
 Private Sub CargaGrid(Optional vSQL As String)
-    Dim Sql As String
+    Dim SQL As String
     Dim tots As String
     
 '    adodc1.ConnectionString = Conn
     If vSQL <> "" Then
-        Sql = CadenaConsulta & " AND " & vSQL
+        SQL = CadenaConsulta & " AND " & vSQL
     Else
-        Sql = CadenaConsulta
+        SQL = CadenaConsulta
     End If
     '********************* canviar el ORDER BY *********************++
-    Sql = Sql & " ORDER BY imptarjetas.codsocio, numtarje, fecha"
+    SQL = SQL & " ORDER BY imptarjetas.codsocio, numtarje, fecha"
     '**************************************************************++
     
 '    adodc1.RecordSource = SQL
@@ -1195,12 +1210,12 @@ Private Sub CargaGrid(Optional vSQL As String)
 '    DataGrid1.AllowRowSizing = False
 '    DataGrid1.RowHeight = 290
     
-    CargaGridGnral Me.DataGrid1, Me.adodc1, Sql, PrimeraVez
+    CargaGridGnral Me.DataGrid1, Me.adodc1, SQL, PrimeraVez
     
     
     ' *******************canviar els noms i si fa falta la cantitat********************
     tots = "S|txtAux(0)|T|Cliente|700|;S|btnBuscar(0)|B||195|;S|text2(0)|T|Nombre|2850|;"
-    tots = tots & "S|txtAux(1)|T|Tarjeta|1000|;S|btnBuscar(2)|B||195|;S|txtAux(2)|T|Fecha|1050|;S|btnBuscar(1)|B||195|;S|txtAux(3)|T|Hora|750|;"
+    tots = tots & "S|txtAux(1)|T|Tarjeta|1400|;S|btnBuscar(2)|B||195|;S|txtAux(2)|T|Fecha|1050|;S|btnBuscar(1)|B||195|;S|txtAux(3)|T|Hora|750|;"
     tots = tots & "N|||||;S|Combo1(0)|C|Tipo|1200|;N|||||;S|Combo1(1)|C|Copia|600|;N|||||;S|Combo1(2)|C|Impreso|800|;"
     arregla tots, DataGrid1, Me
     
@@ -1238,7 +1253,7 @@ End Sub
 
 Private Sub txtAux_LostFocus(Index As Integer)
 Dim cadMen As String
-Dim Sql As String
+Dim SQL As String
 
 
     If Not PerderFocoGnral(txtAux(Index), Modo) Then Exit Sub
@@ -1265,13 +1280,13 @@ Dim Sql As String
                     PonerFoco txtAux(Index)
                 Else
                     If txtAux(1).Text <> "" Then
-                        Sql = DevuelveDesdeBDNew(cPTours, "starje", "tiptarje", "codsocio", txtAux(0).Text, "N", , "numtarje", txtAux(1).Text, "N")
-                        If Sql = "" Then
+                        SQL = DevuelveDesdeBDNew(cPTours, "starje", "tiptarje", "codsocio", txtAux(0).Text, "N", , "numtarje", txtAux(1).Text, "N")
+                        If SQL = "" Then
                             MsgBox "No existe esta tarjeta para este cliente. Reintroduzca.", vbExclamation
                             txtAux(1).Text = ""
                             PonerFoco txtAux(1)
                         Else
-                            PosicionarCombo Combo1(0), CByte(Sql)
+                            PosicionarCombo Combo1(0), CByte(SQL)
                         End If
                     End If
                 End If
@@ -1283,13 +1298,13 @@ Dim Sql As String
             txtAux(Index).Text = UCase(txtAux(Index).Text)
             
             If txtAux(0).Text <> "" And txtAux(Index).Text <> "" Then
-                Sql = DevuelveDesdeBDNew(cPTours, "starje", "tiptarje", "codsocio", txtAux(0).Text, "N", , "numtarje", txtAux(1).Text, "N")
-                If Sql = "" Then
+                SQL = DevuelveDesdeBDNew(cPTours, "starje", "tiptarje", "codsocio", txtAux(0).Text, "N", , "numtarje", txtAux(1).Text, "N")
+                If SQL = "" Then
                     MsgBox "No existe esta tarjeta para este cliente. Reintroduzca.", vbExclamation
                     txtAux(1).Text = ""
                     PonerFoco txtAux(1)
                 Else
-                    PosicionarCombo Combo1(0), CByte(Sql)
+                    PosicionarCombo Combo1(0), CByte(SQL)
                 End If
             End If
             
@@ -1310,7 +1325,7 @@ End Sub
 Private Function DatosOk() As Boolean
 'Dim Datos As String
 Dim b As Boolean
-Dim Sql As String
+Dim SQL As String
 Dim Mens As String
 
     b = CompForm(Me)
@@ -1318,9 +1333,9 @@ Dim Mens As String
     
     If Modo = 3 Then   'Estamos insertando
         If b Then
-            Sql = "select * imptarjetas where codsocio = " & txtAux(0).Text & " and numtarje = " & txtAux(1).Text
-            Sql = Sql & " and fecha = " & DBSet(txtAux(2).Text, "F") & " and hora = " & DBSet(txtAux(3).Text, "FH")
-            b = (RegistrosAListar(Sql) = 0)
+            SQL = "select * imptarjetas where codsocio = " & txtAux(0).Text & " and numtarje = " & txtAux(1).Text
+            SQL = SQL & " and fecha = " & DBSet(txtAux(2).Text, "F") & " and hora = " & DBSet(txtAux(3).Text, "FH")
+            b = (RegistrosAListar(SQL) = 0)
         End If
     End If
     DatosOk = b

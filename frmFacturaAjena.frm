@@ -514,7 +514,7 @@ Dim Sql2 As String
                     CargarProgres Pb1, nRegs
                     
                     Set db = New BaseDatos
-                    db.abrir "arigasol", "root", "aritel"
+                    db.abrir vSesion.CadenaConexion, "root", "aritel"
                     db.Tipo = "MYSQL"
                     db.AbrirTrans
                     

@@ -258,8 +258,8 @@ On Error GoTo eInsertLinea
            "fecalbar, horalbar, codturno, numtarje, codartic, " & _
            "cantidad, preciove, implinea, kilometros) " & _
            "values " & _
-           "(" & db.Texto(numser) & "," & db.numero(Rs!numfactu) & "," & db.Fecha(Rs!fecAlbar) & "," & db.numero(Rs!NumLinea) & "," & db.Texto(Rs!numalbar) & "," & _
-           db.Fecha(Rs!fecAlbar) & "," & db.FechaHora(Rs!fecAlbar & " " & Format(Rs!horalbar, "hh:mm:ss")) & "," & db.numero(Rs!codTurno) & "," & db.numero(Rs!Numtarje) & "," & db.numero(Rs!codartic) & "," & _
+           "(" & db.Texto(numser) & "," & db.numero(Rs!numfactu) & "," & db.Fecha(Rs!fecAlbar) & "," & db.numero(Rs!numlinea) & "," & db.Texto(Rs!numalbar) & "," & _
+           db.Fecha(Rs!fecAlbar) & "," & db.fechahora(Rs!fecAlbar & " " & Format(Rs!horalbar, "hh:mm:ss")) & "," & db.numero(Rs!codTurno) & "," & db.numero(Rs!Numtarje) & "," & db.numero(Rs!codartic) & "," & _
            db.numero(Rs!cantidad) & "," & db.numero(Rs!preciove) & "," & db.numero(Rs!importel) & "," & _
            db.numero(Rs!Kilometros) & ")"
     
@@ -376,7 +376,7 @@ Public Function InsertaLineaFactura(ByRef db As BaseDatos, Rs As ADODB.Recordset
               "cantidad, preciove, implinea, matricul, precioinicial, kilometros, dtoalvic ) " & _
               "values " & _
               "(" & db.Texto(numser) & "," & db.numero(NumFac) & "," & db.Fecha(fecfac) & "," & db.numero(Linea) & "," & db.Texto(Rs!numalbar) & "," & _
-              db.Fecha(Rs!fecAlbar) & "," & db.FechaHora(Rs!fecAlbar & " " & Format(Rs!horalbar, "hh:mm:ss")) & "," & db.numero(Rs!codTurno) & "," & db.numero(Rs!Numtarje) & "," & db.numero(Rs!codartic) & "," & _
+              db.Fecha(Rs!fecAlbar) & "," & db.fechahora(Rs!fecAlbar & " " & Format(Rs!horalbar, "hh:mm:ss")) & "," & db.numero(Rs!codTurno) & "," & db.numero(Rs!Numtarje) & "," & db.numero(Rs!codartic) & "," & _
               db.numero(Rs!cantidad) & "," & db.numero(Rs!preciove) & "," & db.numero(Rs!importel) & "," & db.Texto(Rs!matricul) & "," & db.numero(Rs!precioinicial) & "," & _
               db.numero(Rs!Kilometros) & "," & db.numero(Rs!dtoalvic) & ")"
     Else
@@ -390,7 +390,7 @@ Public Function InsertaLineaFactura(ByRef db As BaseDatos, Rs As ADODB.Recordset
               "cantidad, preciove, implinea, matricul, kilometros, dtoalvic) " & _
               "values " & _
               "(" & db.Texto(numser) & "," & db.numero(NumFac) & "," & db.Fecha(fecfac) & "," & db.numero(Linea) & "," & db.Texto(Rs!numalbar) & "," & _
-              db.Fecha(Rs!fecAlbar) & "," & db.FechaHora(Rs!fecAlbar & " " & Format(Rs!horalbar, "hh:mm:ss")) & "," & db.numero(Rs!codTurno) & "," & db.numero(Rs!Numtarje) & "," & db.numero(Rs!codartic) & "," & _
+              db.Fecha(Rs!fecAlbar) & "," & db.fechahora(Rs!fecAlbar & " " & Format(Rs!horalbar, "hh:mm:ss")) & "," & db.numero(Rs!codTurno) & "," & db.numero(Rs!Numtarje) & "," & db.numero(Rs!codartic) & "," & _
               db.numero(Rs!cantidad) & "," & db.numero(Rs!preciove) & "," & db.numero(Rs!importel) & "," & db.Texto(Rs!matricul) & "," & _
               db.numero(Rs!Kilometros) & "," & db.numero(Rs!dtoalvic) & ")"
               
@@ -444,7 +444,7 @@ End Function
 
 
 
-Public Function InsertaLineaDescuento(ByRef db As BaseDatos, numser As String, NumFac As Long, fecfac As Date, Linea As Integer, cantidad As Currency, Importe As Currency, Turno As Integer, Precio As Currency, Tarjeta As Long, Tipo As Byte) As Long
+Public Function InsertaLineaDescuento(ByRef db As BaseDatos, numser As String, NumFac As Long, fecfac As Date, Linea As Integer, cantidad As Currency, Importe As Currency, Turno As Integer, Precio As Currency, Tarjeta As String, Tipo As Byte) As Long
 ' tipo = 0 facturacion normal
 ' tipo = 1 facturacion ajena
     Dim Sql As String
@@ -467,7 +467,7 @@ Public Function InsertaLineaDescuento(ByRef db As BaseDatos, numser As String, N
            "cantidad, preciove, implinea) " & _
            "values " & _
            "(" & db.Texto(numser) & "," & db.numero(NumFac) & "," & db.Fecha(fecfac) & "," & db.numero(Linea) & "," & db.Texto(Texto) & "," & _
-           db.Fecha(fecfac) & "," & db.FechaHora(fecfac & " 0:00:00") & "," & db.numero(Turno) & "," & db.numero(Tarjeta) & "," & db.numero(vParamAplic.ArticDto) & "," & _
+           db.Fecha(fecfac) & "," & db.fechahora(fecfac & " 0:00:00") & "," & db.numero(Turno) & "," & db.numero(Tarjeta) & "," & db.numero(vParamAplic.ArticDto) & "," & _
            db.numero(cantidad) & "," & db.numero(Precio) & "," & db.numero(Importe) & ")"
            
     InsertaLineaDescuento = db.ejecutar(Sql)
@@ -520,9 +520,9 @@ Dim impuesto As Currency
 Dim impbase As Currency
 Dim ActSocio As Long
 Dim ActForpa As Integer
-Dim ActTarje As Long
+Dim ActTarje As String
 Dim AntAlbaran As String
-Dim AntTarje As Long
+Dim AntTarje As String
 Dim AntSocio As Long
 Dim AntForpa As Integer
 Dim AntTurno As Integer
@@ -948,9 +948,9 @@ Dim impuesto As Currency
 Dim impbase As Currency
 Dim ActSocio As Long
 Dim ActForpa As Integer
-Dim ActTarje As Long
+Dim ActTarje As String 'Long
 Dim AntAlbaran As String
-Dim AntTarje As Long
+Dim AntTarje As String 'Long
 Dim AntSocio As Long
 Dim AntForpa As Integer
 Dim AntTurno As Integer
@@ -1312,9 +1312,9 @@ Dim impuesto As Currency
 Dim impbase As Currency
 Dim ActSocio As Long
 Dim ActForpa As Integer
-Dim ActTarje As Long
+Dim ActTarje As String 'Long
 Dim AntAlbaran As String
-Dim AntTarje As Long
+Dim AntTarje As String 'Long
 Dim AntSocio As Long
 Dim AntForpa As Integer
 Dim AntTurno As Integer
@@ -1628,7 +1628,7 @@ On Error GoTo eInsertarFacturaGlobal
                 "cantidad, preciove, implinea) " & _
                 "values " & _
                 "(" & db.Texto(Serie) & "," & db.numero(vCont.Contador) & "," & db.Fecha(FecFactura) & "," & db.numero(v_linea) & "," & db.Texto("COOP.") & "," & _
-                db.Fecha(FecFactura) & "," & db.FechaHora(FecFactura & " " & Format(Time, "hh:mm:ss")) & ",1," & db.numero(Numtarje) & "," & db.numero(Rs!Importe1) & "," & _
+                db.Fecha(FecFactura) & "," & db.fechahora(FecFactura & " " & Format(Time, "hh:mm:ss")) & ",1," & db.numero(Numtarje) & "," & db.numero(Rs!Importe1) & "," & _
                 db.numero(Rs!Importe2) & "," & db.numero(preciove) & "," & db.numero(Rs!importe3) & ")"
            
         NumError = db.ejecutar(Sql)
@@ -1858,7 +1858,7 @@ Dim Numtarje As String
            "cantidad, preciove, implinea) " & _
            "values " & _
            "(" & db.Texto(numser) & "," & db.numero(NumFac) & "," & db.Fecha(fecfac) & "," & db.numero(Linea) & ",'BONIFICA'," & _
-           db.Fecha(fecfac) & "," & db.FechaHora(fecfac & " " & Format(Hora, "hh:mm:ss")) & "," & db.numero(1) & "," & db.numero(Numtarje) & "," & db.numero(ArtDto) & "," & _
+           db.Fecha(fecfac) & "," & db.fechahora(fecfac & " " & Format(Hora, "hh:mm:ss")) & "," & db.numero(1) & "," & db.numero(Numtarje) & "," & db.numero(ArtDto) & "," & _
            db.numero(cantidad) & "," & db.numero(Precio) & "," & db.numero(Importe) & ")"
            
     InsertaLineaFacturaAbono = db.ejecutar(Sql)
@@ -1898,7 +1898,7 @@ Dim ArtDto As String
 
 
      Set db = New BaseDatos
-     db.abrir "arigasol", "root", "aritel"
+     db.abrir vSesion.CadenaConexion, "root", "aritel"
      db.Tipo = "MYSQL"
      db.AbrirTrans
 
@@ -2057,7 +2057,7 @@ Dim Codclave As Long
 
      Set db = New BaseDatos
      
-     db.abrir "arigasol", "root", "aritel"
+     db.abrir vSesion.CadenaConexion, "root", "aritel"
      db.Tipo = "MYSQL"
      db.Con = Conn
      db.AbrirTrans
@@ -2170,7 +2170,7 @@ Dim Codclave As Long
             Sql2 = "insert into slhfac (letraser,numfactu,fecfactu,numlinea,numalbar,fecalbar,horalbar,"
             Sql2 = Sql2 & "codturno,numtarje,codartic,cantidad,preciove,implinea) values ("
             Sql2 = Sql2 & DBSet(numser, "T") & "," & DBSet(vCont.Contador, "N") & "," & DBSet(NuevaFecFactu, "F") & ","
-            Sql2 = Sql2 & DBSet(Rs!NumLinea, "N") & "," & DBSet(Rs!numalbar, "T") & "," & DBSet(Rs!fecAlbar, "F") & ","
+            Sql2 = Sql2 & DBSet(Rs!numlinea, "N") & "," & DBSet(Rs!numalbar, "T") & "," & DBSet(Rs!fecAlbar, "F") & ","
             Sql2 = Sql2 & DBSet(Rs!horalbar, "FH") & "," & DBSet(Rs!codTurno, "N") & "," & DBSet(Rs!Numtarje, "N") & ","
             Sql2 = Sql2 & DBSet(Rs!codartic, "N") & "," & DBSet(DBLet(Rs!cantidad, "N") * (-1), "N") & ","
             Sql2 = Sql2 & DBSet(Rs!preciove, "N") & "," & DBSet(DBLet(Rs!ImpLinea, "N") * (-1), "N") & ")"
@@ -2285,7 +2285,7 @@ Dim Codclave As Long
                         Sql2 = "insert into slhfac (letraser,numfactu,fecfactu,numlinea,numalbar,fecalbar,horalbar,"
                         Sql2 = Sql2 & "codturno,numtarje,codartic,cantidad,preciove,implinea) values ("
                         Sql2 = Sql2 & DBSet(numser, "T") & "," & DBSet(vCont.Contador, "N") & "," & DBSet(NuevaFecFactu, "F") & ","
-                        Sql2 = Sql2 & DBSet(Rs!NumLinea, "N") & "," & DBSet(Rs!numalbar, "T") & "," & DBSet(Rs!fecAlbar, "F") & ","
+                        Sql2 = Sql2 & DBSet(Rs!numlinea, "N") & "," & DBSet(Rs!numalbar, "T") & "," & DBSet(Rs!fecAlbar, "F") & ","
                         Sql2 = Sql2 & DBSet(Rs!horalbar, "FH") & "," & DBSet(Rs!codTurno, "N") & "," & DBSet(Rs!Numtarje, "N") & ","
                         Sql2 = Sql2 & DBSet(Rs!codartic, "N") & "," & DBSet(Rs!cantidad, "N") & ","
                         Sql2 = Sql2 & DBSet(Rs!preciove, "N") & "," & DBSet(Rs!ImpLinea, "N") & ")"
