@@ -28,27 +28,26 @@ Begin VB.Form frmHcoFact
       _ExtentY        =   3519
       _Version        =   393216
       Tabs            =   2
-      Tab             =   1
       TabsPerRow      =   6
       TabHeight       =   520
       ForeColor       =   9907723
       TabCaption(0)   =   "Total Factura"
       TabPicture(0)   =   "frmHcoFact.frx":000C
-      Tab(0).ControlEnabled=   0   'False
+      Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "FrameTotFactu"
+      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
       TabCaption(1)   =   "Rectificativa"
       TabPicture(1)   =   "frmHcoFact.frx":0028
-      Tab(1).ControlEnabled=   -1  'True
+      Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "FrameRectificativa"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       Begin VB.Frame FrameRectificativa 
          BorderStyle     =   0  'None
          Caption         =   "Datos Factura que Rectifica"
          ForeColor       =   &H00972E0B&
          Height          =   1455
-         Left            =   30
+         Left            =   -74970
          TabIndex        =   69
          Top             =   330
          Width           =   11235
@@ -143,10 +142,30 @@ Begin VB.Form frmHcoFact
          BorderStyle     =   0  'None
          ForeColor       =   &H00972E0B&
          Height          =   1545
-         Left            =   -74940
+         Left            =   60
          TabIndex        =   46
          Top             =   330
          Width           =   11235
+         Begin VB.TextBox Text1 
+            Alignment       =   1  'Right Justify
+            BackColor       =   &H00C0C0FF&
+            BeginProperty Font 
+               Name            =   "MS Sans Serif"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   700
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            Height          =   285
+            Index           =   25
+            Left            =   5760
+            MaxLength       =   15
+            TabIndex        =   78
+            Top             =   1140
+            Width           =   2325
+         End
          Begin VB.TextBox Text1 
             Alignment       =   1  'Right Justify
             Height          =   285
@@ -344,6 +363,24 @@ Begin VB.Form frmHcoFact
             Tag             =   "Imp.Sigaus|N|S|-9999999999.99|9999999999.99|schfac|impuesigaus|#,###,###,##0.00|N|"
             Top             =   1140
             Width           =   2325
+         End
+         Begin VB.Label Label1 
+            Caption         =   "Importe Vale"
+            BeginProperty Font 
+               Name            =   "MS Sans Serif"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   700
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            Height          =   255
+            Index           =   18
+            Left            =   5760
+            TabIndex        =   79
+            Top             =   870
+            Width           =   2205
          End
          Begin VB.Label Label1 
             Caption         =   "Base Imponible"
@@ -2154,17 +2191,17 @@ Dim Letra As String
     ' ### [Monica] 11/09/2006
     '****************************
     Dim indRPT As Byte 'Indica el tipo de Documento en la tabla "scryst"
-    Dim nomdocu As String 'Nombre de Informe rpt de crystal
+    Dim nomDocu As String 'Nombre de Informe rpt de crystal
 
     indRPT = 1 'Facturas Clientes
 
-    If Not PonerParamRPT(indRPT, cadParam, numParam, nomdocu) Then Exit Sub
+    If Not PonerParamRPT(indRPT, cadParam, numParam, nomDocu) Then Exit Sub
     'Nombre fichero .rpt a Imprimir
     If Tipo = 1 Then
 '02/03/2007 he duplicado documentos
 '        nomDocu = Replace(nomDocu, ".rpt", "Ajena.rpt")
         
-        nomdocu = Replace(nomdocu, ".rpt", "Aj" & "C" & Format(Data1.Recordset!codcoope, "00") & ".rpt")
+        nomDocu = Replace(nomDocu, ".rpt", "Aj" & "C" & Format(Data1.Recordset!codcoope, "00") & ".rpt")
 
         cadTitulo = cadTitulo & " Ajenas"
     End If
@@ -2172,16 +2209,16 @@ Dim Letra As String
     If vParamAplic.Cooperativa = 4 Then
         Letra = DevuelveValor("select letraser from stipom where codtipom = 'FAC'")
         If Letra = Trim(Text1(0).Text) Then
-            nomdocu = Replace(nomdocu, ".rpt", "Cepsa.rpt")
+            nomDocu = Replace(nomDocu, ".rpt", "Cepsa.rpt")
             cadTitulo = cadTitulo & " de Cepsa"
         End If
     End If
     
     
-    frmImprimir.NombreRPT = nomdocu
+    frmImprimir.NombreRPT = nomDocu
     ' he añadido estas dos lineas para que llame al rpt correspondiente
 
-    cadNombreRPT = nomdocu  ' "rFactgas.rpt"
+    cadNombreRPT = nomDocu  ' "rFactgas.rpt"
     
     cadFormula = "({" & NomTabla & ".letraser} = """ & Text1(0).Text & """) AND ({" & NomTabla & ".numfactu} = " & Text1(1).Text & ") and ({" & NomTabla & ".fecfactu} = cdate(""" & Text1(2).Text & """)) "
     
@@ -2518,6 +2555,10 @@ End Sub
 
 Private Sub PonerCampos()
 Dim i As Integer
+Dim ImporteVale As Currency
+
+
+
 
     If Data1.Recordset.EOF Then Exit Sub
     PonerCamposForma2 Me, Data1, 1 'opcio=1: pone el formato o los campos de la cabecera
@@ -2531,6 +2572,15 @@ Dim i As Integer
     Text2(3).Text = PonerNombreDeCod(Text1(3), "ssocio", "nomsocio")
     Text2(4).Text = PonerNombreDeCod(Text1(4), "scoope", "nomcoope")
     Text2(5).Text = PonerNombreDeCod(Text1(5), "sforpa", "nomforpa")
+    
+    '[Monica]28/12/2015: ponemos el importe del vale
+    ImporteVale = DevuelveValor("select sum(coalesce(importevale,0)) from slhfac where " & ObtenerWhereCab(False))
+    Text1(25).Text = ""
+    If ImporteVale <> 0 Then
+        Text1(25).Text = Format(ImporteVale, "###,###,##0.00")
+    End If
+    
+    
 
     '-- Esto permanece para saber donde estamos
     lblIndicador.Caption = Data1.Recordset.AbsolutePosition & " de " & Data1.Recordset.RecordCount
@@ -2915,13 +2965,13 @@ Dim eliminar As Boolean
     Select Case Index
         Case 0 'lineas de factura
             Sql = "¿Seguro que desea eliminar la línea?"
-            Sql = Sql & vbCrLf & "Nº línea: " & Format(DBLet(AdoAux(Index).Recordset!NumLinea), FormatoCampo(txtAux(3)))
+            Sql = Sql & vbCrLf & "Nº línea: " & Format(DBLet(AdoAux(Index).Recordset!numlinea), FormatoCampo(txtAux(3)))
             Sql = Sql & vbCrLf & "Albaran: " & DBLet(AdoAux(Index).Recordset!numalbar) '& "  " & txtAux(4).Text
             If MsgBox(Sql, vbQuestion + vbYesNo) = vbYes Then
                 NumRegElim = AdoAux(Index).Recordset.AbsolutePosition
                 eliminar = True
                 Sql = "DELETE FROM slhfac"
-                Sql = Sql & ObtenerWhereCab(True) & " AND numlinea= " & AdoAux(Index).Recordset!NumLinea
+                Sql = Sql & ObtenerWhereCab(True) & " AND numlinea= " & AdoAux(Index).Recordset!numlinea
             End If
     End Select
 
@@ -3416,7 +3466,7 @@ Private Function SumaLineas(NumLin As String) As String
 'Insertando o modificando que su valor sera el del txtaux(4).text
 'En el DatosOK de la factura sumamos todas las lineas
 Dim Sql As String
-Dim RS As ADODB.Recordset
+Dim Rs As ADODB.Recordset
 Dim SumLin As Currency
 
     SumLin = 0
@@ -3430,14 +3480,14 @@ Dim SumLin As Currency
     End Select
     Sql = Sql & ObtenerWhereCab(True)
     If NumLin <> "" Then Sql = Sql & " AND numlinea<>" & DBSet(txtAux(4).Text, "N") 'numlinea
-    Set RS = New ADODB.Recordset
-    RS.Open Sql, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
-    If Not RS.EOF Then
+    Set Rs = New ADODB.Recordset
+    Rs.Open Sql, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+    If Not Rs.EOF Then
         'En SumLin tenemos la suma de las lineas ya insertadas
-        SumLin = CCur(DBLet(RS.Fields(0), "N"))
+        SumLin = CCur(DBLet(Rs.Fields(0), "N"))
     End If
-    RS.Close
-    Set RS = Nothing
+    Rs.Close
+    Set Rs = Nothing
     SumaLineas = CStr(SumLin)
 End Function
 

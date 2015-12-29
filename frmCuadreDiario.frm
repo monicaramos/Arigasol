@@ -285,6 +285,9 @@ Dim List As Collection
     
     CargaCombo
     
+    '[Monica]29/12/2015: por defecto ponemos el 0
+    Me.Combo1.ListIndex = 0
+    
 '   Me.Width = w + 70
 '   Me.Height = h + 350
 End Sub
@@ -531,10 +534,10 @@ Dim NumLin As Integer
     
     While Not RS.EOF
         Sql = ""
-        Sql = DevuelveDesdeBDNew(cPTours, "tmpinformes", "codigo1", "codigo1", RS!codArtic, "N", , "codusu", vSesion.Codigo, "N")
+        Sql = DevuelveDesdeBDNew(cPTours, "tmpinformes", "codigo1", "codigo1", RS!codartic, "N", , "codusu", vSesion.Codigo, "N")
         If Sql = "" Then 'insertamos
             Sql = "insert into tmpinformes (codusu,codigo1, importe1, importe2, importe3, importe4) values ("
-            Sql = Sql & DBSet(vSesion.Codigo, "N") & "," & DBSet(RS!codArtic, "N") & ","
+            Sql = Sql & DBSet(vSesion.Codigo, "N") & "," & DBSet(RS!codartic, "N") & ","
             
             If tabla = "scaalb" Then
                 Sql = Sql & DBSet(RS.Fields(1).Value, "N") & "," & DBSet(RS.Fields(2).Value, "N") & ",0,0)"
@@ -546,12 +549,12 @@ Dim NumLin As Integer
             If tabla = "scaalb" Then
                 Sql = Sql & "importe1 = importe1 + " & DBSet(RS.Fields(1).Value, "N") & ", "
                 Sql = Sql & "importe2 = importe2 + " & DBSet(RS.Fields(2).Value, "N")
-                Sql = Sql & " where codusu = " & vSesion.Codigo & " and codigo1 = " & DBSet(RS!codArtic, "N")
+                Sql = Sql & " where codusu = " & vSesion.Codigo & " and codigo1 = " & DBSet(RS!codartic, "N")
                 
             Else
                 Sql = Sql & "importe3 = importe3 + " & DBSet(RS.Fields(1).Value, "N") & ", "
                 Sql = Sql & "importe4 = importe4 + " & DBSet(RS.Fields(2).Value, "N")
-                Sql = Sql & " where codusu = " & vSesion.Codigo & " and codigo1 = " & DBSet(RS!codArtic, "N")
+                Sql = Sql & " where codusu = " & vSesion.Codigo & " and codigo1 = " & DBSet(RS!codartic, "N")
             End If
         End If
         Conn.Execute Sql
