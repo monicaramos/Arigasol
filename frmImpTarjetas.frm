@@ -729,7 +729,7 @@ Dim i As Integer
 End Sub
 
 Private Sub BotonEliminar()
-Dim SQL As String
+Dim Sql As String
 Dim temp As Boolean
 
     On Error GoTo Error2
@@ -744,17 +744,17 @@ Dim temp As Boolean
     ' ***************************************************************************
     
     '*************** canviar els noms i el DELETE **********************************
-    SQL = "¿Seguro que desea eliminar el Registro de Impresión del Cliente?"
-    SQL = SQL & vbCrLf & "Código: " & adodc1.Recordset.Fields(0)
-    SQL = SQL & vbCrLf & "Nombre: " & adodc1.Recordset.Fields(1)
+    Sql = "¿Seguro que desea eliminar el Registro de Impresión del Cliente?"
+    Sql = Sql & vbCrLf & "Código: " & adodc1.Recordset.Fields(0)
+    Sql = Sql & vbCrLf & "Nombre: " & adodc1.Recordset.Fields(1)
     
-    If MsgBox(SQL, vbQuestion + vbYesNo) = vbYes Then
+    If MsgBox(Sql, vbQuestion + vbYesNo) = vbYes Then
         'Hay que eliminar
         NumRegElim = adodc1.Recordset.AbsolutePosition
-        SQL = "Delete from imptarjetas where codsocio= " & DBSet(adodc1.Recordset!codsocio, "N")
-        SQL = SQL & " and fecha = " & DBSet(adodc1.Recordset!Fecha, "F")
-        SQL = SQL & " and hora = " & DBSet(adodc1.Recordset!Hora, "FH")
-        Conn.Execute SQL
+        Sql = "Delete from imptarjetas where codsocio= " & DBSet(adodc1.Recordset!codsocio, "N")
+        Sql = Sql & " and fecha = " & DBSet(adodc1.Recordset!Fecha, "F")
+        Sql = Sql & " and hora = " & DBSet(adodc1.Recordset!Hora, "FH")
+        Conn.Execute Sql
         CargaGrid CadB
 '        If CadB <> "" Then
 '            CargaGrid CadB
@@ -1053,7 +1053,7 @@ Private Sub mnEliminar_Click()
 End Sub
 
 Private Sub mnImprimir_Click()
-Dim SQL As String
+Dim Sql As String
         
     If vParamAplic.Cooperativa = 2 Then
         If Not (Mid(Format(adodc1.Recordset!Numtarje, "0000000000000"), 2, 4) = "3120" Or Mid(Format(adodc1.Recordset!Numtarje, "0000000000000"), 2, 4) = "3121" Or _
@@ -1064,9 +1064,9 @@ Dim SQL As String
         End If
     End If
     If CCur(adodc1.Recordset!impresa) = 1 Then
-        SQL = "La impresión de la Tarjeta correspondiente a este registro ya ha sido realizada." & vbCrLf & vbCrLf & _
+        Sql = "La impresión de la Tarjeta correspondiente a este registro ya ha sido realizada." & vbCrLf & vbCrLf & _
               "                            ¿Desea realizar una copia? "
-        If MsgBox(SQL, vbQuestion + vbYesNo + vbDefaultButton1) = vbNo Then Exit Sub
+        If MsgBox(Sql, vbQuestion + vbYesNo + vbDefaultButton1) = vbNo Then Exit Sub
     End If
       
      ' ### [Monica] 11/09/2006
@@ -1113,11 +1113,11 @@ Dim SQL As String
         .Show vbModal
     End With
 
-    SQL = "update imptarjetas set impresa = 1 where codsocio = " & adodc1.Recordset!codsocio
-    SQL = SQL & " and numtarje = " & adodc1.Recordset!Numtarje & " and fecha = " & DBSet(adodc1.Recordset!Fecha, "F")
-    SQL = SQL & " and hora = " & DBSet(adodc1.Recordset!Hora, "FH")
+    Sql = "update imptarjetas set impresa = 1 where codsocio = " & adodc1.Recordset!codsocio
+    Sql = Sql & " and numtarje = " & adodc1.Recordset!Numtarje & " and fecha = " & DBSet(adodc1.Recordset!Fecha, "F")
+    Sql = Sql & " and hora = " & DBSet(adodc1.Recordset!Hora, "FH")
 
-    Conn.Execute SQL
+    Conn.Execute Sql
 
     DesactivaTicket
 End Sub
@@ -1188,17 +1188,17 @@ End Sub
 
 
 Private Sub CargaGrid(Optional vSQL As String)
-    Dim SQL As String
+    Dim Sql As String
     Dim tots As String
     
 '    adodc1.ConnectionString = Conn
     If vSQL <> "" Then
-        SQL = CadenaConsulta & " AND " & vSQL
+        Sql = CadenaConsulta & " AND " & vSQL
     Else
-        SQL = CadenaConsulta
+        Sql = CadenaConsulta
     End If
     '********************* canviar el ORDER BY *********************++
-    SQL = SQL & " ORDER BY imptarjetas.codsocio, numtarje, fecha"
+    Sql = Sql & " ORDER BY imptarjetas.codsocio, numtarje, fecha"
     '**************************************************************++
     
 '    adodc1.RecordSource = SQL
@@ -1210,7 +1210,7 @@ Private Sub CargaGrid(Optional vSQL As String)
 '    DataGrid1.AllowRowSizing = False
 '    DataGrid1.RowHeight = 290
     
-    CargaGridGnral Me.DataGrid1, Me.adodc1, SQL, PrimeraVez
+    CargaGridGnral Me.DataGrid1, Me.adodc1, Sql, PrimeraVez
     
     
     ' *******************canviar els noms i si fa falta la cantitat********************
@@ -1253,7 +1253,7 @@ End Sub
 
 Private Sub txtAux_LostFocus(Index As Integer)
 Dim cadMen As String
-Dim SQL As String
+Dim Sql As String
 
 
     If Not PerderFocoGnral(txtAux(Index), Modo) Then Exit Sub
@@ -1280,13 +1280,13 @@ Dim SQL As String
                     PonerFoco txtAux(Index)
                 Else
                     If txtAux(1).Text <> "" Then
-                        SQL = DevuelveDesdeBDNew(cPTours, "starje", "tiptarje", "codsocio", txtAux(0).Text, "N", , "numtarje", txtAux(1).Text, "N")
-                        If SQL = "" Then
+                        Sql = DevuelveDesdeBDNew(cPTours, "starje", "tiptarje", "codsocio", txtAux(0).Text, "N", , "numtarje", txtAux(1).Text, "N")
+                        If Sql = "" Then
                             MsgBox "No existe esta tarjeta para este cliente. Reintroduzca.", vbExclamation
                             txtAux(1).Text = ""
                             PonerFoco txtAux(1)
                         Else
-                            PosicionarCombo Combo1(0), CByte(SQL)
+                            PosicionarCombo Combo1(0), CByte(Sql)
                         End If
                     End If
                 End If
@@ -1298,13 +1298,13 @@ Dim SQL As String
             txtAux(Index).Text = UCase(txtAux(Index).Text)
             
             If txtAux(0).Text <> "" And txtAux(Index).Text <> "" Then
-                SQL = DevuelveDesdeBDNew(cPTours, "starje", "tiptarje", "codsocio", txtAux(0).Text, "N", , "numtarje", txtAux(1).Text, "N")
-                If SQL = "" Then
+                Sql = DevuelveDesdeBDNew(cPTours, "starje", "tiptarje", "codsocio", txtAux(0).Text, "N", , "numtarje", txtAux(1).Text, "N")
+                If Sql = "" Then
                     MsgBox "No existe esta tarjeta para este cliente. Reintroduzca.", vbExclamation
                     txtAux(1).Text = ""
                     PonerFoco txtAux(1)
                 Else
-                    PosicionarCombo Combo1(0), CByte(SQL)
+                    PosicionarCombo Combo1(0), CByte(Sql)
                 End If
             End If
             
@@ -1325,7 +1325,7 @@ End Sub
 Private Function DatosOk() As Boolean
 'Dim Datos As String
 Dim b As Boolean
-Dim SQL As String
+Dim Sql As String
 Dim Mens As String
 
     b = CompForm(Me)
@@ -1333,9 +1333,9 @@ Dim Mens As String
     
     If Modo = 3 Then   'Estamos insertando
         If b Then
-            SQL = "select * imptarjetas where codsocio = " & txtAux(0).Text & " and numtarje = " & txtAux(1).Text
-            SQL = SQL & " and fecha = " & DBSet(txtAux(2).Text, "F") & " and hora = " & DBSet(txtAux(3).Text, "FH")
-            b = (RegistrosAListar(SQL) = 0)
+            Sql = "select * imptarjetas where codsocio = " & txtAux(0).Text & " and numtarje = " & txtAux(1).Text
+            Sql = Sql & " and fecha = " & DBSet(txtAux(2).Text, "F") & " and hora = " & DBSet(txtAux(3).Text, "FH")
+            b = (RegistrosAListar(Sql) = 0)
         End If
     End If
     DatosOk = b
@@ -1344,7 +1344,7 @@ End Function
 
 Private Sub CargaCombo()
 Dim cad As String
-Dim Rs As ADODB.Recordset
+Dim RS As ADODB.Recordset
 
     On Error GoTo ErrCarga
     Combo1(0).Clear

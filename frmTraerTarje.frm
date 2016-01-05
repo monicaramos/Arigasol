@@ -20,11 +20,11 @@ Begin VB.Form frmTraerTarje
       Height          =   285
       Index           =   0
       Left            =   1080
-      MaxLength       =   10
+      MaxLength       =   13
       TabIndex        =   0
       Tag             =   "año del Folleto|N|N|||follviaj|anyfovia|||"
       Top             =   480
-      Width           =   855
+      Width           =   1305
    End
    Begin MSComctlLib.ListView ListView1 
       Height          =   1350
@@ -212,7 +212,7 @@ End Sub
 
 Private Sub Text1_LostFocus(Index As Integer)
     If Text1(Index).Text <> "" Then
-       Text1(0).Text = Format(Text1(0).Text, "00000000")
+       Text1(0).Text = Format(Text1(0).Text, "0000000000000")
        CargarListView
     End If
 End Sub

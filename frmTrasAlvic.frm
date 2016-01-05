@@ -337,7 +337,7 @@ On Error GoTo eError
                     End If
                     
                     Conn.BeginTrans
-                    b = ProcesarFicheroRegaixo()
+                    b = ProcesarFichero(Me.CommonDialog1.FileName)
 '                    If FicheroCorrecto(1) And b Then
 ''
 ''  BV y BO se dejaran en el mismo directorio
@@ -475,6 +475,9 @@ Dim i As Integer
                     Else
                         Conn.RollbackTrans
                     End If
+              Else
+                'DAVID
+                
               End If
         Else
             MsgBox "No ha seleccionado ningún fichero", vbExclamation
@@ -744,12 +747,22 @@ Dim Sql As String
                 PonerFoco txtCodigo(1)
             End If
         Else
-            Sql = "SELECT count(*) FROM srecau WHERE fechatur = " & DBSet(txtCodigo(0).Text, "F") & _
-                  " AND codturno = " & DBSet(txtCodigo(1).Text, "N")
-            If TotalRegistros(Sql) <> 0 Then
-                MsgBox "Este Turno ya ha sido traspasado. Reintroduzca.", vbExclamation
-                b = False
-                PonerFoco txtCodigo(1)
+            ' faltaba comprobar que en el regaixo que no llevan turnos no se haya hecho ya el traspaso
+            If vParamAplic.Cooperativa = 2 Then
+                Sql = "SELECT count(*) FROM srecau WHERE fechatur = " & DBSet(txtCodigo(0).Text, "F")
+                If TotalRegistros(Sql) <> 0 Then
+                    MsgBox "Este Turno ya ha sido traspasado. Reintroduzca.", vbExclamation
+                    b = False
+                    PonerFoco txtCodigo(1)
+                End If
+            Else
+                Sql = "SELECT count(*) FROM srecau WHERE fechatur = " & DBSet(txtCodigo(0).Text, "F") & _
+                      " AND codturno = " & DBSet(txtCodigo(1).Text, "N")
+                If TotalRegistros(Sql) <> 0 Then
+                    MsgBox "Este Turno ya ha sido traspasado. Reintroduzca.", vbExclamation
+                    b = False
+                    PonerFoco txtCodigo(1)
+                End If
             End If
         End If
     
@@ -2207,7 +2220,7 @@ Dim codsoc As String
         tipogaso = DevuelveDesdeBD("tipogaso", "sartic", "codartic", IdProducto, "N")
         Select Case tipogaso
             Case "3" ' bonificado
-                Tarje = DevuelveDesdeBDNew(cPTours, "starje", "numtarje", "tiptarje", "1")
+                Tarje = DevuelveDesdeBDNew(cPTours, "starje", "numtarje", "tiptarje", "1", "N", , "codsocio", CodigoCliente, "N")
                 If Tarje = "" Then
                     Mens = "Nro.Tarjeta Bonif.no existe"
                     Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, importe4, importe5, nombre1) values (" & _
@@ -2217,7 +2230,7 @@ Dim codsoc As String
                     Conn.Execute Sql
                 End If
             Case "0", "1", "2", "4"
-                Tarje = DevuelveValor("select numtarje from starje where tiptarje <> 1")
+                Tarje = DevuelveValor("select numtarje from starje where tiptarje <> 1 and codsocio =" & DBSet(CodigoCliente, "N"))
                 If Tarje = "0" Then
                     Mens = "Nro.Tarjeta no existe"
                     Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, importe4, importe5, nombre1) values (" & _
@@ -2288,7 +2301,15 @@ Dim codsoc As String
     If IdTipoPago <> "" Then
         Sql = ""
         Sql = DevuelveDesdeBDNew(cPTours, "sforpa", "codforpa", "forpaalvic", IdTipoPago, "N")
+        
+        
         If Sql = "" Then
+            
+            '[Monica]05/01/2015: si el socio es de catadau o llombai cogemos su forma de pago (la del cliente)
+            Sql = "select codforpa from ssocio where codsocio = " & DBSet(CodigoCliente, "N") & " and codcoope in (1,2) "
+            If TotalRegistrosConsulta(Sql) <> 0 Then Exit Function
+            
+            
             Mens = "No existe la forma de pago Alvic"
             Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
                   "importe3, importe4, importe5, nombre1) values (" & _
@@ -4381,7 +4402,7 @@ Dim b As Boolean
         lblProgres(1).Caption = "Linea " & i
         Me.Refresh
         b = ComprobarRegistroReg(RS)
-        
+        ' If Not b Then Stop
         RS.MoveNext
     Wend
     
@@ -4646,18 +4667,30 @@ Dim NomArtic As String
     forpa = ""
     forpa = DevuelveDesdeBDNew(cPTours, "sforpa", "codforpa", "forpaalvic", IdTipoPago, "N")
     
+    
     If Trim(NumFactura) <> "" Then
         codsoc = DevuelveDesdeBDNew(cPTours, "ssocio", "codsocio", "nifsocio", NifCliente, "T")
-        '[Monica]17/06/2013: miramos si la tarjeta viene con algun asterisco
-        If Mid(Tarjeta, 1, 4) = "****" Or Trim(Tarjeta) = "0" Or InStr(1, Tarjeta, "*") <> 0 Then
-            Tarjeta = codsoc
-        Else '++monica: 15/02/2008 las tarjetas profesionales tienen 16 caracteres solo analizo los 8 últimos
-            If Len(Trim(Tarjeta)) = 16 Then
-                Tarjeta = Mid(Tarjeta, 9, 16)
+        
+        '[Monica]04/01/2015: en el caso de venga una factura sin nif, cogemos el de la forma de pago
+        If codsoc = "" Then
+            CodigoCliente = DevuelveDesdeBDNew(cPTours, "sforpa", "codsocio", "forpaalvic", IdTipoPago, "N")
+            NombreCliente = DevuelveDesdeBDNew(cPTours, "ssocio", "nomsocio", "codsocio", CodigoCliente, "N")
+            Tarjeta = CodigoCliente
+            If Tarjeta = "0" Then Tarjeta = CodigoCliente
+        
+        Else
+            '[Monica]17/06/2013: miramos si la tarjeta viene con algun asterisco
+            If Mid(Tarjeta, 1, 4) = "****" Or Trim(Tarjeta) = "0" Or InStr(1, Tarjeta, "*") <> 0 Then
+                Tarjeta = codsoc
+            Else '++monica: 15/02/2008 las tarjetas profesionales tienen 16 caracteres solo analizo los 8 últimos
+                If Len(Trim(Tarjeta)) = 16 Then
+                    Tarjeta = Mid(Tarjeta, 9, 16)
+                End If
+                '++
             End If
-            '++
+            'fechahora--> txtcodigo(0).Text & " " & Time
         End If
-        'fechahora--> txtcodigo(0).Text & " " & Time
+        
         
         Sql = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
               "codturno, codartic, cantidad, preciove, importel, codforpa, matricul, codtraba, " & _
@@ -4677,6 +4710,14 @@ Dim NomArtic As String
                 Tarje = DevuelveDesdeBDNew(cPTours, "starje", "numtarje", "numtarje", Tarjeta, "T")
                 If Tarje = "" Then Tarjeta = codsoc
             End If
+            
+            '[Monica]05/01/2015: si el socio es de catadau o llombai cogemos su forma de pago (la del cliente)
+            Sql = "select codforpa from ssocio where codsocio = " & DBSet(codsoc, "N") & " and codcoope in (1,2) "
+            If TotalRegistrosConsulta(Sql) <> 0 Then
+                forpa = DevuelveValor(Sql)
+            End If
+            
+            
             
             Sql = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
                   "codturno, codartic, cantidad, preciove, importel, codforpa, matricul, codtraba, " & _
@@ -4703,11 +4744,18 @@ Dim NomArtic As String
                 tipogaso = DevuelveDesdeBD("tipogaso", "sartic", "codartic", IdProducto, "N")
                 Select Case tipogaso
                     Case "3" ' bonificado
-                        Tarjeta = DevuelveDesdeBDNew(cPTours, "starje", "numtarje", "tiptarje", "1")
+                        Tarjeta = DevuelveDesdeBDNew(cPTours, "starje", "numtarje", "tiptarje", "1", "N", , "codsocio", CodigoCliente, "N")
                     Case "0", "1", "2", "4"
-                        Tarjeta = DevuelveValor("select numtarje from starje where tiptarje <> 1")
+                        Tarjeta = DevuelveValor("select numtarje from starje where tiptarje <> 1 and codsocio = " & DBSet(CodigoCliente, "N"))
                 End Select
             End If
+            
+            '[Monica]05/01/2015: si el socio es de catadau o llombai cogemos su forma de pago (la del cliente)
+            Sql = "select codforpa from ssocio where codsocio = " & DBSet(CodigoCliente, "N") & " and codcoope in (1,2) "
+            If TotalRegistrosConsulta(Sql) <> 0 Then
+                forpa = DevuelveValor(Sql)
+            End If
+            
             
             
             Sql = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _

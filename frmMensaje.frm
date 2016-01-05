@@ -12,6 +12,144 @@ Begin VB.Form frmMensaje
    ScaleWidth      =   9015
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
+   Begin VB.Frame FrameTarjetasLibres 
+      BorderStyle     =   0  'None
+      Height          =   5160
+      Left            =   0
+      TabIndex        =   19
+      Top             =   0
+      Width           =   5280
+      Begin VB.TextBox Text1 
+         Alignment       =   1  'Right Justify
+         Height          =   285
+         Index           =   1
+         Left            =   3330
+         MaxLength       =   13
+         TabIndex        =   24
+         Tag             =   "año del Folleto|N|N|||follviaj|anyfovia|||"
+         Top             =   990
+         Width           =   1350
+      End
+      Begin VB.TextBox Text1 
+         Alignment       =   1  'Right Justify
+         Height          =   285
+         Index           =   0
+         Left            =   1170
+         MaxLength       =   13
+         TabIndex        =   23
+         Tag             =   "año del Folleto|N|N|||follviaj|anyfovia|||"
+         Top             =   990
+         Width           =   1350
+      End
+      Begin VB.CommandButton CmdAcep 
+         Caption         =   "&Aceptar"
+         Height          =   375
+         Left            =   2385
+         TabIndex        =   26
+         Top             =   4680
+         Width           =   1035
+      End
+      Begin VB.CommandButton cmdCancelar 
+         Caption         =   "&Cancelar"
+         Height          =   375
+         Left            =   3645
+         TabIndex        =   28
+         Top             =   4680
+         Width           =   1035
+      End
+      Begin MSComctlLib.ListView ListView3 
+         Height          =   3165
+         Left            =   210
+         TabIndex        =   20
+         Top             =   1395
+         Width           =   4545
+         _ExtentX        =   8017
+         _ExtentY        =   5583
+         View            =   3
+         LabelWrap       =   -1  'True
+         HideSelection   =   -1  'True
+         HideColumnHeaders=   -1  'True
+         _Version        =   393217
+         ForeColor       =   -2147483640
+         BackColor       =   -2147483643
+         BorderStyle     =   1
+         Appearance      =   1
+         BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+            Name            =   "MS Sans Serif"
+            Size            =   12
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         NumItems        =   0
+      End
+      Begin VB.Shape Shape2 
+         BorderColor     =   &H00800000&
+         BorderWidth     =   3
+         Height          =   5055
+         Left            =   30
+         Top             =   90
+         Width           =   5190
+      End
+      Begin VB.Label Label1 
+         Caption         =   "Búsqueda de Tarjetas Libres"
+         BeginProperty Font 
+            Name            =   "Verdana"
+            Size            =   12
+            Charset         =   0
+            Weight          =   700
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         ForeColor       =   &H00C00000&
+         Height          =   255
+         Index           =   5
+         Left            =   225
+         TabIndex        =   27
+         Top             =   270
+         Width           =   4275
+      End
+      Begin VB.Label Label1 
+         Caption         =   "Tarjeta"
+         BeginProperty Font 
+            Name            =   "Tahoma"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         ForeColor       =   &H00C00000&
+         Height          =   255
+         Index           =   4
+         Left            =   270
+         TabIndex        =   25
+         Top             =   765
+         Width           =   945
+      End
+      Begin VB.Label Label1 
+         Caption         =   "Hasta"
+         Height          =   255
+         Index           =   3
+         Left            =   2790
+         TabIndex        =   22
+         Top             =   1035
+         Width           =   675
+      End
+      Begin VB.Label Label1 
+         Caption         =   "Desde"
+         Height          =   255
+         Index           =   0
+         Left            =   585
+         TabIndex        =   21
+         Top             =   1035
+         Width           =   675
+      End
+   End
    Begin VB.Frame FrameClientesLibres 
       BorderStyle     =   0  'None
       Height          =   2865
@@ -110,147 +248,9 @@ Begin VB.Form frmMensaje
          BorderColor     =   &H00800000&
          BorderWidth     =   3
          Height          =   2760
-         Left            =   45
+         Left            =   30
          Top             =   90
          Width           =   5190
-      End
-   End
-   Begin VB.Frame FrameTarjetasLibres 
-      BorderStyle     =   0  'None
-      Height          =   5160
-      Left            =   0
-      TabIndex        =   19
-      Top             =   0
-      Width           =   5280
-      Begin VB.TextBox Text1 
-         Alignment       =   1  'Right Justify
-         Height          =   285
-         Index           =   1
-         Left            =   3330
-         MaxLength       =   10
-         TabIndex        =   24
-         Tag             =   "año del Folleto|N|N|||follviaj|anyfovia|||"
-         Top             =   990
-         Width           =   1350
-      End
-      Begin VB.TextBox Text1 
-         Alignment       =   1  'Right Justify
-         Height          =   285
-         Index           =   0
-         Left            =   1170
-         MaxLength       =   10
-         TabIndex        =   23
-         Tag             =   "año del Folleto|N|N|||follviaj|anyfovia|||"
-         Top             =   990
-         Width           =   1350
-      End
-      Begin VB.CommandButton CmdAcep 
-         Caption         =   "&Aceptar"
-         Height          =   375
-         Left            =   2385
-         TabIndex        =   26
-         Top             =   4680
-         Width           =   1035
-      End
-      Begin VB.CommandButton cmdCancelar 
-         Caption         =   "&Cancelar"
-         Height          =   375
-         Left            =   3645
-         TabIndex        =   28
-         Top             =   4680
-         Width           =   1035
-      End
-      Begin MSComctlLib.ListView ListView3 
-         Height          =   3165
-         Left            =   210
-         TabIndex        =   20
-         Top             =   1395
-         Width           =   4545
-         _ExtentX        =   8017
-         _ExtentY        =   5583
-         View            =   3
-         LabelWrap       =   -1  'True
-         HideSelection   =   -1  'True
-         HideColumnHeaders=   -1  'True
-         _Version        =   393217
-         ForeColor       =   -2147483640
-         BackColor       =   -2147483643
-         BorderStyle     =   1
-         Appearance      =   1
-         BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-            Name            =   "MS Sans Serif"
-            Size            =   13.5
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         NumItems        =   0
-      End
-      Begin VB.Shape Shape2 
-         BorderColor     =   &H00800000&
-         BorderWidth     =   3
-         Height          =   5055
-         Left            =   45
-         Top             =   90
-         Width           =   5190
-      End
-      Begin VB.Label Label1 
-         Caption         =   "Búsqueda de Tarjetas Libres"
-         BeginProperty Font 
-            Name            =   "Verdana"
-            Size            =   12
-            Charset         =   0
-            Weight          =   700
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         ForeColor       =   &H00C00000&
-         Height          =   255
-         Index           =   5
-         Left            =   225
-         TabIndex        =   27
-         Top             =   270
-         Width           =   4275
-      End
-      Begin VB.Label Label1 
-         Caption         =   "Tarjeta"
-         BeginProperty Font 
-            Name            =   "Tahoma"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         ForeColor       =   &H00C00000&
-         Height          =   255
-         Index           =   4
-         Left            =   270
-         TabIndex        =   25
-         Top             =   765
-         Width           =   945
-      End
-      Begin VB.Label Label1 
-         Caption         =   "Hasta"
-         Height          =   255
-         Index           =   3
-         Left            =   2790
-         TabIndex        =   22
-         Top             =   1035
-         Width           =   675
-      End
-      Begin VB.Label Label1 
-         Caption         =   "Desde"
-         Height          =   255
-         Index           =   0
-         Left            =   585
-         TabIndex        =   21
-         Top             =   1035
-         Width           =   675
       End
    End
    Begin VB.Frame FrameCobrosPtes 
@@ -576,7 +576,7 @@ Private Sub CmdAcep_Click()
 End Sub
 
 Private Sub CmdAcept_Click()
-Dim sql As String
+Dim SQL As String
 Dim Rs As ADODB.Recordset
 Dim Anterior As Currency
 Dim Siguiente As Currency
@@ -585,8 +585,8 @@ Dim Encontrado As Boolean
     If Text1(3).Text = "" Then Text1(3).Text = 0
     
     Set Rs = New ADODB.Recordset
-    sql = "select codsocio from ssocio where codsocio >= " & DBSet(Text1(3).Text, "N")
-    Rs.Open sql, Conn, adOpenForwardOnly, adLockOptimistic, adCmdText
+    SQL = "select codsocio from ssocio where codsocio >= " & DBSet(Text1(3).Text, "N")
+    Rs.Open SQL, Conn, adOpenForwardOnly, adLockOptimistic, adCmdText
 
     Anterior = CCur(Text1(3).Text)
     Encontrado = False
@@ -603,7 +603,7 @@ Dim Encontrado As Boolean
     Set Rs = Nothing
     Text1(2).Text = Format(Siguiente, "000000")
     
-    CmdCancel.SetFocus
+    cmdCancel.SetFocus
 End Sub
 
 Private Sub cmdAceptar_Click()
@@ -633,6 +633,7 @@ End Sub
 
 Private Sub Form_Activate()
     PonerFocoBtn Me.cmdAceptar
+    If OpcionMensaje = 4 Then PonerFoco Text1(0)
 End Sub
 
 
@@ -648,7 +649,7 @@ Private Sub Form_Load()
         PonerFrameCobrosPtesVisible True, 1000, 2000
         CargarListaErrComprobacion
         Me.Caption = "Errores de Comprobacion: "
-        PonerFocoBtn Me.CmdSalir
+        PonerFocoBtn Me.cmdSalir
     End If
     
 
@@ -670,7 +671,7 @@ Private Sub Form_Load()
     End If
     
     If OpcionMensaje = 4 Then ' tarjetas libres
-        PonerFrameCobrosPtesVisible True, 1000, 2000
+        PonerFrameCobrosPtesVisible True, 1000, 4000
     End If
     
     If OpcionMensaje = 5 Then ' clientes libres
@@ -684,15 +685,15 @@ Private Sub CargarListaErrContab()
 'en un ListView
 Dim Rs As ADODB.Recordset
 Dim ItmX As ListItem
-Dim sql As String
+Dim SQL As String
 
     On Error GoTo ECargarList
 
-    sql = " SELECT  * "
-    sql = sql & " FROM tmperrfac "
+    SQL = " SELECT  * "
+    SQL = SQL & " FROM tmperrfac "
     
     Set Rs = New ADODB.Recordset
-    Rs.Open sql, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+    Rs.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
     If Not Rs.EOF Then
         ListView1.Height = 4500
         ListView1.Width = 7400
@@ -744,7 +745,7 @@ Private Sub PonerFrameCobrosPtesVisible(visible As Boolean, ByRef h As Integer, 
             w = 9200
 '            Me.Label1(0).Top = 4800
 '            Me.Label1(0).Left = 3400
-            Me.CmdSalir.Caption = "&Salir"
+            Me.cmdSalir.Caption = "&Salir"
             PonerFrameVisible Me.FrameErrores, visible, h, w
             Me.frameAcercaDE.visible = False
             Me.FrameCobrosPtes.visible = False
@@ -808,10 +809,10 @@ Private Sub PonerFrameCobrosPtesVisible(visible As Boolean, ByRef h As Integer, 
             Me.Shape2.Left = 0
             'Los encabezados
             ListView3.ColumnHeaders.Clear
-            ListView3.ColumnHeaders.Add , , "Tarjeta", 2000
-            Text1(0).Text = "31300000"
-            Text1(1).Text = "31319999"
-            CmdAcep_Click
+            ListView3.ColumnHeaders.Add , , "Tarjeta", 4500
+            Text1(0).Text = ""
+            Text1(1).Text = ""
+'            CmdAcep_Click
             PonerFoco Text1(0)
 
         Case 5 ' clientes libres
@@ -848,15 +849,15 @@ Private Sub CargarListaErrComprobacion()
 'en un ListView
 Dim Rs As ADODB.Recordset
 Dim ItmX As ListItem
-Dim sql As String
+Dim SQL As String
 
     On Error GoTo ECargarListErrComprobacion
 
-    sql = " SELECT  * "
-    sql = sql & " FROM tmperrcomprob "
+    SQL = " SELECT  * "
+    SQL = SQL & " FROM tmperrcomprob "
     
     Set Rs = New ADODB.Recordset
-    Rs.Open sql, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+    Rs.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
     If Not Rs.EOF Then
 '        ListView1.Height = 4500
 '        ListView1.Width = 7400
@@ -922,9 +923,9 @@ Private Sub CargarTarjetasLibres()
 'Muestra la lista Detallada de Tarjetas Libres
 Dim Rs As ADODB.Recordset
 Dim ItmX As ListItem
-Dim sql As String
-Dim j As Long
-Dim i As Long
+Dim SQL As String
+Dim J As Double
+Dim i As Double
 
     On Error GoTo ECargarList
 
@@ -932,55 +933,55 @@ Dim i As Long
     ListView3.ColumnHeaders.Clear
     ListView3.ColumnHeaders.Add , , "Tarjeta", 2000
 
-    sql = " SELECT  numtarje "
-    sql = sql & " FROM starje where 1=1 "
-    If Text1(0).Text <> "" Then sql = sql & " and numtarje >= " & DBSet(Text1(0).Text, "N")
-    If Text1(1).Text <> "" Then sql = sql & " and numtarje <= " & DBSet(Text1(1).Text, "N")
-    sql = sql & " order by numtarje"
+    SQL = " SELECT  numtarje "
+    SQL = SQL & " FROM starje where 1=1 "
+    If Text1(0).Text <> "" Then SQL = SQL & " and numtarje >= " & DBSet(Text1(0).Text, "N")
+    If Text1(1).Text <> "" Then SQL = SQL & " and numtarje <= " & DBSet(Text1(1).Text, "N")
+    SQL = SQL & " order by numtarje"
     
     Set Rs = New ADODB.Recordset
-    Rs.Open sql, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+    Rs.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
     If Not Rs.EOF Then
         If Text1(0).Text = "" Then
-            j = 1
+            J = 1
         Else
-            j = CCur(Text1(0).Text)
+            J = CCur(Text1(0).Text)
         End If
     
         While Not Rs.EOF
-            For i = j To DBLet(Rs.Fields(0).Value, "N") - 1
+            For i = J To DBLet(Rs.Fields(0).Value, "N") - 1
                 Set ItmX = ListView3.ListItems.Add
-                ItmX.Text = Format(i, "00000000")
+                ItmX.Text = Format(i, "0000000000000")
             Next i
-            j = DBLet(Rs.Fields(0).Value, "N") + 1
+            J = DBLet(Rs.Fields(0).Value, "N") + 1
             Rs.MoveNext
         Wend
         If Text1(1).Text <> "" Then
-            For i = j To CCur(Text1(1).Text)
+            For i = J To CCur(Text1(1).Text)
                 Set ItmX = ListView3.ListItems.Add
-                ItmX.Text = Format(i, "00000000")
+                ItmX.Text = Format(i, "0000000000000")
             Next i
         Else
-            For i = j To 99999999
+            For i = J To 9999999999999#
                 Set ItmX = ListView3.ListItems.Add
-                ItmX.Text = Format(i, "00000000")
+                ItmX.Text = Format(i, "0000000000000")
             Next i
         End If
     Else
         If Text1(0).Text = "" Then
-            j = 1
+            J = 1
         Else
-            j = CCur(Text1(0).Text)
+            J = CCur(Text1(0).Text)
         End If
         If Text1(1).Text <> "" Then
-            For i = j To CCur(Text1(1).Text)
+            For i = J To CCur(Text1(1).Text)
                 Set ItmX = ListView3.ListItems.Add
-                ItmX.Text = Format(i, "00000000")
+                ItmX.Text = Format(i, "0000000000000")
             Next i
         Else
-            For i = j To 99999999
+            For i = J To 9999999999999#
                 Set ItmX = ListView3.ListItems.Add
-                ItmX.Text = Format(i, "00000000")
+                ItmX.Text = Format(i, "0000000000000")
             Next i
         End If
    
@@ -1031,7 +1032,7 @@ Dim dev As String
 
     Select Case Index
         Case 0, 1 'Tarjetas
-            If Text1(Index).Text <> "" Then Text1(Index).Text = Format(Text1(Index).Text, "00000000")
+            If Text1(Index).Text <> "" Then Text1(Index).Text = Format(Text1(Index).Text, "0000000000000")
             
             If Text1(0).Text <> "" And Text1(1).Text <> "" Then
                 dev = CadenaDesdeHasta(Text1(0).Text, Text1(1).Text, "numtarje", "N")
