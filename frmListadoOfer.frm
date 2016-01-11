@@ -3343,11 +3343,11 @@ Dim OpcionListado2 As Integer '[Monica]15/05/2013, nueva variable pq perdia el o
         
         'FileCopy App.Path & "\docum.pdf", App.Path & "\temp\" & RS!NumAlbar & Format(RS!codProve, "0000000") & Format(RS!codArtic, "0000000") & Format(RS!FechaAlb, "yymmdd") & ".pdf"
         If OpcionListado = 315 Then
-            FileCopy App.path & "\docum.pdf", App.path & "\temp\" & Trim(Rs!nombre1) & Format(Rs!Importe1, "0000000") & Format(Rs!Codigo1, "000000") & ".pdf"
+            FileCopy App.path & "\docum.pdf", App.path & "\temp\" & Trim(Rs!nombre1) & Format(Rs!Importe1, "0000000") & Format(Rs!codigo1, "000000") & ".pdf"
         Else
             'Se tiene que llamar base_numserie_numFactura_yyyymmdd.pdf
-            
-            cadFormula = "arigasol_" & Trim(Rs!nombre1) & "_" & Rs!Importe1 & "_" & Format(Rs!Fecha1, "yyyymmdd") & ".pdf"
+            '[Monica]11/01/2016: indicamos que base de datos es, antes a piñon arigasol
+            cadFormula = vSesion.CadenaConexion & "_" & Trim(Rs!nombre1) & "_" & Rs!Importe1 & "_" & Format(Rs!Fecha1, "yyyymmdd") & ".pdf"
             cadFormula = vParamAplic.PathFacturaE & "\" & cadFormula
             
             Label14(22).Caption = cadFormula
