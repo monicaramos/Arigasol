@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.2#0"; "MSCOMCTL.OCX"
 Object = "{67397AA1-7FB1-11D0-B148-00A0C922E820}#6.0#0"; "MSADODC.OCX"
 Object = "{CDE57A40-8B86-11D0-B3C6-00A0C90AEA82}#1.0#0"; "MSDATGRD.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
@@ -762,9 +762,9 @@ Begin VB.Form frmHcoFact
          Height          =   290
          Index           =   8
          Left            =   4920
-         MaxLength       =   8
+         MaxLength       =   13
          TabIndex        =   8
-         Tag             =   "Tarjeta|N|N|0|99999999|slhfac|numtarje|0000000000000||"
+         Tag             =   "Tarjeta|N|N|0|9999999999999|slhfac|numtarje|0000000000000||"
          Text            =   "tar"
          Top             =   1920
          Visible         =   0   'False
@@ -1623,7 +1623,7 @@ End Sub
 
 Private Sub Form_Load()
 Dim i As Integer
-Dim Sql2 As String
+Dim sql2 As String
 
     PrimeraVez = True
 
@@ -1706,8 +1706,8 @@ Dim Sql2 As String
     
     'ASignamos un SQL al DATA1
     Data1.ConnectionString = Conn
-    Sql2 = "Select * from " & NomTabla & " where numfactu is null "
-    Data1.RecordSource = Sql2
+    sql2 = "Select * from " & NomTabla & " where numfactu is null "
+    Data1.RecordSource = sql2
     Data1.Refresh
         
     If DatosADevolverBusqueda = "" Then
@@ -1947,7 +1947,7 @@ Private Function MontaSQLCarga(Index As Integer, enlaza As Boolean) As String
 ' Si ENLAZA -> Enlaza con el data1
 '           -> Si no lo cargamos sin enlazar a ningun campo
 '--------------------------------------------------------------------
-Dim Sql As String
+Dim SQL As String
 Dim tabla As String
     
     Select Case Index
@@ -1955,52 +1955,52 @@ Dim tabla As String
             Select Case Tipo
                 Case 0:
                     tabla = "slhfac"
-                    Sql = "SELECT letraser,numfactu,fecfactu,numlinea,numalbar,fecalbar,"
-                    Sql = Sql & "horalbar, codturno, numtarje, slhfac.codartic, sartic.nomartic, "
-                    Sql = Sql & "cantidad, preciove, implinea "
-                    Sql = Sql & " FROM slhfac, sartic "
-                    Sql = Sql & " WHERE slhfac.codartic = sartic.codartic "
+                    SQL = "SELECT letraser,numfactu,fecfactu,numlinea,numalbar,fecalbar,"
+                    SQL = SQL & "horalbar, codturno, numtarje, slhfac.codartic, sartic.nomartic, "
+                    SQL = SQL & "cantidad, preciove, implinea "
+                    SQL = SQL & " FROM slhfac, sartic "
+                    SQL = SQL & " WHERE slhfac.codartic = sartic.codartic "
         
                     If enlaza Then
-                        Sql = Sql & " AND " & ObtenerWhereCab(False)
+                        SQL = SQL & " AND " & ObtenerWhereCab(False)
                     Else
-                        Sql = Sql & " AND numfactu is null "
+                        SQL = SQL & " AND numfactu is null "
                     End If
-                    Sql = Sql & " ORDER BY " & tabla & ".numlinea "
+                    SQL = SQL & " ORDER BY " & tabla & ".numlinea "
                 Case 1:
                     ' facturacion ajena
                     tabla = "slhfacr"
-                    Sql = "SELECT letraser,numfactu,fecfactu,numlinea,numalbar,fecalbar,"
-                    Sql = Sql & "horalbar, codturno, numtarje, slhfacr.codartic, sartic.nomartic, "
-                    Sql = Sql & "cantidad, preciove, implinea "
-                    Sql = Sql & " FROM slhfacr, sartic "
-                    Sql = Sql & " WHERE slhfacr.codartic = sartic.codartic "
+                    SQL = "SELECT letraser,numfactu,fecfactu,numlinea,numalbar,fecalbar,"
+                    SQL = SQL & "horalbar, codturno, numtarje, slhfacr.codartic, sartic.nomartic, "
+                    SQL = SQL & "cantidad, preciove, implinea "
+                    SQL = SQL & " FROM slhfacr, sartic "
+                    SQL = SQL & " WHERE slhfacr.codartic = sartic.codartic "
         
                     If enlaza Then
-                        Sql = Sql & " AND " & ObtenerWhereCab(False)
+                        SQL = SQL & " AND " & ObtenerWhereCab(False)
                     Else
-                        Sql = Sql & " AND numfactu is null "
+                        SQL = SQL & " AND numfactu is null "
                     End If
-                    Sql = Sql & " ORDER BY " & tabla & ".numlinea "
+                    SQL = SQL & " ORDER BY " & tabla & ".numlinea "
             
                 Case 2:
                     ' historico de facturas
                     tabla = "slhfac1"
-                    Sql = "SELECT letraser,numfactu,fecfactu,numlinea,numalbar,fecalbar,"
-                    Sql = Sql & "horalbar, codturno, numtarje, slhfac1.codartic, sartic.nomartic, "
-                    Sql = Sql & "cantidad, preciove, implinea "
-                    Sql = Sql & " FROM slhfac1, sartic "
-                    Sql = Sql & " WHERE slhfac1.codartic = sartic.codartic "
+                    SQL = "SELECT letraser,numfactu,fecfactu,numlinea,numalbar,fecalbar,"
+                    SQL = SQL & "horalbar, codturno, numtarje, slhfac1.codartic, sartic.nomartic, "
+                    SQL = SQL & "cantidad, preciove, implinea "
+                    SQL = SQL & " FROM slhfac1, sartic "
+                    SQL = SQL & " WHERE slhfac1.codartic = sartic.codartic "
         
                     If enlaza Then
-                        Sql = Sql & " AND " & ObtenerWhereCab(False)
+                        SQL = SQL & " AND " & ObtenerWhereCab(False)
                     Else
-                        Sql = Sql & " AND numfactu is null "
+                        SQL = SQL & " AND numfactu is null "
                     End If
-                    Sql = Sql & " ORDER BY " & tabla & ".numlinea "
+                    SQL = SQL & " ORDER BY " & tabla & ".numlinea "
             End Select
     End Select
-    MontaSQLCarga = Sql
+    MontaSQLCarga = SQL
 End Function
 
 Private Sub frmB_Selecionado(CadenaDevuelta As String)
@@ -2042,7 +2042,7 @@ Private Sub frmFpa_DatoSeleccionado(CadenaSeleccion As String)
 'Mantenimiento de Formas de Pago
     Text1(5).Text = RecuperaValor(CadenaSeleccion, 1) 'codforpa
     FormateaCampo Text1(5)
-    Text2(5).Text = RecuperaValor(CadenaSeleccion, 2)
+    text2(5).Text = RecuperaValor(CadenaSeleccion, 2)
 End Sub
 
 Private Sub frmCli_DatoSeleccionado(CadenaSeleccion As String)
@@ -2051,7 +2051,7 @@ Dim cad As String, Datos As String
 
     Text1(3).Text = RecuperaValor(CadenaSeleccion, 1) 'codclien
     FormateaCampo Text1(3)
-    Text2(3).Text = RecuperaValor(CadenaSeleccion, 2) 'nomclien
+    text2(3).Text = RecuperaValor(CadenaSeleccion, 2) 'nomclien
      
     'recuperar el Colectivo del cliente
     Datos = DevuelveDesdeBDNew(cPTours, "ssocio", "codcoope", "codsocio", Text1(3).Text, "N")
@@ -2061,7 +2061,7 @@ Dim cad As String, Datos As String
         Text1_LostFocus (4)
     Else
         Text1(4).Text = ""
-        Text2(4).Text = ""
+        text2(4).Text = ""
     End If
 End Sub
 
@@ -2507,7 +2507,7 @@ Private Sub BotonRectificar()
     
     Set frmList = New frmListado
     'Añadiremos el boton de aceptar y demas objetos para insertar
-    frmList.CadTag = Text1(0).Text & "|" & Text1(1).Text & "|" & Text1(2).Text & "|" & Text1(3).Text & "|" & Text2(3).Text & "|" & Format(Check1(1).Value, "0") & "|"
+    frmList.CadTag = Text1(0).Text & "|" & Text1(1).Text & "|" & Text1(2).Text & "|" & Text1(3).Text & "|" & text2(3).Text & "|" & Format(Check1(1).Value, "0") & "|"
     frmList.OpcionListado = 12
     frmList.Show vbModal
 
@@ -2569,9 +2569,9 @@ Dim ImporteVale As Currency
     
     'Recuperar Descripciones de los campos de Codigo
     '--------------------------------------------------
-    Text2(3).Text = PonerNombreDeCod(Text1(3), "ssocio", "nomsocio")
-    Text2(4).Text = PonerNombreDeCod(Text1(4), "scoope", "nomcoope")
-    Text2(5).Text = PonerNombreDeCod(Text1(5), "sforpa", "nomforpa")
+    text2(3).Text = PonerNombreDeCod(Text1(3), "ssocio", "nomsocio")
+    text2(4).Text = PonerNombreDeCod(Text1(4), "scoope", "nomcoope")
+    text2(5).Text = PonerNombreDeCod(Text1(5), "sforpa", "nomforpa")
     
     '[Monica]28/12/2015: ponemos el importe del vale
     ImporteVale = DevuelveValor("select sum(coalesce(importevale,0)) from slhfac where " & ObtenerWhereCab(False))
@@ -2647,7 +2647,7 @@ End Sub
 Private Function DatosOk() As Boolean
 Dim b As Boolean
 Dim Datos As String
-Dim Sql As String
+Dim SQL As String
 
     On Error GoTo EDatosOK
 
@@ -2658,14 +2658,14 @@ Dim Sql As String
     ' en caso de que haya contabilidad
     ' comprobamos si el cliente tiene cuenta contable existente en la contabilidad
     If vParamAplic.NumeroConta <> 0 And Check1(1).Value <> 0 Then
-        Sql = ""
-        Sql = DevuelveDesdeBD("codmacta", "ssocio", "codsocio", Text1(3).Text, "N")
-        If Sql = "" Then
+        SQL = ""
+        SQL = DevuelveDesdeBD("codmacta", "ssocio", "codsocio", Text1(3).Text, "N")
+        If SQL = "" Then
             MsgBox "El cliente no tiene cuenta contable asociada.", vbExclamation
             Exit Function
         Else
             Datos = ""
-            Datos = DevuelveDesdeBDNew(cConta, "cuentas", "codmacta", "codmacta", Sql, "T")
+            Datos = DevuelveDesdeBDNew(cConta, "cuentas", "codmacta", "codmacta", SQL, "T")
             If Datos = "" Then
                 MsgBox "La cuenta contable asociada al cliente no está dada de alta en contabilidad. Revise.", vbExclamation
                 Exit Function
@@ -2756,8 +2756,8 @@ Dim Suma As Currency
         Case 3 'Cliente
             If Text1(Index).Text <> "" Then
                 If PonerFormatoEntero(Text1(3)) Then
-                    Text2(Index).Text = PonerNombreDeCod(Text1(Index), "ssocio", "nomsocio", "codsocio", "N")
-                    If Text2(Index).Text = "" Then
+                    text2(Index).Text = PonerNombreDeCod(Text1(Index), "ssocio", "nomsocio", "codsocio", "N")
+                    If text2(Index).Text = "" Then
                         cad = "No existe el Cliente: " & Text1(Index).Text & vbCrLf
                         cad = cad & "¿Desea crearlo?" & vbCrLf
                         If MsgBox(cad, vbQuestion + vbYesNo) = vbYes Then
@@ -2774,7 +2774,7 @@ Dim Suma As Currency
                         PonerFoco Text1(Index)
                     End If
                 Else
-                    Text2(Index).Text = ""
+                    text2(Index).Text = ""
                 End If
                 'recuperar el Colectivo
                 If Modo = 1 Then Exit Sub
@@ -2785,14 +2785,14 @@ Dim Suma As Currency
                      Text1_LostFocus (4)
                  Else
                      Text1(4).Text = ""
-                     Text2(4).Text = ""
+                     text2(4).Text = ""
                  End If
             End If
             
         Case 4 'Colectivo
             If PonerFormatoEntero(Text1(4)) Then
-                Text2(Index).Text = PonerNombreDeCod(Text1(Index), "scoope", "nomcoope", "codcoope", "N")
-                If Text2(Index).Text = "" Then
+                text2(Index).Text = PonerNombreDeCod(Text1(Index), "scoope", "nomcoope", "codcoope", "N")
+                If text2(Index).Text = "" Then
                     cad = "No existe el Colectivo: " & Text1(Index).Text & vbCrLf
                     cad = cad & "¿Desea crearlo?" & vbCrLf
                     If MsgBox(cad, vbQuestion + vbYesNo) = vbYes Then
@@ -2809,13 +2809,13 @@ Dim Suma As Currency
                     PonerFoco Text1(Index)
                 End If
             Else
-                Text2(Index).Text = ""
+                text2(Index).Text = ""
             End If
         
         Case 5 'Forma pago
             If PonerFormatoEntero(Text1(5)) Then
-                Text2(Index).Text = PonerNombreDeCod(Text1(Index), "sforpa", "nomforpa", "codforpa", "N")
-                If Text2(Index).Text = "" Then
+                text2(Index).Text = PonerNombreDeCod(Text1(Index), "sforpa", "nomforpa", "codforpa", "N")
+                If text2(Index).Text = "" Then
                     cad = "No existe la Forma de Pago: " & Text1(Index).Text & vbCrLf
                     cad = cad & "¿Desea crearla?" & vbCrLf
                     If MsgBox(cad, vbQuestion + vbYesNo) = vbYes Then
@@ -2832,7 +2832,7 @@ Dim Suma As Currency
                     PonerFoco Text1(Index)
                 End If
             Else
-                Text2(Index).Text = ""
+                text2(Index).Text = ""
             End If
             
         Case 6, 9, 10, 13, 14, 17 'IMPORTES Base, IVA
@@ -2935,7 +2935,7 @@ Private Sub ToolAux_ButtonClick(Index As Integer, ByVal Button As MSComctlLib.Bu
 End Sub
 
 Private Sub BotonEliminarLinea(Index As Integer)
-Dim Sql As String
+Dim SQL As String
 Dim eliminar As Boolean
 
     On Error GoTo Error2
@@ -2964,21 +2964,21 @@ Dim eliminar As Boolean
 
     Select Case Index
         Case 0 'lineas de factura
-            Sql = "¿Seguro que desea eliminar la línea?"
-            Sql = Sql & vbCrLf & "Nº línea: " & Format(DBLet(AdoAux(Index).Recordset!numlinea), FormatoCampo(txtAux(3)))
-            Sql = Sql & vbCrLf & "Albaran: " & DBLet(AdoAux(Index).Recordset!numalbar) '& "  " & txtAux(4).Text
-            If MsgBox(Sql, vbQuestion + vbYesNo) = vbYes Then
+            SQL = "¿Seguro que desea eliminar la línea?"
+            SQL = SQL & vbCrLf & "Nº línea: " & Format(DBLet(AdoAux(Index).Recordset!numlinea), FormatoCampo(txtAux(3)))
+            SQL = SQL & vbCrLf & "Albaran: " & DBLet(AdoAux(Index).Recordset!numalbar) '& "  " & txtAux(4).Text
+            If MsgBox(SQL, vbQuestion + vbYesNo) = vbYes Then
                 NumRegElim = AdoAux(Index).Recordset.AbsolutePosition
                 eliminar = True
-                Sql = "DELETE FROM slhfac"
-                Sql = Sql & ObtenerWhereCab(True) & " AND numlinea= " & AdoAux(Index).Recordset!numlinea
+                SQL = "DELETE FROM slhfac"
+                SQL = SQL & ObtenerWhereCab(True) & " AND numlinea= " & AdoAux(Index).Recordset!numlinea
             End If
     End Select
 
     If eliminar Then
         TerminaBloquear
 '        conn.Execute sql
-        CadenaBorrado = Sql
+        CadenaBorrado = SQL
         '16022007
         If BLOQUEADesdeFormulario2(Me, Data1, 1) Then
                 ModificaImportes = True
@@ -3465,23 +3465,23 @@ Private Function SumaLineas(NumLin As String) As String
 'Al Insertar o Modificar linea sumamos todas las lineas excepto la que estamos
 'Insertando o modificando que su valor sera el del txtaux(4).text
 'En el DatosOK de la factura sumamos todas las lineas
-Dim Sql As String
+Dim SQL As String
 Dim Rs As ADODB.Recordset
 Dim SumLin As Currency
 
     SumLin = 0
     Select Case Tipo
         Case 0:
-            Sql = "SELECT SUM(implinea) FROM slhfac "
+            SQL = "SELECT SUM(implinea) FROM slhfac "
         Case 1:
-            Sql = "SELECT SUM(implinea) FROM slhfacr "
+            SQL = "SELECT SUM(implinea) FROM slhfacr "
         Case 2:
-            Sql = "SELECT SUM(implinea) FROM slhfac1 "
+            SQL = "SELECT SUM(implinea) FROM slhfac1 "
     End Select
-    Sql = Sql & ObtenerWhereCab(True)
-    If NumLin <> "" Then Sql = Sql & " AND numlinea<>" & DBSet(txtAux(4).Text, "N") 'numlinea
+    SQL = SQL & ObtenerWhereCab(True)
+    If NumLin <> "" Then SQL = SQL & " AND numlinea<>" & DBSet(txtAux(4).Text, "N") 'numlinea
     Set Rs = New ADODB.Recordset
-    Rs.Open Sql, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+    Rs.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
     If Not Rs.EOF Then
         'En SumLin tenemos la suma de las lineas ya insertadas
         SumLin = CCur(DBLet(Rs.Fields(0), "N"))
