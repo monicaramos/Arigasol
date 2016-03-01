@@ -123,7 +123,8 @@ On Error GoTo Err_Carga
     'Conectar a la BD de la Empresa
     '####Descomentar
     For i = 1 To mrpt.Database.Tables.Count
-       mrpt.Database.Tables(i).SetLogOnInfo "Arigasol", , "root", "aritel"
+       '[Monica]01/03/2016: pongo la base de datos que es
+       mrpt.Database.Tables(i).SetLogOnInfo "Arigasol", vSesion.CadenaConexion, "root", "aritel"
        If InStr(1, mrpt.Database.Tables(i).Name, "_") = 0 Then
 '               mrpt.Database.Tables(i).Location = vEmpresa.BDAriges & "." & mrpt.Database.Tables(i).Name
                mrpt.Database.Tables(i).Location = mrpt.Database.Tables(i).Name
