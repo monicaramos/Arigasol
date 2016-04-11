@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.2#0"; "MSCOMCTL.OCX"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Begin VB.Form frmPaseUnico 
    BorderStyle     =   3  'Fixed Dialog
@@ -329,10 +329,10 @@ End Sub
 Private Sub cmdAceptar_Click()
 Dim cDesde As String, cHasta As String 'cadena codigo Desde/Hasta
 Dim nDesde As String, nHasta As String 'cadena Descripcion Desde/Hasta
-Dim cadTABLA As String, cOrden As String
+Dim cadTabla As String, cOrden As String
 Dim cadMen As String
 Dim i As Byte
-Dim Sql As String
+Dim SQL As String
 Dim Tipo As Byte
 Dim nRegs As Long
 Dim NumError As Long
@@ -371,9 +371,18 @@ Dim NumError As Long
         If Not PonerDesdeHasta(cDesde, cHasta, "", "", "pDHColec= """) Then Exit Sub
     End If
     
-    If Not HayRegParaInforme(tabla, cadSelect) Then Exit Sub
     
-    If Not ExistenCodigosExternos(tabla, cadSelect) Then Exit Sub
+    '[Monica]11/04/2016: las facturas internas no se declaran
+    Dim Tabla1 As String
+    Dim CadSelect1 As String
+    
+    Tabla1 = tabla & ", stipom "
+    If Not AnyadirAFormula(CadSelect1, tabla & ".codtipom = stipom.codtipom and stipom.esinterna = 0") Then Exit Sub
+    
+    
+    If Not HayRegParaInforme(Tabla1, CadSelect1) Then Exit Sub
+    
+    If Not ExistenCodigosExternos(Tabla1, CadSelect1) Then Exit Sub
     
     
     If GeneraFichero(tabla, cadSelect) Then
@@ -416,7 +425,7 @@ Dim h As Integer, w As Integer
 Dim List As Collection
 
     PrimeraVez = True
-    Limpiar Me
+    limpiar Me
 
     '###Descomentar
 '    CommitConexion
@@ -429,7 +438,7 @@ Dim List As Collection
     
     
     'Esto se consigue poneinedo el cancel en el opcion k corresponda
-    Me.cmdCancel.Cancel = True
+    Me.CmdCancel.Cancel = True
     Me.Width = w + 70
     Me.Height = h + 350
     
@@ -642,7 +651,7 @@ Dim NFich1 As Integer
 Dim NFich2 As Integer
 Dim Rs As ADODB.Recordset
 Dim cad As String
-Dim Sql As String
+Dim SQL As String
 Dim AntLetraSer As String
 Dim ActLetraSer As String
 Dim AntNumfactu As Long
@@ -679,22 +688,25 @@ Dim Mens As String
 '    sql = sql & " slhfac.cantidad, slhfac.preciove, slhfac.implinea, "
 
     'ahora
-    Sql = "SELECT slhfac.letraser, slhfac.numfactu, slhfac.fecfactu, sartic.codexterno as aexterno, sforpa.codexterno as fpexterno, ssocio.codexterno as sexterno,  "
-    Sql = Sql & " sum(slhfac.cantidad) cantidad, sum(slhfac.implinea) implinea "
+    SQL = "SELECT slhfac.letraser, slhfac.numfactu, slhfac.fecfactu, sartic.codexterno as aexterno, sforpa.codexterno as fpexterno, ssocio.codexterno as sexterno,  "
+    SQL = SQL & " sum(slhfac.cantidad) cantidad, sum(slhfac.implinea) implinea "
     
-    Sql = Sql & " from (((" & vTabla & " inner join slhfac on schfac.letraser = slhfac.letraser and schfac.numfactu = slhfac.numfactu and schfac.fecfactu = slhfac.fecfactu)"
-    Sql = Sql & " INNER JOIN ssocio ON ssocio.codsocio = schfac.codsocio) "
-    Sql = Sql & " INNER JOIN sforpa ON sforpa.codforpa = schfac.codforpa) "
-    Sql = Sql & " INNER JOIN sartic ON slhfac.codartic = sartic.codartic"
-    Sql = Sql & " where " & vSelect
-    Sql = Sql & " group by 1,2,3,4,5,6"
-    Sql = Sql & " order by 1,2,3,4 "
+    SQL = SQL & " from (((" & vTabla & " inner join slhfac on schfac.letraser = slhfac.letraser and schfac.numfactu = slhfac.numfactu and schfac.fecfactu = slhfac.fecfactu)"
+    SQL = SQL & " INNER JOIN ssocio ON ssocio.codsocio = schfac.codsocio) "
+    SQL = SQL & " INNER JOIN sforpa ON sforpa.codforpa = schfac.codforpa) "
+    SQL = SQL & " INNER JOIN sartic ON slhfac.codartic = sartic.codartic"
+    SQL = SQL & " where " & vSelect
+    '11/04/2016: no seleccionamos las internas
+    SQL = SQL & " and slhfac.letraser in (select letraser from stipom where esinterna = 0)"
+    
+    SQL = SQL & " group by 1,2,3,4,5,6"
+    SQL = SQL & " order by 1,2,3,4 "
 
-    Rs.Open Sql, Conn, adOpenForwardOnly, adLockOptimistic, adCmdText
+    Rs.Open SQL, Conn, adOpenForwardOnly, adLockOptimistic, adCmdText
     
     Dim nRegs As Integer
     
-    nRegs = TotalRegistrosConsulta(Sql)
+    nRegs = TotalRegistrosConsulta(SQL)
     Me.Pb1.visible = True
     CargarProgres Me.Pb1, nRegs
     
@@ -758,8 +770,8 @@ End Function
 
 
 Public Function CopiarFichero() As Boolean
-Dim nomfich As String
-Dim cadena As String
+Dim nomFich As String
+Dim Cadena As String
 On Error GoTo ecopiarfichero
 
     CopiarFichero = False
@@ -767,7 +779,7 @@ On Error GoTo ecopiarfichero
 '    Me.CommonDialog1.InitDir = App.path
 
     Me.CommonDialog1.DefaultExt = "csv"
-    cadena = Format(txtCodigo(2).Text, FormatoFecha)
+    Cadena = Format(txtCodigo(2).Text, FormatoFecha)
     CommonDialog1.Filter = "Archivos csv|csv|"
     CommonDialog1.FilterIndex = 1
     
@@ -793,18 +805,18 @@ End Function
 Private Function ActualizarRegistros(vTabla As String, vSelect As String) As Boolean
 Dim Rs As ADODB.Recordset
 Dim cad As String
-Dim Sql As String
+Dim SQL As String
 
     On Error GoTo EGen
     
     ActualizarRegistros = False
 
 
-    Sql = "update " & vTabla
-    Sql = Sql & " set intconta = 1 "
-    Sql = Sql & " where " & vSelect
+    SQL = "update " & vTabla
+    SQL = SQL & " set intconta = 1 "
+    SQL = SQL & " where " & vSelect
     
-    Conn.Execute Sql
+    Conn.Execute SQL
 
 EGen:
     If Err.Number <> 0 Then
@@ -818,8 +830,8 @@ End Function
 Private Function ExistenCodigosExternos(vTabla As String, vSelect As String) As Boolean
 Dim Rs As ADODB.Recordset
 Dim cad As String
-Dim Sql As String
-Dim CadAux As String
+Dim SQL As String
+Dim cadAux As String
 Dim Mens As String
 
 
@@ -829,21 +841,21 @@ Dim Mens As String
 
 
     ' Socios
-    Sql = "select codsocio from ssocio where codsocio in (select codsocio from schfac where " & vSelect & ") and (codexterno is null or codexterno = '')"
+    SQL = "select codsocio from ssocio where codsocio in (select codsocio from schfac where " & vSelect & ") and (codexterno is null or codexterno = '')"
     
     Set Rs = New ADODB.Recordset
-    Rs.Open Sql, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+    Rs.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
     
-    CadAux = ""
+    cadAux = ""
     While Not Rs.EOF
-        CadAux = CadAux & DBSet(Rs!codsocio, "N") & ", "
+        cadAux = cadAux & DBSet(Rs!codsocio, "N") & ", "
         
         Rs.MoveNext
     Wend
     Set Rs = Nothing
     
-    If CadAux <> "" Then
-        Mens = "Los socios siguientes no tienen código externo. Revise. " & vbCrLf & vbCrLf & Mid(CadAux, 1, Len(CadAux) - 2)
+    If cadAux <> "" Then
+        Mens = "Los socios siguientes no tienen código externo. Revise. " & vbCrLf & vbCrLf & Mid(cadAux, 1, Len(cadAux) - 2)
         
         MsgBox Mens, vbExclamation
         Exit Function
@@ -851,42 +863,42 @@ Dim Mens As String
     
     
     ' Formas de Pago
-    Sql = "select codforpa from sforpa where codforpa in (select codforpa from schfac where " & vSelect & ") and (codexterno is null or codexterno = '')"
+    SQL = "select codforpa from sforpa where codforpa in (select codforpa from schfac where " & vSelect & ") and (codexterno is null or codexterno = '')"
     
     Set Rs = New ADODB.Recordset
-    Rs.Open Sql, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+    Rs.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
     
-    CadAux = ""
+    cadAux = ""
     While Not Rs.EOF
-        CadAux = CadAux & DBSet(Rs!Codforpa, "N") & ", "
+        cadAux = cadAux & DBSet(Rs!Codforpa, "N") & ", "
         
         Rs.MoveNext
     Wend
     Set Rs = Nothing
     
-    If CadAux <> "" Then
-        Mens = "Las formas de pago siguientes no tienen código externo. Revise. " & vbCrLf & vbCrLf & Mid(CadAux, 1, Len(CadAux) - 2)
+    If cadAux <> "" Then
+        Mens = "Las formas de pago siguientes no tienen código externo. Revise. " & vbCrLf & vbCrLf & Mid(cadAux, 1, Len(cadAux) - 2)
         
         MsgBox Mens, vbExclamation
         Exit Function
     End If
     
     ' Articulos
-    Sql = "select codartic from sartic where codartic in (select codartic from slhfac inner join schfac on slhfac.letraser = schfac.letraser and slhfac.numfactu = schfac.numfactu and slhfac.fecfactu = schfac.fecfactu where " & vSelect & ") and (codexterno is null or codexterno = '')"
+    SQL = "select codartic from sartic where codartic in (select codartic from slhfac inner join schfac on slhfac.letraser = schfac.letraser and slhfac.numfactu = schfac.numfactu and slhfac.fecfactu = schfac.fecfactu where " & vSelect & ") and (codexterno is null or codexterno = '')"
     
     Set Rs = New ADODB.Recordset
-    Rs.Open Sql, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+    Rs.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
     
-    CadAux = ""
+    cadAux = ""
     While Not Rs.EOF
-        CadAux = CadAux & DBSet(Rs!codArtic, "N") & ", "
+        cadAux = cadAux & DBSet(Rs!codartic, "N") & ", "
         
         Rs.MoveNext
     Wend
     Set Rs = Nothing
     
-    If CadAux <> "" Then
-        Mens = "Los artículos siguientes no tienen código externo. Revise. " & vbCrLf & vbCrLf & Mid(CadAux, 1, Len(CadAux) - 2)
+    If cadAux <> "" Then
+        Mens = "Los artículos siguientes no tienen código externo. Revise. " & vbCrLf & vbCrLf & Mid(cadAux, 1, Len(cadAux) - 2)
         
         MsgBox Mens, vbExclamation
         Exit Function
