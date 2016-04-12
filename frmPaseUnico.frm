@@ -373,17 +373,19 @@ Dim NumError As Long
     
     
     '[Monica]11/04/2016: las facturas internas no se declaran
-    Dim Tabla1 As String
-    Dim CadSelect1 As String
+    Dim tabla1 As String
+    Dim cadSelect1 As String
     
-    Tabla1 = tabla & ", stipom "
-    If Not AnyadirAFormula(CadSelect1, tabla & ".codtipom = stipom.codtipom and stipom.esinterna = 0") Then Exit Sub
+    tabla1 = tabla & ", stipom "
+    cadSelect1 = cadSelect
+    If Not AnyadirAFormula(cadSelect1, tabla & ".letraser = stipom.letraser and stipom.esinterna = 0") Then Exit Sub
     
     
-    If Not HayRegParaInforme(Tabla1, CadSelect1) Then Exit Sub
+    If Not HayRegParaInforme(tabla1, cadSelect1) Then Exit Sub
     
-    If Not ExistenCodigosExternos(Tabla1, CadSelect1) Then Exit Sub
+    If Not ExistenCodigosExternos(tabla1, cadSelect1) Then Exit Sub
     
+    cadSelect = Replace(Replace(cadSelect, "{", ""), "}", "")
     
     If GeneraFichero(tabla, cadSelect) Then
         If CopiarFichero Then
@@ -771,7 +773,7 @@ End Function
 
 Public Function CopiarFichero() As Boolean
 Dim nomFich As String
-Dim Cadena As String
+Dim CADENA As String
 On Error GoTo ecopiarfichero
 
     CopiarFichero = False
@@ -779,7 +781,7 @@ On Error GoTo ecopiarfichero
 '    Me.CommonDialog1.InitDir = App.path
 
     Me.CommonDialog1.DefaultExt = "csv"
-    Cadena = Format(txtCodigo(2).Text, FormatoFecha)
+    CADENA = Format(txtCodigo(2).Text, FormatoFecha)
     CommonDialog1.Filter = "Archivos csv|csv|"
     CommonDialog1.FilterIndex = 1
     
@@ -841,7 +843,7 @@ Dim Mens As String
 
 
     ' Socios
-    SQL = "select codsocio from ssocio where codsocio in (select codsocio from schfac where " & vSelect & ") and (codexterno is null or codexterno = '')"
+    SQL = "select codsocio from ssocio where codsocio in (select codsocio from schfac, stipom  where " & vSelect & ") and (codexterno is null or codexterno = '')"
     
     Set Rs = New ADODB.Recordset
     Rs.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
@@ -863,7 +865,7 @@ Dim Mens As String
     
     
     ' Formas de Pago
-    SQL = "select codforpa from sforpa where codforpa in (select codforpa from schfac where " & vSelect & ") and (codexterno is null or codexterno = '')"
+    SQL = "select codforpa from sforpa where codforpa in (select codforpa from schfac, stipom  where " & vSelect & ") and (codexterno is null or codexterno = '')"
     
     Set Rs = New ADODB.Recordset
     Rs.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
@@ -884,14 +886,14 @@ Dim Mens As String
     End If
     
     ' Articulos
-    SQL = "select codartic from sartic where codartic in (select codartic from slhfac inner join schfac on slhfac.letraser = schfac.letraser and slhfac.numfactu = schfac.numfactu and slhfac.fecfactu = schfac.fecfactu where " & vSelect & ") and (codexterno is null or codexterno = '')"
+    SQL = "select codartic from sartic where codartic in (select codartic from slhfac inner join schfac on slhfac.letraser = schfac.letraser and slhfac.numfactu = schfac.numfactu and slhfac.fecfactu = schfac.fecfactu,  stipom where " & vSelect & ") and (codexterno is null or codexterno = '')"
     
     Set Rs = New ADODB.Recordset
     Rs.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
     
     cadAux = ""
     While Not Rs.EOF
-        cadAux = cadAux & DBSet(Rs!codartic, "N") & ", "
+        cadAux = cadAux & DBSet(Rs!codArtic, "N") & ", "
         
         Rs.MoveNext
     Wend
