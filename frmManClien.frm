@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.2#0"; "MSCOMCTL.OCX"
 Object = "{67397AA1-7FB1-11D0-B148-00A0C922E820}#6.0#0"; "MSADODC.OCX"
 Object = "{CDE57A40-8B86-11D0-B3C6-00A0C90AEA82}#1.0#0"; "MSDATGRD.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
@@ -118,7 +118,6 @@ Begin VB.Form frmManClien
       _Version        =   393216
       Style           =   1
       Tabs            =   5
-      Tab             =   1
       TabsPerRow      =   8
       TabHeight       =   520
       ShowFocusRect   =   0   'False
@@ -133,7 +132,7 @@ Begin VB.Form frmManClien
       EndProperty
       TabCaption(0)   =   "Datos básicos"
       TabPicture(0)   =   "frmManClien.frx":000C
-      Tab(0).ControlEnabled=   0   'False
+      Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "Label5"
       Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "Label6(0)"
@@ -197,7 +196,7 @@ Begin VB.Form frmManClien
       Tab(0).ControlCount=   30
       TabCaption(1)   =   "Datos Tarjetas"
       TabPicture(1)   =   "frmManClien.frx":0028
-      Tab(1).ControlEnabled=   -1  'True
+      Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "FrameAux0"
       Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
@@ -214,19 +213,19 @@ Begin VB.Form frmManClien
       TabCaption(4)   =   "CRM"
       TabPicture(4)   =   "frmManClien.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "LabelCRM"
-      Tab(4).Control(1)=   "text1(28)"
-      Tab(4).Control(2)=   "Toolbar3"
-      Tab(4).Control(3)=   "lwCRM"
-      Tab(4).Control(4)=   "cmdAccCRM(0)"
-      Tab(4).Control(5)=   "cmdAccCRM(1)"
-      Tab(4).Control(6)=   "cmdAccCRM(2)"
-      Tab(4).Control(7)=   "FrameA"
+      Tab(4).Control(0)=   "FrameA"
+      Tab(4).Control(1)=   "cmdAccCRM(2)"
+      Tab(4).Control(2)=   "cmdAccCRM(1)"
+      Tab(4).Control(3)=   "cmdAccCRM(0)"
+      Tab(4).Control(4)=   "lwCRM"
+      Tab(4).Control(5)=   "Toolbar3"
+      Tab(4).Control(6)=   "text1(28)"
+      Tab(4).Control(7)=   "LabelCRM"
       Tab(4).ControlCount=   8
       Begin VB.TextBox text1 
          Height          =   285
          Index           =   33
-         Left            =   -70380
+         Left            =   4620
          MaxLength       =   10
          TabIndex        =   11
          Tag             =   "Codigo externo|T|S|||ssocio|codexterno|||"
@@ -624,7 +623,7 @@ Begin VB.Form frmManClien
          Alignment       =   1  'Right Justify
          Height          =   285
          Index           =   25
-         Left            =   -73560
+         Left            =   1440
          MaxLength       =   6
          TabIndex        =   10
          Tag             =   "Nro Socio Cooperativa|N|S|||ssocio|nrosocio|000000||"
@@ -848,7 +847,7 @@ Begin VB.Form frmManClien
       Begin VB.Frame FrameAux0 
          BorderStyle     =   0  'None
          Height          =   4395
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   89
          Top             =   480
          Width           =   11055
@@ -1191,7 +1190,7 @@ Begin VB.Form frmManClien
          Enabled         =   0   'False
          Height          =   285
          Index           =   9
-         Left            =   -72300
+         Left            =   2700
          TabIndex        =   82
          Top             =   2640
          Width           =   2895
@@ -1200,7 +1199,7 @@ Begin VB.Form frmManClien
          Alignment       =   1  'Right Justify
          Height          =   285
          Index           =   9
-         Left            =   -73560
+         Left            =   1440
          MaxLength       =   10
          TabIndex        =   9
          Tag             =   "Cta.Contable|T|S|||ssocio|codmacta|||"
@@ -1210,7 +1209,7 @@ Begin VB.Form frmManClien
       Begin VB.TextBox text1 
          Height          =   765
          Index           =   24
-         Left            =   -69120
+         Left            =   5880
          MaxLength       =   250
          MultiLine       =   -1  'True
          ScrollBars      =   2  'Vertical
@@ -1223,7 +1222,7 @@ Begin VB.Form frmManClien
          Caption         =   "Datos Contacto"
          ForeColor       =   &H00972E0B&
          Height          =   1920
-         Left            =   -74775
+         Left            =   225
          TabIndex        =   71
          Top             =   3390
          Width           =   5415
@@ -1337,7 +1336,7 @@ Begin VB.Form frmManClien
          Caption         =   "Datos Facturación"
          ForeColor       =   &H00972E0B&
          Height          =   3885
-         Left            =   -69240
+         Left            =   5760
          TabIndex        =   68
          Top             =   360
          Width           =   5415
@@ -1682,7 +1681,7 @@ Begin VB.Form frmManClien
          Alignment       =   1  'Right Justify
          Height          =   285
          Index           =   4
-         Left            =   -73560
+         Left            =   1440
          MaxLength       =   6
          TabIndex        =   4
          Tag             =   "C.Postal|T|N|||ssocio|codposta|||"
@@ -1693,7 +1692,7 @@ Begin VB.Form frmManClien
          Alignment       =   1  'Right Justify
          Height          =   285
          Index           =   8
-         Left            =   -73560
+         Left            =   1440
          MaxLength       =   3
          TabIndex        =   8
          Tag             =   "Situación|N|N|0|99|ssocio|codsitua|00||"
@@ -1705,7 +1704,7 @@ Begin VB.Form frmManClien
          Enabled         =   0   'False
          Height          =   285
          Index           =   8
-         Left            =   -73020
+         Left            =   1980
          TabIndex        =   55
          Top             =   2285
          Width           =   3615
@@ -1714,7 +1713,7 @@ Begin VB.Form frmManClien
          Alignment       =   1  'Right Justify
          Height          =   285
          Index           =   7
-         Left            =   -73560
+         Left            =   1440
          MaxLength       =   4
          TabIndex        =   7
          Tag             =   "Colectivo|N|N|0|999|ssocio|codcoope|000||"
@@ -1726,7 +1725,7 @@ Begin VB.Form frmManClien
          Enabled         =   0   'False
          Height          =   285
          Index           =   7
-         Left            =   -73020
+         Left            =   1980
          TabIndex        =   54
          Top             =   1932
          Width           =   3615
@@ -1734,7 +1733,7 @@ Begin VB.Form frmManClien
       Begin VB.TextBox text1 
          Height          =   285
          Index           =   5
-         Left            =   -72780
+         Left            =   2220
          MaxLength       =   35
          TabIndex        =   5
          Tag             =   "Población|T|N|||ssocio|pobsocio|||"
@@ -1744,7 +1743,7 @@ Begin VB.Form frmManClien
       Begin VB.TextBox text1 
          Height          =   285
          Index           =   6
-         Left            =   -73560
+         Left            =   1440
          MaxLength       =   35
          TabIndex        =   6
          Tag             =   "Provincia|T|N|||ssocio|prosocio|||"
@@ -1754,7 +1753,7 @@ Begin VB.Form frmManClien
       Begin VB.TextBox text1 
          Height          =   285
          Index           =   3
-         Left            =   -73560
+         Left            =   1440
          MaxLength       =   40
          TabIndex        =   3
          Tag             =   "Domicilio|T|N|||ssocio|domsocio|||"
@@ -1764,7 +1763,7 @@ Begin VB.Form frmManClien
       Begin VB.TextBox text1 
          Height          =   285
          Index           =   2
-         Left            =   -73560
+         Left            =   1440
          MaxLength       =   9
          TabIndex        =   2
          Tag             =   "NIF / CIF|T|N|||ssocio|nifsocio|||"
@@ -1890,7 +1889,7 @@ Begin VB.Form frmManClien
          Caption         =   "Código Externo"
          Height          =   255
          Index           =   2
-         Left            =   -71610
+         Left            =   3390
          TabIndex        =   126
          Top             =   3060
          Width           =   1320
@@ -1917,7 +1916,7 @@ Begin VB.Form frmManClien
          Caption         =   "Nro.Socio"
          Height          =   255
          Index           =   1
-         Left            =   -74760
+         Left            =   240
          TabIndex        =   96
          Top             =   3015
          Width           =   870
@@ -1925,7 +1924,7 @@ Begin VB.Form frmManClien
       Begin VB.Label Label8 
          Caption         =   "Cta.Conta."
          Height          =   255
-         Left            =   -74760
+         Left            =   240
          TabIndex        =   83
          Top             =   2640
          Width           =   735
@@ -1933,7 +1932,7 @@ Begin VB.Form frmManClien
       Begin VB.Image imgBuscar 
          Height          =   240
          Index           =   2
-         Left            =   -73920
+         Left            =   1080
          ToolTipText     =   "Buscar Cta.Contable"
          Top             =   2640
          Width           =   240
@@ -1941,7 +1940,7 @@ Begin VB.Form frmManClien
       Begin VB.Image imgZoom 
          Height          =   240
          Index           =   0
-         Left            =   -67920
+         Left            =   7080
          ToolTipText     =   "Zoom descripción"
          Top             =   4275
          Width           =   240
@@ -1949,7 +1948,7 @@ Begin VB.Form frmManClien
       Begin VB.Label Label29 
          Caption         =   "Observaciones"
          Height          =   255
-         Left            =   -69120
+         Left            =   5880
          TabIndex        =   78
          Top             =   4290
          Width           =   1215
@@ -1957,7 +1956,7 @@ Begin VB.Form frmManClien
       Begin VB.Image imgBuscar 
          Height          =   240
          Index           =   1
-         Left            =   -73920
+         Left            =   1080
          ToolTipText     =   "Buscar Situación"
          Top             =   2280
          Width           =   240
@@ -1965,7 +1964,7 @@ Begin VB.Form frmManClien
       Begin VB.Image imgBuscar 
          Height          =   240
          Index           =   0
-         Left            =   -73920
+         Left            =   1080
          ToolTipText     =   "Buscar Colectivo"
          Top             =   1920
          Width           =   240
@@ -1973,7 +1972,7 @@ Begin VB.Form frmManClien
       Begin VB.Label Label19 
          Caption         =   "Situación"
          Height          =   255
-         Left            =   -74760
+         Left            =   240
          TabIndex        =   67
          Top             =   2280
          Width           =   855
@@ -1981,7 +1980,7 @@ Begin VB.Form frmManClien
       Begin VB.Label Label18 
          Caption         =   "Colectivo"
          Height          =   255
-         Left            =   -74760
+         Left            =   240
          TabIndex        =   66
          Top             =   1920
          Width           =   735
@@ -1989,7 +1988,7 @@ Begin VB.Form frmManClien
       Begin VB.Label Label7 
          Caption         =   "Provincia"
          Height          =   255
-         Left            =   -74760
+         Left            =   240
          TabIndex        =   65
          Top             =   1605
          Width           =   735
@@ -1998,7 +1997,7 @@ Begin VB.Form frmManClien
          Caption         =   "Población"
          Height          =   255
          Index           =   26
-         Left            =   -74760
+         Left            =   240
          TabIndex        =   64
          Top             =   1240
          Width           =   735
@@ -2007,7 +2006,7 @@ Begin VB.Form frmManClien
          Caption         =   "Domicilio"
          Height          =   255
          Index           =   0
-         Left            =   -74760
+         Left            =   240
          TabIndex        =   63
          Top             =   880
          Width           =   735
@@ -2015,7 +2014,7 @@ Begin VB.Form frmManClien
       Begin VB.Label Label5 
          Caption         =   "NIF"
          Height          =   255
-         Left            =   -74760
+         Left            =   240
          TabIndex        =   62
          Top             =   525
          Width           =   735
@@ -2415,7 +2414,7 @@ Private Sub cmdAccCRM_Click(Index As Integer)
         
         
         frmCRMImprimir.Text1 = Text1(0).Text
-        frmCRMImprimir.Text2 = Text1(1).Text
+        frmCRMImprimir.text2 = Text1(1).Text
         frmCRMImprimir.Show vbModal
         
     Case 0
@@ -2452,13 +2451,13 @@ Private Sub cmdAccCRM_Click(Index As Integer)
             If Text1(9).Text = "" Then
                 BuscaChekc = "No tiene cta contable"
             Else
-                If Text2(9).Text = "" Then BuscaChekc = "Cta contable incorrecta"
+                If text2(9).Text = "" Then BuscaChekc = "Cta contable incorrecta"
             End If
             If BuscaChekc < "" Then
                 MsgBox BuscaChekc, vbExclamation
                 Exit Sub
             End If
-            BuscaChekc = "-1|" & Text1(1).Text & "|" & Text1(9).Text & "|" & Text2(9).Text & "|"
+            BuscaChekc = "-1|" & Text1(1).Text & "|" & Text1(9).Text & "|" & text2(9).Text & "|"
             frmCRMReclamas.Intercambio = BuscaChekc  'nueva
             frmCRMReclamas.Show vbModal
             BuscaChekc = ""
@@ -2501,7 +2500,7 @@ Private Sub cmdAceptar_Click()
         Case 3 'INSERTAR
             If DatosOk Then
                 If InsertarDesdeForm2(Me, 1) Then
-                    Text2(9).Text = PonerNombreCuenta(Text1(9), Modo, Text1(0).Text)
+                    text2(9).Text = PonerNombreCuenta(Text1(9), Modo, Text1(0).Text)
         
                     Data1.RecordSource = "Select * from " & NombreTabla & Ordenacion
                     PosicionarData
@@ -2906,53 +2905,53 @@ Private Function MontaSQLCarga(Index As Integer, enlaza As Boolean) As String
 ' Si ENLAZA -> Enlaça en el data1
 '           -> Si no el carreguem sense enllaçar a cap camp
 '--------------------------------------------------------------------
-Dim Sql As String
+Dim SQL As String
 Dim tabla As String
     
     ' ********* si n'hi han tabs, dona igual si en datagrid o no ***********
     Select Case Index
                
         Case 0 'TARJETAS
-            Sql = "SELECT codsocio,numlinea,numtarje,tiptarje,CASE tiptarje WHEN 0 THEN ""Normal"" WHEN 1 THEN ""Bonificado"" WHEN 2 THEN ""Profesional"" END, nomtarje,iban, codbanco,codsucur,digcontr,cuentaba, matricul "
-            Sql = Sql & " FROM starje "
+            SQL = "SELECT codsocio,numlinea,numtarje,tiptarje,CASE tiptarje WHEN 0 THEN ""Normal"" WHEN 1 THEN ""Bonificado"" WHEN 2 THEN ""Profesional"" END, nomtarje,iban, codbanco,codsucur,digcontr,cuentaba, matricul "
+            SQL = SQL & " FROM starje "
             If enlaza Then
-                Sql = Sql & ObtenerWhereCab(True)
+                SQL = SQL & ObtenerWhereCab(True)
             Else
-                Sql = Sql & " WHERE starje.codsocio = -1"
+                SQL = SQL & " WHERE starje.codsocio = -1"
             End If
-            Sql = Sql & " ORDER BY starje.numlinea"
+            SQL = SQL & " ORDER BY starje.numlinea"
                
         Case 1 'MATRICULAS
-            Sql = "SELECT codsocio,numlinea,matricul,observac "
-            Sql = Sql & " FROM smatri"
+            SQL = "SELECT codsocio,numlinea,matricul,observac "
+            SQL = SQL & " FROM smatri"
             If enlaza Then
-                Sql = Sql & ObtenerWhereCab(True)
+                SQL = SQL & ObtenerWhereCab(True)
             Else
-                Sql = Sql & " WHERE smatri.codsocio = -1"
+                SQL = SQL & " WHERE smatri.codsocio = -1"
             End If
-            Sql = Sql & " ORDER BY smatri.numlinea"
+            SQL = SQL & " ORDER BY smatri.numlinea"
             
         Case 2 'MARGENES DE PRECIOS DE ARTICULOS DE COMBUSTIBLE
-            Sql = "SELECT codsocio,numlinea,smargen.codartic, nomartic, margen, euroslitro "
-            Sql = Sql & " FROM smargen INNER JOIN sartic ON smargen.codartic = sartic.codartic "
+            SQL = "SELECT codsocio,numlinea,smargen.codartic, nomartic, margen, euroslitro "
+            SQL = SQL & " FROM smargen INNER JOIN sartic ON smargen.codartic = sartic.codartic "
             If enlaza Then
-                Sql = Sql & ObtenerWhereCab(True)
+                SQL = SQL & ObtenerWhereCab(True)
             Else
-                Sql = Sql & " WHERE smargen.codsocio = -1"
+                SQL = SQL & " WHERE smargen.codsocio = -1"
             End If
-            Sql = Sql & " ORDER BY smargen.numlinea"
+            SQL = SQL & " ORDER BY smargen.numlinea"
             
             
             
     End Select
     
-    MontaSQLCarga = Sql
+    MontaSQLCarga = SQL
 End Function
 
 Private Sub frmArt_DatoSeleccionado(CadenaSeleccion As String)
     txtAux(indice).Text = RecuperaValor(CadenaSeleccion, 1)
     FormateaCampo txtAux(indice)
-    Text2(7).Text = RecuperaValor(CadenaSeleccion, 2)
+    text2(7).Text = RecuperaValor(CadenaSeleccion, 2)
 End Sub
 
 Private Sub frmB_Selecionado(CadenaDevuelta As String)
@@ -2992,7 +2991,7 @@ Private Sub frmZ_Actualizar(vCampo As String)
 End Sub
 
 Private Sub imgDoc_Click(Index As Integer)
-Dim Sql As String
+Dim SQL As String
 
     If Me.AdoAux(0).Recordset.EOF Then Exit Sub
     TerminaBloquear
@@ -3127,7 +3126,7 @@ Dim i As Integer
         Else
             frmMensajes.cadWHERE2 = "1"
         End If
-        frmMensajes.cadWHERE = "codclien = " & Text1(0).Text & " AND  entryID = '" & lwCRM.SelectedItem.SubItems(5) & "'"
+        frmMensajes.cadWhere = "codclien = " & Text1(0).Text & " AND  entryID = '" & lwCRM.SelectedItem.SubItems(5) & "'"
         frmMensajes.Show vbModal
     Case 3
         'Cobros. NO HACEMOS NADA
@@ -3540,10 +3539,10 @@ Dim CPostal As String, desProvi As String, desPais As String
     Next i
 
     ' ************* configurar els camps de les descripcions de la capçalera *************
-    Text2(7).Text = PonerNombreDeCod(Text1(7), "scoope", "nomcoope", "codcoope", "N")
-    Text2(8).Text = PonerNombreDeCod(Text1(8), "ssitua", "nomsitua")
-    Text2(17).Text = PonerNombreDeCod(Text1(17), "sforpa", "nomforpa", "codforpa", "N")
-    Text2(9).Text = PonerNombreCuenta(Text1(9), Modo)
+    text2(7).Text = PonerNombreDeCod(Text1(7), "scoope", "nomcoope", "codcoope", "N")
+    text2(8).Text = PonerNombreDeCod(Text1(8), "ssitua", "nomsitua")
+    text2(17).Text = PonerNombreDeCod(Text1(17), "sforpa", "nomforpa", "codforpa", "N")
+    text2(9).Text = PonerNombreCuenta(Text1(9), Modo)
     ' ********************************************************************************
     
     '-- Esto permanece para saber donde estamos
@@ -3566,30 +3565,30 @@ Dim CPostal As String, desProvi As String, desPais As String
 End Sub
 
 Private Sub PonerDatosSegurosCuenta()
-Dim Sql As String
-Dim RS As ADODB.Recordset
+Dim SQL As String
+Dim Rs As ADODB.Recordset
 
     On Error GoTo ePonerDatosSegurosCuenta
     
     If Text1(9).Text = "" Then Exit Sub
 
-    Sql = "select numpoliz, fecbajcre, credisol, fecconce, credicon from cuentas where codmacta = " & DBSet(Text1(9).Text, "T")
-    Set RS = New ADODB.Recordset
-    RS.Open Sql, ConnConta, adOpenForwardOnly, adLockPessimistic, adCmdText
+    SQL = "select numpoliz, fecbajcre, credisol, fecconce, credicon from cuentas where codmacta = " & DBSet(Text1(9).Text, "T")
+    Set Rs = New ADODB.Recordset
+    Rs.Open SQL, ConnConta, adOpenForwardOnly, adLockPessimistic, adCmdText
     
     Text1(26).Text = ""
     Text1(27).Text = ""
     Text1(29).Text = ""
     Text1(30).Text = ""
     
-    If Not RS.EOF Then
-        Text1(26).Text = DBLet(RS.Fields(0).Value)
-        Text1(27).Text = Format(DBLet(RS.Fields(1).Value), "dd/mm/yyyy")
-        Text1(29).Text = Format(DBLet(RS.Fields(3).Value), "dd/mm/yyyy")
-        Text1(30).Text = Format(DBLet(RS.Fields(4).Value), "##,###,###,##0.00")
+    If Not Rs.EOF Then
+        Text1(26).Text = DBLet(Rs.Fields(0).Value)
+        Text1(27).Text = Format(DBLet(Rs.Fields(1).Value), "dd/mm/yyyy")
+        Text1(29).Text = Format(DBLet(Rs.Fields(3).Value), "dd/mm/yyyy")
+        Text1(30).Text = Format(DBLet(Rs.Fields(4).Value), "##,###,###,##0.00")
     End If
     
-    Set RS = Nothing
+    Set Rs = Nothing
     Exit Sub
     
 ePonerDatosSegurosCuenta:
@@ -3865,8 +3864,8 @@ Dim Nuevo As Boolean
                 
         Case 7 'COLECTIVO
             If PonerFormatoEntero(Text1(Index)) Then
-                Text2(Index).Text = PonerNombreDeCod(Text1(Index), "scoope", "nomcoope")
-                If Text2(Index).Text = "" Then
+                text2(Index).Text = PonerNombreDeCod(Text1(Index), "scoope", "nomcoope")
+                If text2(Index).Text = "" Then
                     cadMen = "No existe el Colectivo: " & Text1(Index).Text & vbCrLf
                     cadMen = cadMen & "¿Desea crearlo?" & vbCrLf
                     If MsgBox(cadMen, vbQuestion + vbYesNo) = vbYes Then
@@ -3884,13 +3883,13 @@ Dim Nuevo As Boolean
                     PonerFoco Text1(Index)
                 End If
             Else
-                Text2(Index).Text = ""
+                text2(Index).Text = ""
             End If
             
         Case 8 'Situacion
             If PonerFormatoEntero(Text1(Index)) Then
-                Text2(Index) = PonerNombreDeCod(Text1(Index), "ssitua", "nomsitua", "codsitua", "N")
-                If Text2(Index).Text = "" Then
+                text2(Index) = PonerNombreDeCod(Text1(Index), "ssitua", "nomsitua", "codsitua", "N")
+                If text2(Index).Text = "" Then
                     cadMen = "No existe la Situación: " & Text1(Index).Text & vbCrLf
                     cadMen = cadMen & "¿Desea crearla?" & vbCrLf
                     If MsgBox(cadMen, vbQuestion + vbYesNo) = vbYes Then
@@ -3908,13 +3907,13 @@ Dim Nuevo As Boolean
                     PonerFoco Text1(Index)
                 End If
             Else
-                Text2(Index).Text = ""
+                text2(Index).Text = ""
             End If
                 
         Case 17 'Forma de Pago
             If PonerFormatoEntero(Text1(Index)) Then
-                Text2(Index) = PonerNombreDeCod(Text1(Index), "sforpa", "nomforpa", "codforpa", "N")
-                If Text2(Index).Text = "" Then
+                text2(Index) = PonerNombreDeCod(Text1(Index), "sforpa", "nomforpa", "codforpa", "N")
+                If text2(Index).Text = "" Then
                     cadMen = "No existe la F.Pago: " & Text1(Index).Text & vbCrLf
                     cadMen = cadMen & "¿Desea crearla?" & vbCrLf
                     If MsgBox(cadMen, vbQuestion + vbYesNo) = vbYes Then
@@ -3932,7 +3931,7 @@ Dim Nuevo As Boolean
                     PonerFoco Text1(Index)
                 End If
             Else
-                Text2(Index).Text = ""
+                text2(Index).Text = ""
             End If
         
         Case 15, 16 'Fechas
@@ -3941,9 +3940,9 @@ Dim Nuevo As Boolean
         Case 9 'cuenta contable
             If Text1(Index).Text = "" Then Exit Sub
             If Modo = 3 Then
-                Text2(Index).Text = PonerNombreCuenta(Text1(Index), Modo, "") 'text1(0).Text)
+                text2(Index).Text = PonerNombreCuenta(Text1(Index), Modo, "") 'text1(0).Text)
             Else
-                Text2(Index).Text = PonerNombreCuenta(Text1(Index), Modo, Text1(0).Text)
+                text2(Index).Text = PonerNombreCuenta(Text1(Index), Modo, Text1(0).Text)
             End If
             
         Case 23 'DTO. X LITRO
@@ -4058,7 +4057,7 @@ Private Sub ToolAux_ButtonClick(Index As Integer, ByVal Button As MSComctlLib.Bu
 End Sub
 
 Private Sub BotonEliminarLinea(Index As Integer)
-Dim Sql As String
+Dim SQL As String
 Dim vWhere As String
 Dim eliminar As Boolean
 
@@ -4085,31 +4084,31 @@ Dim eliminar As Boolean
     ' canviar els noms, els formats i el DELETE *****
     Select Case Index
         Case 0 'tarjetas
-            Sql = "¿Seguro que desea eliminar la Tarjeta?"
-            Sql = Sql & vbCrLf & "Tarjeta: " & AdoAux(Index).Recordset!Numtarje
-            If MsgBox(Sql, vbQuestion + vbYesNo) = vbYes Then
+            SQL = "¿Seguro que desea eliminar la Tarjeta?"
+            SQL = SQL & vbCrLf & "Tarjeta: " & AdoAux(Index).Recordset!Numtarje
+            If MsgBox(SQL, vbQuestion + vbYesNo) = vbYes Then
                 eliminar = True
-                Sql = "DELETE FROM starje"
-                Sql = Sql & vWhere & " AND numlinea= " & AdoAux(Index).Recordset!numlinea
+                SQL = "DELETE FROM starje"
+                SQL = SQL & vWhere & " AND numlinea= " & AdoAux(Index).Recordset!numlinea
             End If
             
         Case 1 'matriculas
-            Sql = "¿Seguro que desea eliminar la Matricula?"
-            Sql = Sql & vbCrLf & "Nombre: " & AdoAux(Index).Recordset!matricul
-            If MsgBox(Sql, vbQuestion + vbYesNo) = vbYes Then
+            SQL = "¿Seguro que desea eliminar la Matricula?"
+            SQL = SQL & vbCrLf & "Nombre: " & AdoAux(Index).Recordset!matricul
+            If MsgBox(SQL, vbQuestion + vbYesNo) = vbYes Then
                 eliminar = True
-                Sql = "DELETE FROM smatri"
-                Sql = Sql & vWhere & " AND numlinea= " & AdoAux(Index).Recordset!numlinea
+                SQL = "DELETE FROM smatri"
+                SQL = SQL & vWhere & " AND numlinea= " & AdoAux(Index).Recordset!numlinea
             End If
             
             
         Case 2 'margenes
-            Sql = "¿Seguro que desea eliminar el Margen del Artículo?"
-            Sql = Sql & vbCrLf & "Código: " & AdoAux(Index).Recordset!codartic
-            If MsgBox(Sql, vbQuestion + vbYesNo) = vbYes Then
+            SQL = "¿Seguro que desea eliminar el Margen del Artículo?"
+            SQL = SQL & vbCrLf & "Código: " & AdoAux(Index).Recordset!codArtic
+            If MsgBox(SQL, vbQuestion + vbYesNo) = vbYes Then
                 eliminar = True
-                Sql = "DELETE FROM smargen"
-                Sql = Sql & vWhere & " AND numlinea= " & AdoAux(Index).Recordset!numlinea
+                SQL = "DELETE FROM smargen"
+                SQL = SQL & vWhere & " AND numlinea= " & AdoAux(Index).Recordset!numlinea
             End If
         
             
@@ -4118,7 +4117,7 @@ Dim eliminar As Boolean
     If eliminar Then
         NumRegElim = AdoAux(Index).Recordset.AbsolutePosition
         TerminaBloquear
-        Conn.Execute Sql
+        Conn.Execute SQL
         ' *** si n'hi han tabs sense datagrid, posar l'If ***
         CargaGrid Index, True
         If Not SituarDataTrasEliminar(AdoAux(Index), NumRegElim, True) Then
@@ -4232,7 +4231,7 @@ Dim i As Integer
                     For i = 15 To 17
                         txtAux(i).Text = ""
                     Next i
-                    Text2(0).Text = ""
+                    text2(0).Text = ""
                     PonerFoco txtAux(15)
             End Select
     End Select
@@ -4337,7 +4336,7 @@ Private Sub BotonModificarLinea(Index As Integer)
                 txtAux(J).Text = DataGridAux(Index).Columns(J - 13).Text
             Next J
             txtAux(15).Text = DataGridAux(Index).Columns(2).Text
-            Text2(0).Text = DataGridAux(Index).Columns(3).Text
+            text2(0).Text = DataGridAux(Index).Columns(3).Text
             txtAux(16).Text = DataGridAux(Index).Columns(4).Text
             
             For i = 13 To 14
@@ -4421,8 +4420,8 @@ Dim b As Boolean
                 txtAux(jj).visible = b
                 txtAux(jj).Top = alto
             Next jj
-            Text2(0).visible = (xModo = 1)
-            Text2(0).Top = alto
+            text2(0).visible = (xModo = 1)
+            text2(0).Top = alto
             txtAux(15).visible = (xModo = 1)
             txtAux(15).Top = alto
             Me.btnBuscar(0).visible = (xModo = 1)
@@ -4504,8 +4503,8 @@ Dim Cant As Long
             
         Case 15 ' articulo
             If PonerFormatoEntero(txtAux(Index)) Then
-                Text2(0).Text = PonerNombreDeCod(txtAux(Index), "sartic", "nomartic", "codartic", "N")
-                If Text2(0).Text = "" Then
+                text2(0).Text = PonerNombreDeCod(txtAux(Index), "sartic", "nomartic", "codartic", "N")
+                If text2(0).Text = "" Then
                     cadMen = "No existe el Articulo: " & txtAux(Index).Text & vbCrLf
                     MsgBox cadMen, vbExclamation
                 Else
@@ -4579,8 +4578,8 @@ Private Sub txtAux_KeyPress(Index As Integer, KeyAscii As Integer)
 End Sub
 
 Private Function DatosOkLlin(nomframe As String) As Boolean
-Dim RS As ADODB.Recordset
-Dim Sql As String
+Dim Rs As ADODB.Recordset
+Dim SQL As String
 Dim b As Boolean
 Dim Cant As Integer
 Dim Mens As String
@@ -4917,28 +4916,28 @@ End Sub
 Private Sub frmCtas_DatoSeleccionado(CadenaSeleccion As String)
 'Cuentas contables de la Contabilidad
     Text1(indice).Text = RecuperaValor(CadenaSeleccion, 1) 'codmacta
-    Text2(indice).Text = RecuperaValor(CadenaSeleccion, 2) 'des macta
+    text2(indice).Text = RecuperaValor(CadenaSeleccion, 2) 'des macta
 End Sub
 
 Private Sub frmCoo_DatoSeleccionado(CadenaSeleccion As String)
 'Mantenimiento de Colectivos
     Text1(7).Text = RecuperaValor(CadenaSeleccion, 1) 'codcoope
     FormateaCampo Text1(7)
-    Text2(7).Text = RecuperaValor(CadenaSeleccion, 2) 'nomcoope
+    text2(7).Text = RecuperaValor(CadenaSeleccion, 2) 'nomcoope
 End Sub
 
 Private Sub frmSit_DatoSeleccionado(CadenaSeleccion As String)
 'Mantenimiento Grupo
     Text1(8).Text = RecuperaValor(CadenaSeleccion, 1) 'codsitua
     FormateaCampo Text1(8)
-    Text2(8).Text = RecuperaValor(CadenaSeleccion, 2) 'nomsitua
+    text2(8).Text = RecuperaValor(CadenaSeleccion, 2) 'nomsitua
 End Sub
 
 Private Sub frmFpa_DatoSeleccionado(CadenaSeleccion As String)
 'Mantenimiento F.Pago
     Text1(17).Text = RecuperaValor(CadenaSeleccion, 1) 'codforpa
     FormateaCampo Text1(17)
-    Text2(17).Text = RecuperaValor(CadenaSeleccion, 2) 'nomforpa
+    text2(17).Text = RecuperaValor(CadenaSeleccion, 2) 'nomforpa
 End Sub
 
 
@@ -5373,7 +5372,7 @@ End Sub
 
 Private Sub CargaDatosLWcrm2()
 Dim cad As String
-Dim RS As ADODB.Recordset
+Dim Rs As ADODB.Recordset
 Dim It As ListItem
 Dim ElIcono As Integer
 Dim GroupBy As String
@@ -5424,11 +5423,17 @@ Dim observaciones As String
         BuscaChekc = "fechahora"
     Case 3
         'Cobros pendientes
-        cad = "SELECT fecvenci,concat(numserie,right(concat(""00000000"",codfaccl),7)),fecfaccl,nomforpa,"
-        cad = cad & "impvenci+if(gastos is null,0,gastos)-if(impcobro is null,0,impcobro)  tot"
-        cad = cad & " FROM  scobro INNER JOIN sforpa ON scobro.codforpa=sforpa.codforpa "
-        cad = cad & " WHERE scobro.codmacta = '" & Text1(9).Text & "' "
-        
+        If vParamAplic.ContabilidadNueva Then
+            cad = "SELECT fecvenci,concat(numserie,right(concat(""00000000"",numfactu),7)),fecfactu fecfaccl,nomforpa,"
+            cad = cad & "impvenci+if(gastos is null,0,gastos)-if(impcobro is null,0,impcobro)  tot"
+            cad = cad & " FROM  cobros INNER JOIN formapago ON cobros.codforpa=formapago.codforpa "
+            cad = cad & " WHERE cobros.codmacta = '" & Text1(9).Text & "' "
+        Else
+            cad = "SELECT fecvenci,concat(numserie,right(concat(""00000000"",codfaccl),7)),fecfaccl,nomforpa,"
+            cad = cad & "impvenci+if(gastos is null,0,gastos)-if(impcobro is null,0,impcobro)  tot"
+            cad = cad & " FROM  scobro INNER JOIN sforpa ON scobro.codforpa=sforpa.codforpa "
+            cad = cad & " WHERE scobro.codmacta = '" & Text1(9).Text & "' "
+        End If
         BuscaChekc = "fecvenci"
         ConexionConta = True
     Case 4
@@ -5464,51 +5469,51 @@ Dim observaciones As String
     
     lwCRM.ListItems.Clear
    
-    Set RS = New ADODB.Recordset
+    Set Rs = New ADODB.Recordset
     If Not ConexionConta Then
         'Conn  ariges
-        RS.Open cad, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+        Rs.Open cad, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
     Else
         'Va contra la contabilidad  connconta
-        RS.Open cad, ConnConta, adOpenKeyset, adLockPessimistic, adCmdText
+        Rs.Open cad, ConnConta, adOpenKeyset, adLockPessimistic, adCmdText
     End If
-    While Not RS.EOF
+    While Not Rs.EOF
         If Kopc <> 3 Then
             MeteIT = True
         Else
-            If RS!tot <> 0 Then
+            If Rs!tot <> 0 Then
                 MeteIT = True
             Else
                 MeteIT = False
             End If
         End If
         On Error Resume Next
-        If Kopc = 6 Then observaciones = RS.Fields(3)
+        If Kopc = 6 Then observaciones = Rs.Fields(3)
         On Error GoTo ECargaDatosLW
         If MeteIT Then
                 Set It = lwCRM.ListItems.Add()
                  
                 If lwCRM.ColumnHeaders(1).Tag <> "" Then
-                    It.Text = Format(RS.Fields(0), lwCRM.ColumnHeaders(1).Tag)
+                    It.Text = Format(Rs.Fields(0), lwCRM.ColumnHeaders(1).Tag)
                 Else
-                    It.Text = RS.Fields(0)
+                    It.Text = Rs.Fields(0)
                 End If
                 'El resto de cmpos
                 For NumRegElim = 2 To CInt(RecuperaValor(lwCRM.Tag, 2))
 '                    If Kopc = 6 And NumRegElim = 4 Then Stop
 '                    If Kopc = 5 And NumRegElim = 4 Then Stop
 '
-                    If IsNull(RS.Fields(NumRegElim - 1)) Then
+                    If IsNull(Rs.Fields(NumRegElim - 1)) Then
                         It.SubItems(NumRegElim - 1) = " "
                     Else
                     
                         If lwCRM.ColumnHeaders(NumRegElim).Tag <> "" Then
-                            It.SubItems(NumRegElim - 1) = Format(RS.Fields(NumRegElim - 1), lwCRM.ColumnHeaders(NumRegElim).Tag)
+                            It.SubItems(NumRegElim - 1) = Format(Rs.Fields(NumRegElim - 1), lwCRM.ColumnHeaders(NumRegElim).Tag)
                         Else
                         
                             
                             'Cad = RS.Fields(NumRegElim - 1)
-                            cad = DBLetMemo(RS.Fields(NumRegElim - 1))
+                            cad = DBLetMemo(Rs.Fields(NumRegElim - 1))
                             'no TIENE FORMATO. sEGUN LO QUE SEA puedo hacer unas cosas u otras
                             If NumRegElim = 4 And Kopc = 1 Then cad = Replace(cad, vbCrLf, " ")
                             'para las observaciones de la reclamacion tb quito los vbcrlf
@@ -5530,7 +5535,7 @@ Dim observaciones As String
                     It.SmallIcon = 27
                 ElseIf Kopc = 2 Then
 
-                    If RS.Fields(1) = "Enviado" Then
+                    If Rs.Fields(1) = "Enviado" Then
                         It.SmallIcon = 28
                     Else
                         It.SmallIcon = 29
@@ -5543,9 +5548,9 @@ Dim observaciones As String
         
         
     
-        RS.MoveNext
+        Rs.MoveNext
     Wend
-    RS.Close
+    Rs.Close
     
     
     If Kopc = 1 Then
@@ -5553,24 +5558,24 @@ Dim observaciones As String
         cad = "select fechora ,usuario,nomtraba ,observaciones,date_format(fechora,""%Y%m%d%H%i%s"") from"
         cad = cad & " scrmacciones left join straba on scrmacciones.codtraba=straba.codtraba "
         cad = cad & " WHERE scrmacciones.tipo=1  and codclien= " & Data1.Recordset!codsocio
-        RS.Open cad, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
-        While Not RS.EOF
+        Rs.Open cad, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+        While Not Rs.EOF
             '
             'Coje datos desde dos tablas
             Set It = lwCRM.ListItems.Add()
-            It.Text = Format(RS.Fields(0), lwCRM.ColumnHeaders(1).Tag)
+            It.Text = Format(Rs.Fields(0), lwCRM.ColumnHeaders(1).Tag)
            
             For NumRegElim = 2 To CInt(RecuperaValor(lwCRM.Tag, 2))
-                If IsNull(RS.Fields(NumRegElim - 1)) Then
+                If IsNull(Rs.Fields(NumRegElim - 1)) Then
                     It.SubItems(NumRegElim - 1) = " "
                 Else
                 
                     If lwCRM.ColumnHeaders(NumRegElim).Tag <> "" Then
-                        It.SubItems(NumRegElim - 1) = Format(RS.Fields(NumRegElim - 1), lwCRM.ColumnHeaders(NumRegElim).Tag)
+                        It.SubItems(NumRegElim - 1) = Format(Rs.Fields(NumRegElim - 1), lwCRM.ColumnHeaders(NumRegElim).Tag)
                     Else
                     
                         
-                        cad = RS.Fields(NumRegElim - 1)
+                        cad = Rs.Fields(NumRegElim - 1)
                         'no TIENE FORMATO. sEGUN LO QUE SEA puedo hacer unas cosas u otras
                         If NumRegElim = 4 And Kopc = 1 Then cad = Replace(cad, vbCrLf, " ")
   
@@ -5582,17 +5587,17 @@ Dim observaciones As String
                 End If
             Next
             It.SmallIcon = 10 '26
-            RS.MoveNext
+            Rs.MoveNext
         Wend
-        RS.Close
+        Rs.Close
     End If
-    Set RS = Nothing
+    Set Rs = Nothing
     
     
     Exit Sub
 ECargaDatosLW:
     MuestraError Err.Number
-    Set RS = Nothing
+    Set Rs = Nothing
     
 End Sub
 
@@ -5635,7 +5640,7 @@ End Sub
 
 
 Private Sub ModificarDatosCuentaContable()
-Dim Sql As String
+Dim SQL As String
 Dim cad As String
 
     On Error GoTo eModificarDatosCuentaContable
@@ -5666,28 +5671,38 @@ Dim cad As String
         
         If MsgBox(cad, vbQuestion + vbYesNo + vbDefaultButton2) = vbYes Then
                         
-            Sql = "update cuentas set nommacta = " & DBSet(Trim(Text1(1).Text), "T")
-            Sql = Sql & ", razosoci = " & DBSet(Trim(Text1(1).Text), "T")
-            Sql = Sql & ", dirdatos = " & DBSet(Trim(Text1(3).Text), "T")
-            Sql = Sql & ", codposta = " & DBSet(Trim(Text1(4).Text), "T")
-            Sql = Sql & ", despobla = " & DBSet(Trim(Text1(5).Text), "T")
-            Sql = Sql & ", desprovi = " & DBSet(Trim(Text1(6).Text), "T")
-            Sql = Sql & ", nifdatos = " & DBSet(Trim(Text1(2).Text), "T")
-            Sql = Sql & ", maidatos = " & DBSet(Trim(Text1(14).Text), "T")
-            Sql = Sql & ", webdatos = " & DBSet(Trim(Text1(10).Text), "T")
-            Sql = Sql & ", entidad = " & DBSet(Trim(Text1(18).Text), "T", "S")
-            Sql = Sql & ", oficina = " & DBSet(Trim(Text1(19).Text), "T", "S")
-            Sql = Sql & ", cc = " & DBSet(Trim(Text1(20).Text), "T", "S")
-            Sql = Sql & ", cuentaba = " & DBSet(Trim(Text1(21).Text), "T", "S")
+            SQL = "update cuentas set nommacta = " & DBSet(Trim(Text1(1).Text), "T")
+            SQL = SQL & ", razosoci = " & DBSet(Trim(Text1(1).Text), "T")
+            SQL = SQL & ", dirdatos = " & DBSet(Trim(Text1(3).Text), "T")
+            SQL = SQL & ", codposta = " & DBSet(Trim(Text1(4).Text), "T")
+            SQL = SQL & ", despobla = " & DBSet(Trim(Text1(5).Text), "T")
+            SQL = SQL & ", desprovi = " & DBSet(Trim(Text1(6).Text), "T")
+            SQL = SQL & ", nifdatos = " & DBSet(Trim(Text1(2).Text), "T")
+            SQL = SQL & ", maidatos = " & DBSet(Trim(Text1(14).Text), "T")
+            SQL = SQL & ", webdatos = " & DBSet(Trim(Text1(10).Text), "T")
             
-            '[Monica]22/11/2013: tema iban
-            If vEmpresa.HayNorma19_34Nueva = 1 Then
-                Sql = Sql & ", iban = " & DBSet(Trim(Text1(32).Text), "T", "S")
+            If vParamAplic.ContabilidadNueva Then
+                Dim vIban As String
+                
+                vIban = MiFormat(Text1(32).Text, "") & MiFormat(Text1(18).Text, "0000") & MiFormat(Text1(19).Text, "0000") & MiFormat(Text1(20).Text, "00") & MiFormat(Text1(21).Text, "0000000000")
+            
+                SQL = SQL & ", iban = " & DBSet(vIban, "T")
+                SQL = SQL & ", codpais = 'ES' "
+                
+            Else
+                SQL = SQL & ", entidad = " & DBSet(Trim(Text1(18).Text), "T", "S")
+                SQL = SQL & ", oficina = " & DBSet(Trim(Text1(19).Text), "T", "S")
+                SQL = SQL & ", cc = " & DBSet(Trim(Text1(20).Text), "T", "S")
+                SQL = SQL & ", cuentaba = " & DBSet(Trim(Text1(21).Text), "T", "S")
+                
+                '[Monica]22/11/2013: tema iban
+                If vEmpresa.HayNorma19_34Nueva = 1 Then
+                    SQL = SQL & ", iban = " & DBSet(Trim(Text1(32).Text), "T", "S")
+                End If
             End If
-            
-            Sql = Sql & " where codmacta = " & DBSet(Trim(Text1(9).Text), "T")
+            SQL = SQL & " where codmacta = " & DBSet(Trim(Text1(9).Text), "T")
                         
-            ConnConta.Execute Sql
+            ConnConta.Execute SQL
                         
 '            MsgBox "Datos de Cuenta modificados correctamente.", vbExclamation
                         
@@ -5718,34 +5733,34 @@ eModificarDatosCuentaContable:
 End Sub
 
 Private Function HayCobrosPagosPendientes(vCodmacta As String) As Boolean
-Dim Sql As String
+Dim SQL As String
 Dim sql2 As String
-Dim RS As ADODB.Recordset
+Dim Rs As ADODB.Recordset
 Dim nRegs As Long
 
     On Error GoTo eHayCobrosPagosPendientes
 
 
-    Sql = "select count(*) from scobro where codmacta = " & DBSet(vCodmacta, "T")
-    Sql = Sql & " and (codrem is null or codrem = 0) and (transfer is null or transfer = 0) "
+    SQL = "select count(*) from scobro where codmacta = " & DBSet(vCodmacta, "T")
+    SQL = SQL & " and (codrem is null or codrem = 0) and (transfer is null or transfer = 0) "
     
-    Set RS = New ADODB.Recordset
-    RS.Open Sql, ConnConta, adOpenForwardOnly, adLockPessimistic, adCmdText
-    If Not RS.EOF Then
-        If DBLet(RS.Fields(0).Value) <> 0 Then nRegs = DBLet(RS.Fields(0).Value)
+    Set Rs = New ADODB.Recordset
+    Rs.Open SQL, ConnConta, adOpenForwardOnly, adLockPessimistic, adCmdText
+    If Not Rs.EOF Then
+        If DBLet(Rs.Fields(0).Value) <> 0 Then nRegs = DBLet(Rs.Fields(0).Value)
     End If
             
-    Sql = "select count(*) from spagop where ctaprove = " & DBSet(vCodmacta, "T")
-    Sql = Sql & " and (transfer is null or transfer = 0)"
+    SQL = "select count(*) from spagop where ctaprove = " & DBSet(vCodmacta, "T")
+    SQL = SQL & " and (transfer is null or transfer = 0)"
     
-    Set RS = Nothing
+    Set Rs = Nothing
     
-    Set RS = New ADODB.Recordset
-    RS.Open Sql, ConnConta, adOpenForwardOnly, adLockPessimistic, adCmdText
-    If Not RS.EOF Then
-        If DBLet(RS.Fields(0).Value) <> 0 Then nRegs = nRegs + DBLet(RS.Fields(0).Value)
+    Set Rs = New ADODB.Recordset
+    Rs.Open SQL, ConnConta, adOpenForwardOnly, adLockPessimistic, adCmdText
+    If Not Rs.EOF Then
+        If DBLet(Rs.Fields(0).Value) <> 0 Then nRegs = nRegs + DBLet(Rs.Fields(0).Value)
     End If
-    Set RS = Nothing
+    Set Rs = Nothing
     
     HayCobrosPagosPendientes = (nRegs <> 0)
     Exit Function

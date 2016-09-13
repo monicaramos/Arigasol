@@ -93,13 +93,18 @@ Private mvarCodIvaReduAnt As Integer 'Codigo de iva reducido antiguo
 
 Private mvarFechaCamIva As String ' fecha de cambio de iva 01/09/2012
 
-Private Sql As String  'Para la sentencia
+Private mvarContabilidadNueva As Boolean
+Private mvarAgenteAriconta As Integer 'Agente que se grabará en la contabilidad
+
+
+Private SQL As String  'Para la sentencia
 Private Mens As String    'Para los mensajes
 
 
 '------------------------------------------------
 'Propiedades del modulo CParamAplic
 '------------------------------------------------
+
 
 'servidor conta
 Public Property Let ServidorConta(ByVal vData As String)
@@ -522,6 +527,20 @@ Public Property Let FechaCamIva(ByVal vData As String)
      mvarFechaCamIva = vData
 End Property
 
+'[Monica]13/09/2016: si hay contabilidad nueva
+Public Property Get ContabilidadNueva() As Boolean
+     ContabilidadNueva = mvarContabilidadNueva
+End Property
+
+Public Property Let AgenteAriconta(ByVal vData As Integer)
+     mvarAgenteAriconta = vData
+End Property
+
+Public Property Get AgenteAriconta() As Integer
+     AgenteAriconta = mvarAgenteAriconta
+End Property
+
+
 '******
 '------------------------------------------------
 'FUNCIONES del modulo Cparametros
@@ -529,89 +548,91 @@ End Property
 
 '****   LEER  ***
 Public Function Leer() As Byte
-Dim RS As ADODB.Recordset
+Dim Rs As ADODB.Recordset
 On Error GoTo Err3
     
-    Sql = "SELECT * FROM sparam "
-    Set RS = New ADODB.Recordset
-    RS.Open Sql, Conn, adOpenForwardOnly, adLockOptimistic
+    SQL = "SELECT * FROM sparam "
+    Set Rs = New ADODB.Recordset
+    Rs.Open SQL, Conn, adOpenForwardOnly, adLockOptimistic
 
-    If RS.EOF Then
+    If Rs.EOF Then
         Leer = 1
     Else
         
         'Datos Contabilidad
-        mvarSerConta = DBLet(RS!serConta, "T") 'servidor conta
-        mvarUsuConta = DBLet(RS!UsuConta, "T") 'usuario conta
-        mvarPasConta = DBLet(RS!pasconta, "T") 'password
-        mvarNumConta = DBLet(RS!NumConta, "N") 'numero conta
-        mvarCtaConta = DBLet(RS!CtaConta, "T") 'cuenta contable
-        mvarCtaNegtat = DBLet(RS!ctanegtat, "T") 'cuenta dif negativas
-        mvarCtaPosit = DBLet(RS!ctaposit, "T") 'cta dif positivas
-        mvarCtaImpue = DBLet(RS!ctaimpue, "T") 'cta impuestos
-        mvarTeximpue = DBLet(RS!teximpue, "T") 'texto impuesto
-        mvarBonifact = DBLet(RS!Bonifact, "N") 'bonificacion
-        mvarArticDto = DBLet(RS!ArticDto, "N") 'articulo de descuento
-        mvarRaizCtaSoc = DBLet(RS!RaizCtaSoc, "T") ' raiz cta contable socio
-        mvarRaizCtaCli = DBLet(RS!RaizCtaCli, "T") ' raiz cta contable cliente
-        mvarCtaFamDefecto = DBLet(RS!CtaFamDefecto, "T") ' cta contable por defecto para familia
-        mvarWebSoporte = DBLet(RS!WebSoporte, "T") 'web soporte
-        mvarCooperativa = DBLet(RS!Cooperativa, "N") ' cooperativa
-        mvarDireMail = DBLet(RS!DireMail, "T") 'mail
-        mvarSmtphost = DBLet(RS!Smtphost, "T") 'host
-        mvarSmtpUser = DBLet(RS!SmtpUser, "T") 'user
-        mvarSmtpPass = DBLet(RS!Smtppass, "T") 'pass
-        mvarCim = DBLet(RS!Cim, "T") 'cim
-        mvarCee = DBLet(RS!Cee, "T") 'cee
-        mvarConceDebe = DBLet(RS!concedebe, "N")
-        mvarConceHaber = DBLet(RS!concehaber, "N")
-        mvarConceHaberResto = DBLet(RS!concehaberresto, "N")
-        mvarNumDiario = DBLet(RS!NumDiari, "N")
-        mvarColecDefecto = DBLet(RS!coopdefecto, "N")
-        mvarFamiliaDescuento = DBLet(RS!FamDto, "N")
-        mvarImpresoraTarjetas = DBLet(RS!impresoratarjeta, "T")
-        mvarImpresoraTickets = DBLet(RS!impresoraticket, "T")
+        mvarSerConta = DBLet(Rs!serConta, "T") 'servidor conta
+        mvarUsuConta = DBLet(Rs!UsuConta, "T") 'usuario conta
+        mvarPasConta = DBLet(Rs!pasconta, "T") 'password
+        mvarNumConta = DBLet(Rs!NumConta, "N") 'numero conta
+        mvarCtaConta = DBLet(Rs!CtaConta, "T") 'cuenta contable
+        mvarCtaNegtat = DBLet(Rs!ctanegtat, "T") 'cuenta dif negativas
+        mvarCtaPosit = DBLet(Rs!ctaposit, "T") 'cta dif positivas
+        mvarCtaImpue = DBLet(Rs!ctaimpue, "T") 'cta impuestos
+        mvarTeximpue = DBLet(Rs!teximpue, "T") 'texto impuesto
+        mvarBonifact = DBLet(Rs!Bonifact, "N") 'bonificacion
+        mvarArticDto = DBLet(Rs!ArticDto, "N") 'articulo de descuento
+        mvarRaizCtaSoc = DBLet(Rs!RaizCtaSoc, "T") ' raiz cta contable socio
+        mvarRaizCtaCli = DBLet(Rs!RaizCtaCli, "T") ' raiz cta contable cliente
+        mvarCtaFamDefecto = DBLet(Rs!CtaFamDefecto, "T") ' cta contable por defecto para familia
+        mvarWebSoporte = DBLet(Rs!WebSoporte, "T") 'web soporte
+        mvarCooperativa = DBLet(Rs!Cooperativa, "N") ' cooperativa
+        mvarDireMail = DBLet(Rs!DireMail, "T") 'mail
+        mvarSmtphost = DBLet(Rs!Smtphost, "T") 'host
+        mvarSmtpUser = DBLet(Rs!SmtpUser, "T") 'user
+        mvarSmtpPass = DBLet(Rs!Smtppass, "T") 'pass
+        mvarCim = DBLet(Rs!Cim, "T") 'cim
+        mvarCee = DBLet(Rs!Cee, "T") 'cee
+        mvarConceDebe = DBLet(Rs!concedebe, "N")
+        mvarConceHaber = DBLet(Rs!concehaber, "N")
+        mvarConceHaberResto = DBLet(Rs!concehaberresto, "N")
+        mvarNumDiario = DBLet(Rs!NumDiari, "N")
+        mvarColecDefecto = DBLet(Rs!coopdefecto, "N")
+        mvarFamiliaDescuento = DBLet(Rs!FamDto, "N")
+        mvarImpresoraTarjetas = DBLet(Rs!impresoratarjeta, "T")
+        mvarImpresoraTickets = DBLet(Rs!impresoraticket, "T")
         
-        mvarDiaPago1 = DBLet(RS!DiaPago1, "N") 'dia pago 1 para compras
-        mvarDiaPago2 = DBLet(RS!DiaPago2, "N") 'dia pago 2 para compras
-        mvarDiaPago3 = DBLet(RS!DiaPago3, "N") 'dia pago 3 para compras
-        mvarMesnogir = DBLet(RS!mesnogir, "N") 'mes a no girar para compras
-        mvarCtrStock = RS!CtrStock  'Si hay Control de Stock (S/N)
-        mvarTipoPrecio = DBLet(RS!TipoPrecio, "N") ' tipo de precio
+        mvarDiaPago1 = DBLet(Rs!DiaPago1, "N") 'dia pago 1 para compras
+        mvarDiaPago2 = DBLet(Rs!DiaPago2, "N") 'dia pago 2 para compras
+        mvarDiaPago3 = DBLet(Rs!DiaPago3, "N") 'dia pago 3 para compras
+        mvarMesnogir = DBLet(Rs!mesnogir, "N") 'mes a no girar para compras
+        mvarCtrStock = Rs!CtrStock  'Si hay Control de Stock (S/N)
+        mvarTipoPrecio = DBLet(Rs!TipoPrecio, "N") ' tipo de precio
         
         'facturas interna
-        mvarTipoIvaExento = DBLet(RS!TipoIvaExento, "N")
-        mvarLetraInt = DBLet(RS!LetraInt, "T") 'letra de serie de las facturas internas
+        mvarTipoIvaExento = DBLet(Rs!TipoIvaExento, "N")
+        mvarLetraInt = DBLet(Rs!LetraInt, "T") 'letra de serie de las facturas internas
         
-        Me.EnvioDesdeOutlook = DBLet(RS!EnvioDesdeOutlook, "N") = 1
-        mvarExeEnvioMail = DBLet(RS!arigesmail, "T")
+        Me.EnvioDesdeOutlook = DBLet(Rs!EnvioDesdeOutlook, "N") = 1
+        mvarExeEnvioMail = DBLet(Rs!arigesmail, "T")
         
         'FacturaE
-        mvarPathFacturaE = DBLet(RS!PathFacturaE, "T")
+        mvarPathFacturaE = DBLet(Rs!PathFacturaE, "T")
         
         '[Monica]15/11/2012: hay crm
-        mvarHayCRM = DBLet(RS!HayCRM, "N")
+        mvarHayCRM = DBLet(Rs!HayCRM, "N")
         
         'Fecha de cambio de para el calculo de impuesto
-        mvarFechaCam = DBLet(RS!FechaCam, "T")
+        mvarFechaCam = DBLet(Rs!FechaCam, "T")
                 
         'Limite de factura de efectivo
-        mvarLimiteFra = DBLet(RS!LimiteFra, "N") ' limite fra.de efectivo
+        mvarLimiteFra = DBLet(Rs!LimiteFra, "N") ' limite fra.de efectivo
         
         'Ivas nuevos e ivas antiguos
-        mvarCodIvaGnral = DBLet(RS!codiva1, "N") 'codigo de iva gnral
-        mvarCodIvaRedu = DBLet(RS!codiva2, "N") 'codigo de iva reducido
-        mvarCodIvaSRedu = DBLet(RS!codiva3, "N") 'codigo de iva superreducido
-        mvarCodIvaGnralAnt = DBLet(RS!codiva1old, "N") 'codigo de iva gnral antiguo
-        mvarCodIvaReduAnt = DBLet(RS!codiva2old, "N") 'codigo de iva reducido antiguo
+        mvarCodIvaGnral = DBLet(Rs!codiva1, "N") 'codigo de iva gnral
+        mvarCodIvaRedu = DBLet(Rs!codiva2, "N") 'codigo de iva reducido
+        mvarCodIvaSRedu = DBLet(Rs!codiva3, "N") 'codigo de iva superreducido
+        mvarCodIvaGnralAnt = DBLet(Rs!codiva1old, "N") 'codigo de iva gnral antiguo
+        mvarCodIvaReduAnt = DBLet(Rs!codiva2old, "N") 'codigo de iva reducido antiguo
         
-        mvarFechaCamIva = DBLet(RS!feccambioiva, "F") ' fecha de cambio de iva
+        mvarFechaCamIva = DBLet(Rs!feccambioiva, "F") ' fecha de cambio de iva
         
+        mvarContabilidadNueva = DBLet(Rs!NuevaContabilidad, "N") = 1
+        mvarAgenteAriconta = DBLet(Rs!AgenteAriconta, "N")
         Leer = 0
     End If
 
-    RS.Close
-    Set RS = Nothing
+    Rs.Close
+    Set Rs = Nothing
     Exit Function
 
 Err3:
@@ -619,8 +640,8 @@ Err3:
     Mens = Mens & "Número: " & Err.Number & vbCrLf
     Mens = Mens & "Descripción: " & Err.Description
     MsgBox Mens, vbExclamation
-    RS.Close
-    Set RS = Nothing
+    Rs.Close
+    Set Rs = Nothing
     Leer = 1
 End Function
 
@@ -628,75 +649,77 @@ End Function
 Public Function Modificar(Codigo As Byte) As Byte
 'Modifica los parametros de la Aplicación
 'Modifica la Tabla: sparam, BD: Arigasol
-On Error GoTo EModificar
+On Error GoTo eModificar
 
-    Sql = "UPDATE sparam SET "
-    Sql = Sql & " serconta= '" & mvarSerConta & "'"
-    Sql = Sql & ", usuconta= " & DBSet(mvarUsuConta, "T")
-    Sql = Sql & ", pasconta= " & DBSet(mvarPasConta, "T")
-    Sql = Sql & ", numconta= " & DBSet(mvarNumConta, "N", "S")
-    Sql = Sql & ", ctaconta= " & DBSet(mvarCtaConta, "T")
-    Sql = Sql & ", ctanegtat= " & DBSet(mvarCtaNegtat, "T")
-    Sql = Sql & ", ctaposit= " & DBSet(mvarCtaPosit, "T")
-    Sql = Sql & ", ctaimpue= " & DBSet(mvarCtaImpue, "T")
-    Sql = Sql & ", teximpue= " & DBSet(mvarTeximpue, "T")
-    Sql = Sql & ", bonifact= " & DBSet(mvarBonifact, "N", "N")
-    Sql = Sql & ", articdto= " & DBSet(mvarArticDto, "N", "S")
-    Sql = Sql & ", raizctasoc= " & DBSet(mvarRaizCtaSoc, "T")
-    Sql = Sql & ", raizctacli= " & DBSet(mvarRaizCtaCli, "T")
-    Sql = Sql & ", ctafamdefecto= " & DBSet(mvarCtaFamDefecto, "T")
-    Sql = Sql & ", websoporte= " & DBSet(mvarWebSoporte, "T")
-    Sql = Sql & ", cooperativa= " & DBSet(mvarCooperativa, "T")
-    Sql = Sql & ", diremail= " & DBSet(mvarDireMail, "T")
-    Sql = Sql & ", smtphost= " & DBSet(mvarSmtphost, "T")
-    Sql = Sql & ", smtpuser= " & DBSet(mvarSmtpUser, "T")
-    Sql = Sql & ", smtppass= " & DBSet(mvarSmtpPass, "T")
-    Sql = Sql & ", cim= " & DBSet(mvarCim, "T")
-    Sql = Sql & ", cee= " & DBSet(mvarCee, "T")
-    Sql = Sql & ", concedebe= " & DBSet(mvarConceDebe, "N")
-    Sql = Sql & ", concehaber= " & DBSet(mvarConceHaber, "N")
-    Sql = Sql & ", concehaberresto= " & DBSet(mvarConceHaberResto, "N")
-    Sql = Sql & ", numdiari= " & DBSet(mvarNumDiario, "N")
-    Sql = Sql & ", coopdefecto= " & DBSet(mvarColecDefecto, "N")
-    Sql = Sql & ", famdto= " & DBSet(mvarFamiliaDescuento, "N", "S")
-    Sql = Sql & ", impresoratarjeta= " & DBSet(mvarImpresoraTarjetas, "T")
-    Sql = Sql & ", impresoraticket= " & DBSet(mvarImpresoraTickets, "T")
-    Sql = Sql & ", diapago1= " & DBSet(mvarDiaPago1, "N")
-    Sql = Sql & ", diapago2= " & DBSet(mvarDiaPago2, "N")
-    Sql = Sql & ", diapago3= " & DBSet(mvarDiaPago3, "N")
-    Sql = Sql & ", mesnogir= " & DBSet(mvarMesnogir, "N")
-    Sql = Sql & ", ctrstock = " & DBSet(mvarCtrStock, "B")
-    Sql = Sql & ", tipoprecio= " & DBSet(mvarTipoPrecio, "N")
+    SQL = "UPDATE sparam SET "
+    SQL = SQL & " serconta= '" & mvarSerConta & "'"
+    SQL = SQL & ", usuconta= " & DBSet(mvarUsuConta, "T")
+    SQL = SQL & ", pasconta= " & DBSet(mvarPasConta, "T")
+    SQL = SQL & ", numconta= " & DBSet(mvarNumConta, "N", "S")
+    SQL = SQL & ", ctaconta= " & DBSet(mvarCtaConta, "T")
+    SQL = SQL & ", ctanegtat= " & DBSet(mvarCtaNegtat, "T")
+    SQL = SQL & ", ctaposit= " & DBSet(mvarCtaPosit, "T")
+    SQL = SQL & ", ctaimpue= " & DBSet(mvarCtaImpue, "T")
+    SQL = SQL & ", teximpue= " & DBSet(mvarTeximpue, "T")
+    SQL = SQL & ", bonifact= " & DBSet(mvarBonifact, "N", "N")
+    SQL = SQL & ", articdto= " & DBSet(mvarArticDto, "N", "S")
+    SQL = SQL & ", raizctasoc= " & DBSet(mvarRaizCtaSoc, "T")
+    SQL = SQL & ", raizctacli= " & DBSet(mvarRaizCtaCli, "T")
+    SQL = SQL & ", ctafamdefecto= " & DBSet(mvarCtaFamDefecto, "T")
+    SQL = SQL & ", websoporte= " & DBSet(mvarWebSoporte, "T")
+    SQL = SQL & ", cooperativa= " & DBSet(mvarCooperativa, "T")
+    SQL = SQL & ", diremail= " & DBSet(mvarDireMail, "T")
+    SQL = SQL & ", smtphost= " & DBSet(mvarSmtphost, "T")
+    SQL = SQL & ", smtpuser= " & DBSet(mvarSmtpUser, "T")
+    SQL = SQL & ", smtppass= " & DBSet(mvarSmtpPass, "T")
+    SQL = SQL & ", cim= " & DBSet(mvarCim, "T")
+    SQL = SQL & ", cee= " & DBSet(mvarCee, "T")
+    SQL = SQL & ", concedebe= " & DBSet(mvarConceDebe, "N")
+    SQL = SQL & ", concehaber= " & DBSet(mvarConceHaber, "N")
+    SQL = SQL & ", concehaberresto= " & DBSet(mvarConceHaberResto, "N")
+    SQL = SQL & ", numdiari= " & DBSet(mvarNumDiario, "N")
+    SQL = SQL & ", coopdefecto= " & DBSet(mvarColecDefecto, "N")
+    SQL = SQL & ", famdto= " & DBSet(mvarFamiliaDescuento, "N", "S")
+    SQL = SQL & ", impresoratarjeta= " & DBSet(mvarImpresoraTarjetas, "T")
+    SQL = SQL & ", impresoraticket= " & DBSet(mvarImpresoraTickets, "T")
+    SQL = SQL & ", diapago1= " & DBSet(mvarDiaPago1, "N")
+    SQL = SQL & ", diapago2= " & DBSet(mvarDiaPago2, "N")
+    SQL = SQL & ", diapago3= " & DBSet(mvarDiaPago3, "N")
+    SQL = SQL & ", mesnogir= " & DBSet(mvarMesnogir, "N")
+    SQL = SQL & ", ctrstock = " & DBSet(mvarCtrStock, "B")
+    SQL = SQL & ", tipoprecio= " & DBSet(mvarTipoPrecio, "N")
     
     ' facturacion interna
-    Sql = Sql & ", tipoivaexento= " & DBSet(mvarTipoIvaExento, "N")
-    Sql = Sql & ", letraint= " & DBSet(mvarLetraInt, "T")
+    SQL = SQL & ", tipoivaexento= " & DBSet(mvarTipoIvaExento, "N")
+    SQL = SQL & ", letraint= " & DBSet(mvarLetraInt, "T")
     
     '[Monica]01/08/2011: arigesmail
-    Sql = Sql & ", EnvioDesdeOutlook = " & DBSet(Me.EnvioDesdeOutlook, "B")
-    Sql = Sql & ", arigesmail = " & DBSet(ExeEnvioMail, "T", "S")
+    SQL = SQL & ", EnvioDesdeOutlook = " & DBSet(Me.EnvioDesdeOutlook, "B")
+    SQL = SQL & ", arigesmail = " & DBSet(ExeEnvioMail, "T", "S")
     
     'FacturaE
-    Sql = Sql & ", pathfacturae = " & DBSet(mvarPathFacturaE, "T")
+    SQL = SQL & ", pathfacturae = " & DBSet(mvarPathFacturaE, "T")
 
     ' Limite Fra de efectivo
-    Sql = Sql & ", limitefra= " & DBSet(mvarLimiteFra, "N")
+    SQL = SQL & ", limitefra= " & DBSet(mvarLimiteFra, "N")
     
     ' codigos de iva nuevos y antiguos
-    Sql = Sql & ", codiva1= " & DBSet(mvarCodIvaGnral, "N")
-    Sql = Sql & ", codiva2= " & DBSet(mvarCodIvaRedu, "N")
-    Sql = Sql & ", codiva3= " & DBSet(mvarCodIvaSRedu, "N")
-    Sql = Sql & ", codiva1old= " & DBSet(mvarCodIvaGnralAnt, "N")
-    Sql = Sql & ", codiva2old= " & DBSet(mvarCodIvaReduAnt, "N")
+    SQL = SQL & ", codiva1= " & DBSet(mvarCodIvaGnral, "N")
+    SQL = SQL & ", codiva2= " & DBSet(mvarCodIvaRedu, "N")
+    SQL = SQL & ", codiva3= " & DBSet(mvarCodIvaSRedu, "N")
+    SQL = SQL & ", codiva1old= " & DBSet(mvarCodIvaGnralAnt, "N")
+    SQL = SQL & ", codiva2old= " & DBSet(mvarCodIvaReduAnt, "N")
     
-    Sql = Sql & " WHERE codparam =" & Codigo & ";"
+    SQL = SQL & ", agenteariconta= " & DBSet(mvarAgenteAriconta, "N")
+    
+    SQL = SQL & " WHERE codparam =" & Codigo & ";"
 
-    Conn.Execute Sql
+    Conn.Execute SQL
 
     Modificar = 1
     Exit Function
 
-EModificar:
+eModificar:
     Mens = "Se ha producido un error." & vbCrLf
     Mens = Mens & "Número: " & Err.Number & vbCrLf
     Mens = Mens & "Descripción: " & Err.Description

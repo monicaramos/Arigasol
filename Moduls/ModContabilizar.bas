@@ -886,7 +886,11 @@ Dim Banpr As String
         '[Monica]04/01/2013 : efectivos
         If TipForpa <> "0" And TipForpa <> "6" Then
             FecVenci = ""
-            FecVenci = DevuelveDesdeBDNew(cConta, "scobro", "fecvenci", "numserie", letraser, "T", ctabancl, "codfaccl", numfactu, "N", "fecfaccl", fecfactu, "F")
+            If vParamAplic.ContabilidadNueva Then
+                FecVenci = DevuelveDesdeBDNew(cConta, "cobros", "fecvenci", "numserie", letraser, "T", ctabancl, "numfactu", numfactu, "N", "fecfactu", fecfactu, "F")
+            Else
+                FecVenci = DevuelveDesdeBDNew(cConta, "scobro", "fecvenci", "numserie", letraser, "T", ctabancl, "codfaccl", numfactu, "N", "fecfaccl", fecfactu, "F")
+            End If
             If FecVenci <> "" Then
                 Banpr = DevuelveDesdeBDNew(cPTours, "sbanco", "codbanpr", "codmacta", ctabancl, "T")
             
@@ -1769,14 +1773,24 @@ Dim LetraS As String
                     Dim SqlNuevo1 As String
                     Dim CodForpaVale As Integer
                     CodForpaVale = DevuelveValor("select codforpa from sforpa where tipovale = 1")
-                    SqlNuevo = DevuelveDesdeBDNew(cConta, "sforpa", "codforpa", "codforpa", DBLet(CodForpaVale), "N")
+                    If vParamAplic.ContabilidadNueva Then
+                        SqlNuevo = DevuelveDesdeBDNew(cConta, "formapago", "codforpa", "codforpa", DBLet(CodForpaVale), "N")
+                    Else
+                        SqlNuevo = DevuelveDesdeBDNew(cConta, "sforpa", "codforpa", "codforpa", DBLet(CodForpaVale), "N")
+                    End If
                     'si no existe la forma de pago en conta, insertamos la de ariges
                     If SqlNuevo = "" Then
-                        SqlNuevo1 = "tipforpa"
-                        SqlNuevo = DevuelveDesdeBDNew(cPTours, "sforpa", "nomforpa", "codforpa", DBLet(CodForpaVale), "N", SqlNuevo1)
                         'insertamos e sforpa de la CONTA
-                        SQL = "INSERT INTO sforpa(codforpa,nomforpa,tipforpa)"
-                        SQL = SQL & " VALUES(" & DBSet(CodForpaVale, "N") & ", " & DBSet(SqlNuevo, "T") & ", " & SqlNuevo1 & ")"
+                        If vParamAplic.ContabilidadNueva Then
+                            SQL = "INSERT INTO formapago(codforpa,nomforpa,tipforpa,numerove,primerve,restoven) "
+                            SQL = SQL & " select codforpa, nomforpa, tipforpa, numerove, diasvto, restoven "
+                            SQL = SQL & " from " & vSesion.CadenaConexion & ".sforpa where codforpa = " & DBSet(CodForpaVale, "N")
+                        Else
+                            SqlNuevo1 = "tipforpa"
+                            SqlNuevo = DevuelveDesdeBDNew(cPTours, "sforpa", "nomforpa", "codforpa", DBLet(CodForpaVale), "N", SqlNuevo1)
+                            SQL = "INSERT INTO sforpa(codforpa,nomforpa,tipforpa)"
+                            SQL = SQL & " VALUES(" & DBSet(CodForpaVale, "N") & ", " & DBSet(SqlNuevo, "T") & ", " & SqlNuevo1 & ")"
+                        End If
                         ConnConta.Execute SQL
                     End If
                     
@@ -1825,27 +1839,53 @@ Dim LetraS As String
                     'antes de grabar en la scobro comprobar que existe en conta.sforpa la
                     'forma de pago de la factura. Sino existe insertarla
                     'vemos si existe en la conta
-                    CadValuesAux2 = DevuelveDesdeBDNew(cConta, "sforpa", "codforpa", "codforpa", DBLet(Rs!CodForpa), "N")
+                    If vParamAplic.ContabilidadNueva Then
+                        CadValuesAux2 = DevuelveDesdeBDNew(cConta, "formapago", "codforpa", "codforpa", DBLet(Rs!CodForpa), "N")
+                    Else
+                        CadValuesAux2 = DevuelveDesdeBDNew(cConta, "sforpa", "codforpa", "codforpa", DBLet(Rs!CodForpa), "N")
+                    End If
                     'si no existe la forma de pago en conta, insertamos la de ariges
                     If CadValuesAux2 = "" Then
-                        cadValuesAux = "tipforpa"
-                        CadValuesAux2 = DevuelveDesdeBDNew(cPTours, "sforpa", "nomforpa", "codforpa", DBLet(Rs!CodForpa), "N", cadValuesAux)
-                        'insertamos e sforpa de la CONTA
-                        SQL = "INSERT INTO sforpa(codforpa,nomforpa,tipforpa)"
-                        SQL = SQL & " VALUES(" & DBSet(Rs!CodForpa, "N") & ", " & DBSet(CadValuesAux2, "T") & ", " & cadValuesAux & ")"
+                        If vParamAplic.ContabilidadNueva Then
+                            'insertamos e sforpa de la CONTA
+                            SQL = "INSERT INTO formapago(codforpa,nomforpa,tipforpa,numerove,primerve,restoven) "
+                            SQL = SQL & " select codforpa, nomforpa, tipforpa, numerove, diasvto, restoven "
+                            SQL = SQL & " from " & vSesion.CadenaConexion & ".sforpa where codforpa = " & DBSet(Rs!CodForpa, "N")
+                        
+                        Else
+                            cadValuesAux = "tipforpa"
+                            CadValuesAux2 = DevuelveDesdeBDNew(cPTours, "sforpa", "nomforpa", "codforpa", DBLet(Rs!CodForpa), "N", cadValuesAux)
+                            'insertamos e sforpa de la CONTA
+                            SQL = "INSERT INTO sforpa(codforpa,nomforpa,tipforpa)"
+                            SQL = SQL & " VALUES(" & DBSet(Rs!CodForpa, "N") & ", " & DBSet(CadValuesAux2, "T") & ", " & cadValuesAux & ")"
+                        End If
                         ConnConta.Execute SQL
                     End If
         
                     'Insertamos en la tabla scobro de la CONTA
-                    SQL = "INSERT INTO scobro (numserie, codfaccl, fecfaccl, numorden, codmacta, codforpa, fecvenci, impvenci,ctabanc1, codbanco, codsucur, digcontr, cuentaba,"
-                    '[Monica]22/11/2013: Tema Iban
-                    If vEmpresa.HayNorma19_34Nueva = 1 Then
-                        SQL = SQL & "iban,text33csb , text41csb,"
+                    If vParamAplic.ContabilidadNueva Then
+                        '$$$
+                        SQL = "INSERT INTO cobros (numserie, numfactu, fecfactu, numorden, codmacta, codforpa, fecvenci, impvenci,ctabanc1,"
+                        '[Monica]22/11/2013: Tema Iban
+                        If vEmpresa.HayNorma19_34Nueva = 1 Then
+                            SQL = SQL & "iban,text33csb , text41csb,"
+                        Else
+                            SQL = SQL & "text33csb , text41csb,"
+                        End If
+                        SQL = SQL & "text42csb, text43csb, text51csb, text52csb, text53csb, text61csb, text62csb, text63csb, text71csb, text72csb, text73csb, text81csb, text82csb, text83csb,agente) "
+                        SQL = SQL & " VALUES " & Mid(CadValues2, 1, Len(CadValues2) - 1)
+                    
                     Else
-                        SQL = SQL & "text33csb , text41csb,"
+                        SQL = "INSERT INTO scobro (numserie, codfaccl, fecfaccl, numorden, codmacta, codforpa, fecvenci, impvenci,ctabanc1, codbanco, codsucur, digcontr, cuentaba,"
+                        '[Monica]22/11/2013: Tema Iban
+                        If vEmpresa.HayNorma19_34Nueva = 1 Then
+                            SQL = SQL & "iban,text33csb , text41csb,"
+                        Else
+                            SQL = SQL & "text33csb , text41csb,"
+                        End If
+                        SQL = SQL & "text42csb, text43csb, text51csb, text52csb, text53csb, text61csb, text62csb, text63csb, text71csb, text72csb, text73csb, text81csb, text82csb, text83csb,agente) "
+                        SQL = SQL & " VALUES " & Mid(CadValues2, 1, Len(CadValues2) - 1)
                     End If
-                    SQL = SQL & "text42csb, text43csb, text51csb, text52csb, text53csb, text61csb, text62csb, text63csb, text71csb, text72csb, text73csb, text81csb, text82csb, text83csb,agente) "
-                    SQL = SQL & " VALUES " & Mid(CadValues2, 1, Len(CadValues2) - 1)
                     ConnConta.Execute SQL
                 End If
             End If
@@ -2572,7 +2612,11 @@ Dim b As Boolean
     b = True
 
     While Not Rs.EOF And b
-        SQL = DevuelveDesdeBDNew(cConta, "sforpa", "codforpa", "codforpa", Rs.Fields(0).Value, "N")
+        If vParamAplic.ContabilidadNueva Then
+            SQL = DevuelveDesdeBDNew(cConta, "formapago", "codforpa", "codforpa", Rs.Fields(0).Value, "N")
+        Else
+            SQL = DevuelveDesdeBDNew(cConta, "sforpa", "codforpa", "codforpa", Rs.Fields(0).Value, "N")
+        End If
         If SQL = "" Then
             b = False
             sql2 = "Formas de Pago: " & Rs.Fields(0)
@@ -3205,14 +3249,24 @@ Dim Ndias As String
             'antes de grabar en la scobro comprobar que existe en conta.sforpa la
             'forma de pago de la factura. Sino existe insertarla
             'vemos si existe en la conta
-            CadValuesAux2 = DevuelveDesdeBDNew(cConta, "sforpa", "codforpa", "codforpa", DBLet(Rs!CodForpa), "N")
+            If vParamAplic.ContabilidadNueva Then
+                CadValuesAux2 = DevuelveDesdeBDNew(cConta, "formapago", "codforpa", "codforpa", DBLet(Rs!CodForpa), "N")
+            Else
+                CadValuesAux2 = DevuelveDesdeBDNew(cConta, "sforpa", "codforpa", "codforpa", DBLet(Rs!CodForpa), "N")
+            End If
             'si no existe la forma de pago en conta, insertamos la de ariges
             If CadValuesAux2 = "" Then
-                cadValuesAux = "tipforpa"
-                CadValuesAux2 = DevuelveDesdeBDNew(cPTours, "sforpa", "nomforpa", "codforpa", DBLet(Rs!CodForpa), "N", cadValuesAux)
-                'insertamos e sforpa de la CONTA
-                SQL = "INSERT INTO sforpa(codforpa,nomforpa,tipforpa)"
-                SQL = SQL & " VALUES(" & DBSet(Rs!CodForpa, "N") & ", " & DBSet(CadValuesAux2, "T") & ", " & cadValuesAux & ")"
+                If vParamAplic.ContabilidadNueva Then
+                    SQL = "INSERT INTO formapago(codforpa,nomforpa,tipforpa,numerove, primerve,restoven) "
+                    SQL = SQL & " select codforpa, nomforpa, tipforpa, numerove, diasvto, restoven "
+                    SQL = SQL & " from " & vSesion.CadenaConexion & ".sforpa where codforpa = " & DBSet(Rs!CodForpa, "N")
+                Else
+                    cadValuesAux = "tipforpa"
+                    CadValuesAux2 = DevuelveDesdeBDNew(cPTours, "sforpa", "nomforpa", "codforpa", DBLet(Rs!CodForpa), "N", cadValuesAux)
+                    'insertamos e sforpa de la CONTA
+                    SQL = "INSERT INTO sforpa(codforpa,nomforpa,tipforpa)"
+                    SQL = SQL & " VALUES(" & DBSet(Rs!CodForpa, "N") & ", " & DBSet(CadValuesAux2, "T") & ", " & cadValuesAux & ")"
+                End If
                 ConnConta.Execute SQL
             End If
 
@@ -3640,17 +3694,30 @@ Dim CodForpa As Integer
                     Dim SqlNuevo1 As String
                     Dim CodForpaVale As Integer
                     CodForpaVale = DevuelveValor("select codforpa from sforpa where tipovale = 1")
-                    SqlNuevo = DevuelveDesdeBDNew(cConta, "sforpa", "codforpa", "codforpa", DBLet(CodForpaVale), "N")
-                    'si no existe la forma de pago en conta, insertamos la de ariges
-                    If SqlNuevo = "" Then
-                        SqlNuevo1 = "tipforpa"
-                        SqlNuevo = DevuelveDesdeBDNew(cPTours, "sforpa", "nomforpa", "codforpa", DBLet(CodForpaVale), "N", SqlNuevo1)
-                        'insertamos e sforpa de la CONTA
-                        SQL = "INSERT INTO sforpa(codforpa,nomforpa,tipforpa)"
-                        SQL = SQL & " VALUES(" & DBSet(CodForpaVale, "N") & ", " & DBSet(SqlNuevo, "T") & ", " & SqlNuevo1 & ")"
-                        ConnConta.Execute SQL
-                    End If
+                    If vParamAplic.ContabilidadNueva Then
+                        SqlNuevo = DevuelveDesdeBDNew(cConta, "formapago", "codforpa", "codforpa", DBLet(CodForpaVale), "N")
+                        'si no existe la forma de pago en conta, insertamos la de ariges
+                        If SqlNuevo = "" Then
+                            'insertamos e sforpa de la CONTA
+                            SQL = "INSERT INTO formapago(codforpa,nomforpa,tipforpa,numerove,primerve,restoven) "
+                            SQL = SQL & " select codforpa, nomforpa, tipforpa, numerove, diasvto, restoven "
+                            SQL = SQL & " from " & vSesion.CadenaConexion & ".sforpa where codforpa = " & DBSet(CodForpaVale, "N")
+                            
+                            ConnConta.Execute SQL
+                        End If
                     
+                    Else
+                        SqlNuevo = DevuelveDesdeBDNew(cConta, "sforpa", "codforpa", "codforpa", DBLet(CodForpaVale), "N")
+                        'si no existe la forma de pago en conta, insertamos la de ariges
+                        If SqlNuevo = "" Then
+                            SqlNuevo1 = "tipforpa"
+                            SqlNuevo = DevuelveDesdeBDNew(cPTours, "sforpa", "nomforpa", "codforpa", DBLet(CodForpaVale), "N", SqlNuevo1)
+                            'insertamos e sforpa de la CONTA
+                            SQL = "INSERT INTO sforpa(codforpa,nomforpa,tipforpa)"
+                            SQL = SQL & " VALUES(" & DBSet(CodForpaVale, "N") & ", " & DBSet(SqlNuevo, "T") & ", " & SqlNuevo1 & ")"
+                            ConnConta.Execute SQL
+                        End If
+                    End If
                     CadValues2 = CadValues2 & CadValuesAux2 & DBSet(i, "N") & "," & DBSet(vsocio.CuentaConta, "T") & "," & DBSet(CodForpaVale, "N") & "," & Format(DBSet(FecVenci, "F"), FormatoFecha) & ","
                     
                     
@@ -3712,17 +3779,27 @@ Dim CodForpa As Integer
                     'antes de grabar en la scobro comprobar que existe en conta.sforpa la
                     'forma de pago de la factura. Sino existe insertarla
                     'vemos si existe en la conta
-                    CadValuesAux2 = DevuelveDesdeBDNew(cConta, "sforpa", "codforpa", "codforpa", CStr(CodForpa), "N")
-                    'si no existe la forma de pago en conta, insertamos la de ariges
-                    If CadValuesAux2 = "" Then
-                        cadValuesAux = "tipforpa"
-                        CadValuesAux2 = DevuelveDesdeBDNew(cPTours, "sforpa", "nomforpa", "codforpa", CStr(CodForpa), "N", cadValuesAux)
-                        'insertamos e sforpa de la CONTA
-                        SQL = "INSERT INTO sforpa(codforpa,nomforpa,tipforpa)"
-                        SQL = SQL & " VALUES(" & DBSet(CodForpa, "N") & ", " & DBSet(CadValuesAux2, "T") & ", " & cadValuesAux & ")"
-                        ConnConta.Execute SQL
+                    If vParamAplic.ContabilidadNueva Then
+                        CadValuesAux2 = DevuelveDesdeBDNew(cConta, "formapago", "codforpa", "codforpa", CStr(CodForpa), "N")
+                        'si no existe la forma de pago en conta, insertamos la de ariges
+                        If CadValuesAux2 = "" Then
+                            SQL = "INSERT INTO formapago(codforpa,nomforpa,tipforpa,numerove,primerve,restoven) "
+                            SQL = SQL & " select codforpa, nomforpa, tipforpa, numerove, diasvto, restoven "
+                            SQL = SQL & " from " & vSesion.CadenaConexion & ".sforpa where codforpa = " & DBSet(CodForpa, "N")
+                            ConnConta.Execute SQL
+                        End If
+                    Else
+                        CadValuesAux2 = DevuelveDesdeBDNew(cConta, "sforpa", "codforpa", "codforpa", CStr(CodForpa), "N")
+                        'si no existe la forma de pago en conta, insertamos la de ariges
+                        If CadValuesAux2 = "" Then
+                            cadValuesAux = "tipforpa"
+                            CadValuesAux2 = DevuelveDesdeBDNew(cPTours, "sforpa", "nomforpa", "codforpa", CStr(CodForpa), "N", cadValuesAux)
+                            'insertamos e sforpa de la CONTA
+                            SQL = "INSERT INTO sforpa(codforpa,nomforpa,tipforpa)"
+                            SQL = SQL & " VALUES(" & DBSet(CodForpa, "N") & ", " & DBSet(CadValuesAux2, "T") & ", " & cadValuesAux & ")"
+                            ConnConta.Execute SQL
+                        End If
                     End If
-        
                     'Insertamos en la tabla scobro de la CONTA
                     SQL = "INSERT INTO scobro (numserie, codfaccl, fecfaccl, numorden, codmacta, codforpa, fecvenci, impvenci,ctabanc1, codbanco, codsucur, digcontr, cuentaba,"
                     '[Monica]22/11/2013: Tema Iban

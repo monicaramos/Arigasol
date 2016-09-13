@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.2#0"; "MSCOMCTL.OCX"
 Object = "{67397AA1-7FB1-11D0-B148-00A0C922E820}#6.0#0"; "MSADODC.OCX"
 Object = "{CDE57A40-8B86-11D0-B3C6-00A0C90AEA82}#1.0#0"; "MSDATGRD.OCX"
 Begin VB.Form frmManFpago 
@@ -866,7 +866,7 @@ Dim temp As Boolean
     If MsgBox(SQL, vbQuestion + vbYesNo) = vbYes Then
         'Hay que eliminar
         NumRegElim = adodc1.Recordset.AbsolutePosition
-        SQL = "Delete from sforpa where codforpa=" & adodc1.Recordset!Codforpa
+        SQL = "Delete from sforpa where codforpa=" & adodc1.Recordset!CodForpa
         Conn.Execute SQL
         CargaGrid CadB
 '        If CadB <> "" Then
@@ -1135,9 +1135,17 @@ Private Sub Form_Load()
     ' ### [Monica] 12/09/2006
     ' en caso de haber contabilidad muestro la descripcion de la cuenta
     If vParamAplic.NumeroConta <> 0 Then
-        CadenaConsulta = CadenaConsulta & ", conta" & vParamAplic.NumeroConta & ".cuentas.nommacta "
-        CadenaConsulta = CadenaConsulta & "from (sforpa left join ssocio on sforpa.codsocio = ssocio.codsocio) left join conta" & DBSet(vParamAplic.NumeroConta, "N")
-        CadenaConsulta = CadenaConsulta & ".cuentas on (sforpa.`codmacta` = conta" & DBSet(vParamAplic.NumeroConta, "N") & ".cuentas.`codmacta`)"
+    
+        If vParamAplic.ContabilidadNueva Then
+            CadenaConsulta = CadenaConsulta & ", ariconta" & vParamAplic.NumeroConta & ".cuentas.nommacta "
+            CadenaConsulta = CadenaConsulta & "from (sforpa left join ssocio on sforpa.codsocio = ssocio.codsocio) left join ariconta" & DBSet(vParamAplic.NumeroConta, "N")
+            CadenaConsulta = CadenaConsulta & ".cuentas on (sforpa.`codmacta` = ariconta" & DBSet(vParamAplic.NumeroConta, "N") & ".cuentas.`codmacta`)"
+        Else
+            CadenaConsulta = CadenaConsulta & ", conta" & vParamAplic.NumeroConta & ".cuentas.nommacta "
+            CadenaConsulta = CadenaConsulta & "from (sforpa left join ssocio on sforpa.codsocio = ssocio.codsocio) left join conta" & DBSet(vParamAplic.NumeroConta, "N")
+            CadenaConsulta = CadenaConsulta & ".cuentas on (sforpa.`codmacta` = conta" & DBSet(vParamAplic.NumeroConta, "N") & ".cuentas.`codmacta`)"
+        End If
+        
     Else
     ' no hay contabilidad
         CadenaConsulta = CadenaConsulta & "FROM (sforpa left join ssocio on sforpa.codsocio = ssocio.codsocio) "
@@ -1573,17 +1581,37 @@ Dim SQL As String
     
     ConnConta.BeginTrans
     
-    SQL = DevuelveDesdeBDNew(cConta, "sforpa", "nomforpa", "codforpa", txtAux(0).Text, "N")
-    If SQL = "" Then
-        SQL = "insert into sforpa (codforpa, nomforpa, tipforpa) values (" & DBSet(txtAux(0).Text, "N") & ","
-        SQL = SQL & DBSet(txtAux(1).Text, "T") & "," & DBSet(Combo1(0).ItemData(Combo1(0).ListIndex), "N") & ")"
-        
-        ConnConta.Execute SQL
+    If vParamAplic.ContabilidadNueva Then
+        SQL = DevuelveDesdeBDNew(cConta, "formapago", "nomforpa", "codforpa", txtAux(0).Text, "N")
+        If SQL = "" Then
+            SQL = "insert into formapago (codforpa, nomforpa, tipforpa, numerove, primerve, restoven) values (" & DBSet(txtAux(0).Text, "N") & ","
+            SQL = SQL & DBSet(txtAux(1).Text, "T") & "," & DBSet(Combo1(0).ItemData(Combo1(0).ListIndex), "N") & ","
+            SQL = SQL & DBSet(txtAux(5).Text, "N") & "," & DBSet(txtAux(3).Text, "N") & "," & DBSet(txtAux(6).Text, "N") & ")"
+            
+            ConnConta.Execute SQL
+        Else
+            SQL = "update formapago set nomforpa = " & DBSet(txtAux(1).Text, "T") & ", tipforpa = " & DBSet(Combo1(0).ItemData(Combo1(0).ListIndex), "N")
+            SQL = SQL & ", numerove = " & DBSet(txtAux(5).Text, "N")
+            SQL = SQL & ", primerve = " & DBSet(txtAux(3).Text, "N")
+            SQL = SQL & ", restoven = " & DBSet(txtAux(6).Text, "N")
+            SQL = SQL & " where codforpa = " & DBSet(txtAux(0).Text, "N")
+            
+            ConnConta.Execute SQL
+        End If
+    
     Else
-        SQL = "update sforpa set nomforpa = " & DBSet(txtAux(1).Text, "T") & ", tipforpa = " & DBSet(Combo1(0).ItemData(Combo1(0).ListIndex), "N")
-        SQL = SQL & " where codforpa = " & DBSet(txtAux(0).Text, "N")
-        
-        ConnConta.Execute SQL
+        SQL = DevuelveDesdeBDNew(cConta, "sforpa", "nomforpa", "codforpa", txtAux(0).Text, "N")
+        If SQL = "" Then
+            SQL = "insert into sforpa (codforpa, nomforpa, tipforpa) values (" & DBSet(txtAux(0).Text, "N") & ","
+            SQL = SQL & DBSet(txtAux(1).Text, "T") & "," & DBSet(Combo1(0).ItemData(Combo1(0).ListIndex), "N") & ")"
+            
+            ConnConta.Execute SQL
+        Else
+            SQL = "update sforpa set nomforpa = " & DBSet(txtAux(1).Text, "T") & ", tipforpa = " & DBSet(Combo1(0).ItemData(Combo1(0).ListIndex), "N")
+            SQL = SQL & " where codforpa = " & DBSet(txtAux(0).Text, "N")
+            
+            ConnConta.Execute SQL
+        End If
     End If
     
 EInsertar:
@@ -1616,9 +1644,16 @@ Dim vWhere As String
     
     b = ModificaDesdeFormulario(Me)
     If b Then
-        SQL = "update sforpa set nomforpa = " & DBSet(txtAux(1).Text, "T") & ", tipforpa = " & DBSet(Combo1(0).ItemData(Combo1(0).ListIndex), "N")
-        SQL = SQL & " where codforpa = " & DBSet(txtAux(0).Text, "N")
-    
+        If vParamAplic.ContabilidadNueva Then
+            SQL = "update formapago set nomforpa = " & DBSet(txtAux(1).Text, "T") & ", tipforpa = " & DBSet(Combo1(0).ItemData(Combo1(0).ListIndex), "N")
+            SQL = SQL & ", numerove = " & DBSet(txtAux(5).Text, "N")
+            SQL = SQL & ", primerve = " & DBSet(txtAux(3).Text, "N")
+            SQL = SQL & ", restoven = " & DBSet(txtAux(6).Text, "N")
+            SQL = SQL & " where codforpa = " & DBSet(txtAux(0).Text, "N")
+        Else
+            SQL = "update sforpa set nomforpa = " & DBSet(txtAux(1).Text, "T") & ", tipforpa = " & DBSet(Combo1(0).ItemData(Combo1(0).ListIndex), "N")
+            SQL = SQL & " where codforpa = " & DBSet(txtAux(0).Text, "N")
+        End If
         ConnConta.Execute SQL
     End If
     
