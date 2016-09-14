@@ -198,7 +198,6 @@ Begin VB.Form frmManClien
       TabPicture(1)   =   "frmManClien.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "FrameAux0"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Datos Matriculas"
       TabPicture(2)   =   "frmManClien.frx":0044
@@ -2366,6 +2365,7 @@ Dim NifAnt As String
 
 Dim EMaiAnt As String
 Dim WebAnt As String
+Dim ForpaAnt As String
 
 
 
@@ -2999,8 +2999,8 @@ Dim SQL As String
     Select Case Index
         Case 1 'documentos de alta baja de socios/campos
             Set frmLis = New frmListado
-            frmLis.socio = Text1(0).Text
-            frmLis.Tarjeta = Me.AdoAux(0).Recordset!Numtarje
+            frmLis.Socio = Text1(0).Text
+            frmLis.TARJETA = Me.AdoAux(0).Recordset!Numtarje
             frmLis.OpcionListado = 16
             frmLis.Show vbModal
             Set frmLis = Nothing
@@ -3474,6 +3474,7 @@ Private Sub BotonModificar()
     NifAnt = Text1(2).Text
     EMaiAnt = Text1(14).Text
     WebAnt = Text1(10).Text
+    ForpaAnt = Text1(17).Text
 
     ' *** bloquejar els camps visibles de la clau primaria de la capçalera ***
     BloquearTxt Text1(0), True
@@ -3505,7 +3506,7 @@ Dim cad As String
         On Error GoTo EEliminar
         Screen.MousePointer = vbHourglass
         NumRegElim = Data1.Recordset.AbsolutePosition
-        If Not eliminar Then
+        If Not Eliminar Then
             Screen.MousePointer = vbDefault
             Exit Sub
         ElseIf SituarDataTrasEliminar(Data1, NumRegElim) Then
@@ -3792,7 +3793,7 @@ Dim cad As String, Indicador As String
     End If
 End Sub
 
-Private Function eliminar() As Boolean
+Private Function Eliminar() As Boolean
 Dim vWhere As String
 
     On Error GoTo FinEliminar
@@ -3816,10 +3817,10 @@ FinEliminar:
     If Err.Number <> 0 Then
         MuestraError Err.Number, "Eliminar"
         Conn.RollbackTrans
-        eliminar = False
+        Eliminar = False
     Else
         Conn.CommitTrans
-        eliminar = True
+        Eliminar = True
     End If
 End Function
 
@@ -4059,7 +4060,7 @@ End Sub
 Private Sub BotonEliminarLinea(Index As Integer)
 Dim SQL As String
 Dim vWhere As String
-Dim eliminar As Boolean
+Dim Eliminar As Boolean
 
     On Error GoTo Error2
 
@@ -4076,7 +4077,7 @@ Dim eliminar As Boolean
     If AdoAux(Index).Recordset.EOF Then Exit Sub
     If Not SepuedeBorrar(Index) Then Exit Sub
     NumTabMto = Index
-    eliminar = False
+    Eliminar = False
    
     vWhere = ObtenerWhereCab(True)
     
@@ -4087,18 +4088,18 @@ Dim eliminar As Boolean
             SQL = "¿Seguro que desea eliminar la Tarjeta?"
             SQL = SQL & vbCrLf & "Tarjeta: " & AdoAux(Index).Recordset!Numtarje
             If MsgBox(SQL, vbQuestion + vbYesNo) = vbYes Then
-                eliminar = True
+                Eliminar = True
                 SQL = "DELETE FROM starje"
-                SQL = SQL & vWhere & " AND numlinea= " & AdoAux(Index).Recordset!numlinea
+                SQL = SQL & vWhere & " AND numlinea= " & AdoAux(Index).Recordset!NumLinea
             End If
             
         Case 1 'matriculas
             SQL = "¿Seguro que desea eliminar la Matricula?"
-            SQL = SQL & vbCrLf & "Nombre: " & AdoAux(Index).Recordset!matricul
+            SQL = SQL & vbCrLf & "Nombre: " & AdoAux(Index).Recordset!MATRICUL
             If MsgBox(SQL, vbQuestion + vbYesNo) = vbYes Then
-                eliminar = True
+                Eliminar = True
                 SQL = "DELETE FROM smatri"
-                SQL = SQL & vWhere & " AND numlinea= " & AdoAux(Index).Recordset!numlinea
+                SQL = SQL & vWhere & " AND numlinea= " & AdoAux(Index).Recordset!NumLinea
             End If
             
             
@@ -4106,15 +4107,15 @@ Dim eliminar As Boolean
             SQL = "¿Seguro que desea eliminar el Margen del Artículo?"
             SQL = SQL & vbCrLf & "Código: " & AdoAux(Index).Recordset!codArtic
             If MsgBox(SQL, vbQuestion + vbYesNo) = vbYes Then
-                eliminar = True
+                Eliminar = True
                 SQL = "DELETE FROM smargen"
-                SQL = SQL & vWhere & " AND numlinea= " & AdoAux(Index).Recordset!numlinea
+                SQL = SQL & vWhere & " AND numlinea= " & AdoAux(Index).Recordset!NumLinea
             End If
         
             
     End Select
 
-    If eliminar Then
+    If Eliminar Then
         NumRegElim = AdoAux(Index).Recordset.AbsolutePosition
         TerminaBloquear
         Conn.Execute SQL
@@ -4152,7 +4153,7 @@ Dim i As Integer
         
         Set FrmCli2 = New frmManClien2
     
-        FrmCli2.socio = Text1(0).Text
+        FrmCli2.Socio = Text1(0).Text
         FrmCli2.NuevoCodigo = Text1(1).Text
         FrmCli2.NumLin = NumF
         FrmCli2.ModoExt = 3
@@ -4250,9 +4251,9 @@ Private Sub BotonModificarLinea(Index As Integer)
         
         Set FrmCli2 = New frmManClien2
     
-        FrmCli2.socio = Text1(0).Text
+        FrmCli2.Socio = Text1(0).Text
         FrmCli2.NuevoCodigo = Text1(1).Text
-        FrmCli2.NumLin = AdoAux(0).Recordset!numlinea
+        FrmCli2.NumLin = AdoAux(0).Recordset!NumLinea
         FrmCli2.ModoExt = 4
                 
         FrmCli2.Show vbModal
@@ -4577,7 +4578,7 @@ Private Sub txtAux_KeyPress(Index As Integer, KeyAscii As Integer)
     End If
 End Sub
 
-Private Function DatosOkLlin(nomframe As String) As Boolean
+Private Function DatosOkLlin(nomFrame As String) As Boolean
 Dim Rs As ADODB.Recordset
 Dim SQL As String
 Dim b As Boolean
@@ -4591,7 +4592,7 @@ Dim cadMen As String
     Mens = ""
     DatosOkLlin = False
         
-    b = CompForm2(Me, 2, nomframe) 'Comprovar formato datos ok
+    b = CompForm2(Me, 2, nomFrame) 'Comprovar formato datos ok
     If Not b Then Exit Function
     
     Select Case NumTabMto
@@ -5104,21 +5105,21 @@ End Sub
 
 Private Sub InsertarLinea()
 'Inserta registre en les taules de Llínies
-Dim nomframe As String
+Dim nomFrame As String
 Dim b As Boolean
 
     On Error Resume Next
 
     ' *** posa els noms del frames, tant si son de grid com si no ***
     Select Case NumTabMto
-        Case 0: nomframe = "FrameAux0" 'tarjetas
-        Case 1: nomframe = "FrameAux1" 'matriculas
-        Case 2: nomframe = "FrameAux2" 'margenes
+        Case 0: nomFrame = "FrameAux0" 'tarjetas
+        Case 1: nomFrame = "FrameAux1" 'matriculas
+        Case 2: nomFrame = "FrameAux2" 'margenes
     End Select
     
-    If DatosOkLlin(nomframe) Then
+    If DatosOkLlin(nomFrame) Then
         TerminaBloquear
-        If InsertarDesdeForm2(Me, 2, nomframe) Then
+        If InsertarDesdeForm2(Me, 2, nomFrame) Then
             b = BLOQUEADesdeFormulario2(Me, Data1, 1)
             Select Case NumTabMto
                 Case 0, 1, 2 ' *** els index de les llinies en grid (en o sense tab) ***
@@ -5133,21 +5134,21 @@ End Sub
 
 Private Function ModificarLinea() As Boolean
 'Modifica registre en les taules de Llínies
-Dim nomframe As String
+Dim nomFrame As String
 Dim V As Integer
     
     On Error Resume Next
 
     ' *** posa els noms del frames, tant si son de grid com si no ***
     Select Case NumTabMto
-        Case 0: nomframe = "FrameAux0" 'tarjetas
-        Case 1: nomframe = "FrameAux1" 'Matriculas
-        Case 2: nomframe = "FrameAux2" 'Margenes
+        Case 0: nomFrame = "FrameAux0" 'tarjetas
+        Case 1: nomFrame = "FrameAux1" 'Matriculas
+        Case 2: nomFrame = "FrameAux2" 'Margenes
     End Select
     ModificarLinea = False
-    If DatosOkLlin(nomframe) Then
+    If DatosOkLlin(nomFrame) Then
         TerminaBloquear
-        If ModificaDesdeFormulario2(Me, 2, nomframe) Then
+        If ModificaDesdeFormulario2(Me, 2, nomFrame) Then
             ModoLineas = 0
             
             V = AdoAux(NumTabMto).Recordset.Fields(1) 'el 2 es el nº de llinia
@@ -5380,7 +5381,7 @@ Dim Kopc As Byte
 Dim MeteIT As Boolean
 Dim ConexionConta As Boolean  'Si no es conta es ARIGES( conn)
 
-Dim observaciones As String
+Dim Observaciones As String
 
     On Error GoTo ECargaDatosLW
     
@@ -5488,7 +5489,7 @@ Dim observaciones As String
             End If
         End If
         On Error Resume Next
-        If Kopc = 6 Then observaciones = Rs.Fields(3)
+        If Kopc = 6 Then Observaciones = Rs.Fields(3)
         On Error GoTo ECargaDatosLW
         If MeteIT Then
                 Set It = lwCRM.ListItems.Add()
@@ -5523,7 +5524,7 @@ Dim observaciones As String
                             If NumRegElim = 3 And Kopc = 0 Then DevuelveMedio cad
                             If NumRegElim = 3 And Kopc = 4 Then cad = Replace(cad, vbCrLf, " ")
                             
-                            If Kopc = 6 And NumRegElim = 4 Then cad = observaciones
+                            If Kopc = 6 And NumRegElim = 4 Then cad = Observaciones
                             
                             It.SubItems(NumRegElim - 1) = cad
                         
@@ -5649,7 +5650,7 @@ Dim cad As String
     If Text1(1).Text <> NombreAnt Or Text1(18).Text <> BancoAnt Or Text1(19).Text <> SucurAnt Or Text1(20).Text <> DigitoAnt Or Text1(21).Text <> CuentaAnt Or _
        DirecAnt <> Text1(3).Text Or cPostalAnt <> Text1(4).Text Or PoblaAnt <> Text1(5).Text Or ProviAnt <> Text1(6).Text Or NifAnt <> Text1(2).Text Or _
        EMaiAnt <> Text1(14).Text Or WebAnt <> Text1(10).Text Or _
-       IbanAnt <> Text1(32).Text Then
+       IbanAnt <> Text1(32).Text Or ForpaAnt <> Text1(17).Text Then
         
         cad = "Se han producido cambios en datos del Cliente. " '& vbCrLf
         
@@ -5680,6 +5681,7 @@ Dim cad As String
             SQL = SQL & ", nifdatos = " & DBSet(Trim(Text1(2).Text), "T")
             SQL = SQL & ", maidatos = " & DBSet(Trim(Text1(14).Text), "T")
             SQL = SQL & ", webdatos = " & DBSet(Trim(Text1(10).Text), "T")
+            SQL = SQL & ", forpa = " & DBSet(Trim(Text1(17).Text), "N")
             
             If vParamAplic.ContabilidadNueva Then
                 Dim vIban As String
@@ -5741,8 +5743,13 @@ Dim nRegs As Long
     On Error GoTo eHayCobrosPagosPendientes
 
 
-    SQL = "select count(*) from scobro where codmacta = " & DBSet(vCodmacta, "T")
-    SQL = SQL & " and (codrem is null or codrem = 0) and (transfer is null or transfer = 0) "
+    If vParamAplic.ContabilidadNueva Then
+        SQL = "select count(*) from cobros where codmacta = " & DBSet(vCodmacta, "T")
+        SQL = SQL & " and (codrem is null or codrem = 0) and (transfer is null or transfer = 0) "
+    Else
+        SQL = "select count(*) from scobro where codmacta = " & DBSet(vCodmacta, "T")
+        SQL = SQL & " and (codrem is null or codrem = 0) and (transfer is null or transfer = 0) "
+    End If
     
     Set Rs = New ADODB.Recordset
     Rs.Open SQL, ConnConta, adOpenForwardOnly, adLockPessimistic, adCmdText
@@ -5750,9 +5757,13 @@ Dim nRegs As Long
         If DBLet(Rs.Fields(0).Value) <> 0 Then nRegs = DBLet(Rs.Fields(0).Value)
     End If
             
-    SQL = "select count(*) from spagop where ctaprove = " & DBSet(vCodmacta, "T")
-    SQL = SQL & " and (transfer is null or transfer = 0)"
-    
+    If vParamAplic.ContabilidadNueva Then
+        SQL = "select count(*) from pagos where ctaprove = " & DBSet(vCodmacta, "T")
+        SQL = SQL & " and (nrodocum is null or nrodocum = 0)"
+    Else
+        SQL = "select count(*) from spagop where ctaprove = " & DBSet(vCodmacta, "T")
+        SQL = SQL & " and (transfer is null or transfer = 0)"
+    End If
     Set Rs = Nothing
     
     Set Rs = New ADODB.Recordset
@@ -5771,39 +5782,58 @@ End Function
 
 Private Function ActualizarCobrosPagosPdtes(vCodmacta As String, vBanco As String, vSucur As String, vDigcon As String, vCta As String, vIban As String) As Boolean
 Dim sql2 As String
-    
+Dim vvIban As String
     On Error GoTo eActualizarCobrosPagosPdtes
     
     ConnConta.BeginTrans
     
     ActualizarCobrosPagosPdtes = False
     
-    sql2 = "update scobro set codbanco = " & DBSet(vBanco, "N", "S") & ", codsucur = " & DBSet(vSucur, "N", "S")
-    sql2 = sql2 & ", digcontr = " & DBSet(vDigcon, "T", "S") & ", cuentaba = " & DBSet(vCta, "T", "S")
+    If vParamAplic.ContabilidadNueva Then
+         vvIban = MiFormat(vIban, "") & MiFormat(vBanco, "0000") & MiFormat(vSucur, "0000") & MiFormat(vDigcon, "00") & MiFormat(vCta, "0000000000")
+        
+         sql2 = "update cobros set iban = " & DBSet(vvIban, "T", "S")
+         
+         
+         sql2 = sql2 & " where codmacta = " & DBSet(vCodmacta, "T")
+         sql2 = sql2 & " and (codrem is null or codrem = 0) and (transfer is null or transfer = 0)"
+         
+         ConnConta.Execute sql2
+         
+         sql2 = "update pagos set iban = " & DBSet(vvIban, "T", "S")
+         
+         sql2 = sql2 & " where codmacta = " & DBSet(vCodmacta, "T")
+         sql2 = sql2 & " and (nrodocum is null or nrodocum = 0)"
+        
+         ConnConta.Execute sql2
     
-    '[Monica]22/11/2013: tema iban
-    If vEmpresa.HayNorma19_34Nueva = 1 Then
-        sql2 = sql2 & ", iban = " & DBSet(vIban, "T", "S")
+    Else
+         sql2 = "update scobro set codbanco = " & DBSet(vBanco, "N", "S") & ", codsucur = " & DBSet(vSucur, "N", "S")
+         sql2 = sql2 & ", digcontr = " & DBSet(vDigcon, "T", "S") & ", cuentaba = " & DBSet(vCta, "T", "S")
+         
+         '[Monica]22/11/2013: tema iban
+         If vEmpresa.HayNorma19_34Nueva = 1 Then
+             sql2 = sql2 & ", iban = " & DBSet(vIban, "T", "S")
+         End If
+         
+         sql2 = sql2 & " where codmacta = " & DBSet(vCodmacta, "T")
+         sql2 = sql2 & " and (codrem is null or codrem = 0) and (transfer is null or transfer = 0)"
+         
+         ConnConta.Execute sql2
+         
+         sql2 = "update spagop set entidad = " & DBSet(vBanco, "T", "S") & ", oficina = " & DBSet(vSucur, "T", "S")
+         sql2 = sql2 & ", cc = " & DBSet(vDigcon, "T", "S") & ", cuentaba = " & DBSet(vCta, "T", "S")
+         
+         '[Monica]22/11/2013: tema iban
+         If vEmpresa.HayNorma19_34Nueva = 1 Then
+             sql2 = sql2 & ", iban = " & DBSet(vIban, "T", "S")
+         End If
+         
+         sql2 = sql2 & " where ctaprove = " & DBSet(vCodmacta, "T")
+         sql2 = sql2 & " and (transfer is null or transfer = 0)"
+        
+         ConnConta.Execute sql2
     End If
-    
-    sql2 = sql2 & " where codmacta = " & DBSet(vCodmacta, "T")
-    sql2 = sql2 & " and (codrem is null or codrem = 0) and (transfer is null or transfer = 0)"
-    
-    ConnConta.Execute sql2
-    
-    sql2 = "update spagop set entidad = " & DBSet(vBanco, "T", "S") & ", oficina = " & DBSet(vSucur, "T", "S")
-    sql2 = sql2 & ", cc = " & DBSet(vDigcon, "T", "S") & ", cuentaba = " & DBSet(vCta, "T", "S")
-    
-    '[Monica]22/11/2013: tema iban
-    If vEmpresa.HayNorma19_34Nueva = 1 Then
-        sql2 = sql2 & ", iban = " & DBSet(vIban, "T", "S")
-    End If
-    
-    sql2 = sql2 & " where ctaprove = " & DBSet(vCodmacta, "T")
-    sql2 = sql2 & " and (transfer is null or transfer = 0)"
-   
-    ConnConta.Execute sql2
-    
     ActualizarCobrosPagosPdtes = True
     ConnConta.CommitTrans
     Exit Function

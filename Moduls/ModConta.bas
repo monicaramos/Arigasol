@@ -66,37 +66,37 @@ End Function
 
 
 'DAVID: Cuentas del la Contabilidad
-Public Function CuentaCorrectaUltimoNivel(ByRef cuenta As String, ByRef devuelve As String) As Boolean
+Public Function CuentaCorrectaUltimoNivel(ByRef Cuenta As String, ByRef devuelve As String) As Boolean
     'Comprueba si es numerica
-    Dim sql As String
+    Dim SQL As String
     Dim otroCampo As String
     
     CuentaCorrectaUltimoNivel = False
-    If cuenta = "" Then
+    If Cuenta = "" Then
         devuelve = "Cuenta vacia"
         Exit Function
     End If
 
-    If Not IsNumeric(cuenta) Then
-        devuelve = "La cuenta debe de ser numérica: " & cuenta
+    If Not IsNumeric(Cuenta) Then
+        devuelve = "La cuenta debe de ser numérica: " & Cuenta
         Exit Function
     End If
 
     'Rellenamos si procede
-    cuenta = RellenaCodigoCuenta(cuenta)
+    Cuenta = RellenaCodigoCuenta(Cuenta)
 
     '==========
-    If Not EsCuentaUltimoNivel(cuenta) Then
-        devuelve = "No es cuenta de último nivel: " & cuenta
+    If Not EsCuentaUltimoNivel(Cuenta) Then
+        devuelve = "No es cuenta de último nivel: " & Cuenta
         Exit Function
     End If
     '==================
 
     otroCampo = "apudirec"
     'BD 2: conexion a BD Conta
-    sql = DevuelveDesdeBDNew(cConta, "cuentas", "nommacta", "codmacta", cuenta, "T", otroCampo)
-    If sql = "" Then
-        devuelve = "No existe la cuenta : " & cuenta
+    SQL = DevuelveDesdeBDNew(cConta, "cuentas", "nommacta", "codmacta", Cuenta, "T", otroCampo)
+    If SQL = "" Then
+        devuelve = "No existe la cuenta : " & Cuenta
         CuentaCorrectaUltimoNivel = True
         Exit Function
     End If
@@ -104,9 +104,9 @@ Public Function CuentaCorrectaUltimoNivel(ByRef cuenta As String, ByRef devuelve
     'Llegados aqui, si que existe la cuenta
     If otroCampo = "S" Then 'Si es apunte directo
         CuentaCorrectaUltimoNivel = True
-        devuelve = sql
+        devuelve = SQL
     Else
-        devuelve = "No es apunte directo: " & cuenta
+        devuelve = "No es apunte directo: " & Cuenta
     End If
 End Function
 
@@ -117,24 +117,24 @@ Public Function RellenaCodigoCuenta(vCodigo As String) As String
 'Ejemplo: 43.1 --> 430000001
 Dim i As Integer
 Dim J As Integer
-Dim Cont As Integer
+Dim cont As Integer
 Dim cad As String
 
     RellenaCodigoCuenta = vCodigo
     If Len(vCodigo) > vEmpresa.DigitosUltimoNivel Then Exit Function
     
-    i = 0: Cont = 0
+    i = 0: cont = 0
     Do
         i = i + 1
         i = InStr(i, vCodigo, ".")
         If i > 0 Then
-            If Cont > 0 Then Cont = 1000
-            Cont = Cont + i
+            If cont > 0 Then cont = 1000
+            cont = cont + i
         End If
     Loop Until i = 0
 
     'Habia mas de un punto
-    If Cont > 1000 Or Cont = 0 Then Exit Function
+    If cont > 1000 Or cont = 0 Then Exit Function
 
     'Cambiamos el punto por 0's  .-Utilizo la variable maximocaracteres, para no tener k definir mas
     i = Len(vCodigo) - 1 'el punto lo quito
@@ -144,52 +144,64 @@ Dim cad As String
         cad = cad & "0"
     Next i
 
-    cad = Mid(vCodigo, 1, Cont - 1) & cad
-    cad = cad & Mid(vCodigo, Cont + 1)
+    cad = Mid(vCodigo, 1, cont - 1) & cad
+    cad = cad & Mid(vCodigo, cont + 1)
     RellenaCodigoCuenta = cad
 End Function
 
 'DAVID
-Public Function EsCuentaUltimoNivel(cuenta As String) As Boolean
-    EsCuentaUltimoNivel = (Len(cuenta) = vEmpresa.DigitosUltimoNivel)
+Public Function EsCuentaUltimoNivel(Cuenta As String) As Boolean
+    EsCuentaUltimoNivel = (Len(Cuenta) = vEmpresa.DigitosUltimoNivel)
 End Function
 
 ' ### [Monica] 07/09/2006
 ' copia de la gestion
-Private Function InsertarCuentaCble(cuenta As String, cadSocio As String, Optional cadProve As String, Optional cadBanco As String) As Boolean
-Dim sql As String
+Private Function InsertarCuentaCble(Cuenta As String, cadSocio As String, Optional cadProve As String, Optional cadBanco As String) As Boolean
+Dim SQL As String
 Dim SqlBan As String
 Dim Rs As ADODB.Recordset
 Dim vsocio As CSocio
 Dim vProve As CProveedor
 Dim b As Boolean
+Dim vIban As String
 
     On Error GoTo EInsCta
-    
-    sql = "INSERT INTO cuentas (codmacta,nommacta,apudirec,model347,razosoci,dirdatos,codposta,despobla,desprovi,nifdatos,maidatos,webdatos,obsdatos,pais, entidad, oficina, cc, cuentaba "
+    If vParamAplic.ContabilidadNueva Then
+        SQL = "INSERT INTO cuentas (codmacta,nommacta,apudirec,model347,razosoci,dirdatos,codposta,despobla,desprovi,nifdatos,maidatos,webdatos,obsdatos,codpais,forpa "
+    Else
+        SQL = "INSERT INTO cuentas (codmacta,nommacta,apudirec,model347,razosoci,dirdatos,codposta,despobla,desprovi,nifdatos,maidatos,webdatos,obsdatos,pais,forpa,entidad, oficina, cc, cuentaba "
+    End If
     '[Monica]22/11/2013: tema iban
     If vEmpresa.HayNorma19_34Nueva = 1 Then
-        sql = sql & ", iban) "
+        SQL = SQL & ", iban) "
     Else
-        sql = sql & ") "
+        SQL = SQL & ") "
     End If
     
-    sql = sql & " VALUES (" & DBSet(cuenta, "T") & ","
+    SQL = SQL & " VALUES (" & DBSet(Cuenta, "T") & ","
     
     If cadSocio <> "" Then
         Set vsocio = New CSocio
         If vsocio.LeerDatos(cadSocio) Then
-            sql = sql & DBSet(vsocio.Nombre, "T") & ",'S',1," & DBSet(cuenta, "T") & "," & DBSet(vsocio.Domicilio, "T") & ","
-            sql = sql & DBSet(vsocio.CPostal, "T") & "," & DBSet(vsocio.Poblacion, "T") & "," & DBSet(vsocio.Provincia, "T") & "," & DBSet(vsocio.NIF, "T") & "," & DBSet(vsocio.EMailAdm, "T") & "," & DBSet(vsocio.Websocio, "T") & "," & ValorNulo & "," & ValorNulo & "," & DBSet(vsocio.Banco, "N") & "," & DBSet(vsocio.Sucursal, "N") & "," & DBSet(vsocio.DigControl, "T") & "," & DBSet(vsocio.CuentaBan, "T") ' & ")"
+            SQL = SQL & DBSet(vsocio.Nombre, "T") & ",'S',1," & DBSet(Cuenta, "T") & "," & DBSet(vsocio.Domicilio, "T") & ","
+            SQL = SQL & DBSet(vsocio.CPostal, "T") & "," & DBSet(vsocio.POBLACION, "T") & "," & DBSet(vsocio.Provincia, "T") & "," & DBSet(vsocio.NIF, "T") & "," & DBSet(vsocio.EMailAdm, "T") & "," & DBSet(vsocio.Websocio, "T") & "," & ValorNulo & "," & ValorNulo & "," & DBSet(vsocio.ForPago, "N")
             
-            '[Monica]22/11/2013: tema iban
-            If vEmpresa.HayNorma19_34Nueva = 1 Then
-                sql = sql & "," & DBSet(vsocio.Iban, "T") & ")"
+            If Not vParamAplic.ContabilidadNueva Then
+                SQL = SQL & "," & DBSet(vsocio.Banco, "N") & "," & DBSet(vsocio.Sucursal, "N") & "," & DBSet(vsocio.DigControl, "T") & "," & DBSet(vsocio.CuentaBan, "T") ' & ")"
+            
+                '[Monica]22/11/2013: tema iban
+                If vEmpresa.HayNorma19_34Nueva = 1 Then
+                    SQL = SQL & "," & DBSet(vsocio.IBAN, "T") & ")"
+                Else
+                    SQL = SQL & ")"
+                End If
             Else
-                sql = sql & ")"
+                vIban = MiFormat(vsocio.IBAN, "") & MiFormat(vsocio.Banco, "0000") & MiFormat(vsocio.Sucursal, "0000") & MiFormat(vsocio.DigControl, "00") & MiFormat(vsocio.CuentaBan, "0000000000")
+                
+                SQL = SQL & "," & DBSet(vIban, "T") & ")"
             End If
             
-            ConnConta.Execute sql
+            ConnConta.Execute SQL
             cadSocio = vsocio.Nombre
             b = True
         Else
@@ -201,18 +213,26 @@ Dim b As Boolean
     If cadProve <> "" Then
         Set vProve = New CProveedor
         If vProve.LeerDatos(cadProve) Then
-            sql = sql & DBSet(vProve.Nombre, "T") & ",'S',1," & DBSet(vProve.Nombre, "T") & "," & DBSet(vProve.Domicilio, "T") & ","
-            sql = sql & DBSet(vProve.CPostal, "T") & "," & DBSet(vProve.Poblacion, "T") & "," & DBSet(vProve.Provincia, "T") & "," & DBSet(vProve.NIF, "T") & "," & DBSet(vProve.EMailAdmon, "T") & "," & DBSet(vProve.WebProve, "T") & "," & ValorNulo & ",'ESPAÑA'," & DBSet(vProve.Banco, "N") & "," & DBSet(vProve.Sucursal, "N") & "," & DBSet(vProve.DigControl, "T") & "," & DBSet(vProve.CuentaBan, "T")  '& ")"
+            SQL = SQL & DBSet(vProve.Nombre, "T") & ",'S',1," & DBSet(vProve.Nombre, "T") & "," & DBSet(vProve.Domicilio, "T") & ","
+            SQL = SQL & DBSet(vProve.CPostal, "T") & "," & DBSet(vProve.POBLACION, "T") & "," & DBSet(vProve.Provincia, "T") & "," & DBSet(vProve.NIF, "T") & "," & DBSet(vProve.EMailAdmon, "T") & "," & DBSet(vProve.WebProve, "T") & "," & ValorNulo
+            If Not vParamAplic.ContabilidadNueva Then
+                SQL = SQL & ",'ESPAÑA'," & DBSet(vProve.ForPago, "N") & "," & DBSet(vProve.Banco, "N") & "," & DBSet(vProve.Sucursal, "N") & "," & DBSet(vProve.DigControl, "T") & "," & DBSet(vProve.CuentaBan, "T")
             
-            '[Monica]22/11/2013: tema iban
-            If vEmpresa.HayNorma19_34Nueva = 1 Then
-                sql = sql & "," & DBSet(vProve.Iban, "T") & ")"
+                '[Monica]22/11/2013: tema iban
+                If vEmpresa.HayNorma19_34Nueva = 1 Then
+                    SQL = SQL & "," & DBSet(vProve.IBAN, "T") & ")"
+                Else
+                    SQL = SQL & ")"
+                End If
             Else
-                sql = sql & ")"
+                SQL = SQL & ",'ES'," & DBSet(vProve.ForPago, "N")
+                
+                vIban = MiFormat(vProve.IBAN, "") & MiFormat(vProve.Banco, "0000") & MiFormat(vProve.Sucursal, "0000") & MiFormat(vProve.DigControl, "00") & MiFormat(vProve.CuentaBan, "0000000000")
+            
+                SQL = SQL & "," & DBSet(vIban, "T") & ")"
             End If
             
-            
-            ConnConta.Execute sql
+            ConnConta.Execute SQL
             cadProve = vProve.Nombre
             b = True
         Else
@@ -227,19 +247,30 @@ Dim b As Boolean
         Set Rs = New ADODB.Recordset
         Rs.Open SqlBan, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
         If Not Rs.EOF Then
-            sql = sql & DBSet(Rs!nombanco, "T") & ",'S',1," & DBSet(Rs!nombanco, "T") & "," & DBSet(Rs!dombanco, "T") & ","
-            sql = sql & DBSet(Rs!codposta, "T") & "," & DBSet(Rs!pobbanco, "T") & "," & DBSet(Rs!probanco, "T") & "," & ValorNulo & "," & DBSet(Rs!maibanco, "T") & "," & DBSet(Rs!wwwbanco, "T") & "," & ValorNulo & ",'ESPAÑA'," & DBSet(Rs!codBanco, "N") & "," & DBSet(Rs!codSucur, "N") & "," & DBSet(Rs!DigContr, "T") & "," & DBSet(Rs!CuentaBa, "T")  '& ")"
+            SQL = SQL & DBSet(Rs!NomBanco, "T") & ",'S',1," & DBSet(Rs!NomBanco, "T") & "," & DBSet(Rs!dombanco, "T") & ","
+            SQL = SQL & DBSet(Rs!CodPosta, "T") & "," & DBSet(Rs!pobbanco, "T") & "," & DBSet(Rs!probanco, "T") & "," & ValorNulo & "," & DBSet(Rs!maibanco, "T") & "," & DBSet(Rs!wwwbanco, "T") & "," & ValorNulo
             
-            '[Monica]22/11/2013: tema iban
-            If vEmpresa.HayNorma19_34Nueva = 1 Then
-                sql = sql & "," & DBSet(Rs!Iban, "T") & ")"
+            If Not vParamAplic.ContabilidadNueva Then
+            
+                SQL = SQL & ",'ESPAÑA'," & ValorNulo & "," & DBSet(Rs!codbanco, "N") & "," & DBSet(Rs!codsucur, "N") & "," & DBSet(Rs!digcontr, "T") & "," & DBSet(Rs!cuentaba, "T")
+                
+                '[Monica]22/11/2013: tema iban
+                If vEmpresa.HayNorma19_34Nueva = 1 Then
+                    SQL = SQL & "," & DBSet(Rs!IBAN, "T") & ")"
+                Else
+                    SQL = SQL & ")"
+                End If
             Else
-                sql = sql & ")"
+                SQL = SQL & ",'ES'," & ValorNulo
+                
+                vIban = MiFormat(Rs!IBAN, "") & MiFormat(Rs!codbanco, "0000") & "," & MiFormat(Rs!codsucur, "0000") & "," & MiFormat(Rs!digcontr, "00") & "," & MiFormat(Rs!cuentaba, "0000000000")
+                
+                SQL = SQL & "," & DBSet(vIban, "T") & ")"
+            
             End If
             
-            
-            ConnConta.Execute sql
-            cadBanco = Rs!nombanco
+            ConnConta.Execute SQL
+            cadBanco = Rs!NomBanco
             b = True
         Else
             b = False
@@ -284,21 +315,21 @@ End Function
 
 'LAURA
 Public Function CCosteCorrecto(Empresa As String, ByRef Centro As String, ByRef devuelve As String) As Boolean
-    Dim sql As String
+    Dim SQL As String
     
     CCosteCorrecto = False
  
     'BD 2: conexion a BD Conta
     If Val(Empresa) <> Val(vEmpresa.codEmpre) Then
-        sql = DevuelveDesdeBDNew(3, "cabccost", "nomccost", "codccost", Centro, "T")
+        SQL = DevuelveDesdeBDNew(3, "cabccost", "nomccost", "codccost", Centro, "T")
     Else
-        sql = DevuelveDesdeBDNew(cConta, "cabccost", "nomccost", "codccost", Centro, "T")
+        SQL = DevuelveDesdeBDNew(cConta, "cabccost", "nomccost", "codccost", Centro, "T")
     End If
-    If sql = "" Then
+    If SQL = "" Then
         devuelve = "No existe el Centro de coste : " & Centro
         Exit Function
     Else
-        devuelve = sql
+        devuelve = SQL
         CCosteCorrecto = True
     End If
 End Function
@@ -334,33 +365,33 @@ End Function
 
 'LAURA
 Public Function ConceptoCorrecto(ByRef Concep As String, ByRef devuelve As String) As Boolean
-    Dim sql As String
+    Dim SQL As String
     
     ConceptoCorrecto = False
  
     'BD 2: conexion a BD Conta
-    sql = DevuelveDesdeBDNew(cConta, "conceptos", "nomconce", "codconce", Concep, "N")
-    If sql = "" Then
+    SQL = DevuelveDesdeBDNew(cConta, "conceptos", "nomconce", "codconce", Concep, "N")
+    If SQL = "" Then
         devuelve = "No existe el concepto : " & Concep
         Exit Function
     Else
-        devuelve = sql
+        devuelve = SQL
         ConceptoCorrecto = True
     End If
 End Function
 
 ' ### [Monica] 27/09/2006
 Public Function FacturaContabilizada(numserie As String, numfactu As String, Anofactu As String) As Boolean
-Dim sql As String
+Dim SQL As String
 Dim NumAsi As Currency
 
     FacturaContabilizada = False
-    sql = ""
-    sql = DevuelveDesdeBDNew(cConta, "cabfact", "numasien", "numserie", numserie, "T", , "codfaccl", numfactu, "N", "anofaccl", Anofactu, "N")
+    SQL = ""
+    SQL = DevuelveDesdeBDNew(cConta, "cabfact", "numasien", "numserie", numserie, "T", , "codfaccl", numfactu, "N", "anofaccl", Anofactu, "N")
     
-    If sql = "" Then Exit Function
+    If SQL = "" Then Exit Function
     
-    NumAsi = DBLet(sql, "N")
+    NumAsi = DBLet(SQL, "N")
     
     If NumAsi <> 0 Then FacturaContabilizada = True
 
@@ -368,7 +399,7 @@ End Function
 
 ' ### [Monica] 27/09/2006
 Public Function FacturaRemesada(numserie As String, numfactu As String, fecfactu As String) As Boolean
-Dim sql As String
+Dim SQL As String
 Dim NumRem As Currency
 Dim Rs As ADODB.Recordset
 
@@ -377,10 +408,10 @@ Dim Rs As ADODB.Recordset
     '[Monica]22/05/2014: hay que ver que ningun vencimiento este remesado si hay mas de uno
 '    sql = ""
 '    sql = DevuelveDesdeBDNew(cConta, "scobro", "codrem", "numserie", numserie, "T", , "codfaccl", numfactu, "N", "fecfaccl", fecfactu, "F")
-    sql = "select codrem from scobro where numserie = " & DBSet(numserie, "T") & " and codfaccl = " & DBSet(numfactu, "N") & " and fecfaccl = " & DBSet(fecfactu, "F")
-    sql = sql & " order by codrem desc "
+    SQL = "select codrem from scobro where numserie = " & DBSet(numserie, "T") & " and codfaccl = " & DBSet(numfactu, "N") & " and fecfaccl = " & DBSet(fecfactu, "F")
+    SQL = SQL & " order by codrem desc "
     Set Rs = New ADODB.Recordset
-    Rs.Open sql, ConnConta, adOpenForwardOnly, adLockPessimistic, adCmdText
+    Rs.Open SQL, ConnConta, adOpenForwardOnly, adLockPessimistic, adCmdText
     If Not Rs.EOF Then
     
     Else
@@ -399,14 +430,14 @@ End Function
 
 ' ### [Monica] 27/09/2006
 Public Function FacturaCobrada(numserie As String, numfactu As String, fecfactu As String) As Boolean
-Dim sql As String
+Dim SQL As String
 Dim ImpCob As Currency
 
     FacturaCobrada = False
-    sql = ""
-    sql = DevuelveDesdeBDNew(cConta, "scobro", "impcobro", "numserie", numserie, "T", , "codfaccl", numfactu, "N", "fecfaccl", fecfactu, "F")
-    If sql = "" Then Exit Function
-    ImpCob = DBLet(sql, "N")
+    SQL = ""
+    SQL = DevuelveDesdeBDNew(cConta, "scobro", "impcobro", "numserie", numserie, "T", , "codfaccl", numfactu, "N", "fecfaccl", fecfactu, "F")
+    If SQL = "" Then Exit Function
+    ImpCob = DBLet(SQL, "N")
     
     If ImpCob <> 0 Then FacturaCobrada = True
     
@@ -414,7 +445,7 @@ End Function
 
 ' ### [Monica] 27/09/2006
 Public Function ModificaClienteFacturaContabilidad(letraser As String, numfactu As String, fecfactu As String, CtaConta As String, Tipo As Byte) As Boolean
-Dim sql As String
+Dim SQL As String
 Dim Anyo As Currency
 
     On Error GoTo eModificaClienteFacturaContabilidad
@@ -425,15 +456,15 @@ Dim Anyo As Currency
     
     '[Monica]24/07/2013: añadido el tipo 2 (hco1)
     If Tipo = 0 Or Tipo = 2 Then
-        sql = "update cabfact set codmacta = " & DBSet(CtaConta, "T") & " where numserie = " & DBSet(letraser, "T") & " and " & _
+        SQL = "update cabfact set codmacta = " & DBSet(CtaConta, "T") & " where numserie = " & DBSet(letraser, "T") & " and " & _
                   "codfaccl = " & DBSet(numfactu, "N") & " and anofaccl = " & DBSet(Anyo, "N")
-        ConnConta.Execute sql
+        ConnConta.Execute SQL
     End If
     
-    sql = "update scobro set codmacta = " & DBSet(CtaConta, "T") & " where numserie = " & DBSet(letraser, "T") & " and " & _
+    SQL = "update scobro set codmacta = " & DBSet(CtaConta, "T") & " where numserie = " & DBSet(letraser, "T") & " and " & _
               "codfaccl = " & DBSet(numfactu, "N") & " and fecfaccl = " & DBSet(fecfactu, "F")
               
-    ConnConta.Execute sql
+    ConnConta.Execute SQL
               
     ModificaClienteFacturaContabilidad = True
     
@@ -445,25 +476,25 @@ eModificaClienteFacturaContabilidad:
 End Function
 
 ' ### [Monica] 27/09/2006
-Public Sub ModificaFormaPagoTesoreria(letraser As String, numfactu As String, fecfactu As String, forpa As String, forpaant As String)
-Dim sql As String
-Dim SQL1 As String
+Public Sub ModificaFormaPagoTesoreria(letraser As String, numfactu As String, fecfactu As String, Forpa As String, ForpaAnt As String)
+Dim SQL As String
+Dim Sql1 As String
 Dim TipForpa As String
 Dim TipForpaAnt As String
-Dim cadWHERE As String
+Dim cadWhere As String
 
-    cadWHERE = " numserie = " & DBSet(letraser, "T") & " and " & _
+    cadWhere = " numserie = " & DBSet(letraser, "T") & " and " & _
               "codfaccl = " & numfactu & " and fecfaccl = " & DBSet(fecfactu, "F")
     
-    sql = "update scobro set codforpa = " & forpa & " where " & cadWHERE
+    SQL = "update scobro set codforpa = " & Forpa & " where " & cadWhere
 
-    ConnConta.Execute sql
+    ConnConta.Execute SQL
 
 End Sub
 
 ' ### [Monica] 29/09/2006
-Public Function ModificaImportesFacturaContabilidad(letraser As String, numfactu As String, fecfactu As String, Importe As String, forpa As String, vTabla As String) As Boolean
-Dim sql As String
+Public Function ModificaImportesFacturaContabilidad(letraser As String, numfactu As String, fecfactu As String, IMPORTE As String, Forpa As String, vTabla As String) As Boolean
+Dim SQL As String
 Dim vWhere As String
 Dim b As Boolean
 Dim CadValues As String
@@ -479,34 +510,34 @@ Dim TipForpa As String
               numfactu & " and anofaccl = " & Format(Year(fecfactu), "0000")
      
     
-    sql = "select codsocio from " & vTabla & " where letraser = " & DBSet(letraser, "T") & " and numfactu = " & _
+    SQL = "select codsocio from " & vTabla & " where letraser = " & DBSet(letraser, "T") & " and numfactu = " & _
            numfactu & " and fecfactu = " & DBSet(fecfactu, "F")
     
     Set Rs = New ADODB.Recordset
-    Rs.Open sql, Conn, adOpenForwardOnly, adLockOptimistic, adCmdText
+    Rs.Open SQL, Conn, adOpenForwardOnly, adLockOptimistic, adCmdText
     If Not Rs.EOF Then Rs.MoveFirst
     
     Set vsocio = New CSocio
     If vsocio.LeerDatos(Rs.Fields(0).Value) Then
         '[Monica]24/07/2013
         If vTabla = "schfac" Or vTabla = "schfac1" Then
-            sql = "delete from linfact where " & vWhere
-            ConnConta.Execute sql
+            SQL = "delete from linfact where " & vWhere
+            ConnConta.Execute SQL
         
-            sql = "delete from cabfact where " & vWhere
-            ConnConta.Execute sql
+            SQL = "delete from cabfact where " & vWhere
+            ConnConta.Execute SQL
             
             '[Monica]24/07/2013
             If vTabla = "schfac" Then
-                sql = "schfac.letraser = " & DBSet(letraser, "T") & " and numfactu = " & numfactu
-                sql = sql & " and fecfactu = " & DBSet(fecfactu, "F")
+                SQL = "schfac.letraser = " & DBSet(letraser, "T") & " and numfactu = " & numfactu
+                SQL = SQL & " and fecfactu = " & DBSet(fecfactu, "F")
             Else
-                sql = "schfac1.letraser = " & DBSet(letraser, "T") & " and numfactu = " & numfactu
-                sql = sql & " and fecfactu = " & DBSet(fecfactu, "F")
+                SQL = "schfac1.letraser = " & DBSet(letraser, "T") & " and numfactu = " & numfactu
+                SQL = SQL & " and fecfactu = " & DBSet(fecfactu, "F")
             End If
             
             b = CrearTMPErrFact("schfac")
-            If b Then b = PasarFactura2(sql, vsocio, vTabla)
+            If b Then b = PasarFactura2(SQL, vsocio, vTabla)
         End If
         
         If vTabla = "schfacr" Then
@@ -514,7 +545,7 @@ Dim TipForpa As String
         End If
         
         ' 09/02/2007
-        TipForpa = DevuelveDesdeBDNew(cPTours, "sforpa", "tipforpa", "codforpa", forpa, "N")
+        TipForpa = DevuelveDesdeBDNew(cPTours, "sforpa", "tipforpa", "codforpa", Forpa, "N")
         '[Monica]04/01/2013: efectivos
                                                      
         If TipForpa <> "0" And TipForpa <> "6" And b Then
@@ -531,10 +562,10 @@ eModificaImportesFacturaContabilidad:
 End Function
 
 Public Function ModificaCobroTesoreria(letraser As String, numfactu As String, fecfactu As String, vsocio As CSocio, vTabla As String) As Boolean
-Dim sql As String
+Dim SQL As String
 Dim Rs As ADODB.Recordset
-Dim cadWHERE As String
-Dim BanPr As String
+Dim cadWhere As String
+Dim Banpr As String
 Dim Mens As String
 Dim b As Boolean
 
@@ -546,29 +577,29 @@ Dim b As Boolean
     ' antes de borrar he de obtener la fecha de vencimiento y el codmacta para sacar el banco propio que le pasaré
     ' a la rutina de InsertarEnTesoreria
             
-    sql = "select fecvenci, ctabanc1 from scobro where numserie = " & DBSet(letraser, "T") & " and codfaccl = " & DBSet(numfactu, "N")
-    sql = sql & " and fecfaccl = " & DBSet(fecfactu, "F") & " and numorden = 1"
+    SQL = "select fecvenci, ctabanc1 from scobro where numserie = " & DBSet(letraser, "T") & " and codfaccl = " & DBSet(numfactu, "N")
+    SQL = SQL & " and fecfaccl = " & DBSet(fecfactu, "F") & " and numorden = 1"
     
     Set Rs = New ADODB.Recordset
-    Rs.Open sql, ConnConta, adOpenForwardOnly, adLockOptimistic, adCmdText
+    Rs.Open SQL, ConnConta, adOpenForwardOnly, adLockOptimistic, adCmdText
     If Not Rs.EOF Then
         Rs.MoveFirst
         
-        cadWHERE = vTabla & ".letraser =" & DBSet(letraser, "T") & " and numfactu=" & DBLet(numfactu, "N")
-        cadWHERE = cadWHERE & " and fecfactu=" & DBSet(fecfactu, "F")
+        cadWhere = vTabla & ".letraser =" & DBSet(letraser, "T") & " and numfactu=" & DBLet(numfactu, "N")
+        cadWhere = cadWhere & " and fecfactu=" & DBSet(fecfactu, "F")
 
-        BanPr = ""
-        BanPr = DevuelveDesdeBDNew(cPTours, "sbanco", "codbanpr", "codmacta", Rs.Fields(1).Value, "T")
+        Banpr = ""
+        Banpr = DevuelveDesdeBDNew(cPTours, "sbanco", "codbanpr", "codmacta", Rs.Fields(1).Value, "T")
 
-        sql = "delete from scobro where "
-        sql = sql & " numserie = " & DBSet(letraser, "T") & " and codfaccl = " & numfactu
-        sql = sql & " and fecfaccl = " & DBSet(fecfactu, "F")
+        SQL = "delete from scobro where "
+        SQL = SQL & " numserie = " & DBSet(letraser, "T") & " and codfaccl = " & numfactu
+        SQL = SQL & " and fecfaccl = " & DBSet(fecfactu, "F")
         
-        ConnConta.Execute sql
+        ConnConta.Execute SQL
             
         ' hemos de crear el cobro nuevamente
         Mens = "Insertando en Tesoreria "
-        b = InsertarEnTesoreria(cadWHERE, CStr(Rs.Fields(0).Value), BanPr, Mens, vsocio, vTabla)
+        b = InsertarEnTesoreria(cadWhere, CStr(Rs.Fields(0).Value), Banpr, Mens, vsocio, vTabla)
     End If
     
     ModificaCobroTesoreria = b
@@ -580,7 +611,7 @@ eModificaCobroTesoreria:
 End Function
 
 
-Public Function CalcularIva(Importe As String, articulo As String) As Currency
+Public Function CalcularIva(IMPORTE As String, Articulo As String) As Currency
 'devuelve el iva del Importe
 'Ej el 16% de 120 = 19.2
 Dim vImp As Currency
@@ -593,13 +624,13 @@ Dim iva As String
 Dim impiva As Currency
 On Error Resume Next
 
-    Importe = ComprobarCero(Importe)
-    articulo = ComprobarCero(articulo)
+    IMPORTE = ComprobarCero(IMPORTE)
+    Articulo = ComprobarCero(Articulo)
     
-    CodIVA = DevuelveDesdeBD("codigiva", "sartic", "codartic", articulo, "N")
+    CodIVA = DevuelveDesdeBD("codigiva", "sartic", "codartic", Articulo, "N")
     iva = DevuelveDesdeBDNew(cConta, "tiposiva", "porceiva", "codigiva", CodIVA, "N")
     
-    vImp = CCur(Importe)
+    vImp = CCur(IMPORTE)
     vIva = CCur(iva)
     
     impiva = ((vImp * vIva) / 100)
@@ -611,7 +642,7 @@ On Error Resume Next
 End Function
 
 
-Public Function CalcularBase(Importe As String, articulo As String) As Currency
+Public Function CalcularBase(IMPORTE As String, Articulo As String) As Currency
 'devuelve la base del Importe
 'Ej el 16% de 120 = 120-19.2 = 100.8
 Dim vImp As Currency
@@ -624,16 +655,16 @@ Dim iva As String
 Dim impiva As Currency
 On Error Resume Next
 
-    Importe = ComprobarCero(Importe)
-    articulo = ComprobarCero(articulo)
+    IMPORTE = ComprobarCero(IMPORTE)
+    Articulo = ComprobarCero(Articulo)
     
-    CodIVA = DevuelveDesdeBD("codigiva", "sartic", "codartic", articulo, "N")
+    CodIVA = DevuelveDesdeBD("codigiva", "sartic", "codartic", Articulo, "N")
     iva = DevuelveDesdeBDNew(cConta, "tiposiva", "porceiva", "codigiva", CodIVA, "N")
     
-    vImp = CCur(Importe)
+    vImp = CCur(IMPORTE)
     vIva = CCur(iva)
     
-    impiva = Round2(Importe / (1 + (vIva / 100)), 2)
+    impiva = Round2(IMPORTE / (1 + (vIva / 100)), 2)
     
     CalcularBase = CStr(impiva)
     If Err.Number <> 0 Then Err.Clear
@@ -642,35 +673,35 @@ End Function
 
 
 'MONICA: Cuentas del la Contabilidad
-Public Function NombreCuentaCorrecta(ByRef cuenta As String) As String
+Public Function NombreCuentaCorrecta(ByRef Cuenta As String) As String
     'Comprueba si es numerica
-    Dim sql As String
+    Dim SQL As String
     Dim otroCampo As String
     
 ' ### [Monica] 27/10/2006 añadida la linea siguiente condicion vParamAplic.NumeroConta = 0
 ' para que no saque nada si no hay contabilidad
-    If cuenta = "" Or vParamAplic.NumeroConta = 0 Then
+    If Cuenta = "" Or vParamAplic.NumeroConta = 0 Then
          NombreCuentaCorrecta = ""
          Exit Function
     End If
     
     NombreCuentaCorrecta = ""
-    If cuenta = "" Then
+    If Cuenta = "" Then
         MsgBox "Cuenta vacia", vbExclamation
         Exit Function
     End If
 
-    If Not IsNumeric(cuenta) Then
-        MsgBox "La cuenta debe de ser numérica: " & cuenta, vbExclamation
+    If Not IsNumeric(Cuenta) Then
+        MsgBox "La cuenta debe de ser numérica: " & Cuenta, vbExclamation
         Exit Function
     End If
 
     'BD 2: conexion a BD Conta
-    sql = DevuelveDesdeBDNew(cConta, "cuentas", "nommacta", "codmacta", cuenta, "T")
-    If sql = "" Then
-        MsgBox "No existe la cuenta : " & cuenta, vbExclamation
+    SQL = DevuelveDesdeBDNew(cConta, "cuentas", "nommacta", "codmacta", Cuenta, "T")
+    If SQL = "" Then
+        MsgBox "No existe la cuenta : " & Cuenta, vbExclamation
     Else
-        NombreCuentaCorrecta = sql
+        NombreCuentaCorrecta = SQL
     End If
 
 End Function

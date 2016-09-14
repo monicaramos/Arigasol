@@ -1221,20 +1221,20 @@ End Sub
 
 
 Private Sub CmdAceptarFactACta_Click()
-Dim CADENA As String
+Dim Cadena As String
     'Cargo las facturas a cuenta que hay que descontar
-    CADENA = ""
+    Cadena = ""
     For NumRegElim = 1 To ListView8.ListItems.Count
         If ListView8.ListItems(NumRegElim).Checked Then
-            CADENA = CADENA & "('" & ListView8.ListItems(NumRegElim).Text & "'," & ListView8.ListItems(NumRegElim).SubItems(1) & "," & DBSet(ListView8.ListItems(NumRegElim).SubItems(2), "F") & "),"
+            Cadena = Cadena & "('" & ListView8.ListItems(NumRegElim).Text & "'," & ListView8.ListItems(NumRegElim).SubItems(1) & "," & DBSet(ListView8.ListItems(NumRegElim).SubItems(2), "F") & "),"
         End If
     Next NumRegElim
     ' quitamos la ultima coma
-    If CADENA <> "" Then
-        CADENA = Mid(CADENA, 1, Len(CADENA) - 1)
+    If Cadena <> "" Then
+        Cadena = Mid(Cadena, 1, Len(Cadena) - 1)
     End If
     
-    RaiseEvent DatoSeleccionado(CADENA)
+    RaiseEvent DatoSeleccionado(Cadena)
     Unload Me
 End Sub
 
@@ -1273,7 +1273,7 @@ Private Sub cmdAceptarNSeries_Click()
 Dim i As Byte, J As Byte
 Dim Seleccionados As Integer
 Dim cad As String, SQL As String
-Dim articulo As String
+Dim Articulo As String
 Dim Rs As ADODB.Recordset
 Dim C1 As String * 10, C2 As String * 10, c3 As String * 10
 
@@ -1281,17 +1281,17 @@ Dim C1 As String * 10, C2 As String * 10, c3 As String * 10
     If OpcionMensaje = 4 Then
         'Comprobar que se han seleccionado el nº correcto de  Nº de Serie para cada Articulo
         Seleccionados = 0
-        articulo = ""
+        Articulo = ""
       
         'Si se ha seleccionado la cantidad correcta de Nº de series, empiparlos y
         'devolverlos al form de Albaranes(facturacion)
         cad = ""
         For J = 0 To TotalArray
-            articulo = codArtic(J)
-            cad = cad & articulo & "|"
+            Articulo = codArtic(J)
+            cad = cad & Articulo & "|"
             For i = 1 To ListView2.ListItems.Count
                 If ListView2.ListItems(i).Checked Then
-                    If articulo = ListView2.ListItems(i).ListSubItems(1).Text Then
+                    If Articulo = ListView2.ListItems(i).ListSubItems(1).Text Then
                         If Seleccionados < Abs(cantidad(J)) Then
                             Seleccionados = Seleccionados + 1
                             cad = cad & ListView2.ListItems(i).Text & "|"
@@ -1305,7 +1305,7 @@ Dim C1 As String * 10, C2 As String * 10, c3 As String * 10
                 'que corresponden
                 SQL = "SELECT count(sserie.numserie)"
                 SQL = SQL & " FROM sserie " 'INNER JOIN sartic ON sserie.codartic=sartic.codartic "
-                SQL = SQL & " WHERE sserie.codartic=" & DBSet(articulo, "T")
+                SQL = SQL & " WHERE sserie.codartic=" & DBSet(Articulo, "T")
                 SQL = SQL & " AND (isnull(sserie.numfactu) or sserie.numfactu='') and (isnull(sserie.numalbar) or sserie.numalbar='') "
                 SQL = SQL & " ORDER BY sserie.codartic, numserie "
                 Set Rs = New ADODB.Recordset
@@ -1414,24 +1414,24 @@ End Sub
 
 
 Private Sub cmdacepVariedades_Click()
-Dim CADENA As String
+Dim Cadena As String
     'Cargo las variedades marcadas
-    CADENA = ""
+    Cadena = ""
     For NumRegElim = 1 To ListView7.ListItems.Count
         If ListView7.ListItems(NumRegElim).Checked Then
             If Label5.Caption = "Forfaits" Then
-                CADENA = CADENA & "'" & Trim(ListView7.ListItems(NumRegElim).Text) & "',"
+                Cadena = Cadena & "'" & Trim(ListView7.ListItems(NumRegElim).Text) & "',"
             Else
-                CADENA = CADENA & ListView7.ListItems(NumRegElim).Text & ","
+                Cadena = Cadena & ListView7.ListItems(NumRegElim).Text & ","
             End If
         End If
     Next NumRegElim
     ' quitamos la ultima coma
-    If CADENA <> "" Then
-        CADENA = Mid(CADENA, 1, Len(CADENA) - 1)
+    If Cadena <> "" Then
+        Cadena = Mid(Cadena, 1, Len(Cadena) - 1)
     End If
     
-    RaiseEvent DatoSeleccionado(CADENA)
+    RaiseEvent DatoSeleccionado(Cadena)
     Unload Me
 End Sub
 
@@ -2073,7 +2073,7 @@ Dim ItmX As ListItem
 Dim SQL As String
 
     If vParamAplic.ContabilidadNueva Then
-        SQL = "SELECT numserie, numfactu codfaccl, fecfactu fecfaccl, fecvenci, impvenci, impcobro "
+        SQL = "SELECT numserie, numfactu, fecfactu, fecvenci, impvenci, impcobro "
         SQL = SQL & " FROM cobros INNER JOIN formapago ON cobros.codforpa=formapago.codforpa "
         SQL = SQL & cadWhere
     Else
@@ -2581,7 +2581,7 @@ Dim SQL As String
              ItmX.Text = Rs!codtipoa 'cod tipo alb
              ItmX.Checked = False
              ItmX.SubItems(1) = Format(Rs!numalbar, "0000000") 'Nº Albaran
-             ItmX.SubItems(2) = Rs!numlinea 'linea Albaran
+             ItmX.SubItems(2) = Rs!NumLinea 'linea Albaran
              ItmX.SubItems(3) = Format(Rs!codAlmac, "000") 'cod almacen
              ItmX.SubItems(4) = Rs!codArtic 'Cod Articulo
              ItmX.SubItems(5) = Rs!NomArtic 'Nombre del Articulo
@@ -3021,12 +3021,12 @@ Private Sub CargarArticulosCorreccionPrecio()
 Dim SQL As String
 Dim Rs As ADODB.Recordset
 Dim It As ListItem
-Dim Margen As Currency
+Dim margen As Currency
 Dim MargenT As Currency
 Dim ImpPVP As Currency
 Dim ImpTar As Currency
 Dim Aux As Currency
-Dim Decimales As Integer
+Dim decimales As Integer
 Dim PrecioUC As Currency
 Dim SoloImporteMenor As Boolean
     
@@ -3040,7 +3040,7 @@ Dim SoloImporteMenor As Boolean
     
     TotalArray = InStr(1, cadWHERE2, ",")
     SQL = Mid(cadWHERE2, TotalArray + 1)
-    Decimales = Len(SQL)
+    decimales = Len(SQL)
     'Formato
     cadWHERE2 = "#,##0." & Mid(cadWHERE2, TotalArray + 1)
     
@@ -3069,17 +3069,17 @@ Dim SoloImporteMenor As Boolean
         lblIndicadorCorregir.Caption = Rs!codArtic
         lblIndicadorCorregir.Refresh
         
-        Margen = DBLet(Rs!margenart, "N") / 100
+        margen = DBLet(Rs!margenart, "N") / 100
         MargenT = DBLet(Rs!margetar, "N") / 100
         PrecioUC = DBLet(Rs!PrecioUC, "N")
         
-        Aux = Margen * PrecioUC
-        ImpPVP = Round(PrecioUC + Aux, Decimales)
+        Aux = margen * PrecioUC
+        ImpPVP = Round(PrecioUC + Aux, decimales)
         'El de la tarifa
         Aux = MargenT * ImpPVP
-        ImpTar = Round(ImpPVP + Aux, Decimales)
+        ImpTar = Round(ImpPVP + Aux, decimales)
         
-        Aux = Round(Rs!preciove, Decimales)
+        Aux = Round(Rs!preciove, decimales)
         
         SQL = ""
         
@@ -3088,7 +3088,7 @@ Dim SoloImporteMenor As Boolean
             If Aux >= ImpPVP Then
                 'El primero esta bien
                 'Veamos el segundo. En la tarifa
-                Aux = Round(Rs!precioac, Decimales)
+                Aux = Round(Rs!precioac, decimales)
                 If Aux < ImpTar Then SQL = "M"
             Else
                 SQL = "M"
@@ -3099,7 +3099,7 @@ Dim SoloImporteMenor As Boolean
             If Aux = ImpPVP Then
                 'El primero esta bien
                 'Veamos el segundo. En la tarifa
-                Aux = Round(Rs!precioac, Decimales)
+                Aux = Round(Rs!precioac, decimales)
                 If Aux <> ImpTar Then SQL = "M"
             Else
                 SQL = "M"
@@ -3112,15 +3112,15 @@ Dim SoloImporteMenor As Boolean
             It.ToolTipText = It.Tag
             It.Text = It.Tag
             It.SubItems(1) = Rs!NomArtic
-            Aux = Round(PrecioUC, Decimales)
+            Aux = Round(PrecioUC, decimales)
             It.SubItems(2) = Format(Aux, cadWHERE2)
             
-            It.SubItems(3) = Format(Margen * 100, FormatoPorcen)
-            Aux = Round(Rs!preciove, Decimales)
+            It.SubItems(3) = Format(margen * 100, FormatoPorcen)
+            Aux = Round(Rs!preciove, decimales)
             It.SubItems(4) = Format(Aux, cadWHERE2)
             
             It.SubItems(5) = Format(MargenT * 100, FormatoPorcen)
-            Aux = Round(Rs!precioac, Decimales)
+            Aux = Round(Rs!precioac, decimales)
             It.SubItems(6) = Format(Aux, cadWHERE2)
             
             'Precio venta correcto
@@ -3398,7 +3398,7 @@ Dim It As ListItem
     While Not Rs.EOF
         Set It = ListView8.ListItems.Add
             
-        It.Text = DBLet(Rs!codTipoM, "T")
+        It.Text = DBLet(Rs!codtipom, "T")
         It.SubItems(1) = Format(DBLet(Rs!numfactu, "N"), "0000000")
         It.SubItems(2) = Format(DBLet(Rs!fecfactu, "F"), "dd/mm/yyyy")
         It.SubItems(3) = Format(DBLet(Rs!TotalFac, "N"), "###,###,##0.00")

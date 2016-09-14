@@ -1675,7 +1675,7 @@ End Function
 
 'recupera valor desde una cadena con pipes(acabada en pipes)
 'Para ello le decimos el orden  y ya ta
-Public Function RecuperaValor(ByRef CADENA As String, Orden As Integer) As String
+Public Function RecuperaValor(ByRef Cadena As String, Orden As Integer) As String
 Dim i As Integer
 Dim J As Integer
 Dim cont As Integer
@@ -1686,11 +1686,11 @@ Dim cad As String
     cad = ""
     Do
         J = i + 1
-        i = InStr(J, CADENA, "|")
+        i = InStr(J, Cadena, "|")
         If i > 0 Then
             If cont = Orden Then
-                cad = Mid(CADENA, J, i - J)
-                i = Len(CADENA) 'Para salir del bucle
+                cad = Mid(Cadena, J, i - J)
+                i = Len(Cadena) 'Para salir del bucle
                 Else
                     cont = cont + 1
             End If
@@ -1701,7 +1701,7 @@ End Function
 
 'recupera valor desde una cadena con pipes(acabada en pipes)
 'Para ello le decimos el orden  y ya ta
-Public Function RecuperaValorNew(ByRef CADENA As String, Separador As String, Orden As Integer) As String
+Public Function RecuperaValorNew(ByRef Cadena As String, Separador As String, Orden As Integer) As String
 Dim i As Integer
 Dim J As Integer
 Dim cont As Integer
@@ -1712,11 +1712,11 @@ Dim cad As String
     cad = ""
     Do
         J = i + 1
-        i = InStr(J, CADENA, Separador)
+        i = InStr(J, Cadena, Separador)
         If i > 0 Then
             If cont = Orden Then
-                cad = Mid(CADENA, J, i - J)
-                i = Len(CADENA) 'Para salir del bucle
+                cad = Mid(Cadena, J, i - J)
+                i = Len(Cadena) 'Para salir del bucle
                 Else
                     cont = cont + 1
             End If
@@ -2258,7 +2258,7 @@ Dim cad As String
 
 End Sub
 
-Public Function CalcularImporte(cantidad As String, Precio As String, IMPORTE As String, Tipo As String) As String
+Public Function CalcularImporte(cantidad As String, precio As String, IMPORTE As String, Tipo As String) As String
 'Calcula el Importe de una linea de Oferta, Pedido, Albaran, ...
 'Importe = Cantidad * precio  Tipo <>"1"
 'Cantidad = Importe / precio Tipo ="1"
@@ -2268,21 +2268,21 @@ On Error Resume Next
 
     'Como son de tipo string comprobar que si vale "" lo ponemos a 0
     cantidad = ComprobarCero(cantidad)
-    Precio = ComprobarCero(Precio)
+    precio = ComprobarCero(precio)
     IMPORTE = ComprobarCero(IMPORTE)
     
     If Tipo <> "1" Then
-       vImp = CCur(ImporteFormateado(cantidad)) * CCur(ImporteFormateado(Precio))
+       vImp = CCur(ImporteFormateado(cantidad)) * CCur(ImporteFormateado(precio))
        vImp = Round2(vImp, 2)
        CalcularImporte = Format(vImp, "###,##0.00")
     Else
-       vCan = CCur(ImporteFormateado(IMPORTE)) / CCur(ImporteFormateado(Precio))
+       vCan = CCur(ImporteFormateado(IMPORTE)) / CCur(ImporteFormateado(precio))
        vCan = Round2(vCan, 3)
        CalcularImporte = Format(vCan, "##,##0.000")
     End If
 End Function
 
-Public Sub CalcularImporteNue(ByRef cantidad As TextBox, ByRef Precio As TextBox, ByRef IMPORTE As TextBox, Tipo As Integer)
+Public Sub CalcularImporteNue(ByRef cantidad As TextBox, ByRef precio As TextBox, ByRef IMPORTE As TextBox, Tipo As Integer)
 'Calcula el Importe de una linea de hcode facturas
 Dim vImp As Currency
 Dim vCan As Currency
@@ -2290,20 +2290,20 @@ On Error Resume Next
 
     'Como son de tipo string comprobar que si vale "" lo ponemos a 0
     cantidad = ComprobarCero(cantidad.Text)
-    Precio = ComprobarCero(Precio.Text)
+    precio = ComprobarCero(precio.Text)
     IMPORTE = ComprobarCero(IMPORTE.Text)
     
     Select Case Tipo
         Case 0 ' me han introducido la cantidad
-            vImp = CCur(ImporteFormateado(cantidad.Text)) * CCur(ImporteFormateado(Precio.Text))
+            vImp = CCur(ImporteFormateado(cantidad.Text)) * CCur(ImporteFormateado(precio.Text))
             vImp = Round2(vImp, 2)
             IMPORTE.Text = Format(vImp, "###,##0.00")
         Case 1 ' me han introducido el precio
-            vImp = CCur(ImporteFormateado(cantidad.Text)) * CCur(ImporteFormateado(Precio.Text))
+            vImp = CCur(ImporteFormateado(cantidad.Text)) * CCur(ImporteFormateado(precio.Text))
             vImp = Round2(vImp, 2)
             IMPORTE.Text = Format(vImp, "###,##0.00")
         Case 2 ' me han introducido el importe
-            vCan = CCur(ImporteFormateado(IMPORTE.Text)) / CCur(ImporteFormateado(Precio.Text))
+            vCan = CCur(ImporteFormateado(IMPORTE.Text)) / CCur(ImporteFormateado(precio.Text))
             vCan = Round2(vCan, 3)
             cantidad.Text = Format(vCan, "##,##0.000")
     End Select
@@ -2473,15 +2473,15 @@ Dim cad As String
 
 End Function
 
-Private Function RellenaABlancos(CADENA As String, PorLaDerecha As Boolean, longitud As Integer) As String
+Private Function RellenaABlancos(Cadena As String, PorLaDerecha As Boolean, longitud As Integer) As String
 Dim cad As String
     
     cad = Space(longitud)
     If PorLaDerecha Then
-        cad = CADENA & cad
+        cad = Cadena & cad
         RellenaABlancos = Left(cad, longitud)
     Else
-        cad = cad & CADENA
+        cad = cad & Cadena
         RellenaABlancos = Right(cad, longitud)
     End If
     
@@ -2557,7 +2557,7 @@ On Error Resume Next
 End Function
 
 
-Public Function CalcularImporteProv(cantidad As String, Precio As String, Dto1 As String, Dto2 As String, TipoDto As Byte, ImpDto As String, Optional Bruto As String) As String
+Public Function CalcularImporteProv(cantidad As String, precio As String, Dto1 As String, Dto2 As String, TipoDto As Byte, ImpDto As String, Optional Bruto As String) As String
 'Calcula el Importe de una linea de Oferta, Pedido, Albaran, ...
 'Importe=cantidad * precio - (descuentos)
 'Si DtoProv=sprove.tipodtos, calcular Importe para Proveedores y obtener el tipo de descuento
@@ -2571,7 +2571,7 @@ On Error Resume Next
 
     'Como son de tipo string comprobar que si vale "" lo ponemos a 0
     cantidad = ComprobarCero(cantidad)
-    vPre = ComprobarCero(Precio)
+    vPre = ComprobarCero(precio)
     Dto1 = ComprobarCero(Dto1)
     Dto2 = ComprobarCero(Dto2)
     
@@ -2829,7 +2829,7 @@ Dim Rs As ADODB.Recordset
     End If
 End Function
 
-Public Function CalcularImporte2(cantidad As String, Precio As String, Dto1 As String, Dto2 As String, TipoDto As Byte, ImpDto As String, Optional Bruto As String) As String
+Public Function CalcularImporte2(cantidad As String, precio As String, Dto1 As String, Dto2 As String, TipoDto As Byte, ImpDto As String, Optional Bruto As String) As String
 'Calcula el Importe de una linea de Oferta, Pedido, Albaran, ...
 'Importe=cantidad * precio - (descuentos)
 'Si DtoProv=sprove.tipodtos, calcular Importe para Proveedores y obtener el tipo de descuento
@@ -2843,7 +2843,7 @@ On Error Resume Next
 
     'Como son de tipo string comprobar que si vale "" lo ponemos a 0
     cantidad = ComprobarCero(cantidad)
-    vPre = ComprobarCero(Precio)
+    vPre = ComprobarCero(precio)
     Dto1 = ComprobarCero(Dto1)
     Dto2 = ComprobarCero(Dto2)
     
@@ -3067,7 +3067,7 @@ EObtenerBusqueda3:
     MuestraError Err.Number, "Obtener búsqueda. "
 End Function
 
-Public Function SeparaCampoBusqueda3(Tipo As String, campo As String, CADENA As String, ByRef DevSQL As String, Optional paraRPT) As Byte
+Public Function SeparaCampoBusqueda3(Tipo As String, campo As String, Cadena As String, ByRef DevSQL As String, Optional paraRPT) As Byte
 Dim cad As String
 Dim Aux As String
 Dim CH As String
@@ -3082,19 +3082,19 @@ Select Case Tipo
 Case "N"
     '----------------  NUMERICO  ---------------------
     '==== Laura: 11/07/05
-    If IsNumeric(CADENA) Then
-        CADENA = CStr(ImporteFormateado(CADENA))
-        CADENA = TransformaComasPuntos(CADENA)
+    If IsNumeric(Cadena) Then
+        Cadena = CStr(ImporteFormateado(Cadena))
+        Cadena = TransformaComasPuntos(Cadena)
     End If
     '====================
-    i = CararacteresCorrectos(CADENA, "N")
+    i = CararacteresCorrectos(Cadena, "N")
     If i > 0 Then Exit Function  'Ha habido un error y salimos
     'Comprobamos si hay intervalo ':'
-    i = InStr(1, CADENA, ":")
+    i = InStr(1, Cadena, ":")
     If i > 0 Then
         'Intervalo numerico
-        cad = Mid(CADENA, 1, i - 1)
-        Aux = Mid(CADENA, i + 1)
+        cad = Mid(Cadena, 1, i - 1)
+        Aux = Mid(Cadena, i + 1)
         If Not IsNumeric(cad) Or Not IsNumeric(Aux) Then Exit Function  'No son numeros
         'Intervalo correcto
         'Construimos la cadena
@@ -3104,7 +3104,7 @@ Case "N"
         Else
             'Prueba
             'Comprobamos que no es el mayor
-            If CADENA = ">>" Or CADENA = "<<" Then
+            If Cadena = ">>" Or Cadena = "<<" Then
                 DevSQL = "1=1"
              Else
                     Fin = False
@@ -3112,15 +3112,15 @@ Case "N"
                     cad = ""
                     Aux = "NO ES NUMERO"
                     While Not Fin
-                        CH = Mid(CADENA, i, 1)
+                        CH = Mid(Cadena, i, 1)
                         If CH = ">" Or CH = "<" Or CH = "=" Then
                             cad = cad & CH
                             Else
-                                Aux = Mid(CADENA, i)
+                                Aux = Mid(Cadena, i)
                                 Fin = True
                         End If
                         i = i + 1
-                        If i > Len(CADENA) Then Fin = True
+                        If i > Len(Cadena) Then Fin = True
                     Wend
                     'En aux debemos tener el numero
                     If Not IsNumeric(Aux) Then Exit Function
@@ -3131,14 +3131,14 @@ Case "N"
         End If
 Case "F"
      '---------------- FECHAS ------------------
-    i = CararacteresCorrectos(CADENA, "F")
+    i = CararacteresCorrectos(Cadena, "F")
     If i = 1 Then Exit Function
     'Comprobamos si hay intervalo ':'
-    i = InStr(1, CADENA, ":")
+    i = InStr(1, Cadena, ":")
     If i > 0 Then
         'Intervalo de fechas
-        cad = Mid(CADENA, 1, i - 1)
-        Aux = Mid(CADENA, i + 1)
+        cad = Mid(Cadena, 1, i - 1)
+        Aux = Mid(Cadena, i + 1)
         If Not EsFechaOK(cad) Or Not EsFechaOK(Aux) Then Exit Function  'Fechas incorrectas
         'Intervalo correcto
         'Construimos la cadena
@@ -3164,7 +3164,7 @@ Case "F"
         'ELSE
     Else
             'Comprobamos que no es el mayor
-            If CADENA = ">>" Or CADENA = "<<" Then
+            If Cadena = ">>" Or Cadena = "<<" Then
                   DevSQL = "1=1"
             Else
                 Fin = False
@@ -3172,15 +3172,15 @@ Case "F"
                 cad = ""
                 Aux = "NO ES FECHA"
                 While Not Fin
-                    CH = Mid(CADENA, i, 1)
+                    CH = Mid(Cadena, i, 1)
                     If CH = ">" Or CH = "<" Or CH = "=" Then
                         cad = cad & CH
                         Else
-                            Aux = Mid(CADENA, i)
+                            Aux = Mid(Cadena, i)
                             Fin = True
                     End If
                     i = i + 1
-                    If i > Len(CADENA) Then Fin = True
+                    If i > Len(Cadena) Then Fin = True
                 Wend
                 'En aux debemos tener el numero
                 If Not EsFechaOK(Aux) Then Exit Function
@@ -3198,37 +3198,37 @@ Case "F"
     
 Case "T"
     '---------------- TEXTO ------------------
-    i = CararacteresCorrectos(CADENA, "T")
+    i = CararacteresCorrectos(Cadena, "T")
     If i = 1 Then Exit Function
     
     'Comprobamos que no es el mayor
-     If CADENA = ">>" Or CADENA = "<<" Then
+     If Cadena = ">>" Or Cadena = "<<" Then
         DevSQL = "1=1"
         Exit Function
     End If
     
     'Comprobamos si es LIKE o NOT LIKE
-    cad = Mid(CADENA, 1, 2)
+    cad = Mid(Cadena, 1, 2)
     If cad = "<>" Then
-        CADENA = Mid(CADENA, 3)
+        Cadena = Mid(Cadena, 3)
         If Left(campo, 1) <> "{" Then
             'No es consulta seleccion para Report.
             DevSQL = campo & " NOT LIKE '"
         Else
             'Consulta de seleccion para Crystal Report
-            DevSQL = "NOT (" & campo & " LIKE """ & CADENA & """)"
+            DevSQL = "NOT (" & campo & " LIKE """ & Cadena & """)"
         End If
     Else
         If Left(campo, 1) <> "{" Then
         'NO es para report
             DevSQL = campo & " LIKE '"
         Else  'Es para report
-            i = InStr(1, CADENA, "*")
+            i = InStr(1, Cadena, "*")
             'Poner Consulta de seleccion para Crystal Report
             If i > 0 Then
-                DevSQL = campo & " LIKE """ & CADENA & """"
+                DevSQL = campo & " LIKE """ & Cadena & """"
             Else
-                DevSQL = campo & " = """ & CADENA & """"
+                DevSQL = campo & " = """ & Cadena & """"
             End If
         End If
     End If
@@ -3236,7 +3236,7 @@ Case "T"
     
     'Cambiamos el * por % puesto que en ADO es el caraacter para like
     i = 1
-    Aux = CADENA
+    Aux = Cadena
     If Not Left(campo, 1) = "{" Then
       'No es para report
        While i <> 0
@@ -3299,7 +3299,7 @@ Case "B"
     'Los booleanos. Valores buenos son
     'Verdadero , Falso, True, False, = , <>
     'Igual o distinto
-    i = InStr(1, CADENA, "<>")
+    i = InStr(1, Cadena, "<>")
     If i = 0 Then
         'IGUAL A valor
         cad = " = "
@@ -3308,7 +3308,7 @@ Case "B"
         cad = " <> "
     End If
     'Verdadero o falso
-    i = InStr(1, CADENA, "V")
+    i = InStr(1, Cadena, "V")
     If i > 0 Then
             Aux = "True"
             Else
@@ -3368,7 +3368,7 @@ Public Sub ComprobarCobrosCliente(CodClien As String, FechaDoc As String, Option
 'si el cliente tiene alguna factura pendiente de cobro que ha vendido
 'con fecha de vencimiento anterior a la fecha del documento: Oferta, Pedido, ALbaran,...
 Dim SQL As String, vWhere As String
-Dim Codmacta As String
+Dim codmacta As String
 Dim Rs As ADODB.Recordset
 Dim cadMen As String
 Dim ImporteCred As Currency
@@ -3390,7 +3390,7 @@ Dim ImpAux As Currency
             CodClien = CodClien & " - " & Rs!nomclien
             ImporteCred = DBLet(Rs!limcredi, "N")
             If ImporteCred > 0 Then CodClien = CodClien & "   Límite credito: " & Format(ImporteCred, FormatoImporte)
-            Codmacta = Rs!Codmacta
+            codmacta = Rs!codmacta
         End If
     End If
     Rs.Close
@@ -3399,7 +3399,7 @@ Dim ImpAux As Currency
     'AHORA FEBRERO 2010
     If vParamAplic.ContabilidadNueva Then
         SQL = "SELECT cobros.* FROM cobros INNER JOIN formapago ON cobros.codforpa=formapago.codforpa "
-        vWhere = " WHERE cobros.codmacta = '" & Codmacta & "'"
+        vWhere = " WHERE cobros.codmacta = '" & codmacta & "'"
         vWhere = vWhere & " AND fecvenci <= ' " & Format(FechaDoc, FormatoFecha) & "' "
         'Antes mayo 2010
         'vWhere = vWhere & " AND (sforpa.tipforpa between 0 and 3)"
@@ -3407,7 +3407,7 @@ Dim ImpAux As Currency
         SQL = SQL & vWhere
     Else
         SQL = "SELECT scobro.* FROM scobro INNER JOIN sforpa ON scobro.codforpa=sforpa.codforpa "
-        vWhere = " WHERE scobro.codmacta = '" & Codmacta & "'"
+        vWhere = " WHERE scobro.codmacta = '" & codmacta & "'"
         vWhere = vWhere & " AND fecvenci <= ' " & Format(FechaDoc, FormatoFecha) & "' "
         'Antes mayo 2010
         'vWhere = vWhere & " AND (sforpa.tipforpa between 0 and 3)"
@@ -3476,7 +3476,7 @@ End Function
 
 
 'Si es "" devuelve "" , si no, devuelve el campo formateado
-Private Function MiFormat(Valor As String, Formato As String) As String
+Public Function MiFormat(Valor As String, Formato As String) As String
     If Trim(Valor) = "" Then
        MiFormat = ""
     Else
