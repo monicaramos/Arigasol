@@ -78,6 +78,8 @@ Private mCCC_CTa As String
 '[Monica]22/11/2013: Tema iban
 Private mCCC_Iban As String
 
+Dim vvIban As String
+
 '------------------------------------------------
 'Propiedades del modulo CFacturaCom
 '------------------------------------------------
@@ -543,7 +545,11 @@ Dim SQL As String
         If CuentaPrev = "" Then
             'leer la cuenta prevista de pagos de la tabla de contabilidad: conta.spagos
             'cuando vamos a borrar una factura porque modificarmos
-            SQL = DevuelveDesdeBDNew(cConta, "spagop", "ctabanc1", "ctaprove", CtaProve, "T", , "numfactu", vNumfactu, "T", "fecfactu", vFecfactu, "F")
+            If vParamAplic.ContabilidadNueva Then
+                SQL = DevuelveDesdeBDNew(cConta, "pagos", "ctabanc1", "codmacta", CtaProve, "T", , "numfactu", vNumfactu, "T", "fecfactu", vFecfactu, "F")
+            Else
+                SQL = DevuelveDesdeBDNew(cConta, "spagop", "ctabanc1", "ctaprove", CtaProve, "T", , "numfactu", vNumfactu, "T", "fecfactu", vFecfactu, "F")
+            End If
             If SQL <> "" Then
                 CuentaPrev = SQL
                 LeerDatos = True
@@ -653,15 +659,23 @@ Dim i As Byte
               End If
               CadValues2 = CadValues2 & DBSet(ImpVenci, "N") & ", " & DBSet(CuentaPrev, "T") & ","
               
-              'David. Para que ponga la cuenta bancaria (SI LA tiene)
-              CadValues2 = CadValues2 & DBSet(mCCC_Entidad, "T", "S") & "," & DBSet(mCCC_Oficina, "T", "S") & ","
-              CadValues2 = CadValues2 & DBSet(mCCC_CC, "T", "S") & "," & DBSet(mCCC_CTa, "T", "S") & ","
+              If vParamAplic.ContabilidadNueva Then
               
-              '[Monica]22/11/2013: Tema iban
-              If vEmpresa.HayNorma19_34Nueva = 1 Then
-                    CadValues2 = CadValues2 & DBSet(mCCC_Iban, "T", "S") & ","
+                    vvIban = MiFormat(mCCC_Iban, "") & MiFormat(mCCC_Entidad, "0000") & MiFormat(mCCC_Oficina, "0000") & MiFormat(mCCC_CC, "00") & MiFormat(mCCC_CTa, "0000000000")
+              
+                    CadValues2 = CadValues2 & DBSet(vvIban, "T", "S") & ","
+              
+              Else
+              
+                    'David. Para que ponga la cuenta bancaria (SI LA tiene)
+                    CadValues2 = CadValues2 & DBSet(mCCC_Entidad, "T", "S") & "," & DBSet(mCCC_Oficina, "T", "S") & ","
+                    CadValues2 = CadValues2 & DBSet(mCCC_CC, "T", "S") & "," & DBSet(mCCC_CTa, "T", "S") & ","
+                    
+                    '[Monica]22/11/2013: Tema iban
+                    If vEmpresa.HayNorma19_34Nueva = 1 Then
+                          CadValues2 = CadValues2 & DBSet(mCCC_Iban, "T", "S") & ","
+                    End If
               End If
-
 
 
               'David. JUNIO 07.   Los dos textos de grabacion de datos de csb
@@ -670,9 +684,6 @@ Dim i As Byte
               SQL = "Vto a fecha: " & Format(FecVenci1, "dd/mm/yyyy")
               CadValues2 = CadValues2 & "'" & DevNombreSQL(SQL) & "')"
  
-
-
-
 
               'Resto Vencimientos
               '--------------------------------------------------------------------
@@ -698,13 +709,18 @@ Dim i As Byte
 
                   CadValues2 = CadValues2 & DBSet(ImpVenci, "N") & ", '" & CuentaPrev & "',"
                   
-                  
-                  'David. Para que ponga la cuenta bancaria (SI LA tiene)
-                  CadValues2 = CadValues2 & DBSet(mCCC_Entidad, "T", "S") & "," & DBSet(mCCC_Oficina, "T", "S") & ","
-                  CadValues2 = CadValues2 & DBSet(mCCC_CC, "T", "S") & "," & DBSet(mCCC_CTa, "T", "S") & ","
-                  '[Monica]22/11/2013: Tema Iban
-                  If vEmpresa.HayNorma19_34Nueva = 1 Then
-                      CadValues2 = CadValues2 & DBSet(mCCC_Iban, "T", "S") & ","
+                  If vParamAplic.ContabilidadNueva Then
+                        vvIban = MiFormat(mCCC_Iban, "") & MiFormat(mCCC_Entidad, "0000") & MiFormat(mCCC_Oficina, "0000") & MiFormat(mCCC_CC, "00") & MiFormat(mCCC_CTa, "0000000000")
+                    
+                        CadValues2 = CadValues2 & DBSet(vvIban, "T", "S") & ","
+                  Else
+                        'David. Para que ponga la cuenta bancaria (SI LA tiene)
+                        CadValues2 = CadValues2 & DBSet(mCCC_Entidad, "T", "S") & "," & DBSet(mCCC_Oficina, "T", "S") & ","
+                        CadValues2 = CadValues2 & DBSet(mCCC_CC, "T", "S") & "," & DBSet(mCCC_CTa, "T", "S") & ","
+                        '[Monica]22/11/2013: Tema Iban
+                        If vEmpresa.HayNorma19_34Nueva = 1 Then
+                            CadValues2 = CadValues2 & DBSet(mCCC_Iban, "T", "S") & ","
+                        End If
                   End If
 
                   SQL = "Factura num.: " & numfactu & "-" & Format(fecfactu, "dd/mm/yyyy")
@@ -755,15 +771,21 @@ Dim i As Byte
         'Insertamos en la tabla spagop de la CONTA
         'SQL = "INSERT INTO spagop (ctaprove, numfactu, fecfactu, numorden, codforpa, fecefect, impefect, ctabanc1) "
         'David. Cuenta bancaria y descripcion textos
-        SQL = "INSERT INTO spagop (ctaprove, numfactu, fecfactu, numorden, codforpa, fecefect, impefect, ctabanc1,entidad,oficina,cc,cuentaba," 'text1csb,text2csb) "
-        
-        '[Monica]22/11/2013:Tema iban
-        If vEmpresa.HayNorma19_34Nueva = 1 Then
+        If vParamAplic.ContabilidadNueva Then
+            SQL = "INSERT INTO pagos (codmacta, numfactu, fecfactu, numorden, codforpa, fecefect, impefect, ctabanc1,"
+            
             SQL = SQL & "iban,text1csb,text2csb) "
-        Else
-            SQL = SQL & "text1csb,text2csb) "
-        End If
         
+        Else
+            SQL = "INSERT INTO spagop (ctaprove, numfactu, fecfactu, numorden, codforpa, fecefect, impefect, ctabanc1,entidad,oficina,cc,cuentaba," 'text1csb,text2csb) "
+            
+            '[Monica]22/11/2013:Tema iban
+            If vEmpresa.HayNorma19_34Nueva = 1 Then
+                SQL = SQL & "iban,text1csb,text2csb) "
+            Else
+                SQL = SQL & "text1csb,text2csb) "
+            End If
+        End If
         
         
         SQL = SQL & " VALUES " & CadValues2
@@ -1211,7 +1233,7 @@ End Function
 
 
 
-Public Function CalcularPorcentaje(IMPORTE As Currency, Porce As Currency, NumDecimales As Long) As Variant
+Public Function CalcularPorcentaje(Importe As Currency, Porce As Currency, NumDecimales As Long) As Variant
 'devuelve el valor del Porcentaje aplicado al Importe
 'Ej el 16% de 120 = 19.2
 'Dim vImp As Currency
@@ -1228,7 +1250,7 @@ Public Function CalcularPorcentaje(IMPORTE As Currency, Porce As Currency, NumDe
     
     'vImp = Round(vImp, 2)
     
-    CalcularPorcentaje = Round2((IMPORTE * Porce) / 100, NumDecimales)
+    CalcularPorcentaje = Round2((Importe * Porce) / 100, NumDecimales)
     
     If Err.Number <> 0 Then Err.Clear
 End Function

@@ -248,7 +248,7 @@ Dim vIban As String
         Rs.Open SqlBan, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
         If Not Rs.EOF Then
             SQL = SQL & DBSet(Rs!NomBanco, "T") & ",'S',1," & DBSet(Rs!NomBanco, "T") & "," & DBSet(Rs!dombanco, "T") & ","
-            SQL = SQL & DBSet(Rs!CodPosta, "T") & "," & DBSet(Rs!pobbanco, "T") & "," & DBSet(Rs!probanco, "T") & "," & ValorNulo & "," & DBSet(Rs!maibanco, "T") & "," & DBSet(Rs!wwwbanco, "T") & "," & ValorNulo
+            SQL = SQL & DBSet(Rs!codPosta, "T") & "," & DBSet(Rs!pobbanco, "T") & "," & DBSet(Rs!probanco, "T") & "," & ValorNulo & "," & DBSet(Rs!maibanco, "T") & "," & DBSet(Rs!wwwbanco, "T") & "," & ValorNulo
             
             If Not vParamAplic.ContabilidadNueva Then
             
@@ -387,7 +387,11 @@ Dim NumAsi As Currency
 
     FacturaContabilizada = False
     SQL = ""
-    SQL = DevuelveDesdeBDNew(cConta, "cabfact", "numasien", "numserie", numserie, "T", , "codfaccl", numfactu, "N", "anofaccl", Anofactu, "N")
+    If vParamAplic.ContabilidadNueva Then
+        SQL = DevuelveDesdeBDNew(cConta, "factcli", "numasien", "numserie", numserie, "T", , "numfactu", numfactu, "N", "anofactu", Anofactu, "N")
+    Else
+        SQL = DevuelveDesdeBDNew(cConta, "cabfact", "numasien", "numserie", numserie, "T", , "codfaccl", numfactu, "N", "anofaccl", Anofactu, "N")
+    End If
     
     If SQL = "" Then Exit Function
     
@@ -456,14 +460,24 @@ Dim Anyo As Currency
     
     '[Monica]24/07/2013: añadido el tipo 2 (hco1)
     If Tipo = 0 Or Tipo = 2 Then
-        SQL = "update cabfact set codmacta = " & DBSet(CtaConta, "T") & " where numserie = " & DBSet(letraser, "T") & " and " & _
-                  "codfaccl = " & DBSet(numfactu, "N") & " and anofaccl = " & DBSet(Anyo, "N")
+        If vParamAplic.ContabilidadNueva Then
+            SQL = "update factcli set codmacta = " & DBSet(CtaConta, "T") & " where numserie = " & DBSet(letraser, "T") & " and " & _
+                      "numfactu = " & DBSet(numfactu, "N") & " and anofactu = " & DBSet(Anyo, "N")
+        Else
+            SQL = "update cabfact set codmacta = " & DBSet(CtaConta, "T") & " where numserie = " & DBSet(letraser, "T") & " and " & _
+                      "codfaccl = " & DBSet(numfactu, "N") & " and anofaccl = " & DBSet(Anyo, "N")
+        End If
         ConnConta.Execute SQL
     End If
     
-    SQL = "update scobro set codmacta = " & DBSet(CtaConta, "T") & " where numserie = " & DBSet(letraser, "T") & " and " & _
-              "codfaccl = " & DBSet(numfactu, "N") & " and fecfaccl = " & DBSet(fecfactu, "F")
-              
+    If vParamAplic.ContabilidadNueva Then
+        SQL = "update cobros set codmacta = " & DBSet(CtaConta, "T") & " where numserie = " & DBSet(letraser, "T") & " and " & _
+                  "numfactu = " & DBSet(numfactu, "N") & " and fecfactu = " & DBSet(fecfactu, "F")
+    
+    Else
+        SQL = "update scobro set codmacta = " & DBSet(CtaConta, "T") & " where numserie = " & DBSet(letraser, "T") & " and " & _
+                  "codfaccl = " & DBSet(numfactu, "N") & " and fecfaccl = " & DBSet(fecfactu, "F")
+    End If
     ConnConta.Execute SQL
               
     ModificaClienteFacturaContabilidad = True
@@ -483,17 +497,25 @@ Dim TipForpa As String
 Dim TipForpaAnt As String
 Dim cadWhere As String
 
-    cadWhere = " numserie = " & DBSet(letraser, "T") & " and " & _
-              "codfaccl = " & numfactu & " and fecfaccl = " & DBSet(fecfactu, "F")
+    If vParamAplic.ContabilidadNueva Then
+        cadWhere = " numserie = " & DBSet(letraser, "T") & " and " & _
+                  "numfactu = " & numfactu & " and fecfactu = " & DBSet(fecfactu, "F")
+        
+        SQL = "update cobros set codforpa = " & Forpa & " where " & cadWhere
     
-    SQL = "update scobro set codforpa = " & Forpa & " where " & cadWhere
+    Else
 
+        cadWhere = " numserie = " & DBSet(letraser, "T") & " and " & _
+                  "codfaccl = " & numfactu & " and fecfaccl = " & DBSet(fecfactu, "F")
+        
+        SQL = "update scobro set codforpa = " & Forpa & " where " & cadWhere
+    End If
     ConnConta.Execute SQL
 
 End Sub
 
 ' ### [Monica] 29/09/2006
-Public Function ModificaImportesFacturaContabilidad(letraser As String, numfactu As String, fecfactu As String, IMPORTE As String, Forpa As String, vTabla As String) As Boolean
+Public Function ModificaImportesFacturaContabilidad(letraser As String, numfactu As String, fecfactu As String, Importe As String, Forpa As String, vTabla As String) As Boolean
 Dim SQL As String
 Dim vWhere As String
 Dim b As Boolean
@@ -506,9 +528,14 @@ Dim TipForpa As String
     
     b = False
     
-    vWhere = "numserie = " & DBSet(letraser, "T") & " and codfaccl = " & _
-              numfactu & " and anofaccl = " & Format(Year(fecfactu), "0000")
-     
+    If vParamAplic.ContabilidadNueva Then
+        vWhere = "numserie = " & DBSet(letraser, "T") & " and numfactu = " & _
+                  numfactu & " and anofactu = " & Format(Year(fecfactu), "0000")
+    
+    Else
+        vWhere = "numserie = " & DBSet(letraser, "T") & " and codfaccl = " & _
+                  numfactu & " and anofaccl = " & Format(Year(fecfactu), "0000")
+    End If
     
     SQL = "select codsocio from " & vTabla & " where letraser = " & DBSet(letraser, "T") & " and numfactu = " & _
            numfactu & " and fecfactu = " & DBSet(fecfactu, "F")
@@ -521,12 +548,23 @@ Dim TipForpa As String
     If vsocio.LeerDatos(Rs.Fields(0).Value) Then
         '[Monica]24/07/2013
         If vTabla = "schfac" Or vTabla = "schfac1" Then
-            SQL = "delete from linfact where " & vWhere
-            ConnConta.Execute SQL
-        
-            SQL = "delete from cabfact where " & vWhere
-            ConnConta.Execute SQL
+            If vParamAplic.ContabilidadNueva Then
+                SQL = "delete from factcli_lineas where " & vWhere
+                ConnConta.Execute SQL
+                
+                SQL = "delete from factcli_totales where " & vWhere
+                ConnConta.Execute SQL
             
+                SQL = "delete from factcli where " & vWhere
+                ConnConta.Execute SQL
+            
+            Else
+                SQL = "delete from linfact where " & vWhere
+                ConnConta.Execute SQL
+            
+                SQL = "delete from cabfact where " & vWhere
+                ConnConta.Execute SQL
+            End If
             '[Monica]24/07/2013
             If vTabla = "schfac" Then
                 SQL = "schfac.letraser = " & DBSet(letraser, "T") & " and numfactu = " & numfactu
@@ -611,7 +649,7 @@ eModificaCobroTesoreria:
 End Function
 
 
-Public Function CalcularIva(IMPORTE As String, Articulo As String) As Currency
+Public Function CalcularIva(Importe As String, Articulo As String) As Currency
 'devuelve el iva del Importe
 'Ej el 16% de 120 = 19.2
 Dim vImp As Currency
@@ -624,13 +662,13 @@ Dim iva As String
 Dim impiva As Currency
 On Error Resume Next
 
-    IMPORTE = ComprobarCero(IMPORTE)
+    Importe = ComprobarCero(Importe)
     Articulo = ComprobarCero(Articulo)
     
     CodIVA = DevuelveDesdeBD("codigiva", "sartic", "codartic", Articulo, "N")
     iva = DevuelveDesdeBDNew(cConta, "tiposiva", "porceiva", "codigiva", CodIVA, "N")
     
-    vImp = CCur(IMPORTE)
+    vImp = CCur(Importe)
     vIva = CCur(iva)
     
     impiva = ((vImp * vIva) / 100)
@@ -642,7 +680,7 @@ On Error Resume Next
 End Function
 
 
-Public Function CalcularBase(IMPORTE As String, Articulo As String) As Currency
+Public Function CalcularBase(Importe As String, Articulo As String) As Currency
 'devuelve la base del Importe
 'Ej el 16% de 120 = 120-19.2 = 100.8
 Dim vImp As Currency
@@ -655,16 +693,16 @@ Dim iva As String
 Dim impiva As Currency
 On Error Resume Next
 
-    IMPORTE = ComprobarCero(IMPORTE)
+    Importe = ComprobarCero(Importe)
     Articulo = ComprobarCero(Articulo)
     
     CodIVA = DevuelveDesdeBD("codigiva", "sartic", "codartic", Articulo, "N")
     iva = DevuelveDesdeBDNew(cConta, "tiposiva", "porceiva", "codigiva", CodIVA, "N")
     
-    vImp = CCur(IMPORTE)
+    vImp = CCur(Importe)
     vIva = CCur(iva)
     
-    impiva = Round2(IMPORTE / (1 + (vIva / 100)), 2)
+    impiva = Round2(Importe / (1 + (vIva / 100)), 2)
     
     CalcularBase = CStr(impiva)
     If Err.Number <> 0 Then Err.Clear

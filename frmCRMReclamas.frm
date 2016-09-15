@@ -337,7 +337,7 @@ Dim i As Integer
 
 Private Sub Command1_Click(Index As Integer)
     If Index = 0 Then
-        If text1(5).Text = "" Or text1(6).Text = "" Or Combo1.ListIndex = -1 Then
+        If Text1(5).Text = "" Or Text1(6).Text = "" Or Combo1.ListIndex = -1 Then
             MsgBox "Campos obligatorios: fecha reclamacion, importe y envio", vbExclamation
             Exit Sub
         End If
@@ -347,27 +347,53 @@ Private Sub Command1_Click(Index As Integer)
             'NUEVO
             i = 1 'por si da error reestablacer el codigo2 a menos1
             'shcocob (codigo,numserie,codfaccl,fecfaccl,numorden,impvenci,codmacta,nommacta,carta,fecreclama,observaciones)
-            SQL = DevuelveDesdeBDNew(cConta, "shcocob", "max(codigo)", "1", "1")
-            If SQL = "" Then SQL = "0"
-            codigo2 = Val(SQL) + 1
-            SQL = "INSERT INTO shcocob (codigo,numserie,codfaccl,fecfaccl,numorden,impvenci,codmacta,nommacta,carta,"
-            SQL = SQL & "fecreclama,observaciones) VALUES (" & codigo2 & ","
-            SQL = SQL & DBSet(text1(1).Text, "T", "S") & "," '
-            SQL = SQL & DBSet(text1(2).Text, "N", "S") & "," '= DBLet(miRsAux!Codfaccl, "T")
-            SQL = SQL & DBSet(text1(3).Text, "F", "S") & "," '= DBLet(miRsAux!fecfaccl, "F")
-            SQL = SQL & DBSet(text1(4).Text, "N", "S") & "," '= DBLet(miRsAux!numorden, "T")
+            If vParamAplic.ContabilidadNueva Then
+                SQL = DevuelveDesdeBDNew(cConta, "reclama", "max(codigo)", "1", "1")
+                If SQL = "" Then SQL = "0"
+                codigo2 = Val(SQL) + 1
+                SQL = "INSERT INTO reclama (codigo,codmacta,nommacta,carta,"
+                SQL = SQL & "fecreclama,importes,observaciones) VALUES (" & codigo2 & ","
+                SQL = SQL & DBSet(Text1(0).Text, "T", "S") & "," ' = miRsAux!Codmacta
+                SQL = SQL & DBSet(Text2(0).Text, "T", "S") & "," & DBSet(Combo1.ListIndex, "N") & "," '0," ' = miRsAux!nommacta  Y  CARTA que le pondre un 0
+                SQL = SQL & DBSet(Text1(5).Text, "F") & "," ' = DBLet(miRsAux!fecreclama, "F")
+                SQL = SQL & DBSet(Text1(6).Text, "N") & ","
+                SQL = SQL & DBSet(Text1(7).Text, "T", "S") & ")" ' = DBLet(miRsAux!Observaciones, "T")
             
-            SQL = SQL & DBSet(text1(6).Text, "N") & "," ' z'= DBLet(miRsAux!ImpVenci, "N")
-            SQL = SQL & DBSet(text1(0).Text, "T", "S") & "," ' = miRsAux!Codmacta
-            SQL = SQL & DBSet(text2(0).Text, "T", "S") & "," & DBSet(Combo1.ListIndex, "N") & "," '0," ' = miRsAux!nommacta  Y  CARTA que le pondre un 0
-            SQL = SQL & DBSet(text1(5).Text, "F") & "," ' = DBLet(miRsAux!fecreclama, "F")
-            SQL = SQL & DBSet(text1(7).Text, "T", "S") & ")" ' = DBLet(miRsAux!Observaciones, "T")
+                ConnConta.Execute SQL
             
+                SQL = "INSERT INTO reclama_facturas (codigo, numlinea, numserie, numfactu, fecfactu, numorden, impvenci) VALUES (" & codigo2 & ",1,"
+                SQL = SQL & DBSet(Text1(1).Text, "T", "S") & "," & DBSet(Text1(2).Text, "N", "S") & "," & DBSet(Text1(3).Text, "F", "S") & ","
+                SQL = SQL & DBSet(Text1(4).Text, "N", "S") & "," & DBSet(Text1(6).Text, "N") & ")"
+            
+            Else
+                SQL = DevuelveDesdeBDNew(cConta, "shcocob", "max(codigo)", "1", "1")
+                If SQL = "" Then SQL = "0"
+                codigo2 = Val(SQL) + 1
+                SQL = "INSERT INTO shcocob (codigo,numserie,codfaccl,fecfaccl,numorden,impvenci,codmacta,nommacta,carta,"
+                SQL = SQL & "fecreclama,observaciones) VALUES (" & codigo2 & ","
+                SQL = SQL & DBSet(Text1(1).Text, "T", "S") & "," '
+                SQL = SQL & DBSet(Text1(2).Text, "N", "S") & "," '= DBLet(miRsAux!Codfaccl, "T")
+                SQL = SQL & DBSet(Text1(3).Text, "F", "S") & "," '= DBLet(miRsAux!fecfaccl, "F")
+                SQL = SQL & DBSet(Text1(4).Text, "N", "S") & "," '= DBLet(miRsAux!numorden, "T")
+                
+                SQL = SQL & DBSet(Text1(6).Text, "N") & "," ' z'= DBLet(miRsAux!ImpVenci, "N")
+                SQL = SQL & DBSet(Text1(0).Text, "T", "S") & "," ' = miRsAux!Codmacta
+                SQL = SQL & DBSet(Text2(0).Text, "T", "S") & "," & DBSet(Combo1.ListIndex, "N") & "," '0," ' = miRsAux!nommacta  Y  CARTA que le pondre un 0
+                SQL = SQL & DBSet(Text1(5).Text, "F") & "," ' = DBLet(miRsAux!fecreclama, "F")
+                SQL = SQL & DBSet(Text1(7).Text, "T", "S") & ")" ' = DBLet(miRsAux!Observaciones, "T")
+            End If
         Else
             'MODIFICAR
+            If vParamAplic.ContabilidadNueva Then
+                SQL = DBSet(Text1(7).Text, "T")
+                SQL = "UPDATE reclama set observaciones = " & SQL & " WHERE codigo = " & codigo2
             
-            SQL = DBSet(text1(7).Text, "T")
-            SQL = "UPDATE shcocob set observaciones = " & SQL & " WHERE codigo = " & codigo2
+            Else
+                
+                SQL = DBSet(Text1(7).Text, "T")
+                SQL = "UPDATE shcocob set observaciones = " & SQL & " WHERE codigo = " & codigo2
+                
+            End If
         End If
         
         ConnConta.Execute SQL
@@ -381,18 +407,22 @@ Private Sub Form_Activate()
     
     If codigo2 > 0 Then
         Set miRsAux = New ADODB.Recordset
-        SQL = "Select * from shcocob where codigo = " & codigo2
+        If vParamAplic.ContabilidadNueva Then
+            SQL = "Select * from reclama where codigo = " & codigo2
+        Else
+            SQL = "Select * from shcocob where codigo = " & codigo2
+        End If
         miRsAux.Open SQL, ConnConta, adOpenKeyset, adLockPessimistic, adCmdText
         If Not miRsAux.EOF Then
-            text1(0).Text = miRsAux!codmacta
-            text2(0).Text = miRsAux!nommacta
-            text1(1).Text = DBLet(miRsAux!numserie, "T")
-            text1(2).Text = DBLet(miRsAux!codfaccl, "T")
-            text1(3).Text = DBLet(miRsAux!fecfaccl, "F")
-            text1(4).Text = DBLet(miRsAux!numorden, "T")
-            text1(5).Text = DBLet(miRsAux!fecreclama, "F")
-            text1(6).Text = DBLet(miRsAux!ImpVenci, "N")
-            text1(7).Text = DBLet(miRsAux!Observaciones, "T")
+            Text1(0).Text = miRsAux!codmacta
+            Text2(0).Text = miRsAux!nommacta
+            Text1(1).Text = DBLet(miRsAux!numserie, "T")
+            Text1(2).Text = DBLet(miRsAux!codfaccl, "T")
+            Text1(3).Text = DBLet(miRsAux!fecfaccl, "F")
+            Text1(4).Text = DBLet(miRsAux!numorden, "T")
+            Text1(5).Text = DBLet(miRsAux!fecreclama, "F")
+            Text1(6).Text = DBLet(miRsAux!ImpVenci, "N")
+            Text1(7).Text = DBLet(miRsAux!Observaciones, "T")
             
             PosicionarCombo Combo1, miRsAux!carta
             
@@ -407,14 +437,14 @@ Private Sub Form_Activate()
     
     If codigo2 < 0 Then
         For i = 1 To 7
-            text1(i).Text = ""
+            Text1(i).Text = ""
         Next i
-        text1(5).Text = Format(Now, "dd/mm/yyyy")
+        Text1(5).Text = Format(Now, "dd/mm/yyyy")
         Combo1.ListIndex = 2
     End If
-    text1(0).Locked = True
+    Text1(0).Locked = True
     For i = 1 To 6
-        text1(i).Locked = codigo2 >= 0
+        Text1(i).Locked = codigo2 >= 0
     Next
     
     Combo1.Locked = (codigo2 >= 0)
@@ -422,9 +452,9 @@ Private Sub Form_Activate()
     Me.imgFecha(3).visible = codigo2 = -1
     Me.imgFecha(5).visible = codigo2 = -1
     If codigo2 >= 0 Then
-        PonerFoco text1(7)
+        PonerFoco Text1(7)
     Else
-        PonerFoco text1(1)
+        PonerFoco Text1(1)
     End If
 End Sub
 
@@ -435,8 +465,8 @@ Private Sub Form_Load()
     codigo2 = Val(RecuperaValor(Intercambio, 1))
     Me.LabelCRM.Caption = RecuperaValor(Intercambio, 2)
     If codigo2 < 0 Then
-        text1(0).Text = RecuperaValor(Intercambio, 3)
-        text2(0).Text = RecuperaValor(Intercambio, 4)
+        Text1(0).Text = RecuperaValor(Intercambio, 3)
+        Text2(0).Text = RecuperaValor(Intercambio, 4)
     End If
     Image1.Picture = frmPpal.imgListComun.ListImages(4).Picture '46
     
@@ -446,7 +476,7 @@ End Sub
 
 Private Sub frmC_Selec(vFecha As Date)
     ' *** repasar si el camp es txtAux o Text1 ***
-    text1(CByte(imgFecha(3).Tag)).Text = Format(vFecha, "dd/mm/yyyy") '<===
+    Text1(CByte(imgFecha(3).Tag)).Text = Format(vFecha, "dd/mm/yyyy") '<===
     ' ********************************************
 End Sub
 
@@ -487,15 +517,15 @@ Private Sub imgFecha_Click(Index As Integer)
     SQL = ""
 '    Set frmC = New frmCal
     frmC.NovaData = Now
-    If text1(Index).Text <> "" Then frmC.NovaData = CDate(text1(Index).Text)
+    If Text1(Index).Text <> "" Then frmC.NovaData = CDate(Text1(Index).Text)
     frmC.Show vbModal
-    If SQL <> "" Then text1(Index).Text = SQL
+    If SQL <> "" Then Text1(Index).Text = SQL
     SQL = ""
 End Sub
 
 Private Sub Text1_GotFocus(Index As Integer)
     
-    If Not text1(Index).Locked And Index <> 7 Then ConseguirFoco text1(Index), 3
+    If Not Text1(Index).Locked And Index <> 7 Then ConseguirFoco Text1(Index), 3
 End Sub
 
 Private Sub Text1_KeyPress(Index As Integer, KeyAscii As Integer)
@@ -503,18 +533,18 @@ Private Sub Text1_KeyPress(Index As Integer, KeyAscii As Integer)
 End Sub
 
 Private Sub Text1_LostFocus(Index As Integer)
-    text1(Index).Text = Trim(text1(Index).Text)
-    If text1(Index).Text = "" Then Exit Sub
+    Text1(Index).Text = Trim(Text1(Index).Text)
+    If Text1(Index).Text = "" Then Exit Sub
     
     Select Case Index
     Case 2, 4
-        If Not PonerFormatoEntero(text1(Index)) Then text1(Index).Text = ""
+        If Not PonerFormatoEntero(Text1(Index)) Then Text1(Index).Text = ""
     
     Case 3, 5
-        PonerFormatoFecha text1(Index)
+        PonerFormatoFecha Text1(Index)
     
     Case 6
-        If Not PonerFormatoDecimal(text1(Index), 1) Then text1(Index).Text = ""
+        If Not PonerFormatoDecimal(Text1(Index), 1) Then Text1(Index).Text = ""
     
     End Select
     
