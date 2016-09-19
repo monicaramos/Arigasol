@@ -414,6 +414,8 @@ Dim Orden2 As String 'Campo de Ordenacion (por nombre) para Cristal Report
 
 Dim PrimeraVez As Boolean
 
+Dim cContaFra As cContabilizarFacturas
+
 Private Sub KEYpress(KeyAscii As Integer)
 Dim cerrar As Boolean
 
@@ -428,7 +430,7 @@ Dim cadMen As String
 Dim i As Byte
 Dim SQL As String
 Dim Tipo As Byte
-Dim nRegs As Long
+Dim NRegs As Long
 Dim NumError As Long
 
     If Not DatosOk Then Exit Sub
@@ -519,7 +521,7 @@ Dim List As Collection
     imgAyuda(0).Picture = frmPpal.ImageListB.ListImages(10).Picture
     
     'Esto se consigue poneinedo el cancel en el opcion k corresponda
-    Me.cmdCancel.Cancel = True
+    Me.CmdCancel.Cancel = True
     Me.Width = w + 70
     Me.Height = h + 350
     
@@ -681,7 +683,7 @@ Private Sub KEYFecha(KeyAscii As Integer, indice As Integer)
 End Sub
 
 Private Sub txtCodigo_LostFocus(Index As Integer)
-Dim cad As String, cadTipo As String 'tipo cliente
+Dim Cad As String, cadTipo As String 'tipo cliente
 
     'Quitar espacios en blanco por los lados
     txtCodigo(Index).Text = Trim(txtCodigo(Index).Text)
@@ -782,19 +784,19 @@ End Sub
 
 
 Private Function DatosOk() As Boolean
-Dim b As Boolean
+Dim B As Boolean
 
-    b = True
+    B = True
 
     If txtCodigo(7).Text = "" Then
         If MsgBox("Si no hay Fecha de Vencimiento se utilizará la fecha de factura." & vbCrLf & vbCrLf & "¿Desea continuar?.", vbQuestion + vbYesNo + vbDefaultButton2) = vbNo Then
-            b = False
+            B = False
             PonerFoco txtCodigo(7)
         End If
     End If
     If txtCodigo(8).Text = "" Then
         MsgBox "Debe introducir obligatoriamente un Banco para realizar el cobro.", vbExclamation
-        b = False
+        B = False
         PonerFoco txtCodigo(8)
     End If
 
@@ -810,14 +812,14 @@ Dim b As Boolean
 
 
 
-    DatosOk = b
+    DatosOk = B
 End Function
 
 ' copiado del ariges
 Private Sub ContabilizarFacturas(cadTabla As String, cadWhere As String)
 'Contabiliza Facturas de Clientes o de Proveedores
 Dim SQL As String
-Dim b As Boolean
+Dim B As Boolean
 Dim tmpErrores As Boolean 'Indica si se creo correctamente la tabla de errores
 Dim CCoste As String
 
@@ -881,23 +883,23 @@ Dim CCoste As String
         
     BorrarTMPFacturas
     'Cargar tabla TEMP con las Facturas que vamos a Trabajar
-    b = CrearTMPFacturas(cadTabla, cadWhere)
-    If Not b Then Exit Sub
+    B = CrearTMPFacturas(cadTabla, cadWhere)
+    If Not B Then Exit Sub
             
     ' nuevo
-    b = CrearTMPErrComprob()
-    If Not b Then Exit Sub
+    B = CrearTMPErrComprob()
+    If Not B Then Exit Sub
     
     'comprobar que todas las LETRAS SERIE existen en la contabilidad y en Arigasol
     '-----------------------------------------------------------------------------
     IncrementarProgres Me.Pb1, 10
     If cadTabla = "schfac" Then
         Me.lblProgres(1).Caption = "Comprobando letras de serie ..."
-        b = ComprobarLetraSerie(cadTabla)
+        B = ComprobarLetraSerie(cadTabla)
     End If
     IncrementarProgres Me.Pb1, 10
     Me.Refresh
-    If Not b Then
+    If Not B Then
         frmMensaje.OpcionMensaje = 1
         frmMensaje.Show vbModal
         Exit Sub
@@ -913,11 +915,11 @@ Dim CCoste As String
         Else
             SQL = "anofaccl>=" & Year(txtCodigo(2).Text) & " AND anofaccl<= " & Year(txtCodigo(3).Text)
         End If
-        b = ComprobarNumFacturas(cadTabla, SQL)
+        B = ComprobarNumFacturas(cadTabla, SQL)
     End If
     IncrementarProgres Me.Pb1, 20
     Me.Refresh
-    If Not b Then
+    If Not B Then
         frmMensaje.OpcionMensaje = 1
         frmMensaje.Show vbModal
         Exit Sub
@@ -927,10 +929,10 @@ Dim CCoste As String
     'contabilizar existen en la Conta: sclien.codmacta IN (conta.cuentas.codmacta)
     '-----------------------------------------------------------------------------
     Me.lblProgres(1).Caption = "Comprobando Cuentas Contables en contabilidad ..."
-    b = ComprobarCtaContable(cadTabla, 1)
+    B = ComprobarCtaContable(cadTabla, 1)
     IncrementarProgres Me.Pb1, 20
     Me.Refresh
-    If Not b Then
+    If Not B Then
         frmMensaje.OpcionMensaje = 2
         frmMensaje.Show vbModal
         Exit Sub
@@ -942,10 +944,10 @@ Dim CCoste As String
     If cadTabla = "schfac" Then
         Me.lblProgres(1).Caption = "Comprobando Cuentas Ctbles Ventas en contabilidad ..."
     End If
-    b = ComprobarCtaContable(cadTabla, 2)
+    B = ComprobarCtaContable(cadTabla, 2)
     IncrementarProgres Me.Pb1, 20
     Me.Refresh
-    If Not b Then
+    If Not B Then
         frmMensaje.OpcionMensaje = 2
         frmMensaje.Show vbModal
         Exit Sub
@@ -957,10 +959,10 @@ Dim CCoste As String
     If cadTabla = "schfac" Then
         Me.lblProgres(1).Caption = "Comprobando Cuentas Ctbles Ventas en contabilidad ..."
     End If
-    b = ComprobarCtaContable(cadTabla, 3)
+    B = ComprobarCtaContable(cadTabla, 3)
     IncrementarProgres Me.Pb1, 20
     Me.Refresh
-    If Not b Then
+    If Not B Then
         frmMensaje.OpcionMensaje = 2
         frmMensaje.Show vbModal
         Exit Sub
@@ -974,10 +976,10 @@ Dim CCoste As String
     '-----------------------------------------------------------------------------
     Me.lblProgres(1).Caption = "Comprobando Cuentas Contables del Banco en contabilidad ..."
     
-    b = ComprobarCtaContable(CStr(txtCodigo(8).Text), 4)
+    B = ComprobarCtaContable(CStr(txtCodigo(8).Text), 4)
     IncrementarProgres Me.Pb1, 20
     Me.Refresh
-    If Not b Then
+    If Not B Then
         frmMensaje.OpcionMensaje = 2
         frmMensaje.Show vbModal
         Exit Sub
@@ -988,10 +990,10 @@ Dim CCoste As String
     'contabilizar existen en la Conta: schfac.codigiv1,codigiv2,codigiv3 IN (conta.tiposiva.codigiva)
     '--------------------------------------------------------------------------
     Me.lblProgres(1).Caption = "Comprobando Tipos de IVA en contabilidad ..."
-    b = ComprobarTiposIVA(cadTabla)
+    B = ComprobarTiposIVA(cadTabla)
     IncrementarProgres Me.Pb1, 10
     Me.Refresh
-    If Not b Then
+    If Not B Then
         frmMensaje.OpcionMensaje = 3
         frmMensaje.Show vbModal
         Exit Sub
@@ -1010,9 +1012,12 @@ Dim CCoste As String
     tmpErrores = CrearTMPErrFact(cadTabla)
     
     
-    b = PasarFacturasAContab(cadTabla, txtCodigo(7).Text, txtCodigo(8).Text, CCoste)
     
-    If Not b Then
+    
+    
+    B = PasarFacturasAContab(cadTabla, txtCodigo(7).Text, txtCodigo(8).Text, CCoste)
+    
+    If Not B Then
         If tmpErrores Then
             'Cargar un listview con la tabla TEMP de Errores y mostrar
             'las facturas que fallaron
@@ -1033,8 +1038,8 @@ End Sub
 
 Private Function PasarFacturasAContab(cadTabla As String, FecVenci As String, Banpr As String, CCoste As String) As Boolean
 Dim SQL As String
-Dim Rs As ADODB.Recordset
-Dim b As Boolean
+Dim RS As ADODB.Recordset
+Dim B As Boolean
 Dim i As Integer
 Dim numfactu As Integer
 Dim codigo1 As String
@@ -1053,49 +1058,100 @@ Dim codigo1 As String
     SQL = SQL & " AND " & cadTabla & ".numfactu=tmpfactu.numfactu AND " & cadTabla & ".fecfactu=tmpfactu.fecfactu "
     
     
-    Set Rs = New ADODB.Recordset
-    Rs.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
-    If Not Rs.EOF Then
-        numfactu = Rs.Fields(0)
+    Set RS = New ADODB.Recordset
+    RS.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+    If Not RS.EOF Then
+        numfactu = RS.Fields(0)
     Else
         numfactu = 0
     End If
-    Rs.Close
-    Set Rs = Nothing
+    RS.Close
+    Set RS = Nothing
 
+    
+    If vParamAplic.ContabilidadNueva Then
+        Set cContaFra = New cContabilizarFacturas
+        
+        If Not cContaFra.EstablecerValoresInciales(ConnConta) Then
+            'NO ha establcedio los valores de la conta.  Le dejaremos seguir, avisando que
+            ' obviamente, no va a contabilizar las FRAS
+            SQL = "Si continua, las facturas se insertaran en el registro, pero no serán contabilizadas" & vbCrLf
+            SQL = SQL & "en este momento. Deberán ser contabilizadas desde el ARICONTA" & vbCrLf & vbCrLf
+            SQL = SQL & Space(50) & "¿Continuar?"
+            If MsgBox(SQL, vbQuestion + vbYesNoCancel) <> vbYes Then Exit Function
+        End If
+    End If
+    
+    
+    
+    
     If numfactu > 0 Then
         CargarProgres Me.Pb1, numfactu
         
         SQL = "SELECT * "
         SQL = SQL & " FROM tmpfactu "
             
-        Set Rs = New ADODB.Recordset
-        Rs.Open SQL, Conn, adOpenStatic, adLockPessimistic, adCmdText
+        Set RS = New ADODB.Recordset
+        RS.Open SQL, Conn, adOpenStatic, adLockPessimistic, adCmdText
         i = 1
 
-        b = True
+        
+'++
+        
+        'PreComproabacion de los asientos
+        If cContaFra.RealizarContabilizacion Then
+            SQL = "Select min(fecfactu) from tmpfactu"
+            RS.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+            If Not RS.EOF Then
+                If Not cContaFra.PreComprobacionNumeroAsiento(RS.Fields(0), numfactu) Then
+                    
+                    'Para que la ventana siguiente muestr bien el error
+                    SQL = "Insert into tmpErrFac(codtipom,numfactu,fecfactu,error) VALUES ("
+                    SQL = SQL & "'',0,'" & Format(RS.Fields(0), FormatoFecha) & "','Error contadores')"
+                    
+                    Conn.Execute SQL
+                    RS.Close
+                    Err.Raise 6, , "Comprobacion numeros asiento"
+                End If
+            End If
+            RS.Close
+        End If
+        
+        'seleccinar todas las facturas que hemos insertado en la temporal (las que vamos a contabilizar)
+        SQL = "SELECT * "
+        SQL = SQL & " FROM tmpFactu "
+            
+
+        RS.Open SQL, Conn, adOpenStatic, adLockPessimistic, adCmdText
+        i = 1
+
+    
+'++
+        
+        '$$$
+        B = True
         'contabilizar cada una de las facturas seleccionadas
-        While Not Rs.EOF
+        While Not RS.EOF
             If cadTabla = "schfac" Then
-                SQL = cadTabla & "." & codigo1 & "=" & DBSet(Rs.Fields(0), "T") & " and numfactu=" & DBLet(Rs!numfactu, "N")
-                SQL = SQL & " and fecfactu=" & DBSet(Rs!fecfactu, "F")
-                If PasarFactura(SQL, FecVenci, Banpr, CCoste) = False And b Then b = False
+                SQL = cadTabla & "." & codigo1 & "=" & DBSet(RS.Fields(0), "T") & " and numfactu=" & DBLet(RS!numfactu, "N")
+                SQL = SQL & " and fecfactu=" & DBSet(RS!fecfactu, "F")
+                If PasarFactura(SQL, FecVenci, Banpr, CCoste) = False And B Then B = False
             End If
             
             IncrementarProgres Me.Pb1, 1
             Me.lblProgres(1).Caption = "Insertando Facturas en Contabilidad...   (" & i & " de " & numfactu & ")"
             Me.Refresh
             i = i + 1
-            Rs.MoveNext
+            RS.MoveNext
         Wend
-        Rs.Close
-        Set Rs = Nothing
+        RS.Close
+        Set RS = Nothing
     End If
     
 EPasarFac:
-    If Err.Number <> 0 Then b = False
+    If Err.Number <> 0 Then B = False
     
-    If b Then
+    If B Then
         PasarFacturasAContab = True
     Else
         PasarFacturasAContab = False
