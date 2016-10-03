@@ -511,8 +511,11 @@ Public Function LeerDatos(vCodProve As String, vNumfactu As String, vFecfactu As
 'Lee de la BD: Ariges, Tabla: scafpc
 'OUT: True si lee los datos correctamente
 Dim Rs As ADODB.Recordset
+Dim Rs2 As ADODB.Recordset
+
 Dim Mens As String
 Dim SQL As String
+Dim Sql2 As String
 
     On Error GoTo ELeer
     
@@ -538,6 +541,25 @@ Dim SQL As String
         'obterner la ctaCble del proveedor
         CtaProve = DevuelveDesdeBDNew(cPTours, "proveedor", "codmacta", "codprove", vCodProve, "N")
         
+        '[Monica]03/10/2016: para grabar en la tabla de pagos
+        mNomProve = ""
+        mDomProve = ""
+        mCodpobla = ""
+        mPobprove = ""
+        mProprove = ""
+        mNifProve = ""
+        Sql2 = "select * from proveedor where codprove = " & DBSet(vCodProve, "N")
+        'nomprove,domprove,pobprove,codpobla,proprove,nifprove
+        Set Rs2 = New ADODB.Recordset
+        Rs2.Open Sql2, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+        If Not Rs2.EOF Then
+            mNomProve = DBLet(Rs!NomProve, "T")
+            mDomProve = DBLet(Rs!domprove, "T")
+            mCodpobla = DBLet(Rs!codPobla, "T")
+            mPobprove = DBLet(Rs!pobprove, "T")
+            mProprove = DBLet(Rs!proprove, "T")
+            mNifProve = DBLet(Rs!NIFProve, "T")
+        End If
         
         'si venimos de proceso de insertar tenemos la cuenta prevista de pago que
         'se introdujo en el formulario de pasar albaranes a factura
@@ -682,7 +704,13 @@ Dim i As Byte
               SQL = "Factura num.: " & numfactu & "-" & Format(fecfactu, "dd/mm/yyyy")
               CadValues2 = CadValues2 & "'" & DevNombreSQL(SQL) & "',"
               SQL = "Vto a fecha: " & Format(FecVenci1, "dd/mm/yyyy")
-              CadValues2 = CadValues2 & "'" & DevNombreSQL(SQL) & "')"
+              CadValues2 = CadValues2 & "'" & DevNombreSQL(SQL) & "'"
+              
+              If vParamAplic.ContabilidadNueva Then
+                    CadValues2 = CadValues2 & "," & DBSet(mNomProve, "T") & "," & DBSet(mDomProve, "T") & "," & DBSet(mPobprove, "T") & "," & DBSet(mCodpobla, "T") & "," & DBSet(mProprove, "T") & "," & DBSet(mNifProve, "T") & ",'ES')"
+              Else
+                    CadValues2 = CadValues2 & ")"
+              End If
  
 
               'Resto Vencimientos
@@ -726,7 +754,14 @@ Dim i As Byte
                   SQL = "Factura num.: " & numfactu & "-" & Format(fecfactu, "dd/mm/yyyy")
                   CadValues2 = CadValues2 & "'" & DevNombreSQL(SQL) & "',"
                   SQL = "Vto a fecha: " & Format(FecVenci1, "dd/mm/yyyy")
-                  CadValues2 = CadValues2 & "'" & DevNombreSQL(SQL) & "')"
+                  CadValues2 = CadValues2 & "'" & DevNombreSQL(SQL) & "'"
+                  
+                  If vParamAplic.ContabilidadNueva Then
+                    CadValues2 = CadValues2 & "," & DBSet(mNomProve, "T") & "," & DBSet(mDomProve, "T") & "," & DBSet(mPobprove, "T") & "," & DBSet(mCodpobla, "T") & "," & DBSet(mProprove, "T") & "," & DBSet(mNifProve, "T") & ",'ES')"
+                  Else
+                    CadValues2 = CadValues2 & ")"
+                  End If
+                  
               Next i
             End If
         End If
@@ -749,7 +784,7 @@ Dim i As Byte
             'si no existe la forma de pago en conta, insertamos la de ariges
             If CadValuesAux2 = "" Then
                 'insertamos e sforpa de la CONTA
-                SQL = "INSERT INTO sforpa(codforpa,nomforpa,tipforpa,numerove,primerve,restoven) "
+                SQL = "INSERT INTO formapago(codforpa,nomforpa,tipforpa,numerove,primerve,restoven) "
                 SQL = SQL & " select codforpa,nomforpa,tipforpa,numerove,diasvto,restoven "
                 SQL = SQL & " from " & vSesion.CadenaConexion & ".sforpa where codforpa = " & DBSet(ForPago, "N")
                 
@@ -774,7 +809,7 @@ Dim i As Byte
         If vParamAplic.ContabilidadNueva Then
             SQL = "INSERT INTO pagos (codmacta, numfactu, fecfactu, numorden, codforpa, fecefect, impefect, ctabanc1,"
             
-            SQL = SQL & "iban,text1csb,text2csb) "
+            SQL = SQL & "iban,text1csb,text2csb,nomprove,domprove,pobprove,cpprove,proprove,nifprove,codpais) "
         
         Else
             SQL = "INSERT INTO spagop (ctaprove, numfactu, fecfactu, numorden, codforpa, fecefect, impefect, ctabanc1,entidad,oficina,cc,cuentaba," 'text1csb,text2csb) "
