@@ -850,6 +850,10 @@ Dim temp As Boolean
     On Error GoTo Error2
     'Ciertas comprobaciones
     If adodc1.Recordset.EOF Then Exit Sub
+    
+    If Not PuedeModificarFPenContab Then Exit Sub
+    
+    
 '    If Not SepuedeBorrar Then Exit Sub
         
     ' ### [Monica] 26/09/2006 dejamos modificar y eliminar el codigo 0
@@ -876,6 +880,15 @@ Dim temp As Boolean
 '            CargaGrid ""
 '            lblIndicador.Caption = ""
 '        End If
+        
+        If vParamAplic.ContabilidadNueva Then
+            SQL = "Delete from formapago where codforpa=" & adodc1.Recordset!CodForpa
+            ConnConta.Execute SQL
+        Else
+            SQL = "Delete from sforpa where codforpa=" & adodc1.Recordset!CodForpa
+            ConnConta.Execute SQL
+        End If
+
         temp = SituarDataTrasEliminar(adodc1, NumRegElim, True)
         PonerModoOpcionesMenu
         adodc1.Recordset.Cancel
@@ -887,6 +900,54 @@ Error2:
     MuestraError Err.Number, "Eliminando registro", Err.Description
 End Sub
 
+Private Function PuedeModificarFPenContab() As Boolean
+Dim Cad As String
+    PuedeModificarFPenContab = False
+    Set miRsAux = New ADODB.Recordset
+
+    
+
+    NumRegElim = 0
+    If vParamAplic.ContabilidadNueva Then
+        Cad = "Select count(*) from cobros where codforpa=" & txtAux(0).Text
+    Else
+        Cad = "Select count(*) from scobro where codforpa=" & txtAux(0).Text
+    End If
+    
+    miRsAux.Open Cad, ConnConta, adOpenForwardOnly, adLockPessimistic
+    If Not miRsAux.EOF Then NumRegElim = NumRegElim + DBLet(miRsAux.Fields(0), "N")
+    miRsAux.Close
+    
+    
+    If vParamAplic.ContabilidadNueva Then
+        Cad = "Select count(*) from pagos where codforpa=" & txtAux(0).Text
+    Else
+        Cad = "Select count(*) from spagop where codforpa=" & txtAux(0).Text
+    End If
+    
+    
+    miRsAux.Open Cad, ConnConta, adOpenForwardOnly, adLockPessimistic
+    If Not miRsAux.EOF Then NumRegElim = NumRegElim + DBLet(miRsAux.Fields(0), "N")
+    miRsAux.Close
+    
+    
+    If NumRegElim > 0 Then
+        If Modo = 4 Then
+            If MsgBox("Existen " & NumRegElim & " vencimientos en la tesoreria con esa forma de pago. ¿Continuar con el proceso?", vbQuestion + vbYesNo) = vbNo Then Exit Function
+        Else
+            'NO DEJO CONTINUAR
+            MsgBox "Existen " & NumRegElim & " vencimientos en la tesoreria con esa forma de pago", vbExclamation
+            Exit Function
+        End If
+            
+            
+    End If
+    'Si llega aqui puede seguir
+    PuedeModificarFPenContab = True
+End Function
+
+
+
 Private Sub PonerLongCampos()
 'Modificar el MaxLength del campo en funcion de si es modo de búsqueda o no
 'para los campos que permitan introducir criterios más largos del tamaño del campo
@@ -897,15 +958,15 @@ Private Sub PonerLongCampos()
 End Sub
 
 Private Sub MandaBusquedaPrevia(CadB As String)
-Dim cad As String
+Dim Cad As String
         'Llamamos a al form
-        cad = ""
-        cad = cad & "Socio|codsocio|T||15·"
-        cad = cad & "Nombre|nomsocio|T||80·"
+        Cad = ""
+        Cad = Cad & "Socio|codsocio|T||15·"
+        Cad = Cad & "Nombre|nomsocio|T||80·"
 
         Screen.MousePointer = vbHourglass
         Set frmB = New frmBuscaGrid
-        frmB.vCampos = cad
+        frmB.vCampos = Cad
         frmB.vTabla = "ssocio"
         frmB.vSQL = "" 'cad
         frmB.vDevuelve = "0|1|" 'Campos de la tabla que devuelve
@@ -1011,7 +1072,7 @@ Private Sub cmdCancelar_Click()
 End Sub
 
 Private Sub cmdRegresar_Click()
-Dim cad As String
+Dim Cad As String
 Dim i As Integer
 Dim J As Integer
 Dim Aux As String
@@ -1020,7 +1081,7 @@ Dim Aux As String
         MsgBox "Ningún registro devuelto.", vbExclamation
         Exit Sub
     End If
-    cad = ""
+    Cad = ""
     i = 0
     Do
         J = i + 1
@@ -1028,10 +1089,10 @@ Dim Aux As String
         If i > 0 Then
             Aux = Mid(DatosADevolverBusqueda, J, i - J)
             J = Val(Aux)
-            cad = cad & adodc1.Recordset.Fields(J) & "|"
+            Cad = Cad & adodc1.Recordset.Fields(J) & "|"
         End If
     Loop Until i = 0
-    RaiseEvent DatoSeleccionado(cad)
+    RaiseEvent DatoSeleccionado(Cad)
     Unload Me
 End Sub
 
@@ -1405,7 +1466,7 @@ Dim Mens As String
 End Function
 
 Private Sub CargaCombo()
-Dim cad As String
+Dim Cad As String
 Dim i As Byte
 Dim Rs As ADODB.Recordset
 Dim SQL As String
@@ -1674,5 +1735,6 @@ EModificarCab:
         ConnConta.RollbackTrans
     End If
 End Function
+
 
 

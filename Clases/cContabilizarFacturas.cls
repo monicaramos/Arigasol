@@ -338,7 +338,7 @@ Dim Cliente As String
     SQL = SQL & ") VALUES ("
     SQL = SQL & DiarioFacturas & ",'" & Format(FechaAsi, FormatoFecha) & "'," & NumAsiento
     SQL = SQL & "," & DBSet(Observaciones, "T", "S")
-    If vParamAplic.ContabilidadNueva Then SQL = SQL & "," & DBSet(Now, "FH") & "," & DBSet(vSesion.Login, "T") & ",'ARIGES'"
+    If vParamAplic.ContabilidadNueva Then SQL = SQL & "," & DBSet(Now, "FH") & "," & DBSet(vSesion.Login, "T") & ",'Arigasol'"
     miConexion.Execute SQL & ")"
     
     'Lineas fijas, es decir la linea de cliente, importes y tal y tal
@@ -808,7 +808,7 @@ Dim Importe As Currency
         End If
         cad2 = cad2 & " interna " & Format(RCab!numfactu, "00000")
     Case 2
-        cad2 = DevuelveDesdeBD(ConnConta, "nommacta", "cuentas", "codmacta", RCab!codmacta, "T")
+        cad2 = DevuelveDesdeBDNew(cConta, "cuentas", "nommacta", "codmacta", RCab!codmacta, "T")
         cad2 = DevNombreSQL(DBLet(cad2))
     Case Else
         'Este no deberia ser
@@ -1043,7 +1043,7 @@ Dim NoSumaIVA As Boolean
     SQL = SQL & ") VALUES ("
     SQL = SQL & DiarioFacturas & ",'" & Format(FechaAsi, FormatoFecha) & "'," & NumAsiento
     SQL = SQL & "," & DBSet(Observaciones, "T", "S")
-    If vParamAplic.ContabilidadNueva Then SQL = SQL & "," & DBSet(Now, "FH") & "," & DBSet(vUsu.Login, "T") & ",'ARIGES'"
+    If vParamAplic.ContabilidadNueva Then SQL = SQL & "," & DBSet(Now, "FH") & "," & DBSet(vSesion.Login, "T") & ",'ARIGES'"
     SQL = SQL & ")"
     miConexion.Execute SQL
     
@@ -1546,7 +1546,7 @@ Dim NoSumaIVA As Boolean
     
     
     'MAYO 2011   Guarda tb el asiento en el que esta
-    SQL = "UPDATE tmpinformes set importeb5 = " & NumAsiento & " WHERE codusu = " & vUsu.Codigo & " AND codigo1=" & numRegis
+    SQL = "UPDATE tmpinformes set importeb5 = " & NumAsiento & " WHERE codusu = " & vSesion.Codigo & " AND codigo1=" & numRegis
     ejecutar SQL, True 'Me da lo mismo que de error
     
     

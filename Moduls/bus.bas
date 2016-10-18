@@ -82,6 +82,11 @@ Public MensError As String
 Public AnchoLogin As String  'Para fijar los anchos de columna
 Public ImpresoraDefecto As String
 
+Public Const SerieFraPro = "1"
+
+
+
+
 
 ' **** DATOS DEL LOGIN ****
 'Public CodEmple As Integer
@@ -96,7 +101,7 @@ Public ImpresoraDefecto As String
 
 'Inicio Aplicación
 Public Sub Main()
-Dim Sql As String
+Dim SQL As String
     If App.PrevInstance Then
         MsgBox "AriGasol ya se esta ejecutando", vbExclamation
         End
@@ -414,7 +419,7 @@ End Function
 
     
 
-Public Sub MuestraError(numero As Long, Optional cadena As String, Optional Desc As String)
+Public Sub MuestraError(numero As Long, Optional Cadena As String, Optional Desc As String)
     Dim cad As String
     Dim Aux As String
     
@@ -422,8 +427,8 @@ Public Sub MuestraError(numero As Long, Optional cadena As String, Optional Desc
     'que se produzcan
     On Error Resume Next
     cad = "Se ha producido un error: " & vbCrLf
-    If cadena <> "" Then
-        cad = cad & vbCrLf & cadena & vbCrLf & vbCrLf
+    If Cadena <> "" Then
+        cad = cad & vbCrLf & Cadena & vbCrLf & vbCrLf
     End If
     'Numeros de errores que contolamos
     If Conn.Errors.Count > 0 Then
@@ -438,7 +443,7 @@ Public Sub MuestraError(numero As Long, Optional cadena As String, Optional Desc
     MsgBox cad, vbExclamation
 End Sub
 
-Public Function DBSet(vData As Variant, tipo As String, Optional EsNulo As String) As Variant
+Public Function DBSet(vData As Variant, Tipo As String, Optional EsNulo As String) As Variant
 'Establece el valor del dato correcto antes de Insertar en la BD
 Dim cad As String
 
@@ -447,8 +452,8 @@ Dim cad As String
             Exit Function
         End If
 
-        If tipo <> "" Then
-            Select Case tipo
+        If Tipo <> "" Then
+            Select Case Tipo
                 Case "T"    'Texto
                     If vData = "" Then
                         If EsNulo = "N" Then
@@ -530,12 +535,12 @@ End Function
 
 
 
-Public Function DBLet(vData As Variant, Optional tipo As String) As Variant
+Public Function DBLet(vData As Variant, Optional Tipo As String) As Variant
 'Para cuando recupera Datos de la BD
     If IsNull(vData) Then
         DBLet = ""
-        If tipo <> "" Then
-            Select Case tipo
+        If Tipo <> "" Then
+            Select Case Tipo
                 Case "T"    'Texto
                     DBLet = ""
                 Case "N"    'Numero
@@ -595,42 +600,42 @@ Dim i As Integer
 End Function
 
 ' ### [Monica] 11/09/2006
-Public Function ImporteSinFormato(cadena As String) As String
+Public Function ImporteSinFormato(Cadena As String) As String
 Dim i As Integer
 'Quitamos puntos
 Do
-    i = InStr(1, cadena, ".")
-    If i > 0 Then cadena = Mid(cadena, 1, i - 1) & Mid(cadena, i + 1)
+    i = InStr(1, Cadena, ".")
+    If i > 0 Then Cadena = Mid(Cadena, 1, i - 1) & Mid(Cadena, i + 1)
 Loop Until i = 0
-ImporteSinFormato = TransformaPuntosComas(cadena)
+ImporteSinFormato = TransformaPuntosComas(Cadena)
 End Function
 
 
 
 'Cambia los puntos de los numeros decimales
 'por comas
-Public Function TransformaComasPuntos(cadena As String) As String
+Public Function TransformaComasPuntos(Cadena As String) As String
 Dim i As Integer
     Do
-        i = InStr(1, cadena, ",")
+        i = InStr(1, Cadena, ",")
         If i > 0 Then
-            cadena = Mid(cadena, 1, i - 1) & "." & Mid(cadena, i + 1)
+            Cadena = Mid(Cadena, 1, i - 1) & "." & Mid(Cadena, i + 1)
         End If
     Loop Until i = 0
-    TransformaComasPuntos = cadena
+    TransformaComasPuntos = Cadena
 End Function
 
 'Para los nombre que pueden tener ' . Para las comillas habra que hacer dentro otro INSTR
-Public Sub NombreSQL(ByRef cadena As String)
+Public Sub NombreSQL(ByRef Cadena As String)
 Dim J As Integer
 Dim i As Integer
 Dim Aux As String
     J = 1
     Do
-        i = InStr(J, cadena, "'")
+        i = InStr(J, Cadena, "'")
         If i > 0 Then
-            Aux = Mid(cadena, 1, i - 1) & "\"
-            cadena = Aux & Mid(cadena, i)
+            Aux = Mid(Cadena, 1, i - 1) & "\"
+            Cadena = Aux & Mid(Cadena, i)
             J = i + 2
         End If
     Loop Until i = 0
@@ -655,24 +660,24 @@ Dim cad As String
     End If
 End Function
 
-Public Function DevNombreSQL(cadena As String) As String
+Public Function DevNombreSQL(Cadena As String) As String
 Dim J As Integer
 Dim i As Integer
 Dim Aux As String
     J = 1
     Do
-        i = InStr(J, cadena, "'")
+        i = InStr(J, Cadena, "'")
         If i > 0 Then
-            Aux = Mid(cadena, 1, i - 1) & "\"
-            cadena = Aux & Mid(cadena, i)
+            Aux = Mid(Cadena, 1, i - 1) & "\"
+            Cadena = Aux & Mid(Cadena, i)
             J = i + 2
         End If
     Loop Until i = 0
-    DevNombreSQL = cadena
+    DevNombreSQL = Cadena
 End Function
 
 
-Public Function DevuelveDesdeBD(kCampo As String, Ktabla As String, Kcodigo As String, ValorCodigo As String, Optional tipo As String, Optional ByRef otroCampo As String) As String
+Public Function DevuelveDesdeBD(kCampo As String, Ktabla As String, Kcodigo As String, ValorCodigo As String, Optional Tipo As String, Optional ByRef otroCampo As String) As String
     Dim Rs As Recordset
     Dim cad As String
     Dim Aux As String
@@ -683,15 +688,15 @@ Public Function DevuelveDesdeBD(kCampo As String, Ktabla As String, Kcodigo As S
     If otroCampo <> "" Then cad = cad & ", " & otroCampo
     cad = cad & " FROM " & Ktabla
     cad = cad & " WHERE " & Kcodigo & " = "
-    If tipo = "" Then tipo = "N"
-    Select Case tipo
+    If Tipo = "" Then Tipo = "N"
+    Select Case Tipo
     Case "N"
         'No hacemos nada
         cad = cad & ValorCodigo
     Case "T", "F"
         cad = cad & "'" & ValorCodigo & "'"
     Case Else
-        MsgBox "Tipo : " & tipo & " no definido", vbExclamation
+        MsgBox "Tipo : " & Tipo & " no definido", vbExclamation
         Exit Function
     End Select
     
@@ -899,7 +904,7 @@ End Function
 
 
 'CESAR
-Public Function DevuelveDesdeBDnew2(kBD As Integer, kCampo As String, Ktabla As String, Kcodigo As String, ValorCodigo As String, Optional tipo As String, Optional num As Byte, Optional ByRef otroCampo As String) As String
+Public Function DevuelveDesdeBDnew2(kBD As Integer, kCampo As String, Ktabla As String, Kcodigo As String, ValorCodigo As String, Optional Tipo As String, Optional num As Byte, Optional ByRef otroCampo As String) As String
 Dim Rs As Recordset
 Dim cad As String
 Dim Aux As String
@@ -920,10 +925,10 @@ If Kcodigo <> "" Then cad = cad & " where "
 For v_aux = 1 To num
     campo = RecuperaValor(Kcodigo, v_aux)
     Valor = RecuperaValor(ValorCodigo, v_aux)
-    tip = RecuperaValor(tipo, v_aux)
+    tip = RecuperaValor(Tipo, v_aux)
         
     cad = cad & campo & "="
-    If tip = "" Then tipo = "N"
+    If tip = "" Then Tipo = "N"
     
     Select Case tip
             Case "N"
@@ -1001,15 +1006,15 @@ Dim res As Boolean
         EsEntero = res
 End Function
 
-Public Function TransformaPuntosComas(cadena As String) As String
+Public Function TransformaPuntosComas(Cadena As String) As String
     Dim i As Integer
     Do
-        i = InStr(1, cadena, ".")
+        i = InStr(1, Cadena, ".")
         If i > 0 Then
-            cadena = Mid(cadena, 1, i - 1) & "," & Mid(cadena, i + 1)
+            Cadena = Mid(Cadena, 1, i - 1) & "," & Mid(Cadena, i + 1)
         End If
         Loop Until i = 0
-    TransformaPuntosComas = cadena
+    TransformaPuntosComas = Cadena
 End Function
 
 Public Sub InicializarFormatos()
@@ -1095,7 +1100,7 @@ Public Function UsuariosConectados() As Boolean
 Dim i As Integer
 Dim cad As String
 Dim metag As String
-Dim Sql As String
+Dim SQL As String
 cad = OtrosPCsContraAplicacion
 UsuariosConectados = False
 If cad <> "" Then
@@ -1103,12 +1108,12 @@ If cad <> "" Then
     i = 1
     metag = "Los siguientes PC's están conectados a: " & vEmpresa.nomEmpre & " (" & vSesion.CadenaConexion & ")" & vbCrLf & vbCrLf
     Do
-        Sql = RecuperaValor(cad, i)
-        If Sql <> "" Then
-            metag = metag & "    - " & Sql & vbCrLf
+        SQL = RecuperaValor(cad, i)
+        If SQL <> "" Then
+            metag = metag & "    - " & SQL & vbCrLf
             i = i + 1
         End If
-    Loop Until Sql = ""
+    Loop Until SQL = ""
     MsgBox metag, vbExclamation
 End If
 End Function
@@ -1174,11 +1179,11 @@ EPrepararCarpetasEnvioMail:
 End Function
 
 
-Public Function ejecutar(ByRef Sql As String, OcultarMsg As Boolean) As Boolean
+Public Function ejecutar(ByRef SQL As String, OcultarMsg As Boolean) As Boolean
     On Error Resume Next
-    Conn.Execute Sql
+    Conn.Execute SQL
     If Err.Number <> 0 Then
-        If Not OcultarMsg Then MuestraError Err.Number, Err.Description, Sql
+        If Not OcultarMsg Then MuestraError Err.Number, Err.Description, SQL
         ejecutar = False
     Else
         ejecutar = True
