@@ -4120,7 +4120,7 @@ Dim CodForpa As Integer
                 End If
                 
                 If vParamAplic.ContabilidadNueva Then
-                    CadValues2 = CadValues2 & ", 1," & DBSet(vsocio.Nombre, "T") & "," & DBSet(vsocio.Domicilio, "T") & "," & DBSet(vsocio.POBLACION, "T") & "," & DBSet(vsocio.CPostal, "T") & "," & DBSet(vsocio.Provincia, "T") & "," & DBSet(vsocio.NIF, "T") & ",'ES'),"
+                    CadValues2 = CadValues2 & " 1," & DBSet(vsocio.Nombre, "T") & "," & DBSet(vsocio.Domicilio, "T") & "," & DBSet(vsocio.POBLACION, "T") & "," & DBSet(vsocio.CPostal, "T") & "," & DBSet(vsocio.Provincia, "T") & "," & DBSet(vsocio.NIF, "T") & ",'ES'),"
                 
                 Else
                     
@@ -4173,7 +4173,7 @@ Dim CodForpa As Integer
                         End If
                     Else
                         If vParamAplic.ContabilidadNueva Then
-                            vvIban = MiFormat(DBLet(Rs!IBAN), "") & MiFormat(DBLet(Rs!codbanco), "0000") & MiFormat(DBLet(Rs!codsucur), "0000") & MiFormat(DBLet(Rs!DigControl), "00") & MiFormat(DBLet(Rs!cuentaba), "0000000000")
+                            vvIban = MiFormat(DBLet(Rs!IBAN), "") & MiFormat(DBLet(Rs!codbanco), "0000") & MiFormat(DBLet(Rs!codsucur), "0000") & MiFormat(DBLet(Rs!DigContr), "00") & MiFormat(DBLet(Rs!cuentaba), "0000000000")
                             
                             CadValues2 = CadValues2 & DBSet(ImpVenci, "N") & ", " & DBSet(CodmacBPr, "T") & ", " & DBSet(vvIban, "T", "S") & ", " & DBSet(textcsb33, "T") & "," & DBSet(textcsb41, "T") & ","
                         
@@ -4187,7 +4187,7 @@ Dim CodForpa As Integer
                     End If
 
                     If vParamAplic.ContabilidadNueva Then
-                        CadValues2 = CadValues2 & ", 1," & DBSet(vsocio.Nombre, "T") & "," & DBSet(vsocio.Domicilio, "T") & "," & DBSet(vsocio.POBLACION, "T") & "," & DBSet(vsocio.CPostal, "T") & "," & DBSet(vsocio.Provincia, "T") & "," & DBSet(vsocio.NIF, "T") & ",'ES'),"
+                        CadValues2 = CadValues2 & " 1," & DBSet(vsocio.Nombre, "T") & "," & DBSet(vsocio.Domicilio, "T") & "," & DBSet(vsocio.POBLACION, "T") & "," & DBSet(vsocio.CPostal, "T") & "," & DBSet(vsocio.Provincia, "T") & "," & DBSet(vsocio.NIF, "T") & ",'ES'),"
                     
                     Else
     
@@ -4275,7 +4275,7 @@ Dim CodForpa As Integer
                     End If
 
                     If vParamAplic.ContabilidadNueva Then
-                        CadValues2 = CadValues2 & ", 1," & DBSet(vsocio.Nombre, "T") & "," & DBSet(vsocio.Domicilio, "T") & "," & DBSet(vsocio.POBLACION, "T") & "," & DBSet(vsocio.CPostal, "T") & "," & DBSet(vsocio.Provincia, "T") & "," & DBSet(vsocio.NIF, "T") & ",'ES'),"
+                        CadValues2 = CadValues2 & " 1," & DBSet(vsocio.Nombre, "T") & "," & DBSet(vsocio.Domicilio, "T") & "," & DBSet(vsocio.POBLACION, "T") & "," & DBSet(vsocio.CPostal, "T") & "," & DBSet(vsocio.Provincia, "T") & "," & DBSet(vsocio.NIF, "T") & ",'ES'),"
                     
                     Else
                         CadValues2 = CadValues2 & _

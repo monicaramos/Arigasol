@@ -241,7 +241,11 @@ On Error GoTo EAbrirConexion
     ConnConta.CursorLocation = adUseServer   'Si ponemos esta alguns errores de Conn no se muestran correctamente
 
 ' ### [Monica] 06/09/2006
-    nomConta = "conta" & vParamAplic.NumeroConta
+    If vParamAplic.ContabilidadNueva Then
+        nomConta = "ariconta" & vParamAplic.NumeroConta
+    Else
+        nomConta = "conta" & vParamAplic.NumeroConta
+    End If
 '    vEmpresa.BDConta = nomConta
     
     If vParamAplic.NumeroConta <> 0 Then
