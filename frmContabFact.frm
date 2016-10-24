@@ -427,7 +427,7 @@ Dim cDesde As String, cHasta As String 'cadena codigo Desde/Hasta
 Dim nDesde As String, nHasta As String 'cadena Descripcion Desde/Hasta
 Dim cadTabla As String, cOrden As String
 Dim cadMen As String
-Dim i As Byte
+Dim I As Byte
 Dim SQL As String
 Dim Tipo As Byte
 Dim NRegs As Long
@@ -683,7 +683,7 @@ Private Sub KEYFecha(KeyAscii As Integer, indice As Integer)
 End Sub
 
 Private Sub txtCodigo_LostFocus(Index As Integer)
-Dim cad As String, cadTipo As String 'tipo cliente
+Dim Cad As String, cadTipo As String 'tipo cliente
 
     'Quitar espacios en blanco por los lados
     txtCodigo(Index).Text = Trim(txtCodigo(Index).Text)
@@ -1011,7 +1011,11 @@ Dim CCoste As String
     'Crear tabla TEMP para los posible errores de facturas
     tmpErrores = CrearTMPErrFact(cadTabla)
     
-    
+    '$$$
+    Me.lblProgres(0).Caption = "Fechas contabilizacion"
+    Me.lblProgres(0).Refresh
+    b = NuevasComprobacionesContabilizacion(cadTabla = "scafpc", cadWhere)
+    If Not b Then Exit Function
     
     
     
@@ -1040,7 +1044,7 @@ Private Function PasarFacturasAContab(cadTabla As String, FecVenci As String, Ba
 Dim SQL As String
 Dim Rs As ADODB.Recordset
 Dim b As Boolean
-Dim i As Integer
+Dim I As Integer
 Dim numfactu As Integer
 Dim codigo1 As String
 
@@ -1083,49 +1087,37 @@ Dim codigo1 As String
     End If
     
     
-    
-    
     If numfactu > 0 Then
         CargarProgres Me.Pb1, numfactu
-        
-        SQL = "SELECT * "
-        SQL = SQL & " FROM tmpfactu "
-            
-        Set Rs = New ADODB.Recordset
-        Rs.Open SQL, Conn, adOpenStatic, adLockPessimistic, adCmdText
-        i = 1
 
-        
+        Set Rs = New ADODB.Recordset
 '++
-        
         'PreComproabacion de los asientos
-        If cContaFra.RealizarContabilizacion Then
-            SQL = "Select min(fecfactu) from tmpfactu"
-            Rs.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
-            If Not Rs.EOF Then
-                If Not cContaFra.PreComprobacionNumeroAsiento(Rs.Fields(0), numfactu) Then
-                    
-                    'Para que la ventana siguiente muestr bien el error
-                    SQL = "Insert into tmpErrFac(codtipom,numfactu,fecfactu,error) VALUES ("
-                    SQL = SQL & "'',0,'" & Format(Rs.Fields(0), FormatoFecha) & "','Error contadores')"
-                    
-                    Conn.Execute SQL
-                    Rs.Close
-                    Err.Raise 6, , "Comprobacion numeros asiento"
+        If vParamAplic.ContabilidadNueva Then
+            If cContaFra.RealizarContabilizacion Then
+                SQL = "Select min(fecfactu) from tmpfactu"
+                Rs.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+                If Not Rs.EOF Then
+                    If Not cContaFra.PreComprobacionNumeroAsiento(Rs.Fields(0), numfactu) Then
+                        
+                        'Para que la ventana siguiente muestr bien el error
+                        SQL = "Insert into tmpErrFac(codtipom,numfactu,fecfactu,error) VALUES ("
+                        SQL = SQL & "'',0,'" & Format(Rs.Fields(0), FormatoFecha) & "','Error contadores')"
+                        
+                        Conn.Execute SQL
+                        Rs.Close
+                        Err.Raise 6, , "Comprobacion numeros asiento"
+                    End If
                 End If
+                Rs.Close
             End If
-            Rs.Close
         End If
-        
         'seleccinar todas las facturas que hemos insertado en la temporal (las que vamos a contabilizar)
         SQL = "SELECT * "
         SQL = SQL & " FROM tmpFactu "
-            
 
         Rs.Open SQL, Conn, adOpenStatic, adLockPessimistic, adCmdText
-        i = 1
-
-    
+        I = 1
 '++
         
         '$$$
@@ -1139,9 +1131,9 @@ Dim codigo1 As String
             End If
             
             IncrementarProgres Me.Pb1, 1
-            Me.lblProgres(1).Caption = "Insertando Facturas en Contabilidad...   (" & i & " de " & numfactu & ")"
+            Me.lblProgres(1).Caption = "Insertando Facturas en Contabilidad...   (" & I & " de " & numfactu & ")"
             Me.Refresh
-            i = i + 1
+            I = I + 1
             Rs.MoveNext
         Wend
         Rs.Close
@@ -1158,4 +1150,78 @@ EPasarFac:
     End If
 End Function
 
+Private Function NuevasComprobacionesContabilizacion(Proveedores As Boolean, ByVal SQL As String) As Boolean
+Dim RT As ADODB.Recordset
+Dim C As String
+Dim F As Date
+Dim fin As Boolean
+Dim ComprobacionFechaMenor As Boolean
+Dim cControlFra As CControlFacturaContab
+    
+    On Error GoTo ENuevasComprobacionesContabilizacion
+    NuevasComprobacionesContabilizacion = False
+    
+    
+    
+    Set cControlFra = New CControlFacturaContab
+        'Tenemos que comprobar la fecha factura
+    Set RT = New ADODB.Recordset
+    ComprobacionFechaMenor = False
+
+    If Proveedores Then
+        C = "select fecrecep from scafpc WHERE " & SQL
+        C = C & " GROUP BY fecrecep ORDER BY fecrecep"
+    Else
+        C = "Select fecfactu from scafac WHERE " & SQL
+        C = C & " GROUP BY fecfactu ORDER BY fecfactu"
+    End If
+    
+    
+    RT.Open C, Conn, adOpenForwardOnly, adLockOptimistic, adCmdText
+    fin = False
+    While Not fin
+        F = RT.Fields(0)
+        C = cControlFra.FechaCorrectaContabilizazion(ConnConta, F)
+        If C <> "" Then
+            fin = True
+        Else
+            C = cControlFra.FechaCorrectaIVA(ConnConta, F)
+            If C <> "" Then
+                fin = True
+            Else
+                If Proveedores Then
+                    'Solo compruebo una vez
+                    If Not ComprobacionFechaMenor Then
+                        If cControlFra.FechaRecepMenorQueProveedor(ConnConta, F) Then
+                            C = "Factura contabilizada con fecha de recepción menor que ya existentes en contabilidad."
+                            C = C & vbCrLf & vbCrLf & "¿Continuar?"
+                            If MsgBox(C, vbQuestion + vbYesNo) = vbYes Then
+                                C = ""
+                            Else
+                                C = "Proceso cancelado por el usuario"
+                            End If
+                        End If
+                        ComprobacionFechaMenor = True
+                    End If
+                End If
+            End If
+        End If
+        RT.MoveNext
+        If Not fin Then fin = RT.EOF
+    Wend
+    RT.Close
+    
+    If C <> "" Then
+        C = C & "(" & F & ")"
+        MsgBox C, vbExclamation
+    Else
+        NuevasComprobacionesContabilizacion = True
+    End If
+    
+    
+ENuevasComprobacionesContabilizacion:
+    If Err.Number <> 0 Then MuestraError Err.Number, "Nueva Comprobacion Contabilizacion"
+    Set RT = Nothing
+    Set cControlFra = Nothing
+End Function
 

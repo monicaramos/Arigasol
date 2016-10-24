@@ -114,12 +114,12 @@ Public Property Get CPostal() As String
 End Property
 
 
-Public Property Let Poblacion(ByVal vData As String)
+Public Property Let POBLACION(ByVal vData As String)
      mvarPobempre = vData
 End Property
 
-Public Property Get Poblacion() As String
-     Poblacion = mvarPobempre
+Public Property Get POBLACION() As String
+     POBLACION = mvarPobempre
 End Property
 
 Public Property Let Provincia(ByVal vData As String)
@@ -379,15 +379,15 @@ Public Function LeerDatos(Codigo As Integer) As Boolean
 'Leer los parametros de una empresa
 'Lee de la BD: PlannerTours, Tabla: empresas
 Dim Rs As ADODB.Recordset
-Dim Sql As String
+Dim SQL As String
 
     On Error GoTo ELeer
     
-    Sql = "SELECT * FROM sempre WHERE codempre=1" ' & codigo 'vUsu.CadenaConexion
+    SQL = "SELECT * FROM sempre WHERE codempre=1" ' & codigo 'vUsu.CadenaConexion
 
 
     Set Rs = New ADODB.Recordset
-    Rs.Open Sql, Conn, adOpenForwardOnly, adLockOptimistic, adCmdText
+    Rs.Open SQL, Conn, adOpenForwardOnly, adLockOptimistic, adCmdText
     If Rs.EOF Then
         LeerDatos = False
     Else
@@ -409,6 +409,7 @@ Dim Sql As String
 '        mvarCodGrupo = RS!codGrupo
 '        mvarClaEmpre = RS!claEmpre
         
+        
         mvarConta = "conta2" ' DBLet(RS!bdaconta)
         
         LeerDatos = True
@@ -419,10 +420,10 @@ Dim Sql As String
     Exit Function
 
 ELeer:
-    Sql = "Se ha producido un error. " & "Leyendo datos de la empresa." & vbCrLf
-    Sql = Sql & "Número: " & Err.Number & vbCrLf
-    Sql = Sql & "Descripción: " & Err.Description
-    MsgBox Sql, vbExclamation
+    SQL = "Se ha producido un error. " & "Leyendo datos de la empresa." & vbCrLf
+    SQL = SQL & "Número: " & Err.Number & vbCrLf
+    SQL = SQL & "Descripción: " & Err.Description
+    MsgBox SQL, vbExclamation
     Set Rs = Nothing
     LeerDatos = False
 End Function
@@ -433,15 +434,15 @@ End Function
 Public Function LeerNiveles() As Boolean
 'Leer los parametros de la empresa en BD de la Contabilidad
 Dim Rs As ADODB.Recordset
-Dim Sql As String
+Dim SQL As String
 
     On Error GoTo ELeerNiv
     
     'Lee de la Contabilidad
-    Sql = "SELECT * FROM empresa " 'WHERE codempre=" & codigo
+    SQL = "SELECT * FROM empresa " 'WHERE codempre=" & codigo
     
     Set Rs = New ADODB.Recordset
-    Rs.Open Sql, ConnConta, adOpenForwardOnly, adLockOptimistic, adCmdText
+    Rs.Open SQL, ConnConta, adOpenForwardOnly, adLockOptimistic, adCmdText
     
     If Rs.EOF Then
         LeerNiveles = False
@@ -465,8 +466,8 @@ Dim Sql As String
         mvarConceInt = DevuelveDesdeBDNew(cConta, "parametros", "concefcl", "1", "1", "N")
         mvarNumDiarioInt = DevuelveDesdeBDNew(cConta, "parametros", "numdiacl", "1", "1", "N")
 
-       '[Monica]20/11/2013: miramos lo del iban
-       mvarNorma19_34Nueva = TieneNorma19_34Nueva
+        '[Monica]20/11/2013: miramos lo del iban
+        mvarNorma19_34Nueva = TieneNorma19_34Nueva
        
 
 
@@ -479,16 +480,16 @@ Dim Sql As String
     Exit Function
 
 ELeerNiv:
-    Sql = "Se ha producido un error. " & "Leer niveles de contabilidad." & vbCrLf
-    Sql = Sql & "Número: " & Err.Number & vbCrLf
-    Sql = Sql & "Descripción: " & Err.Description
-    MsgBox Sql, vbExclamation
+    SQL = "Se ha producido un error. " & "Leer niveles de contabilidad." & vbCrLf
+    SQL = SQL & "Número: " & Err.Number & vbCrLf
+    SQL = SQL & "Descripción: " & Err.Description
+    MsgBox SQL, vbExclamation
     Set Rs = Nothing
     LeerNiveles = False
 End Function
 
 Private Function TieneNorma19_34Nueva() As Byte
-Dim Sql As String
+Dim SQL As String
 Dim Rs As ADODB.Recordset
 
     On Error GoTo eTieneNorma19_34Nueva
@@ -497,8 +498,8 @@ Dim Rs As ADODB.Recordset
 
     Set Rs = New ADODB.Recordset
 
-    Sql = "select norma19_34Nueva from paramtesor"
-    Rs.Open Sql, ConnConta, adOpenForwardOnly, adLockPessimistic, adCmdText
+    SQL = "select norma19_34Nueva from paramtesor"
+    Rs.Open SQL, ConnConta, adOpenForwardOnly, adLockPessimistic, adCmdText
          
     TieneNorma19_34Nueva = 1
     

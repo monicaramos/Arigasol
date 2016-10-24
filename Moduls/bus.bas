@@ -407,6 +407,13 @@ Public Sub LeerDatosEmpresa()
             End
         End If
         
+        If vParamAplic.ContabilidadNueva Then
+            vEmpresa.BDConta = "ariconta" & vParamAplic.NumeroConta
+        Else
+            vEmpresa.BDConta = "conta" & vParamAplic.NumeroConta
+        End If
+        
+        
         FechasEjercicioConta FIni, FFin
     
     End If
