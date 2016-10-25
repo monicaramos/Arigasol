@@ -515,7 +515,7 @@ Dim Rs2 As ADODB.Recordset
 
 Dim Mens As String
 Dim SQL As String
-Dim Sql2 As String
+Dim sql2 As String
 
     On Error GoTo ELeer
     
@@ -548,10 +548,10 @@ Dim Sql2 As String
         mPobprove = ""
         mProprove = ""
         mNifProve = ""
-        Sql2 = "select * from proveedor where codprove = " & DBSet(vCodProve, "N")
+        sql2 = "select * from proveedor where codprove = " & DBSet(vCodProve, "N")
         'nomprove,domprove,pobprove,codpobla,proprove,nifprove
         Set Rs2 = New ADODB.Recordset
-        Rs2.Open Sql2, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+        Rs2.Open sql2, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
         If Not Rs2.EOF Then
             mNomProve = DBLet(Rs!NomProve, "T")
             mDomProve = DBLet(Rs!domprove, "T")
@@ -614,7 +614,7 @@ Dim cadValuesAux As String 'para insertar en svenci
 Dim CadValues2 As String, CadValuesAux2 As String 'para insertar en conta.scobro
 Dim FecVenci As Date, FecVenci1 As Date
 Dim ImpVenci As Single
-Dim i As Byte
+Dim I As Byte
 
     On Error GoTo EInsertarTesoreria
 
@@ -642,7 +642,7 @@ Dim i As Byte
               
               'Primer Vencimiento
               '------------------------------------------------------------
-              i = 1
+              I = 1
               
               '[Monica]28/01/2013: añadimos el if dependiendo de si está o no cargada la variable
               'FECHA VTO
@@ -666,7 +666,7 @@ Dim i As Byte
                   FecVenci1 = FecVenci
               End If
                  
-              CadValues2 = CadValuesAux2 & i
+              CadValues2 = CadValuesAux2 & I
               CadValues2 = CadValues2 & ", " & ForPago & ", '" & Format(FecVenci1, FormatoFecha) & "', "
                 
               'IMPORTE del Vencimiento
@@ -715,7 +715,7 @@ Dim i As Byte
 
               'Resto Vencimientos
               '--------------------------------------------------------------------
-              For i = 2 To rsVenci!numerove
+              For I = 2 To rsVenci!numerove
                  'FECHA Resto Vencimientos
                   '==== Modificado: Laura 23/01/2007
                   'FecVenci = FecVenci + DBSet(rsVenci!restoven, "N")
@@ -730,7 +730,7 @@ Dim i As Byte
                         FecVenci1 = ComprobarMesNoGira(FecVenci1, DBSet(Rs!mesnogir, "N"), DBSet(0, "N"), Rs!DiaPago1, Rs!DiaPago2, Rs!DiaPago3)
                   End If
 
-                  CadValues2 = CadValues2 & ", " & CadValuesAux2 & i & ", " & ForPago & ", '" & Format(FecVenci1, FormatoFecha) & "', "
+                  CadValues2 = CadValues2 & ", " & CadValuesAux2 & I & ", " & ForPago & ", '" & Format(FecVenci1, FormatoFecha) & "', "
 
                   'IMPORTE Resto de Vendimientos
                   ImpVenci = Round(TotalFac / rsVenci!numerove, 2)
@@ -762,7 +762,7 @@ Dim i As Byte
                     CadValues2 = CadValues2 & ")"
                   End If
                   
-              Next i
+              Next I
             End If
         End If
         Rs.Close
@@ -866,7 +866,9 @@ Dim MenError As String
         '#### Laura 15/11/2006 Recuperar facturas ALZIRA
         If frmComFacturar.Check1(0).Value = 1 Then
         '####
-            If vParamAplic.NumeroConta <> 0 Then b = InsertarEnTesoreria(MenError)
+            If vParamAplic.NumeroConta <> 0 Then
+                b = InsertarEnTesoreria(MenError)
+            End If
         End If
         
         
@@ -1094,7 +1096,7 @@ Public Function CalcularDatosFactura(cadWhere As String, NomTabla As String, Nom
 'nomTabla: nombre de la tabla de albaranes(scaalp) o de AlbaranesXFactura(scafpa)
 '           segun llamemos desde recepcion de facturas o desde Hco de Facturas
 Dim Rs As ADODB.Recordset
-Dim i As Integer
+Dim I As Integer
 
 Dim SQL As String
 Dim cadAux As String
@@ -1104,7 +1106,7 @@ Dim TotBruto As Currency
 Dim TotImpIVA As Currency
 
 Dim ImpAux As Currency
-Dim impiva As Currency
+Dim ImpIva As Currency
 Dim ImpBImIVA As Currency 'Importe Base imponible a la que hay q aplicar el IVA
 
     CalcularDatosFactura = False
@@ -1122,7 +1124,7 @@ Dim ImpBImIVA As Currency 'Importe Base imponible a la que hay q aplicar el IVA
     Rs.Open SQL, Conn, adOpenForwardOnly, adLockOptimistic, adCmdText
     
     TotBruto = 0
-    i = 1
+    I = 1
     While Not Rs.EOF
         'Aqui vamos acumulando la suma del importe bruto de las lineas
         TotBruto = TotBruto + Rs!Bruto
@@ -1161,14 +1163,14 @@ Dim ImpBImIVA As Currency 'Importe Base imponible a la que hay q aplicar el IVA
         '----
         '---- Laura: 24/10/2006
         If cadAux = "" Then cadAux = "0"
-        impiva = CalcularPorcentaje(ImpBImIVA, CCur(cadAux), 2)
+        ImpIva = CalcularPorcentaje(ImpBImIVA, CCur(cadAux), 2)
         
         'sumamos todos los IVAS para sumarselo a la base imponible total de la factura
         'los vamos acumulando
-        TotImpIVA = TotImpIVA + impiva
+        TotImpIVA = TotImpIVA + ImpIva
         
         
-        Select Case i
+        Select Case I
             Case 1  'IVA 1
                 TipoIVA1 = Rs!CodigIVA
                 
@@ -1177,7 +1179,7 @@ Dim ImpBImIVA As Currency 'Importe Base imponible a la que hay q aplicar el IVA
                 PorceIVA1 = cadAux '% de IVA
                 
                 'Importe total con IVA
-                ImpIVA1 = impiva
+                ImpIVA1 = ImpIva
                 
             Case 2  'IVA 2
                 TipoIVA2 = Rs!CodigIVA
@@ -1187,7 +1189,7 @@ Dim ImpBImIVA As Currency 'Importe Base imponible a la que hay q aplicar el IVA
                 PorceIVA2 = cadAux '% de IVA
                 
                 'Importe total con IVA
-                ImpIVA2 = impiva
+                ImpIVA2 = ImpIva
 
             Case 3  'IVA 3
                 TipoIVA3 = Rs!CodigIVA
@@ -1197,9 +1199,9 @@ Dim ImpBImIVA As Currency 'Importe Base imponible a la que hay q aplicar el IVA
                 PorceIVA3 = cadAux '% de IVA
                 
                 'Importe total con IVA
-                ImpIVA3 = impiva
+                ImpIVA3 = ImpIva
         End Select
-        i = i + 1
+        I = I + 1
         Rs.MoveNext
     Wend
     

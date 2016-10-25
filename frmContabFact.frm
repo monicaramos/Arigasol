@@ -521,7 +521,7 @@ Dim List As Collection
     imgAyuda(0).Picture = frmPpal.ImageListB.ListImages(10).Picture
     
     'Esto se consigue poneinedo el cancel en el opcion k corresponda
-    Me.cmdCancel.Cancel = True
+    Me.CmdCancel.Cancel = True
     Me.Width = w + 70
     Me.Height = h + 350
     
@@ -1015,7 +1015,7 @@ Dim CCoste As String
     Me.lblProgres(0).Caption = "Fechas contabilizacion"
     Me.lblProgres(0).Refresh
     b = NuevasComprobacionesContabilizacion(cadTabla = "scafpc", cadWhere)
-    If Not b Then Exit Function
+    If Not b Then Exit Sub
     
     
     
@@ -1154,13 +1154,12 @@ Private Function NuevasComprobacionesContabilizacion(Proveedores As Boolean, ByV
 Dim RT As ADODB.Recordset
 Dim C As String
 Dim F As Date
-Dim fin As Boolean
+Dim Fin As Boolean
 Dim ComprobacionFechaMenor As Boolean
 Dim cControlFra As CControlFacturaContab
     
     On Error GoTo ENuevasComprobacionesContabilizacion
     NuevasComprobacionesContabilizacion = False
-    
     
     
     Set cControlFra = New CControlFacturaContab
@@ -1172,22 +1171,21 @@ Dim cControlFra As CControlFacturaContab
         C = "select fecrecep from scafpc WHERE " & SQL
         C = C & " GROUP BY fecrecep ORDER BY fecrecep"
     Else
-        C = "Select fecfactu from scafac WHERE " & SQL
+        C = "Select fecfactu from schfac WHERE " & SQL
         C = C & " GROUP BY fecfactu ORDER BY fecfactu"
     End If
     
-    
     RT.Open C, Conn, adOpenForwardOnly, adLockOptimistic, adCmdText
-    fin = False
-    While Not fin
+    Fin = False
+    While Not Fin
         F = RT.Fields(0)
         C = cControlFra.FechaCorrectaContabilizazion(ConnConta, F)
         If C <> "" Then
-            fin = True
+            Fin = True
         Else
             C = cControlFra.FechaCorrectaIVA(ConnConta, F)
             If C <> "" Then
-                fin = True
+                Fin = True
             Else
                 If Proveedores Then
                     'Solo compruebo una vez
@@ -1207,7 +1205,7 @@ Dim cControlFra As CControlFacturaContab
             End If
         End If
         RT.MoveNext
-        If Not fin Then fin = RT.EOF
+        If Not Fin Then Fin = RT.EOF
     Wend
     RT.Close
     
