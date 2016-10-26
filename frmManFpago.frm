@@ -802,7 +802,7 @@ Private Sub BotonModificar()
     PosicionarCombo Combo1(1), DataGrid1.Columns(4).Text
     PosicionarCombo Combo1(2), DataGrid1.Columns(6).Text
     PosicionarCombo Combo1(3), DataGrid1.Columns(8).Text
-    PosicionarCombo Combo1(4), DataGrid1.Columns(17).Text
+    If DataGrid1.Columns(17).Text <> "" Then PosicionarCombo Combo1(4), DataGrid1.Columns(17).Text
     ' *****************************************************
     ' ### [Monica] 12/09/2006
     If vParamAplic.NumeroConta <> 0 Then
@@ -901,7 +901,7 @@ Error2:
 End Sub
 
 Private Function PuedeModificarFPenContab() As Boolean
-Dim Cad As String
+Dim cad As String
     PuedeModificarFPenContab = False
     Set miRsAux = New ADODB.Recordset
 
@@ -909,24 +909,24 @@ Dim Cad As String
 
     NumRegElim = 0
     If vParamAplic.ContabilidadNueva Then
-        Cad = "Select count(*) from cobros where codforpa=" & txtAux(0).Text
+        cad = "Select count(*) from cobros where codforpa=" & txtAux(0).Text
     Else
-        Cad = "Select count(*) from scobro where codforpa=" & txtAux(0).Text
+        cad = "Select count(*) from scobro where codforpa=" & txtAux(0).Text
     End If
     
-    miRsAux.Open Cad, ConnConta, adOpenForwardOnly, adLockPessimistic
+    miRsAux.Open cad, ConnConta, adOpenForwardOnly, adLockPessimistic
     If Not miRsAux.EOF Then NumRegElim = NumRegElim + DBLet(miRsAux.Fields(0), "N")
     miRsAux.Close
     
     
     If vParamAplic.ContabilidadNueva Then
-        Cad = "Select count(*) from pagos where codforpa=" & txtAux(0).Text
+        cad = "Select count(*) from pagos where codforpa=" & txtAux(0).Text
     Else
-        Cad = "Select count(*) from spagop where codforpa=" & txtAux(0).Text
+        cad = "Select count(*) from spagop where codforpa=" & txtAux(0).Text
     End If
     
     
-    miRsAux.Open Cad, ConnConta, adOpenForwardOnly, adLockPessimistic
+    miRsAux.Open cad, ConnConta, adOpenForwardOnly, adLockPessimistic
     If Not miRsAux.EOF Then NumRegElim = NumRegElim + DBLet(miRsAux.Fields(0), "N")
     miRsAux.Close
     
@@ -958,15 +958,15 @@ Private Sub PonerLongCampos()
 End Sub
 
 Private Sub MandaBusquedaPrevia(CadB As String)
-Dim Cad As String
+Dim cad As String
         'Llamamos a al form
-        Cad = ""
-        Cad = Cad & "Socio|codsocio|T||15·"
-        Cad = Cad & "Nombre|nomsocio|T||80·"
+        cad = ""
+        cad = cad & "Socio|codsocio|T||15·"
+        cad = cad & "Nombre|nomsocio|T||80·"
 
         Screen.MousePointer = vbHourglass
         Set frmB = New frmBuscaGrid
-        frmB.vCampos = Cad
+        frmB.vCampos = cad
         frmB.vTabla = "ssocio"
         frmB.vSQL = "" 'cad
         frmB.vDevuelve = "0|1|" 'Campos de la tabla que devuelve
@@ -1072,7 +1072,7 @@ Private Sub cmdCancelar_Click()
 End Sub
 
 Private Sub cmdRegresar_Click()
-Dim Cad As String
+Dim cad As String
 Dim i As Integer
 Dim J As Integer
 Dim Aux As String
@@ -1081,7 +1081,7 @@ Dim Aux As String
         MsgBox "Ningún registro devuelto.", vbExclamation
         Exit Sub
     End If
-    Cad = ""
+    cad = ""
     i = 0
     Do
         J = i + 1
@@ -1089,10 +1089,10 @@ Dim Aux As String
         If i > 0 Then
             Aux = Mid(DatosADevolverBusqueda, J, i - J)
             J = Val(Aux)
-            Cad = Cad & adodc1.Recordset.Fields(J) & "|"
+            cad = cad & adodc1.Recordset.Fields(J) & "|"
         End If
     Loop Until i = 0
-    RaiseEvent DatoSeleccionado(Cad)
+    RaiseEvent DatoSeleccionado(cad)
     Unload Me
 End Sub
 
@@ -1466,7 +1466,7 @@ Dim Mens As String
 End Function
 
 Private Sub CargaCombo()
-Dim Cad As String
+Dim cad As String
 Dim i As Byte
 Dim Rs As ADODB.Recordset
 Dim SQL As String
@@ -1494,7 +1494,11 @@ Dim SQL As String
 '    Combo1(0).ItemData(Combo1(0).NewIndex) = 6
     
     '[Monica]26/06/2013: Modifico la carga del tipo de forma de pago haciendola coincidir con la de la conta
-    SQL = "select * from stipoformapago order by 2"
+    If vParamAplic.ContabilidadNueva Then
+        SQL = "select * from tipofpago order by 2"
+    Else
+        SQL = "select * from stipoformapago order by 2"
+    End If
     Set Rs = New ADODB.Recordset
     Rs.Open SQL, ConnConta, adOpenForwardOnly, adLockPessimistic, adCmdText
     

@@ -427,7 +427,7 @@ Dim cDesde As String, cHasta As String 'cadena codigo Desde/Hasta
 Dim nDesde As String, nHasta As String 'cadena Descripcion Desde/Hasta
 Dim cadTabla As String, cOrden As String
 Dim cadMen As String
-Dim I As Byte
+Dim i As Byte
 Dim SQL As String
 Dim Tipo As Byte
 Dim NRegs As Long
@@ -683,7 +683,7 @@ Private Sub KEYFecha(KeyAscii As Integer, indice As Integer)
 End Sub
 
 Private Sub txtCodigo_LostFocus(Index As Integer)
-Dim Cad As String, cadTipo As String 'tipo cliente
+Dim cad As String, cadTipo As String 'tipo cliente
 
     'Quitar espacios en blanco por los lados
     txtCodigo(Index).Text = Trim(txtCodigo(Index).Text)
@@ -1044,7 +1044,7 @@ Private Function PasarFacturasAContab(cadTabla As String, FecVenci As String, Ba
 Dim SQL As String
 Dim Rs As ADODB.Recordset
 Dim b As Boolean
-Dim I As Integer
+Dim i As Integer
 Dim numfactu As Integer
 Dim codigo1 As String
 
@@ -1117,7 +1117,7 @@ Dim codigo1 As String
         SQL = SQL & " FROM tmpFactu "
 
         Rs.Open SQL, Conn, adOpenStatic, adLockPessimistic, adCmdText
-        I = 1
+        i = 1
 '++
         
         '$$$
@@ -1126,14 +1126,14 @@ Dim codigo1 As String
         While Not Rs.EOF
             If cadTabla = "schfac" Then
                 SQL = cadTabla & "." & codigo1 & "=" & DBSet(Rs.Fields(0), "T") & " and numfactu=" & DBLet(Rs!numfactu, "N")
-                SQL = SQL & " and fecfactu=" & DBSet(Rs!fecfactu, "F")
+                SQL = SQL & " and fecfactu=" & DBSet(Rs!Fecfactu, "F")
                 If PasarFactura(SQL, FecVenci, Banpr, CCoste, cContaFra) = False And b Then b = False
             End If
             
             IncrementarProgres Me.Pb1, 1
-            Me.lblProgres(1).Caption = "Insertando Facturas en Contabilidad...   (" & I & " de " & numfactu & ")"
+            Me.lblProgres(1).Caption = "Insertando Facturas en Contabilidad...   (" & i & " de " & numfactu & ")"
             Me.Refresh
-            I = I + 1
+            i = i + 1
             Rs.MoveNext
         Wend
         Rs.Close

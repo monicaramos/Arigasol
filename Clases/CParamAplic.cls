@@ -94,7 +94,6 @@ Private mvarCodIvaReduAnt As Integer 'Codigo de iva reducido antiguo
 Private mvarFechaCamIva As String ' fecha de cambio de iva 01/09/2012
 
 Private mvarContabilidadNueva As Boolean
-Private mvarAgenteAriconta As Integer 'Agente que se grabará en la contabilidad
 
 
 Private SQL As String  'Para la sentencia
@@ -532,13 +531,6 @@ Public Property Get ContabilidadNueva() As Boolean
      ContabilidadNueva = mvarContabilidadNueva
 End Property
 
-Public Property Let AgenteAriconta(ByVal vData As Integer)
-     mvarAgenteAriconta = vData
-End Property
-
-Public Property Get AgenteAriconta() As Integer
-     AgenteAriconta = mvarAgenteAriconta
-End Property
 
 
 '******
@@ -585,7 +577,7 @@ On Error GoTo Err3
         mvarConceDebe = DBLet(Rs!concedebe, "N")
         mvarConceHaber = DBLet(Rs!concehaber, "N")
         mvarConceHaberResto = DBLet(Rs!concehaberresto, "N")
-        mvarNumDiario = DBLet(Rs!NumDiari, "N")
+        mvarNumDiario = DBLet(Rs!numdiari, "N")
         mvarColecDefecto = DBLet(Rs!coopdefecto, "N")
         mvarFamiliaDescuento = DBLet(Rs!FamDto, "N")
         mvarImpresoraTarjetas = DBLet(Rs!impresoratarjeta, "T")
@@ -627,7 +619,6 @@ On Error GoTo Err3
         mvarFechaCamIva = DBLet(Rs!feccambioiva, "F") ' fecha de cambio de iva
         
         mvarContabilidadNueva = DBLet(Rs!NuevaContabilidad, "N") = 1
-        mvarAgenteAriconta = DBLet(Rs!AgenteAriconta, "N")
         Leer = 0
     End If
 
@@ -710,7 +701,6 @@ On Error GoTo eModificar
     SQL = SQL & ", codiva1old= " & DBSet(mvarCodIvaGnralAnt, "N")
     SQL = SQL & ", codiva2old= " & DBSet(mvarCodIvaReduAnt, "N")
     
-    SQL = SQL & ", agenteariconta= " & DBSet(mvarAgenteAriconta, "N")
     
     SQL = SQL & " WHERE codparam =" & Codigo & ";"
 

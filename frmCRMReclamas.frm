@@ -354,7 +354,7 @@ Private Sub Command1_Click(Index As Integer)
                 SQL = "INSERT INTO reclama (codigo,codmacta,nommacta,carta,"
                 SQL = SQL & "fecreclama,importes,observaciones) VALUES (" & codigo2 & ","
                 SQL = SQL & DBSet(Text1(0).Text, "T", "S") & "," ' = miRsAux!Codmacta
-                SQL = SQL & DBSet(Text2(0).Text, "T", "S") & "," & DBSet(Combo1.ListIndex, "N") & "," '0," ' = miRsAux!nommacta  Y  CARTA que le pondre un 0
+                SQL = SQL & DBSet(text2(0).Text, "T", "S") & "," & DBSet(Combo1.ListIndex, "N") & "," '0," ' = miRsAux!nommacta  Y  CARTA que le pondre un 0
                 SQL = SQL & DBSet(Text1(5).Text, "F") & "," ' = DBLet(miRsAux!fecreclama, "F")
                 SQL = SQL & DBSet(Text1(6).Text, "N") & ","
                 SQL = SQL & DBSet(Text1(7).Text, "T", "S") & ")" ' = DBLet(miRsAux!Observaciones, "T")
@@ -378,7 +378,7 @@ Private Sub Command1_Click(Index As Integer)
                 
                 SQL = SQL & DBSet(Text1(6).Text, "N") & "," ' z'= DBLet(miRsAux!ImpVenci, "N")
                 SQL = SQL & DBSet(Text1(0).Text, "T", "S") & "," ' = miRsAux!Codmacta
-                SQL = SQL & DBSet(Text2(0).Text, "T", "S") & "," & DBSet(Combo1.ListIndex, "N") & "," '0," ' = miRsAux!nommacta  Y  CARTA que le pondre un 0
+                SQL = SQL & DBSet(text2(0).Text, "T", "S") & "," & DBSet(Combo1.ListIndex, "N") & "," '0," ' = miRsAux!nommacta  Y  CARTA que le pondre un 0
                 SQL = SQL & DBSet(Text1(5).Text, "F") & "," ' = DBLet(miRsAux!fecreclama, "F")
                 SQL = SQL & DBSet(Text1(7).Text, "T", "S") & ")" ' = DBLet(miRsAux!Observaciones, "T")
             End If
@@ -415,9 +415,9 @@ Private Sub Form_Activate()
         miRsAux.Open SQL, ConnConta, adOpenKeyset, adLockPessimistic, adCmdText
         If Not miRsAux.EOF Then
             Text1(0).Text = miRsAux!codmacta
-            Text2(0).Text = miRsAux!nommacta
-            Text1(1).Text = DBLet(miRsAux!numserie, "T")
-            Text1(2).Text = DBLet(miRsAux!codfaccl, "T")
+            text2(0).Text = miRsAux!Nommacta
+            Text1(1).Text = DBLet(miRsAux!numSerie, "T")
+            Text1(2).Text = DBLet(miRsAux!Codfaccl, "T")
             Text1(3).Text = DBLet(miRsAux!fecfaccl, "F")
             Text1(4).Text = DBLet(miRsAux!numorden, "T")
             Text1(5).Text = DBLet(miRsAux!fecreclama, "F")
@@ -466,7 +466,7 @@ Private Sub Form_Load()
     Me.LabelCRM.Caption = RecuperaValor(Intercambio, 2)
     If codigo2 < 0 Then
         Text1(0).Text = RecuperaValor(Intercambio, 3)
-        Text2(0).Text = RecuperaValor(Intercambio, 4)
+        text2(0).Text = RecuperaValor(Intercambio, 4)
     End If
     Image1.Picture = frmPpal.imgListComun.ListImages(4).Picture '46
     
@@ -554,21 +554,11 @@ End Sub
 
 Private Sub CargaCombo()
     Combo1.Clear
-    'Conceptos
-'    Set miRsAux = New ADODB.Recordset
-'    miRsAux.Open "Select * from stipoformapago order by descformapago", Conn, adOpenForwardOnly, adLockOptimistic, adCmdText
-'    While Not miRsAux.EOF
-'        Combo1.AddItem miRsAux!descformapago
-'        Combo1.ItemData(Combo1.NewIndex) = miRsAux!tipoformapago
-'        miRsAux.MoveNext
-'    Wend
-'    miRsAux.Close
-'    Set miRsAux = Nothing
-        Combo1.AddItem "Carta"
-        Combo1.ItemData(Combo1.NewIndex) = 0
-        Combo1.AddItem "Email"
-        Combo1.ItemData(Combo1.NewIndex) = 1
-        Combo1.AddItem "Teléfono"
-        Combo1.ItemData(Combo1.NewIndex) = 2
+    Combo1.AddItem "Carta"
+    Combo1.ItemData(Combo1.NewIndex) = 0
+    Combo1.AddItem "Email"
+    Combo1.ItemData(Combo1.NewIndex) = 1
+    Combo1.AddItem "Teléfono"
+    Combo1.ItemData(Combo1.NewIndex) = 2
 End Sub
 

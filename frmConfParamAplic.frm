@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.2#0"; "MSCOMCTL.OCX"
 Object = "{67397AA1-7FB1-11D0-B148-00A0C922E820}#6.0#0"; "MSADODC.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Begin VB.Form frmConfParamAplic 
@@ -27,16 +27,15 @@ Begin VB.Form frmConfParamAplic
       _ExtentY        =   10345
       _Version        =   393216
       Tabs            =   5
-      Tab             =   4
       TabsPerRow      =   5
       TabHeight       =   520
       ForeColor       =   8388608
       TabCaption(0)   =   "Contabilidad"
       TabPicture(0)   =   "frmConfParamAplic.frx":000C
-      Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "Frame3"
+      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).Control(0)=   "Frame2"
       Tab(0).Control(0).Enabled=   0   'False
-      Tab(0).Control(1)=   "Frame2"
+      Tab(0).Control(1)=   "Frame3"
       Tab(0).Control(1).Enabled=   0   'False
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Otros Datos"
@@ -79,7 +78,7 @@ Begin VB.Form frmConfParamAplic
       Tab(3).ControlCount=   8
       TabCaption(4)   =   "Facturación"
       TabPicture(4)   =   "frmConfParamAplic.frx":007C
-      Tab(4).ControlEnabled=   -1  'True
+      Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "Frame9"
       Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "Frame10"
@@ -97,7 +96,7 @@ Begin VB.Form frmConfParamAplic
             Strikethrough   =   0   'False
          EndProperty
          Height          =   1785
-         Left            =   420
+         Left            =   -74580
          TabIndex        =   120
          Top             =   3150
          Width           =   7185
@@ -192,7 +191,7 @@ Begin VB.Form frmConfParamAplic
             Strikethrough   =   0   'False
          EndProperty
          Height          =   2235
-         Left            =   420
+         Left            =   -74580
          TabIndex        =   110
          Top             =   720
          Width           =   7185
@@ -972,7 +971,7 @@ Begin VB.Form frmConfParamAplic
       End
       Begin VB.Frame Frame3 
          Height          =   3870
-         Left            =   -74820
+         Left            =   180
          TabIndex        =   46
          Top             =   1920
          Width           =   7665
@@ -1406,7 +1405,7 @@ Begin VB.Form frmConfParamAplic
       End
       Begin VB.Frame Frame2 
          Height          =   1575
-         Left            =   -74820
+         Left            =   180
          TabIndex        =   40
          Top             =   345
          Width           =   7665
@@ -1881,7 +1880,7 @@ Dim kms As Currency
                         If Not AbrirConexionConta(vParamAplic.UsuarioConta, vParamAplic.PasswordConta) Then End
                     End If
                     PonerModo 2
-                    PonerFocoBtn Me.cmdSalir
+                    PonerFocoBtn Me.CmdSalir
                 End If
            End If
         End If
@@ -2378,7 +2377,7 @@ End Sub
 Private Sub PonerBotonCabecera(b As Boolean)
     Me.cmdAceptar.visible = Not b
     Me.cmdCancelar.visible = Not b
-    Me.cmdSalir.visible = b
+    Me.CmdSalir.visible = b
 '    If b Then Me.lblIndicador.Caption = ""
 End Sub
 

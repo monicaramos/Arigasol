@@ -1381,7 +1381,7 @@ Public DatosADevolverBusqueda As String    'Tindrà el nº de text que vol que tor
 Public Event DatoSeleccionado(CadenaSeleccion As String)
 
 
-Public numfactu As Long
+Public Numfactu As Long
 Public letraserie As String
 Public Tipo As Byte ' 0 schfac normal
                     ' 1 schfacr ajena para el Regaixo
@@ -1725,7 +1725,7 @@ Dim sql2 As String
     
     If letraserie <> "" Then
         Text1(0).Text = letraserie
-        Text1(1).Text = numfactu
+        Text1(1).Text = Numfactu
         PonerModo 1
         cmdAceptar_Click
     End If
@@ -2042,16 +2042,16 @@ Private Sub frmFpa_DatoSeleccionado(CadenaSeleccion As String)
 'Mantenimiento de Formas de Pago
     Text1(5).Text = RecuperaValor(CadenaSeleccion, 1) 'codforpa
     FormateaCampo Text1(5)
-    text2(5).Text = RecuperaValor(CadenaSeleccion, 2)
+    Text2(5).Text = RecuperaValor(CadenaSeleccion, 2)
 End Sub
 
 Private Sub frmCli_DatoSeleccionado(CadenaSeleccion As String)
 'Mantenimiento de Clientes
-Dim cad As String, Datos As String
+Dim Cad As String, Datos As String
 
     Text1(3).Text = RecuperaValor(CadenaSeleccion, 1) 'codclien
     FormateaCampo Text1(3)
-    text2(3).Text = RecuperaValor(CadenaSeleccion, 2) 'nomclien
+    Text2(3).Text = RecuperaValor(CadenaSeleccion, 2) 'nomclien
      
     'recuperar el Colectivo del cliente
     Datos = DevuelveDesdeBDNew(cPTours, "ssocio", "codcoope", "codsocio", Text1(3).Text, "N")
@@ -2061,7 +2061,7 @@ Dim cad As String, Datos As String
         Text1_LostFocus (4)
     Else
         Text1(4).Text = ""
-        text2(4).Text = ""
+        Text2(4).Text = ""
     End If
 End Sub
 
@@ -2069,7 +2069,7 @@ Private Sub frmList_DatoSeleccionado(CadenaSeleccion As String)
 
 End Sub
 
-Private Sub frmList_RectificarFactura(CLIENTE As String, observaciones As String)
+Private Sub frmList_RectificarFactura(Cliente As String, Observaciones As String)
 '    If CrearFacturaRectificativa(Text1(0).Text, Text1(1).Text, Text1(2).Text, observaciones, cliente) = 0 Then
 '        MsgBox "Proceso realizado correctamente", vbExclamation
 '    End If
@@ -2183,7 +2183,7 @@ Private Sub mnEliminar_Click()
 End Sub
 
 Private Sub mnImprimir_Click()
-Dim Letra As String
+Dim LEtra As String
 
     'VRS:2.0.1(3): añadido el boton de imprimir
     cadTitulo = "Reimpresion de Facturas"
@@ -2207,8 +2207,8 @@ Dim Letra As String
     End If
     '30/11/2010: vemos si es una factura cepsa
     If vParamAplic.Cooperativa = 4 Then
-        Letra = DevuelveValor("select letraser from stipom where codtipom = 'FAC'")
-        If Letra = Trim(Text1(0).Text) Then
+        LEtra = DevuelveValor("select letraser from stipom where codtipom = 'FAC'")
+        If LEtra = Trim(Text1(0).Text) Then
             nomDocu = Replace(nomDocu, ".rpt", "Cepsa.rpt")
             cadTitulo = cadTitulo & " de Cepsa"
         End If
@@ -2361,22 +2361,22 @@ Dim CadB As String
 End Sub
 
 Private Sub MandaBusquedaPrevia(CadB As String)
-Dim cad As String
+Dim Cad As String
         'Llamamos a al form
         '##A mano
-        cad = ""
-        cad = cad & ParaGrid(Text1(0), 7, "Serie")
-        cad = cad & ParaGrid(Text1(1), 16, "Nº Fact.")
-        cad = cad & ParaGrid(Text1(2), 15, "Fecha")
+        Cad = ""
+        Cad = Cad & ParaGrid(Text1(0), 7, "Serie")
+        Cad = Cad & ParaGrid(Text1(1), 16, "Nº Fact.")
+        Cad = Cad & ParaGrid(Text1(2), 15, "Fecha")
 '        cad = cad & ParaGrid(Text1(3), 35, "Proveedor")
         'los ponemos a mano:
-        cad = cad & "Cliente.|" & NomTabla & ".codsocio|N|" & FormatoCampo(Text1(3)) & "|12·"
-        cad = cad & "Nom. Cliente|nomsocio|T||50·"
+        Cad = Cad & "Cliente.|" & NomTabla & ".codsocio|N|" & FormatoCampo(Text1(3)) & "|12·"
+        Cad = Cad & "Nom. Cliente|nomsocio|T||50·"
 '        cad = cad & "Empr.|factproc.codempre|N|000|8·"
-        If cad <> "" Then
+        If Cad <> "" Then
             Screen.MousePointer = vbHourglass
             Set frmB = New frmBuscaGrid
-            frmB.vCampos = cad
+            frmB.vCampos = Cad
             frmB.vTabla = NomTabla & " INNER JOIN ssocio ON " & NomTabla & ".codsocio=ssocio.codsocio "
             frmB.vSQL = CadB
             HaDevueltoDatos = False
@@ -2399,7 +2399,7 @@ Dim cad As String
 End Sub
 
 Private Sub cmdRegresar_Click()
-Dim cad As String
+Dim Cad As String
 Dim Aux As String
 Dim i As Integer
 Dim J As Integer
@@ -2409,7 +2409,7 @@ Dim J As Integer
         Exit Sub
     End If
     
-    cad = ""
+    Cad = ""
     i = 0
     Do
         J = i + 1
@@ -2417,10 +2417,10 @@ Dim J As Integer
         If i > 0 Then
             Aux = Mid(DatosADevolverBusqueda, J, i - J)
             J = Val(Aux)
-            cad = cad & Text1(J).Text & "|"
+            Cad = Cad & Text1(J).Text & "|"
         End If
     Loop Until i = 0
-    RaiseEvent DatoSeleccionado(cad)
+    RaiseEvent DatoSeleccionado(Cad)
     Unload Me
 End Sub
 
@@ -2507,14 +2507,14 @@ Private Sub BotonRectificar()
     
     Set frmList = New frmListado
     'Añadiremos el boton de aceptar y demas objetos para insertar
-    frmList.CadTag = Text1(0).Text & "|" & Text1(1).Text & "|" & Text1(2).Text & "|" & Text1(3).Text & "|" & text2(3).Text & "|" & Format(Check1(1).Value, "0") & "|"
+    frmList.CadTag = Text1(0).Text & "|" & Text1(1).Text & "|" & Text1(2).Text & "|" & Text1(3).Text & "|" & Text2(3).Text & "|" & Format(Check1(1).Value, "0") & "|"
     frmList.OpcionListado = 12
     frmList.Show vbModal
 
 End Sub
 
 Private Sub BotonEliminar()
-Dim cad As String
+Dim Cad As String
 
     On Error GoTo EEliminar
 
@@ -2524,17 +2524,17 @@ Dim cad As String
     'El registre de codi 0 no es pot Modificar ni Eliminar
     If EsCodigoCero(CStr(Data1.Recordset.Fields(1).Value), FormatoCampo(Text1(1))) Then Exit Sub
 
-    cad = "¿Seguro que desea eliminar la factura?"
-    cad = cad & vbCrLf & "Nº: " & Format(Data1.Recordset!numfactu, FormatoCampo(Text1(1)))
-    cad = cad & vbCrLf & "Fecha: " & Data1.Recordset.Fields("fecfactu")
+    Cad = "¿Seguro que desea eliminar la factura?"
+    Cad = Cad & vbCrLf & "Nº: " & Format(Data1.Recordset!Numfactu, FormatoCampo(Text1(1)))
+    Cad = Cad & vbCrLf & "Fecha: " & Data1.Recordset.Fields("fecfactu")
     
     'Borramos
-    If MsgBox(cad, vbQuestion + vbYesNo) = vbYes Then
+    If MsgBox(Cad, vbQuestion + vbYesNo) = vbYes Then
         'Hay que eliminar
         On Error GoTo EEliminar
         Screen.MousePointer = vbHourglass
         NumRegElim = Data1.Recordset.AbsolutePosition
-        If Not eliminar Then
+        If Not Eliminar Then
             Screen.MousePointer = vbDefault
             Exit Sub
         ElseIf SituarDataTrasEliminar(Data1, NumRegElim) Then
@@ -2569,9 +2569,9 @@ Dim ImporteVale As Currency
     
     'Recuperar Descripciones de los campos de Codigo
     '--------------------------------------------------
-    text2(3).Text = PonerNombreDeCod(Text1(3), "ssocio", "nomsocio")
-    text2(4).Text = PonerNombreDeCod(Text1(4), "scoope", "nomcoope")
-    text2(5).Text = PonerNombreDeCod(Text1(5), "sforpa", "nomforpa")
+    Text2(3).Text = PonerNombreDeCod(Text1(3), "ssocio", "nomsocio")
+    Text2(4).Text = PonerNombreDeCod(Text1(4), "scoope", "nomcoope")
+    Text2(5).Text = PonerNombreDeCod(Text1(5), "sforpa", "nomforpa")
     
     '[Monica]28/12/2015: ponemos el importe del vale
     ImporteVale = DevuelveValor("select sum(coalesce(importevale,0)) from slhfac where " & ObtenerWhereCab(False))
@@ -2687,12 +2687,12 @@ EDatosOK:
     If Err.Number <> 0 Then MsgBox Err.Number & ": " & Err.Description, vbExclamation
 End Function
 
-Private Sub PosicionarData(cad As String)
+Private Sub PosicionarData(Cad As String)
 'Dim cad As String
 Dim Indicador As String
     
   '  cad = ""
-    If SituarDataMULTI(Data1, cad, Indicador) Then
+    If SituarDataMULTI(Data1, Cad, Indicador) Then
         If ModoLineas <> 1 Then
             PonerModo 2
         End If
@@ -2706,7 +2706,7 @@ Dim Indicador As String
     End If
 End Sub
 
-Private Function eliminar() As Boolean
+Private Function Eliminar() As Boolean
 Dim vWhere As String
 
     On Error GoTo FinEliminar
@@ -2724,10 +2724,10 @@ FinEliminar:
     If Err.Number <> 0 Then
         MuestraError Err.Number, "Eliminar"
         Conn.RollbackTrans
-        eliminar = False
+        Eliminar = False
     Else
         Conn.CommitTrans
-        eliminar = True
+        Eliminar = True
     End If
 End Function
 
@@ -2737,7 +2737,7 @@ Private Sub Text1_GotFocus(Index As Integer)
 End Sub
 
 Private Sub Text1_LostFocus(Index As Integer)
-Dim cad As String, Datos As String
+Dim Cad As String, Datos As String
 Dim Suma As Currency
 
     If Not PerderFocoGnral(Text1(Index), Modo) Then Exit Sub
@@ -2756,11 +2756,11 @@ Dim Suma As Currency
         Case 3 'Cliente
             If Text1(Index).Text <> "" Then
                 If PonerFormatoEntero(Text1(3)) Then
-                    text2(Index).Text = PonerNombreDeCod(Text1(Index), "ssocio", "nomsocio", "codsocio", "N")
-                    If text2(Index).Text = "" Then
-                        cad = "No existe el Cliente: " & Text1(Index).Text & vbCrLf
-                        cad = cad & "¿Desea crearlo?" & vbCrLf
-                        If MsgBox(cad, vbQuestion + vbYesNo) = vbYes Then
+                    Text2(Index).Text = PonerNombreDeCod(Text1(Index), "ssocio", "nomsocio", "codsocio", "N")
+                    If Text2(Index).Text = "" Then
+                        Cad = "No existe el Cliente: " & Text1(Index).Text & vbCrLf
+                        Cad = Cad & "¿Desea crearlo?" & vbCrLf
+                        If MsgBox(Cad, vbQuestion + vbYesNo) = vbYes Then
                             Set frmcli = New frmManClien
                             frmcli.DatosADevolverBusqueda = "0|1|"
                             Text1(Index).Text = ""
@@ -2774,7 +2774,7 @@ Dim Suma As Currency
                         PonerFoco Text1(Index)
                     End If
                 Else
-                    text2(Index).Text = ""
+                    Text2(Index).Text = ""
                 End If
                 'recuperar el Colectivo
                 If Modo = 1 Then Exit Sub
@@ -2785,17 +2785,17 @@ Dim Suma As Currency
                      Text1_LostFocus (4)
                  Else
                      Text1(4).Text = ""
-                     text2(4).Text = ""
+                     Text2(4).Text = ""
                  End If
             End If
             
         Case 4 'Colectivo
             If PonerFormatoEntero(Text1(4)) Then
-                text2(Index).Text = PonerNombreDeCod(Text1(Index), "scoope", "nomcoope", "codcoope", "N")
-                If text2(Index).Text = "" Then
-                    cad = "No existe el Colectivo: " & Text1(Index).Text & vbCrLf
-                    cad = cad & "¿Desea crearlo?" & vbCrLf
-                    If MsgBox(cad, vbQuestion + vbYesNo) = vbYes Then
+                Text2(Index).Text = PonerNombreDeCod(Text1(Index), "scoope", "nomcoope", "codcoope", "N")
+                If Text2(Index).Text = "" Then
+                    Cad = "No existe el Colectivo: " & Text1(Index).Text & vbCrLf
+                    Cad = Cad & "¿Desea crearlo?" & vbCrLf
+                    If MsgBox(Cad, vbQuestion + vbYesNo) = vbYes Then
                         Set frmCol = New frmManCoope
                         frmCol.DatosADevolverBusqueda = "0|1|"
                         Text1(Index).Text = ""
@@ -2809,16 +2809,16 @@ Dim Suma As Currency
                     PonerFoco Text1(Index)
                 End If
             Else
-                text2(Index).Text = ""
+                Text2(Index).Text = ""
             End If
         
         Case 5 'Forma pago
             If PonerFormatoEntero(Text1(5)) Then
-                text2(Index).Text = PonerNombreDeCod(Text1(Index), "sforpa", "nomforpa", "codforpa", "N")
-                If text2(Index).Text = "" Then
-                    cad = "No existe la Forma de Pago: " & Text1(Index).Text & vbCrLf
-                    cad = cad & "¿Desea crearla?" & vbCrLf
-                    If MsgBox(cad, vbQuestion + vbYesNo) = vbYes Then
+                Text2(Index).Text = PonerNombreDeCod(Text1(Index), "sforpa", "nomforpa", "codforpa", "N")
+                If Text2(Index).Text = "" Then
+                    Cad = "No existe la Forma de Pago: " & Text1(Index).Text & vbCrLf
+                    Cad = Cad & "¿Desea crearla?" & vbCrLf
+                    If MsgBox(Cad, vbQuestion + vbYesNo) = vbYes Then
                         Set frmFPa = New frmManFpago
                         frmFPa.DatosADevolverBusqueda = "0|1|"
                         Text1(Index).Text = ""
@@ -2832,7 +2832,7 @@ Dim Suma As Currency
                     PonerFoco Text1(Index)
                 End If
             Else
-                text2(Index).Text = ""
+                Text2(Index).Text = ""
             End If
             
         Case 6, 9, 10, 13, 14, 17 'IMPORTES Base, IVA
@@ -2936,7 +2936,7 @@ End Sub
 
 Private Sub BotonEliminarLinea(Index As Integer)
 Dim SQL As String
-Dim eliminar As Boolean
+Dim Eliminar As Boolean
 
     On Error GoTo Error2
 
@@ -2960,22 +2960,22 @@ Dim eliminar As Boolean
     End If
     
     
-    eliminar = False
+    Eliminar = False
 
     Select Case Index
         Case 0 'lineas de factura
             SQL = "¿Seguro que desea eliminar la línea?"
-            SQL = SQL & vbCrLf & "Nº línea: " & Format(DBLet(AdoAux(Index).Recordset!numlinea), FormatoCampo(txtAux(3)))
+            SQL = SQL & vbCrLf & "Nº línea: " & Format(DBLet(AdoAux(Index).Recordset!NumLinea), FormatoCampo(txtAux(3)))
             SQL = SQL & vbCrLf & "Albaran: " & DBLet(AdoAux(Index).Recordset!numalbar) '& "  " & txtAux(4).Text
             If MsgBox(SQL, vbQuestion + vbYesNo) = vbYes Then
                 NumRegElim = AdoAux(Index).Recordset.AbsolutePosition
-                eliminar = True
+                Eliminar = True
                 SQL = "DELETE FROM slhfac"
-                SQL = SQL & ObtenerWhereCab(True) & " AND numlinea= " & AdoAux(Index).Recordset!numlinea
+                SQL = SQL & ObtenerWhereCab(True) & " AND numlinea= " & AdoAux(Index).Recordset!NumLinea
             End If
     End Select
 
-    If eliminar Then
+    If Eliminar Then
         TerminaBloquear
 '        conn.Execute sql
         CadenaBorrado = SQL
@@ -3263,7 +3263,7 @@ Private Sub txtAux_GotFocus(Index As Integer)
     ConseguirFocoLin txtAux(Index)
 End Sub
 
-Private Function DatosOkLlin(nomframe As String) As Boolean
+Private Function DatosOkLlin(nomFrame As String) As Boolean
 Dim b As Boolean
 Dim SumLin As Currency
     
@@ -3271,7 +3271,7 @@ Dim SumLin As Currency
 
     DatosOkLlin = False
         
-    b = CompForm2(Me, 2, nomframe) 'Comprobar formato datos ok
+    b = CompForm2(Me, 2, nomFrame) 'Comprobar formato datos ok
     If Not b Then Exit Function
     
 ' ### [Monica] 29/09/2006
@@ -3357,7 +3357,7 @@ End Sub
 
 Private Sub ModificarLinea()
 'Modifica registro en las tablas de Lineas: provbanc, provdpto
-Dim nomframe As String
+Dim nomFrame As String
 Dim V As Currency
 
 ' variables para el recalculo de iva y totales
@@ -3365,7 +3365,7 @@ Dim V As Currency
     Dim Imptot(2)
     Dim Tipiva(2)
     Dim Impbas(2) As Currency
-    Dim impiva(2) As Currency
+    Dim ImpIva(2) As Currency
     Dim PorIva(2) As Currency
     Dim TotFac As Currency
     Dim totimp As Currency
@@ -3376,13 +3376,13 @@ Dim V As Currency
     On Error GoTo EModificarLin
 
     Select Case NumTabMto
-        Case 0: nomframe = "FrameAux0" 'lineas de factura
+        Case 0: nomFrame = "FrameAux0" 'lineas de factura
     End Select
     
-    If DatosOkLlin(nomframe) Then
+    If DatosOkLlin(nomFrame) Then
         TerminaBloquear
 '        conn.BeginTrans
-        If ModificaDesdeFormulario2(Me, 2, nomframe) Then
+        If ModificaDesdeFormulario2(Me, 2, nomFrame) Then
             If BLOQUEADesdeFormulario2(Me, Data1, 1) Then
             
             ' ### [Monica] 29/09/2006
@@ -3402,7 +3402,7 @@ Dim V As Currency
             
 '            ' ### [Monica] 29/09/2006
 '            ' añadido el tema de de recalculo de bases
-            RecalculoBasesIvaFactura AdoAux(0).Recordset, Imptot, Tipiva, Impbas, impiva, PorIva, TotFac, totimp, totimpSigaus
+            RecalculoBasesIvaFactura AdoAux(0).Recordset, Imptot, Tipiva, Impbas, ImpIva, PorIva, TotFac, totimp, totimpSigaus
 
             
             '13/02/2007 iniacializo los txt
@@ -3418,7 +3418,7 @@ Dim V As Currency
                  If Tipiva(i) <> 0 Then Text1(7 + (4 * i)).Text = Tipiva(i)
                  If Impbas(i) <> 0 Then Text1(6 + (4 * i)).Text = Impbas(i)
                  If PorIva(i) <> 0 Then Text1(8 + (4 * i)).Text = PorIva(i)
-                 If impiva(i) <> 0 Then Text1(9 + (4 * i)).Text = impiva(i)
+                 If ImpIva(i) <> 0 Then Text1(9 + (4 * i)).Text = ImpIva(i)
                  'TotFac = Impbas(i) + impiva(i)
             Next i
         
@@ -3500,7 +3500,7 @@ End Function
 'End Sub
 
 
-Private Function FacturaModificable(letraser As String, numfactu As String, fecfactu As String, Contabil As String) As Boolean
+Private Function FacturaModificable(Letraser As String, Numfactu As String, Fecfactu As String, Contabil As String) As Boolean
 
     FacturaModificable = False
     
@@ -3509,20 +3509,30 @@ Private Function FacturaModificable(letraser As String, numfactu As String, fecf
     Else
         ' si la factura esta contabilizada tenemos que ver si en la contabilidad esta contabilizada y
         ' si en la tesoreria esta remesada o cobrada en estos casos la factura no puede ser modificada
-        If FacturaContabilizada(letraser, numfactu, Year(CDate(fecfactu))) Then
+        If FacturaContabilizada(Letraser, Numfactu, Year(CDate(Fecfactu))) Then
             MsgBox "Factura contabilizada en la Contabilidad, no puede modificarse ni eliminarse."
             Exit Function
         End If
         
-        If FacturaRemesada(letraser, numfactu, fecfactu) Then
+        If FacturaRemesada(Letraser, Numfactu, Fecfactu) Then
             MsgBox "Factura Remesada, no puede modificarse ni eliminarse."
             Exit Function
         End If
         
-        If FacturaCobrada(letraser, numfactu, fecfactu) Then
+        If FacturaCobrada(Letraser, Numfactu, Fecfactu) Then
             MsgBox "Factura Cobrada, no puede modificarse ni eliminarse."
             Exit Function
         End If
+           
+        'solo se puede modificar la factura si no esta contabilizada
+        If FactContabilizada2(Letraser, Numfactu, Fecfactu) Then
+            TerminaBloquear
+            Exit Function
+        End If
+           
+           
+           
+           
            
         FacturaModificable = True
     End If
@@ -3597,7 +3607,7 @@ End Sub
 
 
 Private Sub EliminarLinea()
-Dim nomframe As String
+Dim nomFrame As String
 Dim V As Currency
 
 ' variables para el recalculo de iva y totales
@@ -3605,7 +3615,7 @@ Dim V As Currency
     Dim Imptot(2)
     Dim Tipiva(2)
     Dim Impbas(2) As Currency
-    Dim impiva(2) As Currency
+    Dim ImpIva(2) As Currency
     Dim PorIva(2) As Currency
     Dim TotFac As Currency
     Dim totimp As Currency
@@ -3616,7 +3626,7 @@ Dim V As Currency
     On Error GoTo EEliminarLin
 
     Select Case NumTabMto
-        Case 0: nomframe = "FrameAux0" 'lineas de factura
+        Case 0: nomFrame = "FrameAux0" 'lineas de factura
     End Select
     
     TerminaBloquear
@@ -3640,7 +3650,7 @@ Dim V As Currency
             
 '            ' ### [Monica] 29/09/2006
 '            ' añadido el tema de de recalculo de bases
-            RecalculoBasesIvaFactura AdoAux(0).Recordset, Imptot, Tipiva, Impbas, impiva, PorIva, TotFac, totimp, totimpSigaus
+            RecalculoBasesIvaFactura AdoAux(0).Recordset, Imptot, Tipiva, Impbas, ImpIva, PorIva, TotFac, totimp, totimpSigaus
 
             
             '13/02/2007 iniacializo los txt
@@ -3656,7 +3666,7 @@ Dim V As Currency
                  If Tipiva(i) <> 0 Then Text1(7 + (4 * i)).Text = Tipiva(i)
                  If Impbas(i) <> 0 Then Text1(6 + (4 * i)).Text = Impbas(i)
                  If PorIva(i) <> 0 Then Text1(8 + (4 * i)).Text = PorIva(i)
-                 If impiva(i) <> 0 Then Text1(9 + (4 * i)).Text = impiva(i)
+                 If ImpIva(i) <> 0 Then Text1(9 + (4 * i)).Text = ImpIva(i)
                  'TotFac = Impbas(i) + impiva(i)
             Next i
             Text1(19).Text = totimp
@@ -3679,4 +3689,160 @@ Dim V As Currency
 EEliminarLin:
     If Err.Number <> 0 Then MuestraError Err.Number, "Eliminar Linea", Err.Description
 End Sub
+
+Private Function FactContabilizada2(Letraser As String, Numfactu As String, Fecfactu As String) As Boolean
+Dim LEtra As String, numasien As String
+Dim cControlFra As CControlFacturaContab
+Dim EstaEnTesoreria As String
+
+    On Error GoTo EContab
+    
+    'Cojo la letra de serie
+    LEtra = Text1(0).Text
+    
+    Set cControlFra = New CControlFacturaContab
+    numasien = ""
+    
+    'Con estos dos NO dejo pasar
+    BuscaChekc = cControlFra.FechaCorrectaContabilizazion(ConnConta, CDate(Fecfactu))
+    If BuscaChekc <> "" Then numasien = numasien & "- " & BuscaChekc & vbCrLf
+    BuscaChekc = cControlFra.FechaCorrectaIVA(ConnConta, CDate(Fecfactu))
+    If BuscaChekc <> "" Then numasien = numasien & "- " & BuscaChekc & vbCrLf
+    Set cControlFra = Nothing
+    
+    If numasien <> "" Then
+        FactContabilizada2 = True
+        MsgBox numasien, vbExclamation
+        Exit Function
+    End If
+    numasien = ""
+
+    
+    'Primero comprobaremos que esta el cobro en contabilidad
+    EstaEnTesoreria = ""
+    If Not ComprobarCobroArimoney(EstaEnTesoreria, LEtra, CLng(Numfactu), CDate(Fecfactu)) Then
+        FactContabilizada2 = True
+        Exit Function
+    End If
+
+    'comprabar que se puede modificar/eliminar la factura
+    If Me.Check1(1).Value = 1 Then 'si esta contabilizada
+        'comprobar en la contabilidad si esta contabilizada
+      
+        If LEtra <> "" Then
+            If vParamAplic.ContabilidadNueva Then
+                'Aunque en la nueva contabiliad SIEMPRE esta con apunte.
+                numasien = DevuelveDesdeBDNew(cConta, "factcli", "numasien", "numserie", LEtra, "T", , "numfactu", Numfactu, "N", "anofactu", Year(Fecfactu), "N")
+            Else
+                numasien = DevuelveDesdeBDNew(cConta, "cabfact", "numasien", "numserie", LEtra, "T", , "codfaccl", Numfactu, "N", "anofaccl", Year(Fecfactu), "N")
+            End If
+            If Val(ComprobarCero(numasien)) <> 0 Then
+'                FactContabilizada = True
+'                MsgBox "La factura esta contabilizada y no se puede modificar.", vbInformation
+'                Exit Function
+            Else
+                numasien = ""
+            End If
+        Else
+'            MsgBox "Las factura de venta no tienen asignada una letra de serie", vbInformation
+            numasien = ""
+        End If
+        
+        LEtra = "La factura esta en la contabilidad"
+        If numasien <> "" Then LEtra = LEtra & vbCrLf & "Nº asiento: " & numasien
+        LEtra = LEtra & vbCrLf & vbCrLf & "¿Continuar?"
+        
+        numasien = String(50, "*") & vbCrLf
+        numasien = numasien & numasien & vbCrLf & vbCrLf
+        LEtra = numasien & LEtra & vbCrLf & vbCrLf & numasien
+        If MsgBox(LEtra, vbQuestion + vbYesNo + vbDefaultButton2) = vbYes Then
+            FactContabilizada2 = False
+        Else
+            FactContabilizada2 = True
+        End If
+    Else
+        FactContabilizada2 = False
+    End If
+    
+    
+EContab:
+    If Err.Number <> 0 Then MuestraError Err.Number, "Comprobar Factura contabilizada", Err.Description
+End Function
+
+
+'En vTesoreria pondremos como estaba el recibo
+'Es decir. El  msgbox que pondra al final lo guardo en esta variable
+Private Function ComprobarCobroArimoney(vTesoreria As String, LEtra As String, Codfaccl As Long, Fecha As Date) As Boolean
+Dim vR As ADODB.Recordset
+Dim Cad As String
+
+
+On Error GoTo EComprobarCobroArimoney
+    ComprobarCobroArimoney = False
+    Set vR = New ADODB.Recordset
+    
+    If vParamAplic.ContabilidadNueva Then
+        Cad = "Select * from cobros WHERE numserie='" & LEtra & "'"
+        Cad = Cad & " AND numfactu =" & Codfaccl
+        Cad = Cad & " AND fecfactu =" & DBSet(Fecha, "F")
+    Else
+        Cad = "Select * from scobro WHERE numserie='" & LEtra & "'"
+        Cad = Cad & " AND codfaccl =" & Codfaccl
+        Cad = Cad & " AND fecfaccl =" & DBSet(Fecha, "F")
+    
+    End If
+    
+
+    '
+    vTesoreria = ""
+    vR.Open Cad, ConnConta, adOpenForwardOnly, adLockPessimistic, adCmdText
+    Cad = ""
+    If vR.EOF Then
+        vTesoreria = "NO se ha encotrado ningun vencimiento en la tesoreria"
+    Else
+        While Not vR.EOF
+            Cad = ""
+            If DBLet(vR!codrem, "T") <> "" Then
+                Cad = "El cobro asociado a la factura esta remesado(" & vR!codrem & ")"
+            Else
+                If DBLet(vR!recedocu, "N") = 1 Then
+                    Cad = "Documento recibido"
+                Else
+                    
+                        If DBLet(vR!transfer, "N") = 1 Then
+                            Cad = "Esta en una transferencia"
+                        Else
+                           If DBLet(vR!impcobro, "N") > 0 Then Cad = "Esta parcialmente cobrado: " & vR!impcobro
+                        
+                            
+                                    'Si hubeira que poner mas coas iria aqui
+                        End If 'transfer
+                    
+                End If 'recdedocu
+            End If 'remesado
+            If Cad <> "" Then vTesoreria = vTesoreria & "Vto: " & vR!numorden & "      " & Cad & vbCrLf
+            vR.MoveNext
+        Wend
+    End If
+    vR.Close
+    
+    
+    
+    If vTesoreria <> "" Then
+        Cad = vTesoreria & vbCrLf & vbCrLf
+        If vSesion.Nivel > 1 Then
+            MsgBox Cad, vbExclamation
+        Else
+            Cad = Cad & "¿Continuar?"
+            If MsgBox(Cad, vbQuestion + vbYesNo) = vbYes Then ComprobarCobroArimoney = True
+        End If
+    Else
+        ComprobarCobroArimoney = True
+    End If
+            
+EComprobarCobroArimoney:
+    If Err.Number <> 0 Then MuestraError Err.Number
+    Set vR = Nothing
+End Function
+
 
