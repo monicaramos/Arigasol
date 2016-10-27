@@ -938,8 +938,19 @@ Dim sql2 As String
         
         If vParamAplic.ContabilidadNueva Then
             SQL = ""
-            SQL = DBSet(Rs!Letraser, "T") & "," & DBSet(Rs!numfactu, "N") & "," & DBSet(Rs!Fecfactu, "F") & "," & DBSet(Rs!codmacta, "T") & "," & Year(Rs!Fecfactu) & ",'FACTURACION',0,0,"
-            SQL = SQL & DBSet(Rs!CodForpa, "N") & "," & DBSet(BaseImp, "N") & "," & ValorNulo & "," & DBSet(IvaImp, "N") & ","
+            SQL = DBSet(Rs!Letraser, "T") & "," & DBSet(Rs!numfactu, "N") & "," & DBSet(Rs!Fecfactu, "F") & "," & DBSet(Rs!codmacta, "T") & "," & Year(Rs!Fecfactu) & ",'FACTURACION',"
+            
+            ' para el caso de las rectificativas
+            Dim vTipM As String
+            vTipM = DevuelveValor("select codtipom from stipom where letraser = " & DBSet(Rs!Letraser, "T"))
+            If vTipM = "FAR" Then
+                SQL = SQL & "'D',"
+            Else
+                SQL = SQL & "'0',"
+            End If
+            
+            
+            SQL = SQL & "0," & DBSet(Rs!CodForpa, "N") & "," & DBSet(BaseImp, "N") & "," & ValorNulo & "," & DBSet(IvaImp, "N") & ","
             SQL = SQL & ValorNulo & "," & DBSet(Rs!TotalFac, "N") & "," & ValorNulo & "," & ValorNulo & "," & ValorNulo & ",0," & DBSet(Rs!Fecfactu, "F") & ","
             SQL = SQL & DBSet(Rs!NomSocio, "T") & "," & DBSet(Rs!domsocio, "T") & "," & DBSet(Rs!codPosta, "T") & "," & DBSet(Rs!pobsocio, "T") & ","
             SQL = SQL & DBSet(Rs!prosocio, "T") & "," & DBSet(Rs!nifsocio, "T") & ",'ES',1"
