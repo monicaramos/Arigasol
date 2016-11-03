@@ -13,7 +13,7 @@ Option Explicit
 Public Function PonerNombreCuenta(ByRef Txt As TextBox, Modo As Byte, Optional clien As String) As String
 'Obtener el nombre de una cuenta
 Dim DevfrmCCtas As String
-Dim Cad As String
+Dim cad As String
 
 ' ### [Monica] 07/09/2006 añadida la linea siguiente condicion vParamAplic.NumeroConta = 0
 ' para que no saque nada si no hay contabilidad
@@ -28,14 +28,14 @@ Dim Cad As String
          Exit Function
     End If
     DevfrmCCtas = Txt.Text
-    If CuentaCorrectaUltimoNivel(DevfrmCCtas, Cad) Then
+    If CuentaCorrectaUltimoNivel(DevfrmCCtas, cad) Then
         ' ### [Monica] 07/09/2006
-        If InStr(Cad, "No existe la cuenta") > 0 Then
+        If InStr(cad, "No existe la cuenta") > 0 Then
             Txt.Text = DevfrmCCtas
 '            If (Modo = 4) And clien <> "" Then 'si insertar antes estaba lo de abajo
             If (Modo = 3 Or Modo = 4) And clien <> "" Then 'si insertar o modificar
-                Cad = Cad & "  ¿Desea crearla?"
-                If MsgBox(Cad, vbQuestion + vbYesNo) = vbYes Then
+                cad = cad & "  ¿Desea crearla?"
+                If MsgBox(cad, vbQuestion + vbYesNo) = vbYes Then
                     If InStr(1, Txt.Tag, "ssocio") > 0 Then
                         InsertarCuentaCble DevfrmCCtas, clien
                     ElseIf InStr(1, Txt.Tag, "proveedor") > 0 Then
@@ -46,14 +46,14 @@ Dim Cad As String
                     PonerNombreCuenta = clien
                 End If
             Else
-                MsgBox Cad, vbExclamation
+                MsgBox cad, vbExclamation
             End If
         Else
             Txt.Text = DevfrmCCtas
-            PonerNombreCuenta = Cad
+            PonerNombreCuenta = cad
         End If
     Else
-        MsgBox Cad, vbExclamation
+        MsgBox cad, vbExclamation
 '        Txt.Text = ""
         PonerNombreCuenta = ""
 '        PonerFoco Txt
@@ -118,7 +118,7 @@ Public Function RellenaCodigoCuenta(vCodigo As String) As String
 Dim i As Integer
 Dim J As Integer
 Dim cont As Integer
-Dim Cad As String
+Dim cad As String
 
     RellenaCodigoCuenta = vCodigo
     If Len(vCodigo) > vEmpresa.DigitosUltimoNivel Then Exit Function
@@ -139,14 +139,14 @@ Dim Cad As String
     'Cambiamos el punto por 0's  .-Utilizo la variable maximocaracteres, para no tener k definir mas
     i = Len(vCodigo) - 1 'el punto lo quito
     J = vEmpresa.DigitosUltimoNivel - i
-    Cad = ""
+    cad = ""
     For i = 1 To J
-        Cad = Cad & "0"
+        cad = cad & "0"
     Next i
 
-    Cad = Mid(vCodigo, 1, cont - 1) & Cad
-    Cad = Cad & Mid(vCodigo, cont + 1)
-    RellenaCodigoCuenta = Cad
+    cad = Mid(vCodigo, 1, cont - 1) & cad
+    cad = cad & Mid(vCodigo, cont + 1)
+    RellenaCodigoCuenta = cad
 End Function
 
 'DAVID
@@ -291,49 +291,6 @@ End Function
 '==========     CENTROS DE COSTE
 '=============================================================================
 'LAURA
-Public Function PonerNombreCCoste(Empresa As String, ByRef Txt As TextBox) As String
-'Obtener el nombre de un centro de coste
-Dim codCCoste As String
-Dim Cad As String
-
-     If Txt.Text = "" Then
-         PonerNombreCCoste = ""
-         Exit Function
-    End If
-    codCCoste = Txt.Text
-    If CCosteCorrecto(Empresa, codCCoste, Cad) Then
-        Txt.Text = codCCoste
-        PonerNombreCCoste = Cad
-    Else
-        MsgBox Cad, vbExclamation
-'        Txt.Text = ""
-        PonerNombreCCoste = ""
-        PonerFoco Txt
-    End If
-'    codCCoste = ""
-End Function
-
-'LAURA
-Public Function CCosteCorrecto(Empresa As String, ByRef Centro As String, ByRef devuelve As String) As Boolean
-    Dim SQL As String
-    
-    CCosteCorrecto = False
- 
-    'BD 2: conexion a BD Conta
-    If Val(Empresa) <> Val(vEmpresa.codEmpre) Then
-        SQL = DevuelveDesdeBDNew(3, "cabccost", "nomccost", "codccost", Centro, "T")
-    Else
-        SQL = DevuelveDesdeBDNew(cConta, "cabccost", "nomccost", "codccost", Centro, "T")
-    End If
-    If SQL = "" Then
-        devuelve = "No existe el Centro de coste : " & Centro
-        Exit Function
-    Else
-        devuelve = SQL
-        CCosteCorrecto = True
-    End If
-End Function
-
 
 
 
@@ -344,18 +301,18 @@ End Function
 Public Function PonerNombreConcepto(ByRef Txt As TextBox) As String
 'Obtener el nombre de un concepto
 Dim codConce As String
-Dim Cad As String
+Dim cad As String
 
      If Txt.Text = "" Then
          PonerNombreConcepto = ""
          Exit Function
     End If
     codConce = Txt.Text
-    If ConceptoCorrecto(codConce, Cad) Then
+    If ConceptoCorrecto(codConce, cad) Then
         Txt.Text = Format(codConce, "000")
-        PonerNombreConcepto = Cad
+        PonerNombreConcepto = cad
     Else
-        MsgBox Cad, vbExclamation
+        MsgBox cad, vbExclamation
         Txt.Text = ""
         PonerNombreConcepto = ""
         PonerFoco Txt
@@ -381,16 +338,16 @@ Public Function ConceptoCorrecto(ByRef Concep As String, ByRef devuelve As Strin
 End Function
 
 ' ### [Monica] 27/09/2006
-Public Function FacturaContabilizada(numSerie As String, Numfactu As String, Anofactu As String) As Boolean
+Public Function FacturaContabilizada(numSerie As String, numfactu As String, Anofactu As String) As Boolean
 Dim SQL As String
 Dim NumAsi As Currency
 
     FacturaContabilizada = False
     SQL = ""
     If vParamAplic.ContabilidadNueva Then
-        SQL = DevuelveDesdeBDNew(cConta, "factcli", "numasien", "numserie", numSerie, "T", , "numfactu", Numfactu, "N", "anofactu", Anofactu, "N")
+        SQL = DevuelveDesdeBDNew(cConta, "factcli", "numasien", "numserie", numSerie, "T", , "numfactu", numfactu, "N", "anofactu", Anofactu, "N")
     Else
-        SQL = DevuelveDesdeBDNew(cConta, "cabfact", "numasien", "numserie", numSerie, "T", , "codfaccl", Numfactu, "N", "anofaccl", Anofactu, "N")
+        SQL = DevuelveDesdeBDNew(cConta, "cabfact", "numasien", "numserie", numSerie, "T", , "codfaccl", numfactu, "N", "anofaccl", Anofactu, "N")
     End If
     
     If SQL = "" Then Exit Function
@@ -402,7 +359,7 @@ Dim NumAsi As Currency
 End Function
 
 ' ### [Monica] 27/09/2006
-Public Function FacturaRemesada(numSerie As String, Numfactu As String, Fecfactu As String) As Boolean
+Public Function FacturaRemesada(numSerie As String, numfactu As String, Fecfactu As String) As Boolean
 Dim SQL As String
 Dim NumRem As Currency
 Dim Rs As ADODB.Recordset
@@ -411,10 +368,10 @@ Dim Rs As ADODB.Recordset
     
 
     If vParamAplic.ContabilidadNueva Then
-        SQL = "select codrem from cobros where numserie = " & DBSet(numSerie, "T") & " and numfactu = " & DBSet(Numfactu, "N") & " and fecfactu = " & DBSet(Fecfactu, "F")
+        SQL = "select codrem from cobros where numserie = " & DBSet(numSerie, "T") & " and numfactu = " & DBSet(numfactu, "N") & " and fecfactu = " & DBSet(Fecfactu, "F")
         SQL = SQL & " order by codrem desc "
     Else
-        SQL = "select codrem from scobro where numserie = " & DBSet(numSerie, "T") & " and codfaccl = " & DBSet(Numfactu, "N") & " and fecfaccl = " & DBSet(Fecfactu, "F")
+        SQL = "select codrem from scobro where numserie = " & DBSet(numSerie, "T") & " and codfaccl = " & DBSet(numfactu, "N") & " and fecfaccl = " & DBSet(Fecfactu, "F")
         SQL = SQL & " order by codrem desc "
     End If
     
@@ -437,16 +394,16 @@ Dim Rs As ADODB.Recordset
 End Function
 
 ' ### [Monica] 27/09/2006
-Public Function FacturaCobrada(numSerie As String, Numfactu As String, Fecfactu As String) As Boolean
+Public Function FacturaCobrada(numSerie As String, numfactu As String, Fecfactu As String) As Boolean
 Dim SQL As String
 Dim ImpCob As Currency
 
     FacturaCobrada = False
     SQL = ""
     If vParamAplic.ContabilidadNueva Then
-        SQL = DevuelveDesdeBDNew(cConta, "cobros", "impcobro", "numserie", numSerie, "T", , "numfactu", Numfactu, "N", "fecfactu", Fecfactu, "F")
+        SQL = DevuelveDesdeBDNew(cConta, "cobros", "impcobro", "numserie", numSerie, "T", , "numfactu", numfactu, "N", "fecfactu", Fecfactu, "F")
     Else
-        SQL = DevuelveDesdeBDNew(cConta, "scobro", "impcobro", "numserie", numSerie, "T", , "codfaccl", Numfactu, "N", "fecfaccl", Fecfactu, "F")
+        SQL = DevuelveDesdeBDNew(cConta, "scobro", "impcobro", "numserie", numSerie, "T", , "codfaccl", numfactu, "N", "fecfaccl", Fecfactu, "F")
     End If
     If SQL = "" Then Exit Function
     ImpCob = DBLet(SQL, "N")
@@ -456,7 +413,7 @@ Dim ImpCob As Currency
 End Function
 
 ' ### [Monica] 27/09/2006
-Public Function ModificaClienteFacturaContabilidad(Letraser As String, Numfactu As String, Fecfactu As String, CtaConta As String, Tipo As Byte) As Boolean
+Public Function ModificaClienteFacturaContabilidad(Letraser As String, numfactu As String, Fecfactu As String, CtaConta As String, Tipo As Byte) As Boolean
 Dim SQL As String
 Dim Anyo As Currency
 
@@ -470,21 +427,21 @@ Dim Anyo As Currency
     If Tipo = 0 Or Tipo = 2 Then
         If vParamAplic.ContabilidadNueva Then
             SQL = "update factcli set codmacta = " & DBSet(CtaConta, "T") & " where numserie = " & DBSet(Letraser, "T") & " and " & _
-                      "numfactu = " & DBSet(Numfactu, "N") & " and anofactu = " & DBSet(Anyo, "N")
+                      "numfactu = " & DBSet(numfactu, "N") & " and anofactu = " & DBSet(Anyo, "N")
         Else
             SQL = "update cabfact set codmacta = " & DBSet(CtaConta, "T") & " where numserie = " & DBSet(Letraser, "T") & " and " & _
-                      "codfaccl = " & DBSet(Numfactu, "N") & " and anofaccl = " & DBSet(Anyo, "N")
+                      "codfaccl = " & DBSet(numfactu, "N") & " and anofaccl = " & DBSet(Anyo, "N")
         End If
         ConnConta.Execute SQL
     End If
     
     If vParamAplic.ContabilidadNueva Then
         SQL = "update cobros set codmacta = " & DBSet(CtaConta, "T") & " where numserie = " & DBSet(Letraser, "T") & " and " & _
-                  "numfactu = " & DBSet(Numfactu, "N") & " and fecfactu = " & DBSet(Fecfactu, "F")
+                  "numfactu = " & DBSet(numfactu, "N") & " and fecfactu = " & DBSet(Fecfactu, "F")
     
     Else
         SQL = "update scobro set codmacta = " & DBSet(CtaConta, "T") & " where numserie = " & DBSet(Letraser, "T") & " and " & _
-                  "codfaccl = " & DBSet(Numfactu, "N") & " and fecfaccl = " & DBSet(Fecfactu, "F")
+                  "codfaccl = " & DBSet(numfactu, "N") & " and fecfaccl = " & DBSet(Fecfactu, "F")
     End If
     ConnConta.Execute SQL
               
@@ -498,7 +455,7 @@ eModificaClienteFacturaContabilidad:
 End Function
 
 ' ### [Monica] 27/09/2006
-Public Sub ModificaFormaPagoTesoreria(Letraser As String, Numfactu As String, Fecfactu As String, Forpa As String, ForpaAnt As String)
+Public Sub ModificaFormaPagoTesoreria(Letraser As String, numfactu As String, Fecfactu As String, Forpa As String, ForpaAnt As String)
 Dim SQL As String
 Dim Sql1 As String
 Dim TipForpa As String
@@ -507,14 +464,14 @@ Dim cadWhere As String
 
     If vParamAplic.ContabilidadNueva Then
         cadWhere = " numserie = " & DBSet(Letraser, "T") & " and " & _
-                  "numfactu = " & Numfactu & " and fecfactu = " & DBSet(Fecfactu, "F")
+                  "numfactu = " & numfactu & " and fecfactu = " & DBSet(Fecfactu, "F")
         
         SQL = "update cobros set codforpa = " & Forpa & " where " & cadWhere
     
     Else
 
         cadWhere = " numserie = " & DBSet(Letraser, "T") & " and " & _
-                  "codfaccl = " & Numfactu & " and fecfaccl = " & DBSet(Fecfactu, "F")
+                  "codfaccl = " & numfactu & " and fecfaccl = " & DBSet(Fecfactu, "F")
         
         SQL = "update scobro set codforpa = " & Forpa & " where " & cadWhere
     End If
@@ -523,7 +480,7 @@ Dim cadWhere As String
 End Sub
 
 ' ### [Monica] 29/09/2006
-Public Function ModificaImportesFacturaContabilidad(Letraser As String, Numfactu As String, Fecfactu As String, Importe As String, Forpa As String, vTabla As String) As Boolean
+Public Function ModificaImportesFacturaContabilidad(Letraser As String, numfactu As String, Fecfactu As String, Importe As String, Forpa As String, vTabla As String) As Boolean
 Dim SQL As String
 Dim vWhere As String
 Dim b As Boolean
@@ -538,15 +495,15 @@ Dim TipForpa As String
     
     If vParamAplic.ContabilidadNueva Then
         vWhere = "numserie = " & DBSet(Letraser, "T") & " and numfactu = " & _
-                  Numfactu & " and anofactu = " & Format(Year(Fecfactu), "0000")
+                  numfactu & " and anofactu = " & Format(Year(Fecfactu), "0000")
     
     Else
         vWhere = "numserie = " & DBSet(Letraser, "T") & " and codfaccl = " & _
-                  Numfactu & " and anofaccl = " & Format(Year(Fecfactu), "0000")
+                  numfactu & " and anofaccl = " & Format(Year(Fecfactu), "0000")
     End If
     
     SQL = "select codsocio from " & vTabla & " where letraser = " & DBSet(Letraser, "T") & " and numfactu = " & _
-           Numfactu & " and fecfactu = " & DBSet(Fecfactu, "F")
+           numfactu & " and fecfactu = " & DBSet(Fecfactu, "F")
     
     Set Rs = New ADODB.Recordset
     Rs.Open SQL, Conn, adOpenForwardOnly, adLockOptimistic, adCmdText
@@ -575,10 +532,10 @@ Dim TipForpa As String
             End If
             '[Monica]24/07/2013
             If vTabla = "schfac" Then
-                SQL = "schfac.letraser = " & DBSet(Letraser, "T") & " and numfactu = " & Numfactu
+                SQL = "schfac.letraser = " & DBSet(Letraser, "T") & " and numfactu = " & numfactu
                 SQL = SQL & " and fecfactu = " & DBSet(Fecfactu, "F")
             Else
-                SQL = "schfac1.letraser = " & DBSet(Letraser, "T") & " and numfactu = " & Numfactu
+                SQL = "schfac1.letraser = " & DBSet(Letraser, "T") & " and numfactu = " & numfactu
                 SQL = SQL & " and fecfactu = " & DBSet(Fecfactu, "F")
             End If
             
@@ -595,7 +552,7 @@ Dim TipForpa As String
         '[Monica]04/01/2013: efectivos
                                                      
         If TipForpa <> "0" And TipForpa <> "6" And b Then
-            b = ModificaCobroTesoreria(Letraser, Numfactu, Fecfactu, vsocio, vTabla)
+            b = ModificaCobroTesoreria(Letraser, numfactu, Fecfactu, vsocio, vTabla)
         End If
     End If
     
@@ -607,7 +564,7 @@ eModificaImportesFacturaContabilidad:
     End If
 End Function
 
-Public Function ModificaCobroTesoreria(Letraser As String, Numfactu As String, Fecfactu As String, vsocio As CSocio, vTabla As String) As Boolean
+Public Function ModificaCobroTesoreria(Letraser As String, numfactu As String, Fecfactu As String, vsocio As CSocio, vTabla As String) As Boolean
 Dim SQL As String
 Dim Rs As ADODB.Recordset
 Dim cadWhere As String
@@ -623,7 +580,7 @@ Dim b As Boolean
     ' antes de borrar he de obtener la fecha de vencimiento y el codmacta para sacar el banco propio que le pasaré
     ' a la rutina de InsertarEnTesoreria
             
-    SQL = "select fecvenci, ctabanc1 from scobro where numserie = " & DBSet(Letraser, "T") & " and codfaccl = " & DBSet(Numfactu, "N")
+    SQL = "select fecvenci, ctabanc1 from scobro where numserie = " & DBSet(Letraser, "T") & " and codfaccl = " & DBSet(numfactu, "N")
     SQL = SQL & " and fecfaccl = " & DBSet(Fecfactu, "F") & " and numorden = 1"
     
     Set Rs = New ADODB.Recordset
@@ -631,14 +588,14 @@ Dim b As Boolean
     If Not Rs.EOF Then
         Rs.MoveFirst
         
-        cadWhere = vTabla & ".letraser =" & DBSet(Letraser, "T") & " and numfactu=" & DBLet(Numfactu, "N")
+        cadWhere = vTabla & ".letraser =" & DBSet(Letraser, "T") & " and numfactu=" & DBLet(numfactu, "N")
         cadWhere = cadWhere & " and fecfactu=" & DBSet(Fecfactu, "F")
 
         Banpr = ""
         Banpr = DevuelveDesdeBDNew(cPTours, "sbanco", "codbanpr", "codmacta", Rs.Fields(1).Value, "T")
 
         SQL = "delete from scobro where "
-        SQL = SQL & " numserie = " & DBSet(Letraser, "T") & " and codfaccl = " & Numfactu
+        SQL = SQL & " numserie = " & DBSet(Letraser, "T") & " and codfaccl = " & numfactu
         SQL = SQL & " and fecfaccl = " & DBSet(Fecfactu, "F")
         
         ConnConta.Execute SQL

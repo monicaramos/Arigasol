@@ -1462,6 +1462,12 @@ Dim Mens As String
          If ExisteCP(txtAux(0)) Then b = False
     End If
     
+    'Comprobaciones de TESORERIA
+    If Modo = 4 Then
+        'Estoy modificando
+        If Not PuedeModificarFPenContab Then b = False
+    End If
+    
     DatosOk = b
 End Function
 
