@@ -29,10 +29,18 @@ Begin VB.Form frmFacturas
       TabIndex        =   11
       Top             =   180
       Width           =   6285
+      Begin VB.CheckBox ChkContado 
+         Caption         =   "Contado"
+         Height          =   195
+         Left            =   4230
+         TabIndex        =   57
+         Top             =   2100
+         Width           =   1545
+      End
       Begin VB.CheckBox ChkInterna 
          Caption         =   "Interna"
          Height          =   195
-         Left            =   3870
+         Left            =   4230
          TabIndex        =   56
          Top             =   2460
          Width           =   1545
@@ -871,7 +879,7 @@ Dim sql2 As String
 Dim Sql3 As String
 Dim Sql4 As String
 Dim Tipo As Byte
-Dim nRegs As Integer
+Dim NRegs As Integer
 Dim NumError As Long
 Dim db As BaseDatos
 Dim TipoClien As String
@@ -1094,6 +1102,22 @@ Dim Sql5 As String
         Sql3 = Sql3 & " and scaalb.codsocio <= " & DBSet(txtCodigo(1).Text, "N")
     End If
     
+    '[Monica]29/12/2016: para el caso de Ribarroja cogemos las entradas de contado o no
+    If vParamAplic.Cooperativa = 5 Then
+        If Me.ChkContado.Value = 1 Then ' contados
+            SQL = SQL & " and scaalb.codforpa in (select codforpa from sforpa where tipforpa = 0) "
+            sql2 = sql2 & " and scaalb.codforpa in (select codforpa from sforpa where tipforpa = 0) "
+            Sql3 = Sql3 & " and scaalb.codforpa in (select codforpa from sforpa where tipforpa = 0) "
+            Sql4 = Sql4 & " and scaalb.codforpa in (select codforpa from sforpa where tipforpa = 0) "
+        Else ' no contados
+            SQL = SQL & " and scaalb.codforpa in (select codforpa from sforpa where tipforpa <> 0) "
+            sql2 = sql2 & " and scaalb.codforpa in (select codforpa from sforpa where tipforpa <> 0) "
+            Sql3 = Sql3 & " and scaalb.codforpa in (select codforpa from sforpa where tipforpa <> 0) "
+            Sql4 = Sql4 & " and scaalb.codforpa in (select codforpa from sforpa where tipforpa <> 0) "
+        End If
+    End If
+    
+    
     
     '[Monica]18/01/2013: condicion de tipo de socios
     Select Case Combo1.ListIndex
@@ -1116,9 +1140,9 @@ Dim Sql5 As String
             Sql4 = Sql4 & " and ssocio.bonifesp = 0"
     End Select
     
-    nRegs = TotalRegistros(SQL)
+    NRegs = TotalRegistros(SQL)
     
-    If nRegs <> 0 Then
+    If NRegs <> 0 Then
         '090908:comprobamos que existan todas las tarjetas en starjet
         If Not TarjetasInexistentes(sql2) Then
         
@@ -1144,7 +1168,7 @@ Dim Sql5 As String
               If Not PendienteCierresTurno(Trim(txtCodigo(2).Text), Trim(txtCodigo(3).Text)) Then
                     On Error GoTo eError
                     Pb1.visible = True
-                    CargarProgres Pb1, nRegs
+                    CargarProgres Pb1, NRegs
                     
                     Set db = New BaseDatos
                     db.abrir vSesion.CadenaConexion, "root", "aritel"
@@ -1173,24 +1197,24 @@ Dim Sql5 As String
                             If Option1(6).Value Then TipoArt = 1
                             If Option1(7).Value Then TipoArt = 2
                             '[Monica]11/04/2016: facturas internas para el caso de pobla del duc
-                            Dim TipoF As Byte
-                            TipoF = 1
-                            If Me.ChkInterna.Value Then TipoF = 3                                                                                                                                 ' antes tipof era 1 fijo
-                            NumError = Facturacion(db, txtCodigo(2).Text, txtCodigo(3).Text, txtCodigo(0).Text, txtCodigo(1).Text, txtCodigo(4).Text, txtCodigo(5).Text, CDate(txtCodigo(6).Text), TipoF, Pb1, TipoClien, 0, TipoArt)
+                            Dim tipoF As Byte
+                            tipoF = 1
+                            If Me.ChkInterna.Value Then tipoF = 3                                                                                                                                 ' antes tipof era 1 fijo
+                            NumError = Facturacion(db, txtCodigo(2).Text, txtCodigo(3).Text, txtCodigo(0).Text, txtCodigo(1).Text, txtCodigo(4).Text, txtCodigo(5).Text, CDate(txtCodigo(6).Text), tipoF, Pb1, TipoClien, 0, TipoArt)
                         '++
                         Else
                             ' Interna
                             If Option1(3).Value Then
                                 NumError = Facturacion(db, txtCodigo(2).Text, txtCodigo(3).Text, txtCodigo(0).Text, txtCodigo(1).Text, txtCodigo(4).Text, txtCodigo(5).Text, CDate(txtCodigo(6).Text), 3, Pb1, TipoClien, Combo2.ListIndex) '[Monica]15/07/2013:antes 0
                             Else
-                                NumError = Facturacion(db, txtCodigo(2).Text, txtCodigo(3).Text, txtCodigo(0).Text, txtCodigo(1).Text, txtCodigo(4).Text, txtCodigo(5).Text, CDate(txtCodigo(6).Text), 1, Pb1, TipoClien, 0)
+                                NumError = Facturacion(db, txtCodigo(2).Text, txtCodigo(3).Text, txtCodigo(0).Text, txtCodigo(1).Text, txtCodigo(4).Text, txtCodigo(5).Text, CDate(txtCodigo(6).Text), 1, Pb1, TipoClien, 0, , (Me.ChkContado.Value = 1))
                             End If
                         End If
                     End If
                        
                     ' facturacion por tarjeta
                     If (Option1(1).Value Or Option1(2).Value) And NumError = 0 Then
-                       NumError = Facturacion(db, txtCodigo(2).Text, txtCodigo(3).Text, txtCodigo(0).Text, txtCodigo(1).Text, txtCodigo(4).Text, txtCodigo(5).Text, CDate(txtCodigo(6).Text), 0, Pb1, TipoClien, Combo2.ListIndex)
+                       NumError = Facturacion(db, txtCodigo(2).Text, txtCodigo(3).Text, txtCodigo(0).Text, txtCodigo(1).Text, txtCodigo(4).Text, txtCodigo(5).Text, CDate(txtCodigo(6).Text), 0, Pb1, TipoClien, Combo2.ListIndex, , (Me.ChkContado.Value = 1))
                     End If
               Else
                  Exit Sub
@@ -1339,6 +1363,10 @@ Dim List As Collection
     txtCodigo(5).visible = (vParamAplic.Cooperativa <> 5)
     txtNombre(5).visible = (vParamAplic.Cooperativa <> 5)
     
+    '[Monica]29/12/2016: Ribarroja Factura con distinto contador dependiendo de si es o no contado
+    Me.ChkContado.Enabled = (vParamAplic.Cooperativa = 5)
+    Me.ChkContado.visible = (vParamAplic.Cooperativa = 5)
+    
     'Esto se consigue poneinedo el cancel en el opcion k corresponda
     Me.CmdCancel.Cancel = True
     Me.Width = w + 70
@@ -1411,7 +1439,7 @@ End Sub
 Private Sub imgBuscar_Click(Index As Integer)
    Select Case Index
         Case 0, 1 'CLIENTE
-            AbrirFrmClientes (Index)
+            AbrirfrmClientes (Index)
         
         Case 4, 5 'COLECTIVO
             AbrirFrmColectivo (Index)
@@ -1593,7 +1621,7 @@ Private Sub LlamarImprimir()
     End With
 End Sub
 
-Private Sub AbrirFrmClientes(indice As Integer)
+Private Sub AbrirfrmClientes(indice As Integer)
     indCodigo = indice
     Set frmcli = New frmManClien
     frmcli.DatosADevolverBusqueda = "0|1|"
@@ -1920,7 +1948,7 @@ Dim b As Boolean
     
     While Not Rs.EOF And b
         sql2 = ""
-        sql2 = DevuelveDesdeBDNew(cConta, "tiposiva", "porceiva", "codigiva", DBLet(Rs!codigiva, "N"), "N")
+        sql2 = DevuelveDesdeBDNew(cConta, "tiposiva", "porceiva", "codigiva", DBLet(Rs!CodigIVA, "N"), "N")
         If sql2 = "" Then b = False
         
         Rs.MoveNext

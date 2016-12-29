@@ -744,12 +744,12 @@ Dim Importe As Currency
     
     
     'Obtenemos los datos de la factura
-    A_Donde = "Fra interna: " & Format(RCab!numfactu, "000000") & " / " & RCab!fecfactu
+    A_Donde = "Fra interna: " & Format(RCab!numfactu, "000000") & " / " & RCab!Fecfactu
     
     
     
     'COnseguir contador y eso
-    FechaAsi = RCab!fecfactu
+    FechaAsi = RCab!Fecfactu
     DiarioFacturas = Val(RecuperaValor(Diarios, 1)) 'Clientes 1,proveedores 2
     'Consigo contador
     '****************************************+
@@ -769,7 +769,7 @@ Dim Importe As Currency
     If vParamAplic.ContabilidadNueva Then SQL = SQL & ",feccreacion,usucreacion,desdeaplicacion"
     SQL = SQL & ") VALUES ("
     SQL = SQL & DiarioFacturas & ",'" & Format(FechaAsi, FormatoFecha) & "'," & NumAsiento
-    cad = Observaciones & vbCrLf & "Factura interna: " & Format(RCab!numfactu, "00000") & " - " & RCab!fecfactu
+    cad = Observaciones & vbCrLf & "Factura interna: " & Format(RCab!numfactu, "00000") & " - " & RCab!Fecfactu
     SQL = SQL & "," & DBSet(cad, "T", "S")
     If vParamAplic.ContabilidadNueva Then SQL = SQL & "," & DBSet(Now, "FH") & "," & DBSet(vSesion.Login, "T") & ",'ARIGES'"
     miConexion.Execute SQL & ")"
@@ -1585,21 +1585,39 @@ Private Function DevuelveCentroCosteFactura(Cliente As Boolean, LaPrimeraContrap
 Dim R As ADODB.Recordset
 Dim SQL As String
     DevuelveCentroCosteFactura = ""
+    
     If Cliente Then
+        If vParamAplic.ContabilidadNueva Then
+            SQL = "SELECT codccost,numlinea,codmacta FROM factcli_lineas"
+            SQL = SQL & " WHERE numserie='" & numSerie
+            SQL = SQL & "' AND numfactu= " & numFac
+            SQL = SQL & " AND anofactu=" & Anofac
+            SQL = SQL & " AND not (codccost is null)"   'El primero k devuelva
+            SQL = SQL & " ORDER BY numlinea"
         
-        SQL = "SELECT codccost,numlinea,codtbase FROM linfact"
-        SQL = SQL & " WHERE numserie='" & numSerie
-        SQL = SQL & "' AND codfaccl= " & numFac
-        SQL = SQL & " AND anofaccl=" & Anofac
-        SQL = SQL & " AND not (codccost is null)"   'El primero k devuelva
-        SQL = SQL & " ORDER BY numlinea"
+        Else
+            SQL = "SELECT codccost,numlinea,codtbase FROM linfact"
+            SQL = SQL & " WHERE numserie='" & numSerie
+            SQL = SQL & "' AND codfaccl= " & numFac
+            SQL = SQL & " AND anofaccl=" & Anofac
+            SQL = SQL & " AND not (codccost is null)"   'El primero k devuelva
+            SQL = SQL & " ORDER BY numlinea"
+        End If
     Else
+        If vParamAplic.ContabilidadNueva Then
+            SQL = "SELECT codccost,numlinea,codmacta FROM factpro_lineas"
+            SQL = SQL & " WHERE numregis = " & numFac
+            SQL = SQL & " AND anofactu=" & Anofac
+            SQL = SQL & " AND not (codccost is null)"   'El primero k devuelva
+            SQL = SQL & " ORDER BY numlinea"
         
-        SQL = "SELECT codccost,numlinea,codtbase FROM linfactprov"
-        SQL = SQL & " WHERE numregis = " & numFac
-        SQL = SQL & " AND anofacpr=" & Anofac
-        SQL = SQL & " AND not (codccost is null)"   'El primero k devuelva
-        SQL = SQL & " ORDER BY numlinea"
+        Else
+            SQL = "SELECT codccost,numlinea,codtbase FROM linfactprov"
+            SQL = SQL & " WHERE numregis = " & numFac
+            SQL = SQL & " AND anofacpr=" & Anofac
+            SQL = SQL & " AND not (codccost is null)"   'El primero k devuelva
+            SQL = SQL & " ORDER BY numlinea"
+        End If
     End If
     
     
