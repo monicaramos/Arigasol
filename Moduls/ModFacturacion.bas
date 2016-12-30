@@ -594,6 +594,16 @@ Dim tipoMov As String
     If dessoc <> "" Then SQL = SQL & " and scaalb.codsocio >= " & DBSet(dessoc, "N")
     If hassoc <> "" Then SQL = SQL & " and scaalb.codsocio <= " & DBSet(hassoc, "N")
     
+    '[Monica]29/12/2016: solo en el caso de ribarroja si es contado seleccionamos los de contado
+    If vParamAplic.Cooperativa = 5 Then
+        If EsContado Then
+            SQL = SQL & " and scaalb.codforpa in (select codforpa from sforpa where tipforpa = 0)"
+        Else
+            SQL = SQL & " and scaalb.codforpa in (select codforpa from sforpa where tipforpa <> 0)"
+        End If
+    End If
+    
+    
     Select Case TipoClien
         Case "0"
         

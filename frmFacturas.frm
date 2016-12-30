@@ -1205,7 +1205,7 @@ Dim Sql5 As String
                         Else
                             ' Interna
                             If Option1(3).Value Then
-                                NumError = Facturacion(db, txtCodigo(2).Text, txtCodigo(3).Text, txtCodigo(0).Text, txtCodigo(1).Text, txtCodigo(4).Text, txtCodigo(5).Text, CDate(txtCodigo(6).Text), 3, Pb1, TipoClien, Combo2.ListIndex) '[Monica]15/07/2013:antes 0
+                                NumError = Facturacion(db, txtCodigo(2).Text, txtCodigo(3).Text, txtCodigo(0).Text, txtCodigo(1).Text, txtCodigo(4).Text, txtCodigo(5).Text, CDate(txtCodigo(6).Text), 3, Pb1, TipoClien, Combo2.ListIndex, , (Me.ChkContado.Value = 1)) '[Monica]15/07/2013:antes 0
                             Else
                                 NumError = Facturacion(db, txtCodigo(2).Text, txtCodigo(3).Text, txtCodigo(0).Text, txtCodigo(1).Text, txtCodigo(4).Text, txtCodigo(5).Text, CDate(txtCodigo(6).Text), 1, Pb1, TipoClien, 0, , (Me.ChkContado.Value = 1))
                             End If
