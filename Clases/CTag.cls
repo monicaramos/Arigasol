@@ -29,7 +29,7 @@ Private mvarFormato As String
 Private mvarCargado As Boolean 'Indicará si el objeto está cargado o no.
 Private mvarEsClave As Boolean  ' Indica si es campo clave en la BD
 Private Mens As String
-
+              
 Private vValores As String  'Variable sobre la que se recoge el TAG en CARGAR
 Private vValor              'Variable sobre la que se recoge el .Text del objeto en COMPROBAR
 Private vValorF             'Variable sobre la que se recoge el .Text del objeto en DARFORMATO

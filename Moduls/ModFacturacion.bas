@@ -1571,7 +1571,8 @@ Dim Articulo As String
 
 On Error GoTo eInsertarFacturaGlobal
 
-    SQL = "select importe1, importe2, importe3 from tmpinformes where codusu = " & vSesion.Codigo & " order by 1"
+    '[Monica]02/01/2017: añadida la condicion de que el importe2 del articulo sea <> 0 para que no inserte la linea con importe 0
+    SQL = "select importe1, importe2, importe3 from tmpinformes where codusu = " & vSesion.Codigo & " and importe2 <> 0 order by 1"
     Set Rs = db.cursor(SQL)
     
     ' INSERTAMOS LAS LINEAS DE LA FACTURA, UNA LINEA POR CADA ARTICULO
@@ -1643,7 +1644,10 @@ On Error GoTo eInsertarFacturaGlobal
         v_linea = v_linea + 1
         
         IncrementarProgres Pb1, 1
-        preciove = Round2(DBLet(Rs!importe3) / DBLet(Rs!Importe2), 3)
+        preciove = 0
+        If DBLet(Rs!Importe2) <> 0 Then
+            preciove = Round2(DBLet(Rs!importe3) / DBLet(Rs!Importe2), 3)
+        End If
         ' insertamos la linea de factura
         SQL = "INSERT into slhfac (letraser, numfactu, fecfactu, numlinea, numalbar, " & _
                 "fecalbar, horalbar, codturno, numtarje, codartic, " & _

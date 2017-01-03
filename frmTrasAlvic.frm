@@ -2128,7 +2128,7 @@ Dim codsoc As String
     fechahora = DBLet(Rs!Fecha, "T")
     Fecha = Mid(fechahora, 7, 2) & "/" & Mid(fechahora, 5, 2) & "/" & Mid(fechahora, 1, 4)
     Hora = Mid(fechahora, 9, 6)
-    CodigoCliente = DBLet(Rs!CLIENTE, "T")
+    CodigoCliente = DBLet(Rs!Cliente, "T")
     NombreCliente = DBLet(Rs!nomclien, "T")
     Tarjeta = DBLet(Rs!Tarjeta, "N")
     Matricula = DBLet(Rs!Matricula, "T")
@@ -3229,7 +3229,7 @@ eInsertarRecaudacion:
 End Function
 
 Private Function InsertarSalida(cad As String) As Boolean
-Dim TipMov As String
+Dim tipMov As String
 Dim Importe As Currency
 Dim SQL As String
 Dim i  As Integer
@@ -3238,7 +3238,7 @@ Dim i  As Integer
     
     
     InsertarSalida = False
-    TipMov = Mid(cad, 2, 6)
+    tipMov = Mid(cad, 2, 6)
     i = InStr(Mid(cad, 8, 10), "-")
     If i = 0 Then
         Importe = Format(CCur(TransformaPuntosComas(Mid(cad, 8, 10))), "######0.00")
@@ -3246,7 +3246,7 @@ Dim i  As Integer
         Importe = Format(CCur(Replace(TransformaPuntosComas(Mid(cad, 8, 10)), "-", "") * (-1)), "######0.00")
     End If
     
-    If TipMov = "MOVIMI" And CCur(Importe) <> 0 Then
+    If tipMov = "MOVIMI" And CCur(Importe) <> 0 Then
         SQL = "insert into srecau (fechatur, codturno, codforpa, importel, intconta) values (" & _
               DBSet(txtCodigo(0).Text, "F") & "," & DBSet(txtCodigo(1).Text, "N") & "," & _
               "99, " & DBSet(Importe, "N") & ",0)"
@@ -4594,7 +4594,7 @@ Dim NomArtic As String
     fechahora = DBLet(Rs!Fecha, "T")
     Fecha = Mid(fechahora, 7, 2) & "/" & Mid(fechahora, 5, 2) & "/" & Mid(fechahora, 1, 4)
     Hora = Mid(fechahora, 9, 2) & ":" & Mid(fechahora, 11, 2) & ":" & Mid(fechahora, 13, 2)
-    CodigoCliente = DBLet(Rs!CLIENTE, "T")
+    CodigoCliente = DBLet(Rs!Cliente, "T")
     NombreCliente = DBLet(Rs!nomclien, "T")
     
     Tarjeta = DBLet(Rs!Tarjeta, "N")
@@ -4628,10 +4628,28 @@ Dim NomArtic As String
         If CCur(Importe) = 0 Then Exit Function
     End If
     
+'    If NifCliente = "20763891C" Then
+'        Stop
+'    End If
+    
     c_Cantidad = cantidad 'Round2(CCur(cantidad) / 100, 2)
     c_Importe = Importe 'Round2(CCur(Importe) / 100, 2)
-    c_Precio = PrecioLitro - Descuento 'Round2(CCur(PrecioLitro) / 100000, 5)
-    c_Descuento = Descuento 'Round2(CCur(Descuento) / 100000, 5)
+    
+    
+    '[Monica]03/01/2017: antes estaba preciolitro - descuento
+'    c_Precio = PrecioLitro - Descuento 'Round2(CCur(PrecioLitro) / 100000, 5)
+    c_Precio = PrecioLitro - Descuento
+    If c_Cantidad <> 0 Then
+        c_Precio = Round2(c_Importe / c_Cantidad, 3)
+    End If
+    '[Monica]03/01/2017: el descuento ahora lo calculo
+'    c_Descuento = Descuento 'Round2(CCur(Descuento) / 100000, 5)
+    If c_Cantidad <> 0 Then
+        c_Descuento = PrecioLitro - c_Precio
+    Else
+        c_Descuento = Descuento
+    End If
+    
     
     c_Vale = 0
     
