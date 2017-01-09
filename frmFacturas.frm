@@ -850,13 +850,13 @@ Dim vCont As CContador
     Frame2.visible = (Check1.Value = 1)
     Frame3.visible = (Check1.Value = 1)
     If Check1.Value = 0 Then
-        txtCodigo(7).Text = ""
-        txtCodigo(8).Text = ""
-        txtCodigo(9).Text = ""
+        txtcodigo(7).Text = ""
+        txtcodigo(8).Text = ""
+        txtcodigo(9).Text = ""
     Else
         Set vCont = New CContador
         If vCont.LeerContador("FAC") Then
-            txtCodigo(7).Text = vCont.Contador
+            txtcodigo(7).Text = vCont.Contador
         End If
         Set vCont = Nothing
     End If
@@ -906,8 +906,8 @@ Dim Sql5 As String
     
     
     'D/H Cliente
-    cDesde = Trim(txtCodigo(0).Text)
-    cHasta = Trim(txtCodigo(1).Text)
+    cDesde = Trim(txtcodigo(0).Text)
+    cHasta = Trim(txtcodigo(1).Text)
     nDesde = txtNombre(0).Text
     nHasta = txtNombre(1).Text
     If Not (cDesde = "" And cHasta = "") Then
@@ -918,8 +918,8 @@ Dim Sql5 As String
     End If
     
     'D/H Fecha factura
-    cDesde = Trim(txtCodigo(2).Text)
-    cHasta = Trim(txtCodigo(3).Text)
+    cDesde = Trim(txtcodigo(2).Text)
+    cHasta = Trim(txtcodigo(3).Text)
     If Not (cDesde = "" And cHasta = "") Then
         'Cadena para seleccion Desde y Hasta
         Codigo = "{" & tabla & ".fecalbar}"
@@ -928,8 +928,8 @@ Dim Sql5 As String
     End If
     
     'D/H Colectivo
-    cDesde = Trim(txtCodigo(4).Text)
-    cHasta = Trim(txtCodigo(5).Text)
+    cDesde = Trim(txtcodigo(4).Text)
+    cHasta = Trim(txtcodigo(5).Text)
     nDesde = txtNombre(4).Text
     nHasta = txtNombre(5).Text
     If Not (cDesde = "" And cHasta = "") Then
@@ -991,8 +991,8 @@ Dim Sql5 As String
     
     sql2 = SQL & " where scaalb.codforpa <> 98 "
     '[Monica]07/03/2012: lo dejo aqui.
-    If txtCodigo(4).Text <> "" Then sql2 = sql2 & " and ssocio.codcoope >= " & DBSet(txtCodigo(4).Text, "N")
-    If txtCodigo(5).Text <> "" Then sql2 = sql2 & " and ssocio.codcoope <= " & DBSet(txtCodigo(5).Text, "N")
+    If txtcodigo(4).Text <> "" Then sql2 = sql2 & " and ssocio.codcoope >= " & DBSet(txtcodigo(4).Text, "N")
+    If txtcodigo(5).Text <> "" Then sql2 = sql2 & " and ssocio.codcoope <= " & DBSet(txtcodigo(5).Text, "N")
     
     If Tipo < 2 Or Tipo = 3 Then ' 04/03/2011: tipo de facturacion interna
         sql2 = sql2 & " and scoope.tipfactu = " & DBSet(Tipo, "N")
@@ -1045,8 +1045,8 @@ Dim Sql5 As String
     Sql4 = SQL
     
     '[Monica]07/03/2012: lo dejo aqui.
-    If txtCodigo(4).Text <> "" Then SQL = SQL & " and ssocio.codcoope >= " & DBSet(txtCodigo(4).Text, "N")
-    If txtCodigo(5).Text <> "" Then SQL = SQL & " and ssocio.codcoope <= " & DBSet(txtCodigo(5).Text, "N")
+    If txtcodigo(4).Text <> "" Then SQL = SQL & " and ssocio.codcoope >= " & DBSet(txtcodigo(4).Text, "N")
+    If txtcodigo(5).Text <> "" Then SQL = SQL & " and ssocio.codcoope <= " & DBSet(txtcodigo(5).Text, "N")
     
     
     Sql3 = " scaalb.codforpa <>98 "
@@ -1075,45 +1075,45 @@ Dim Sql5 As String
     End If
     
     '[Monica]07/03/2012: dejo el enlace en las condiciones.
-    If txtCodigo(4).Text <> "" Then Sql3 = Sql3 & " and ssocio.codcoope >= " & DBSet(txtCodigo(4).Text, "N")
-    If txtCodigo(5).Text <> "" Then Sql3 = Sql3 & " and ssocio.codcoope <= " & DBSet(txtCodigo(5).Text, "N")
+    If txtcodigo(4).Text <> "" Then Sql3 = Sql3 & " and ssocio.codcoope >= " & DBSet(txtcodigo(4).Text, "N")
+    If txtcodigo(5).Text <> "" Then Sql3 = Sql3 & " and ssocio.codcoope <= " & DBSet(txtcodigo(5).Text, "N")
     
-    If txtCodigo(2).Text <> "" Then
-        SQL = SQL & " and scaalb.fecalbar >= " & DBSet(txtCodigo(2).Text, "F") & " "
-        sql2 = sql2 & " and scaalb.fecalbar >= " & DBSet(txtCodigo(2).Text, "F") & " "
-        Sql3 = Sql3 & " and scaalb.fecalbar >= " & DBSet(txtCodigo(2).Text, "F") & " "
-        Sql4 = Sql4 & " and scaalb.fecalbar >= " & DBSet(txtCodigo(2).Text, "F") & " "
+    If txtcodigo(2).Text <> "" Then
+        SQL = SQL & " and scaalb.fecalbar >= " & DBSet(txtcodigo(2).Text, "F") & " "
+        sql2 = sql2 & " and scaalb.fecalbar >= " & DBSet(txtcodigo(2).Text, "F") & " "
+        Sql3 = Sql3 & " and scaalb.fecalbar >= " & DBSet(txtcodigo(2).Text, "F") & " "
+        Sql4 = Sql4 & " and scaalb.fecalbar >= " & DBSet(txtcodigo(2).Text, "F") & " "
     End If
     
-    If txtCodigo(3).Text <> "" Then
-        SQL = SQL & " and scaalb.fecalbar <= " & DBSet(txtCodigo(3).Text, "F") & " "
-        sql2 = sql2 & " and scaalb.fecalbar <= " & DBSet(txtCodigo(3).Text, "F") & " "
-        Sql3 = Sql3 & " and scaalb.fecalbar <= " & DBSet(txtCodigo(3).Text, "F") & " "
-        Sql4 = Sql4 & " and scaalb.fecalbar <= " & DBSet(txtCodigo(3).Text, "F") & " "
+    If txtcodigo(3).Text <> "" Then
+        SQL = SQL & " and scaalb.fecalbar <= " & DBSet(txtcodigo(3).Text, "F") & " "
+        sql2 = sql2 & " and scaalb.fecalbar <= " & DBSet(txtcodigo(3).Text, "F") & " "
+        Sql3 = Sql3 & " and scaalb.fecalbar <= " & DBSet(txtcodigo(3).Text, "F") & " "
+        Sql4 = Sql4 & " and scaalb.fecalbar <= " & DBSet(txtcodigo(3).Text, "F") & " "
     End If
-    If txtCodigo(0).Text <> "" Then
-        SQL = SQL & " and scaalb.codsocio >= " & DBSet(txtCodigo(0).Text, "N")
-        sql2 = sql2 & " and scaalb.codsocio >= " & DBSet(txtCodigo(0).Text, "N")
-        Sql3 = Sql3 & " and scaalb.codsocio >= " & DBSet(txtCodigo(0).Text, "N")
+    If txtcodigo(0).Text <> "" Then
+        SQL = SQL & " and scaalb.codsocio >= " & DBSet(txtcodigo(0).Text, "N")
+        sql2 = sql2 & " and scaalb.codsocio >= " & DBSet(txtcodigo(0).Text, "N")
+        Sql3 = Sql3 & " and scaalb.codsocio >= " & DBSet(txtcodigo(0).Text, "N")
     End If
-    If txtCodigo(1).Text <> "" Then
-        SQL = SQL & " and scaalb.codsocio <= " & DBSet(txtCodigo(1).Text, "N")
-        sql2 = sql2 & " and scaalb.codsocio <= " & DBSet(txtCodigo(1).Text, "N")
-        Sql3 = Sql3 & " and scaalb.codsocio <= " & DBSet(txtCodigo(1).Text, "N")
+    If txtcodigo(1).Text <> "" Then
+        SQL = SQL & " and scaalb.codsocio <= " & DBSet(txtcodigo(1).Text, "N")
+        sql2 = sql2 & " and scaalb.codsocio <= " & DBSet(txtcodigo(1).Text, "N")
+        Sql3 = Sql3 & " and scaalb.codsocio <= " & DBSet(txtcodigo(1).Text, "N")
     End If
     
     '[Monica]29/12/2016: para el caso de Ribarroja cogemos las entradas de contado o no
     If vParamAplic.Cooperativa = 5 Then
         If Me.ChkContado.Value = 1 Then ' contados
-            SQL = SQL & " and scaalb.codforpa in (select codforpa from sforpa where tipforpa = 0) "
-            sql2 = sql2 & " and scaalb.codforpa in (select codforpa from sforpa where tipforpa = 0) "
-            Sql3 = Sql3 & " and scaalb.codforpa in (select codforpa from sforpa where tipforpa = 0) "
-            Sql4 = Sql4 & " and scaalb.codforpa in (select codforpa from sforpa where tipforpa = 0) "
+            SQL = SQL & " and scaalb.codforpa in (select codforpa from sforpa where tipforpa in (0,6)) "
+            sql2 = sql2 & " and scaalb.codforpa in (select codforpa from sforpa where tipforpa in (0,6)) "
+            Sql3 = Sql3 & " and scaalb.codforpa in (select codforpa from sforpa where tipforpa in (0,6)) "
+            Sql4 = Sql4 & " and scaalb.codforpa in (select codforpa from sforpa where tipforpa in (0,6)) "
         Else ' no contados
-            SQL = SQL & " and scaalb.codforpa in (select codforpa from sforpa where tipforpa <> 0) "
-            sql2 = sql2 & " and scaalb.codforpa in (select codforpa from sforpa where tipforpa <> 0) "
-            Sql3 = Sql3 & " and scaalb.codforpa in (select codforpa from sforpa where tipforpa <> 0) "
-            Sql4 = Sql4 & " and scaalb.codforpa in (select codforpa from sforpa where tipforpa <> 0) "
+            SQL = SQL & " and scaalb.codforpa in (select codforpa from sforpa where not tipforpa in (0,6)) "
+            sql2 = sql2 & " and scaalb.codforpa in (select codforpa from sforpa where not tipforpa in (0,6)) "
+            Sql3 = Sql3 & " and scaalb.codforpa in (select codforpa from sforpa where not tipforpa in (0,6)) "
+            Sql4 = Sql4 & " and scaalb.codforpa in (select codforpa from sforpa where not tipforpa in (0,6)) "
         End If
     End If
     
@@ -1165,7 +1165,7 @@ Dim Sql5 As String
         
           ' comprobamos si hay registros pendientes para pasar a tpv
           If Not PendientePasarTPV(Replace(Sql4, "scaalb.numfactu = 0", "scaalb.numfactu <> 0"), Tipo) Then
-              If Not PendienteCierresTurno(Trim(txtCodigo(2).Text), Trim(txtCodigo(3).Text)) Then
+              If Not PendienteCierresTurno(Trim(txtcodigo(2).Text), Trim(txtcodigo(3).Text)) Then
                     On Error GoTo eError
                     Pb1.visible = True
                     CargarProgres Pb1, NRegs
@@ -1180,7 +1180,7 @@ Dim Sql5 As String
                     ' de efectivo cuyo cliente tenga facturafp = si (tenga que facturar con
                     ' la fp de la ficha del cliente
                     NumError = 0
-                    NumError = Prefacturacion(db, txtCodigo(2).Text, txtCodigo(3).Text, txtCodigo(0).Text, txtCodigo(1).Text, txtCodigo(4).Text, txtCodigo(5).Text, TipoClien)
+                    NumError = Prefacturacion(db, txtcodigo(2).Text, txtcodigo(3).Text, txtcodigo(0).Text, txtcodigo(1).Text, txtcodigo(4).Text, txtcodigo(5).Text, TipoClien)
                     
                     
                     ' Facturacion por cliente ambas o interna                                           '[Monica]15/07/2013: o es normal o es de gasoleo bonif interna
@@ -1200,21 +1200,21 @@ Dim Sql5 As String
                             Dim tipoF As Byte
                             tipoF = 1
                             If Me.ChkInterna.Value Then tipoF = 3                                                                                                                                 ' antes tipof era 1 fijo
-                            NumError = Facturacion(db, txtCodigo(2).Text, txtCodigo(3).Text, txtCodigo(0).Text, txtCodigo(1).Text, txtCodigo(4).Text, txtCodigo(5).Text, CDate(txtCodigo(6).Text), tipoF, Pb1, TipoClien, 0, TipoArt)
+                            NumError = Facturacion(db, txtcodigo(2).Text, txtcodigo(3).Text, txtcodigo(0).Text, txtcodigo(1).Text, txtcodigo(4).Text, txtcodigo(5).Text, CDate(txtcodigo(6).Text), tipoF, Pb1, TipoClien, 0, TipoArt)
                         '++
                         Else
                             ' Interna
                             If Option1(3).Value Then
-                                NumError = Facturacion(db, txtCodigo(2).Text, txtCodigo(3).Text, txtCodigo(0).Text, txtCodigo(1).Text, txtCodigo(4).Text, txtCodigo(5).Text, CDate(txtCodigo(6).Text), 3, Pb1, TipoClien, Combo2.ListIndex, , (Me.ChkContado.Value = 1)) '[Monica]15/07/2013:antes 0
+                                NumError = Facturacion(db, txtcodigo(2).Text, txtcodigo(3).Text, txtcodigo(0).Text, txtcodigo(1).Text, txtcodigo(4).Text, txtcodigo(5).Text, CDate(txtcodigo(6).Text), 3, Pb1, TipoClien, Combo2.ListIndex, , (Me.ChkContado.Value = 1)) '[Monica]15/07/2013:antes 0
                             Else
-                                NumError = Facturacion(db, txtCodigo(2).Text, txtCodigo(3).Text, txtCodigo(0).Text, txtCodigo(1).Text, txtCodigo(4).Text, txtCodigo(5).Text, CDate(txtCodigo(6).Text), 1, Pb1, TipoClien, 0, , (Me.ChkContado.Value = 1))
+                                NumError = Facturacion(db, txtcodigo(2).Text, txtcodigo(3).Text, txtcodigo(0).Text, txtcodigo(1).Text, txtcodigo(4).Text, txtcodigo(5).Text, CDate(txtcodigo(6).Text), 1, Pb1, TipoClien, 0, , (Me.ChkContado.Value = 1))
                             End If
                         End If
                     End If
                        
                     ' facturacion por tarjeta
                     If (Option1(1).Value Or Option1(2).Value) And NumError = 0 Then
-                       NumError = Facturacion(db, txtCodigo(2).Text, txtCodigo(3).Text, txtCodigo(0).Text, txtCodigo(1).Text, txtCodigo(4).Text, txtCodigo(5).Text, CDate(txtCodigo(6).Text), 0, Pb1, TipoClien, Combo2.ListIndex, , (Me.ChkContado.Value = 1))
+                       NumError = Facturacion(db, txtcodigo(2).Text, txtcodigo(3).Text, txtcodigo(0).Text, txtcodigo(1).Text, txtcodigo(4).Text, txtcodigo(5).Text, CDate(txtcodigo(6).Text), 0, Pb1, TipoClien, Combo2.ListIndex, , (Me.ChkContado.Value = 1))
                     End If
               Else
                  Exit Sub
@@ -1302,7 +1302,7 @@ Private Sub Form_Activate()
     If PrimeraVez Then
         PrimeraVez = False
         ValoresPorDefecto
-        PonerFoco txtCodigo(6)
+        PonerFoco txtcodigo(6)
         
         Me.Combo1.ListIndex = 0
         Me.Combo2.ListIndex = 0
@@ -1359,8 +1359,8 @@ Dim List As Collection
     Label4(1).visible = (vParamAplic.Cooperativa <> 5)
     imgBuscar(5).Enabled = (vParamAplic.Cooperativa <> 5)
     imgBuscar(5).visible = (vParamAplic.Cooperativa <> 5)
-    txtCodigo(5).Enabled = (vParamAplic.Cooperativa <> 5)
-    txtCodigo(5).visible = (vParamAplic.Cooperativa <> 5)
+    txtcodigo(5).Enabled = (vParamAplic.Cooperativa <> 5)
+    txtcodigo(5).visible = (vParamAplic.Cooperativa <> 5)
     txtNombre(5).visible = (vParamAplic.Cooperativa <> 5)
     
     '[Monica]29/12/2016: Ribarroja Factura con distinto contador dependiendo de si es o no contado
@@ -1368,14 +1368,14 @@ Dim List As Collection
     Me.ChkContado.visible = (vParamAplic.Cooperativa = 5)
     
     'Esto se consigue poneinedo el cancel en el opcion k corresponda
-    Me.CmdCancel.Cancel = True
+    Me.cmdCancel.Cancel = True
     Me.Width = w + 70
     Me.Height = h + 350
 End Sub
 
 Private Sub frmBpr_DatoSeleccionado(CadenaSeleccion As String)
 'Form de Consulta de Colectivos
-    txtCodigo(indCodigo).Text = Format(RecuperaValor(CadenaSeleccion, 1), "00")
+    txtcodigo(indCodigo).Text = Format(RecuperaValor(CadenaSeleccion, 1), "00")
     txtNombre(indCodigo).Text = RecuperaValor(CadenaSeleccion, 2)
 End Sub
 
@@ -1385,18 +1385,18 @@ End Sub
 
 Private Sub frmC_Selec(vFecha As Date)
  'Fecha
-    txtCodigo(CByte(imgFec(2).Tag)).Text = Format(vFecha, "dd/MM/yyyy")
+    txtcodigo(CByte(imgFec(2).Tag)).Text = Format(vFecha, "dd/MM/yyyy")
 End Sub
 
 Private Sub frmCli_DatoSeleccionado(CadenaSeleccion As String)
 'Form de Consulta de Clientes
-    txtCodigo(indCodigo).Text = Format(RecuperaValor(CadenaSeleccion, 1), "000000")
+    txtcodigo(indCodigo).Text = Format(RecuperaValor(CadenaSeleccion, 1), "000000")
     txtNombre(indCodigo).Text = RecuperaValor(CadenaSeleccion, 2)
 End Sub
 
 Private Sub frmCol_DatoSeleccionado(CadenaSeleccion As String)
 'Form de Consulta de Colectivos
-    txtCodigo(indCodigo).Text = Format(RecuperaValor(CadenaSeleccion, 1), "000")
+    txtcodigo(indCodigo).Text = Format(RecuperaValor(CadenaSeleccion, 1), "000")
     txtNombre(indCodigo).Text = RecuperaValor(CadenaSeleccion, 2)
 End Sub
 
@@ -1424,11 +1424,11 @@ Private Sub imgFec_Click(Index As Integer)
 
     ' ***canviar l'index de imgFec pel 1r index de les imagens de buscar data***
     imgFec(2).Tag = Index 'independentment de les dates que tinga, sempre pose l'index en la 27
-    If txtCodigo(Index).Text <> "" Then frmC.NovaData = txtCodigo(Index).Text
+    If txtcodigo(Index).Text <> "" Then frmC.NovaData = txtcodigo(Index).Text
 
     frmC.Show vbModal
     Set frmC = Nothing
-    PonerFoco txtCodigo(CByte(imgFec(2).Tag) + 2)
+    PonerFoco txtcodigo(CByte(imgFec(2).Tag) + 2)
     ' ***************************
 End Sub
 
@@ -1448,7 +1448,7 @@ Private Sub imgBuscar_Click(Index As Integer)
             AbrirFrmBancoPropio (Index)
 
     End Select
-    PonerFoco txtCodigo(indCodigo)
+    PonerFoco txtcodigo(indCodigo)
 End Sub
 
 Private Sub Optcodigo_KeyPress(KeyAscii As Integer)
@@ -1478,7 +1478,7 @@ Private Sub Option1_Click(Index As Integer)
 End Sub
 
 Private Sub txtCodigo_GotFocus(Index As Integer)
-    ConseguirFoco txtCodigo(Index), 3
+    ConseguirFoco txtcodigo(Index), 3
 End Sub
 
 Private Sub txtCodigo_KeyDown(Index As Integer, KeyCode As Integer, Shift As Integer)
@@ -1519,7 +1519,7 @@ Private Sub txtCodigo_LostFocus(Index As Integer)
 Dim cad As String, cadTipo As String 'tipo cliente
 
     'Quitar espacios en blanco por los lados
-    txtCodigo(Index).Text = Trim(txtCodigo(Index).Text)
+    txtcodigo(Index).Text = Trim(txtcodigo(Index).Text)
     
     'Si se ha abierto otro formulario, es que se ha pinchado en prismaticos y no
     'mostrar mensajes ni hacer nada
@@ -1529,23 +1529,23 @@ Dim cad As String, cadTipo As String 'tipo cliente
     Select Case Index
             
         Case 0, 1 'CLIENTE
-            txtNombre(Index).Text = PonerNombreDeCod(txtCodigo(Index), "ssocio", "nomsocio", "codsocio", "N")
-            If txtCodigo(Index).Text <> "" Then txtCodigo(Index).Text = Format(txtCodigo(Index).Text, "000000")
+            txtNombre(Index).Text = PonerNombreDeCod(txtcodigo(Index), "ssocio", "nomsocio", "codsocio", "N")
+            If txtcodigo(Index).Text <> "" Then txtcodigo(Index).Text = Format(txtcodigo(Index).Text, "000000")
         
         Case 2, 3, 6, 7, 9 'FECHAS
-            If txtCodigo(Index).Text <> "" Then PonerFormatoFecha txtCodigo(Index)
+            If txtcodigo(Index).Text <> "" Then PonerFormatoFecha txtcodigo(Index)
         
         Case 4, 5 'COLECTIVO
-            txtNombre(Index).Text = PonerNombreDeCod(txtCodigo(Index), "scoope", "nomcoope", "codcoope", "N")
-            If txtCodigo(Index).Text <> "" Then txtCodigo(Index).Text = Format(txtCodigo(Index).Text, "000")
+            txtNombre(Index).Text = PonerNombreDeCod(txtcodigo(Index), "scoope", "nomcoope", "codcoope", "N")
+            If txtcodigo(Index).Text <> "" Then txtcodigo(Index).Text = Format(txtcodigo(Index).Text, "000")
         
         Case 8 ' BANCO PROPIO
-            If txtCodigo(Index).Text <> "" Then
-                PonerFormatoEntero txtCodigo(Index)
-                txtNombre(Index).Text = PonerNombreDeCod(txtCodigo(Index), "sbanco", "nombanco", "codbanpr", "N")
+            If txtcodigo(Index).Text <> "" Then
+                PonerFormatoEntero txtcodigo(Index)
+                txtNombre(Index).Text = PonerNombreDeCod(txtcodigo(Index), "sbanco", "nombanco", "codbanpr", "N")
                 If txtNombre(Index).Text = "" Then
                     MsgBox "El Banco introducido no existe. Reintroduzca.", vbExclamation
-                    PonerFoco txtCodigo(Index)
+                    PonerFoco txtcodigo(Index)
                 Else
                     cmdAceptar.SetFocus
                 End If
@@ -1567,7 +1567,7 @@ Private Sub FrameCobrosVisible(visible As Boolean, ByRef h As Integer, ByRef w A
 End Sub
 
 Private Sub ValoresPorDefecto()
-    txtCodigo(6).Text = Format(Now, "dd/mm/yyyy")
+    txtcodigo(6).Text = Format(Now, "dd/mm/yyyy")
 End Sub
 
 Private Sub InicializarVbles()
@@ -1626,7 +1626,7 @@ Private Sub AbrirfrmClientes(indice As Integer)
     Set frmcli = New frmManClien
     frmcli.DatosADevolverBusqueda = "0|1|"
     frmcli.DeConsulta = True
-    frmcli.CodigoActual = txtCodigo(indCodigo)
+    frmcli.CodigoActual = txtcodigo(indCodigo)
     frmcli.Show vbModal
     Set frmcli = Nothing
 End Sub
@@ -1636,7 +1636,7 @@ Private Sub AbrirFrmColectivo(indice As Integer)
     Set frmCol = New frmManCoope
     frmCol.DatosADevolverBusqueda = "0|1|"
     frmCol.DeConsulta = True
-    frmCol.CodigoActual = txtCodigo(indCodigo)
+    frmCol.CodigoActual = txtcodigo(indCodigo)
     frmCol.Show vbModal
     Set frmCol = Nothing
 End Sub
@@ -1646,7 +1646,7 @@ Private Sub AbrirFrmBancoPropio(indice As Integer)
     Set frmBpr = New frmManBanco
     frmBpr.DatosADevolverBusqueda = "0|1|"
     frmBpr.DeConsulta = True
-    frmBpr.CodigoActual = txtCodigo(indCodigo)
+    frmBpr.CodigoActual = txtcodigo(indCodigo)
     frmBpr.Show vbModal
     Set frmBpr = Nothing
 End Sub
@@ -1748,75 +1748,75 @@ Dim Fecha As Date
 
     '[Monica]18/01/2013: en Ribarroja obligamos a que me introduzcan un colectivo y que exista
     If vParamAplic.Cooperativa = 5 Then
-        If txtCodigo(4).Text = "" Then
+        If txtcodigo(4).Text = "" Then
             MsgBox "Debe introducir obligatoriamente un colectivo. Revise.", vbExclamation
-            PonerFoco txtCodigo(4)
+            PonerFoco txtcodigo(4)
             DatosOk = False
             Exit Function
         Else
-            SQL = DevuelveValor("select count(*) from scoope where codcoope = " & DBSet(txtCodigo(4).Text, "N"))
+            SQL = DevuelveValor("select count(*) from scoope where codcoope = " & DBSet(txtcodigo(4).Text, "N"))
             If SQL = "0" Then
                 MsgBox "No existe el colectivo. Revise.", vbExclamation
-                PonerFoco txtCodigo(4)
+                PonerFoco txtcodigo(4)
                 DatosOk = False
                 Exit Function
             Else
-                txtCodigo(5).Text = txtCodigo(4).Text
+                txtcodigo(5).Text = txtcodigo(4).Text
             End If
         End If
     End If
     
-    If txtCodigo(6).Text = "" Then
+    If txtcodigo(6).Text = "" Then
         MsgBox "Debe introducir obligatoriamente una Fecha de Facturación.", vbExclamation
         b = False
-        PonerFoco txtCodigo(6)
+        PonerFoco txtcodigo(6)
     Else
         ' Cooperativa de la Pobla del Duc
         If vParamAplic.Cooperativa = 4 Then
             If Check1.Value = 1 Then
-                If txtCodigo(7).Text = "" Then
+                If txtcodigo(7).Text = "" Then
                     Mens = "Debe introducir el primer Nro.Factura de Cepsa. Revise"
                     MsgBox Mens, vbExclamation
                     b = False
-                    PonerFoco txtCodigo(7)
+                    PonerFoco txtcodigo(7)
                 End If
                 If b Then
-                    If txtCodigo(9).Text = "" Then
+                    If txtcodigo(9).Text = "" Then
                         Mens = "Debe introducir la Fecha de Vencimiento del pago. Revise"
                         MsgBox Mens, vbExclamation
                         b = False
-                        PonerFoco txtCodigo(9)
+                        PonerFoco txtcodigo(9)
                     End If
                 End If
                 If b Then
-                    If txtCodigo(8).Text = "" Then
+                    If txtcodigo(8).Text = "" Then
                         Mens = "Debe introducir el Banco del pago. Revise"
                         MsgBox Mens, vbExclamation
                         b = False
-                        PonerFoco txtCodigo(8)
+                        PonerFoco txtcodigo(8)
                     End If
                 End If
             Else
-                If Not FechaDentroPeriodoContable(CDate(txtCodigo(6).Text)) Then
+                If Not FechaDentroPeriodoContable(CDate(txtcodigo(6).Text)) Then
                     Mens = "La Fecha de Facturación no es del ejercicio actual ni siguiente. Reintroduzca."
                     MsgBox Mens, vbExclamation
                     b = False
-                    PonerFoco txtCodigo(6)
+                    PonerFoco txtcodigo(6)
                 Else
                     'VRS:2.0.1(0)
-                    If Not FechaSuperiorUltimaLiquidacion(CDate(txtCodigo(6).Text)) Then
+                    If Not FechaSuperiorUltimaLiquidacion(CDate(txtcodigo(6).Text)) Then
                         Mens = "  La Fecha de Facturación es inferior a la última liquidación de Iva. " & vbCrLf & vbCrLf
                         ' unicamente si el usuario es root el proceso continuará
                         If vSesion.Nivel > 0 Then
                             Mens = Mens & "  El proceso no continuará."
                             MsgBox Mens, vbExclamation
                             b = False
-                            PonerFoco txtCodigo(6)
+                            PonerFoco txtcodigo(6)
                         Else
                             Mens = Mens & "                        ¿ Desea continuar ?    " & vbCrLf
                             If MsgBox(Mens, vbQuestion + vbYesNo + vbDefaultButton2) = vbNo Then
                                 b = False
-                                PonerFoco txtCodigo(6)
+                                PonerFoco txtcodigo(6)
                             End If
                         End If
                     End If
@@ -1825,12 +1825,12 @@ Dim Fecha As Date
                     numfactu = ""
                     numfactu = DevuelveDesdeBDNew(cPTours, "stipom", "contador", "codtipom", "FAG", "T", numser)
                     If numfactu <> "" Then
-                        If FechaFacturaInferiorUltimaFacturaSerieHco(CDate(txtCodigo(6).Text), CLng(numfactu), numser, 0) Then
+                        If FechaFacturaInferiorUltimaFacturaSerieHco(CDate(txtcodigo(6).Text), CLng(numfactu), numser, 0) Then
                             Mens = "La Fecha de Factura es inferior a la última factura de la serie." & vbCrLf & vbCrLf
                             Mens = Mens & "                        ¿ Desea continuar ?    " & vbCrLf
                             If MsgBox(Mens, vbQuestion + vbYesNo + vbDefaultButton2) = vbNo Then
                                 b = False
-                                PonerFoco txtCodigo(6)
+                                PonerFoco txtcodigo(6)
                             End If
                         End If
                     End If
@@ -1840,8 +1840,8 @@ Dim Fecha As Date
         ' cooperativa distinta a la Pobla del DUC
         
             Set gdgp = New GestorDeclaracionesGasoleoProf
-            If txtCodigo(3).Text <> "" Then
-                Fecha = CDate(txtCodigo(3).Text)
+            If txtcodigo(3).Text <> "" Then
+                Fecha = CDate(txtcodigo(3).Text)
             Else
                 Fecha = Now
             End If
@@ -1850,28 +1850,28 @@ Dim Fecha As Date
                 Mens = "Quedan albaranes de gasóleo profesional pendientes de declarar. Revise"
                 MsgBox Mens, vbExclamation
                 b = False
-                PonerFoco txtCodigo(6)
+                PonerFoco txtcodigo(6)
             Else
-                If Not FechaDentroPeriodoContable(CDate(txtCodigo(6).Text)) Then
+                If Not FechaDentroPeriodoContable(CDate(txtcodigo(6).Text)) Then
                     Mens = "La Fecha de Facturación no es del ejercicio actual ni siguiente. Reintroduzca."
                     MsgBox Mens, vbExclamation
                     b = False
-                    PonerFoco txtCodigo(6)
+                    PonerFoco txtcodigo(6)
                 Else
                     'VRS:2.0.1(0)
-                    If Not FechaSuperiorUltimaLiquidacion(CDate(txtCodigo(6).Text)) Then
+                    If Not FechaSuperiorUltimaLiquidacion(CDate(txtcodigo(6).Text)) Then
                         Mens = "  La Fecha de Facturación es inferior a la última liquidación de Iva. " & vbCrLf & vbCrLf
                         ' unicamente si el usuario es root el proceso continuará
                         If vSesion.Nivel > 0 Then
                             Mens = Mens & "  El proceso no continuará."
                             MsgBox Mens, vbExclamation
                             b = False
-                            PonerFoco txtCodigo(6)
+                            PonerFoco txtcodigo(6)
                         Else
                             Mens = Mens & "                        ¿ Desea continuar ?    " & vbCrLf
                             If MsgBox(Mens, vbQuestion + vbYesNo + vbDefaultButton2) = vbNo Then
                                 b = False
-                                PonerFoco txtCodigo(6)
+                                PonerFoco txtcodigo(6)
                             End If
                         End If
                     End If
@@ -1880,12 +1880,12 @@ Dim Fecha As Date
                     numfactu = ""
                     numfactu = DevuelveDesdeBDNew(cPTours, "stipom", "contador", "codtipom", "FAG", "T", numser)
                     If numfactu <> "" Then
-                        If FechaFacturaInferiorUltimaFacturaSerieHco(CDate(txtCodigo(6).Text), CLng(numfactu), numser, 0) Then
+                        If FechaFacturaInferiorUltimaFacturaSerieHco(CDate(txtcodigo(6).Text), CLng(numfactu), numser, 0) Then
                             Mens = "La Fecha de Factura es inferior a la última factura de la serie." & vbCrLf & vbCrLf
                             Mens = Mens & "                        ¿ Desea continuar ?    " & vbCrLf
                             If MsgBox(Mens, vbQuestion + vbYesNo + vbDefaultButton2) = vbNo Then
                                 b = False
-                                PonerFoco txtCodigo(6)
+                                PonerFoco txtcodigo(6)
                             End If
                         End If
                     End If
@@ -1897,7 +1897,7 @@ Dim Fecha As Date
     If vParamAplic.ArticDto = 0 Then
         MsgBox "Debe introducir un articulo de descuento en la tabla de parámetros. Revise.", vbExclamation
         b = False
-        PonerFocoBtn CmdCancel
+        PonerFocoBtn cmdCancel
     Else
         'comprobamos que el articulo de descuento existe
         SQL = ""
@@ -1905,7 +1905,7 @@ Dim Fecha As Date
         If SQL = "" Then
             MsgBox "El artículo descuento de la tabla de parámetros no existe. Revise.", vbExclamation
             b = False
-            PonerFocoBtn CmdCancel
+            PonerFocoBtn cmdCancel
         End If
     End If
 

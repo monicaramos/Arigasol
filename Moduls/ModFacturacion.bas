@@ -597,9 +597,9 @@ Dim tipoMov As String
     '[Monica]29/12/2016: solo en el caso de ribarroja si es contado seleccionamos los de contado
     If vParamAplic.Cooperativa = 5 Then
         If EsContado Then
-            SQL = SQL & " and scaalb.codforpa in (select codforpa from sforpa where tipforpa = 0)"
+            SQL = SQL & " and scaalb.codforpa in (select codforpa from sforpa where tipforpa in (0,6))"
         Else
-            SQL = SQL & " and scaalb.codforpa in (select codforpa from sforpa where tipforpa <> 0)"
+            SQL = SQL & " and scaalb.codforpa in (select codforpa from sforpa where not tipforpa in (0,6))"
         End If
     End If
     
