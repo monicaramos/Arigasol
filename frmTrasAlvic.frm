@@ -1515,16 +1515,21 @@ Dim PorcIva As Currency
 '
 '                        Conn.Execute SQL
                         
-                        '[Monica]22/11/2011: si es un cliente de paso y no tiene tarjeta de bonificado le ponemos la que tenga
-                        '                    le pongo la primera tarjeta que exista o se la creo si no existe ninguna
-                        SQL = "select count(*) from starje where codsocio= " & DBSet(Tarje, "N")
-                        If TotalRegistros(SQL) = 0 Then
-                            SQL = "INSERT INTO starje (codsocio, numlinea, numtarje, nomtarje, codbanco, codsucur, " & _
-                                  "digcontr, cuentaba, tiptarje) VALUES (" & DBSet(Tarje, "N") & ",1," & DBSet(Tarje, "N") & "," & DBSet(NombreCliente, "T") & "," & ValorNulo & "," & ValorNulo & "," & _
-                                  ValorNulo & "," & ValorNulo & ",0)"
+'[Monica]31/01/2017: Martin quiere que si no existe tarjeta de Bonificado se cree como transeunte e imputarla a esa nueva tarjeta
+'                    quito todo lo de abajo y lo añado
+'
+'                        '[Monica]22/11/2011: si es un cliente de paso y no tiene tarjeta de bonificado le ponemos la que tenga
+'                        '                    le pongo la primera tarjeta que exista o se la creo si no existe ninguna
+'                        SQL = "select count(*) from starje where codsocio= " & DBSet(Tarje, "N")
+'                        If TotalRegistros(SQL) = 0 Then
+'                            SQL = "INSERT INTO starje (codsocio, numlinea, numtarje, nomtarje, codbanco, codsucur, " & _
+'                                  "digcontr, cuentaba, tiptarje) VALUES (" & DBSet(Tarje, "N") & ",1," & DBSet(Tarje, "N") & "," & DBSet(NombreCliente, "T") & "," & ValorNulo & "," & ValorNulo & "," & _
+'                                  ValorNulo & "," & ValorNulo & ",0)"
+'
+'                            Conn.Execute SQL
+'                        End If
 
-                            Conn.Execute SQL
-                        End If
+
 
                     End If
                 Else

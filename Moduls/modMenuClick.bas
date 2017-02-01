@@ -237,6 +237,7 @@ Public Sub SubmnE_Tanques_Click(Index As Integer)
         Case 2: frmRecauda.Show vbModal
         Case 3: frmCieTurnoReg.Show vbModal
         Case 4: frmEstArticRegaixo.Show vbModal
+        Case 5: frmEstArticTanques.Show vbModal
     End Select
 End Sub
 

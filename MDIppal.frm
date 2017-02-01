@@ -435,6 +435,10 @@ Begin VB.MDIForm MDIppal
          Caption         =   "&Estadística de Artículos"
          Index           =   4
       End
+      Begin VB.Menu mnE_Tanques 
+         Caption         =   "Estadística &Artículos de Tanques"
+         Index           =   5
+      End
    End
    Begin VB.Menu mnCompras 
       Caption         =   "&Compras"
@@ -882,14 +886,14 @@ End Sub
 ' añadida esta parte para la personalizacion de menus
 
 Private Sub LeerEditorMenus()
-Dim SQL As String
-Dim miRsAux As ADODB.Recordset
+Dim sql As String
+Dim miRsAux As adodb.Recordset
 
     On Error GoTo ELeerEditorMenus
     TieneEditorDeMenus = False
-    SQL = "Select count(*) from appmenus where aplicacion='Arigasol'"
-    Set miRsAux = New ADODB.Recordset
-    miRsAux.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+    sql = "Select count(*) from appmenus where aplicacion='Arigasol'"
+    Set miRsAux = New adodb.Recordset
+    miRsAux.Open sql, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
     If Not miRsAux.EOF Then
         If Not IsNull(miRsAux.Fields(0)) Then
             If miRsAux.Fields(0) > 0 Then TieneEditorDeMenus = True
@@ -908,33 +912,33 @@ End Sub
 
 Private Sub PoneMenusDelEditor()
 Dim T As Control
-Dim SQL As String
+Dim sql As String
 Dim C As String
-Dim miRsAux As ADODB.Recordset
+Dim miRsAux As adodb.Recordset
 
     On Error GoTo ELeerEditorMenus
     
-    SQL = "Select * from appmenususuario where aplicacion='Arigasol' and codusu = " & Val(Right(CStr(vSesion.Codusu), 3))
-    Set miRsAux = New ADODB.Recordset
-    miRsAux.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
-    SQL = ""
+    sql = "Select * from appmenususuario where aplicacion='Arigasol' and codusu = " & Val(Right(CStr(vSesion.Codusu), 3))
+    Set miRsAux = New adodb.Recordset
+    miRsAux.Open sql, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+    sql = ""
 
     While Not miRsAux.EOF
         If Not IsNull(miRsAux.Fields(3)) Then
-            SQL = SQL & miRsAux.Fields(3) & "·"
+            sql = sql & miRsAux.Fields(3) & "·"
         End If
         miRsAux.MoveNext
     Wend
     miRsAux.Close
         
    
-    If SQL <> "" Then
-        SQL = "·" & SQL
+    If sql <> "" Then
+        sql = "·" & sql
         For Each T In Me.Controls
             If TypeOf T Is menu Then
                 C = DevuelveCadenaMenu(T)
                 C = "·" & C & "·"
-                If InStr(1, SQL, C) > 0 Then T.visible = False
+                If InStr(1, sql, C) > 0 Then T.visible = False
            
             End If
         Next
@@ -1048,6 +1052,12 @@ Dim b As Boolean
     nRegs = TotalRegistros("select count(*) from usuarios.empresasarigasol")
     Me.mnP_Generales(20).visible = (nRegs > 1)
     Me.mnP_Generales(20).Enabled = (nRegs > 1)
+    
+    
+   ' impresion de estadisticas por turno solo para pobla del duc
+    mnE_Tanques(5).visible = (vParamAplic.Cooperativa = 4)
+    mnE_Tanques(5).Enabled = (vParamAplic.Cooperativa = 4)
+    
     
     
 End Sub
