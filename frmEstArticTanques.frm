@@ -296,9 +296,9 @@ End Sub
 Private Sub cmdAceptar_Click()
 Dim cDesde As String, cHasta As String 'cadena codigo Desde/Hasta
 Dim nDesde As String, nHasta As String 'cadena Descripcion Desde/Hasta
-Dim cadTABLA As String, cOrden As String
-Dim i As Byte
-Dim sql As String
+Dim cadTabla As String, cOrden As String
+Dim I As Byte
+Dim SQL As String
 
     InicializarVbles
     
@@ -493,7 +493,7 @@ Private Sub KEYFecha(KeyAscii As Integer, indice As Integer)
 End Sub
 
 Private Sub txtCodigo_LostFocus(Index As Integer)
-Dim cad As String, cadTipo As String 'tipo cliente
+Dim Cad As String, cadTipo As String 'tipo cliente
 
     'Quitar espacios en blanco por los lados
     txtCodigo(Index).Text = Trim(txtCodigo(Index).Text)
@@ -578,16 +578,6 @@ Private Sub LlamarImprimir()
     End With
 End Sub
 
-Private Sub AbrirFrmFamilias(indice As Integer)
-    indCodigo = indice
-    Set frmFam = New frmManFamia
-    frmFam.DatosADevolverBusqueda = "0|1|"
-    frmFam.DeConsulta = True
-    frmFam.CodigoActual = txtCodigo(indCodigo)
-    frmFam.Show vbModal
-    Set frmFam = Nothing
-End Sub
- 
 Private Sub AbrirVisReport()
     Screen.MousePointer = vbHourglass
     CadenaDesdeOtroForm = ""
@@ -629,13 +619,13 @@ End Sub
 
 Private Function CargarTemporal() As Boolean
 
-Dim sql As String
-Dim Sql2 As String
-Dim sql3 As String
+Dim SQL As String
+Dim sql2 As String
+Dim Sql3 As String
 Dim Sql4 As String
-Dim rs As adodb.Recordset
-Dim Rs2 As adodb.Recordset
-Dim Rs3 As adodb.Recordset
+Dim Rs As ADODB.Recordset
+Dim Rs2 As ADODB.Recordset
+Dim Rs3 As ADODB.Recordset
 Dim vImp1 As Currency
 Dim vImpb1 As Currency
 Dim vImp2 As Currency
@@ -647,39 +637,39 @@ Dim vImpb4 As Currency
 Dim vImp5 As Currency
 Dim vImpb5 As Currency
 Dim vImp6 As Currency
-Dim nRegs As Integer
+Dim NRegs As Integer
 
-    sql = "delete from tmpinformes where codusu = " & vSesion.Codigo
-    Conn.Execute sql
+    SQL = "delete from tmpinformes where codusu = " & vSesion.Codigo
+    Conn.Execute SQL
 
-    sql = "select count(*) from sartic where codfamia in (select codfamia from sfamia where tipfamia = 1) "
-    nRegs = TotalRegistros(sql)
+    SQL = "select count(*) from sartic where codfamia in (select codfamia from sfamia where tipfamia = 1) "
+    NRegs = TotalRegistros(SQL)
     
     Pb1.visible = True
-    CargarProgres Pb1, nRegs
+    CargarProgres Pb1, NRegs
         
-    sql = "select codartic, nomartic from sartic where codfamia in (select codfamia from sfamia where tipfamia = 1) "
+    SQL = "select codartic, nomartic from sartic where codfamia in (select codfamia from sfamia where tipfamia = 1) "
     
-    Set rs = New adodb.Recordset
-    rs.Open sql, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+    Set Rs = New ADODB.Recordset
+    Rs.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
     
-    While Not rs.EOF
+    While Not Rs.EOF
         IncrementarProgres Pb1, 1
         
-        sql3 = "SELECT ssocio.grupoestartic, sum(cantidad), sum(implinea) "
-        sql3 = sql3 & " from slhfac, schfac, ssocio "
-        sql3 = sql3 & " where slhfac.letraser = schfac.letraser and slhfac.numfactu = schfac.numfactu "
-        sql3 = sql3 & " and slhfac.fecfactu = schfac.fecfactu and slhfac.codartic = " & DBSet(rs!codArtic, "N")
+        Sql3 = "SELECT ssocio.grupoestartic, sum(cantidad), sum(implinea) "
+        Sql3 = Sql3 & " from slhfac, schfac, ssocio "
+        Sql3 = Sql3 & " where slhfac.letraser = schfac.letraser and slhfac.numfactu = schfac.numfactu "
+        Sql3 = Sql3 & " and slhfac.fecfactu = schfac.fecfactu and slhfac.codartic = " & DBSet(Rs!codArtic, "N")
         
-        If txtCodigo(2).Text <> "" Then sql3 = sql3 & " and slhfac.fecalbar >= " & DBSet(txtCodigo(2).Text, "F")
-        If txtCodigo(3).Text <> "" Then sql3 = sql3 & " and slhfac.fecalbar <= " & DBSet(txtCodigo(3).Text, "F")
+        If txtCodigo(2).Text <> "" Then Sql3 = Sql3 & " and slhfac.fecalbar >= " & DBSet(txtCodigo(2).Text, "F")
+        If txtCodigo(3).Text <> "" Then Sql3 = Sql3 & " and slhfac.fecalbar <= " & DBSet(txtCodigo(3).Text, "F")
         
-        sql3 = sql3 & " and schfac.codsocio = ssocio.codsocio "
-        sql3 = sql3 & " group by  ssocio.grupoestartic"
-        sql3 = sql3 & " order by ssocio.grupoestartic "
+        Sql3 = Sql3 & " and schfac.codsocio = ssocio.codsocio "
+        Sql3 = Sql3 & " group by  ssocio.grupoestartic"
+        Sql3 = Sql3 & " order by ssocio.grupoestartic "
  
-        Set Rs2 = New adodb.Recordset
-        Rs2.Open sql3, Conn, adOpenDynamic, adLockOptimistic, adCmdText
+        Set Rs2 = New ADODB.Recordset
+        Rs2.Open Sql3, Conn, adOpenDynamic, adLockOptimistic, adCmdText
        
         vImp1 = 0
         vImpb1 = 0
@@ -717,10 +707,10 @@ Dim nRegs As Integer
         
         Set Rs2 = Nothing
         
-        Sql4 = "select sum(litrosve) from sturno where codartic = " & DBSet(rs!codArtic, "N") & " and tiporegi = 3 "
+        Sql4 = "select sum(litrosve) from sturno where codartic = " & DBSet(Rs!codArtic, "N") & " and tiporegi = 3 "
         If txtCodigo(2).Text <> "" Then Sql4 = Sql4 & " and fechatur >= " & DBSet(txtCodigo(2).Text, "F")
         If txtCodigo(3).Text <> "" Then Sql4 = Sql4 & " and fechatur <= " & DBSet(txtCodigo(3).Text, "F")
-        Set Rs3 = New adodb.Recordset
+        Set Rs3 = New ADODB.Recordset
         Rs3.Open Sql4, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
         If Rs3.EOF Then
             vImp6 = 0
@@ -730,20 +720,20 @@ Dim nRegs As Integer
         Set Rs3 = Nothing
         
         
-        Sql2 = "insert into tmpinformes (codusu, codigo1, nombre1, importe1, importe2, importe3, importe4, importe5, importe6, "
-        Sql2 = Sql2 & "importeb1, importeb2, importeb3, importeb4, importeb5) values (" & vSesion.Codigo & ","
-        Sql2 = Sql2 & DBSet(rs!codArtic, "N") & "," & DBSet(rs!NomArtic, "T") & ","
-        Sql2 = Sql2 & DBSet(vImp1, "N") & "," & DBSet(vImp2, "N") & "," & DBSet(vImp3, "N") & "," & DBSet(vImp4, "N") & ","
-        Sql2 = Sql2 & DBSet(vImp5, "N") & "," & DBSet(vImp6, "N") & ","
-        Sql2 = Sql2 & DBSet(vImpb1, "N") & "," & DBSet(vImpb2, "N") & "," & DBSet(vImpb3, "N") & "," & DBSet(vImpb4, "N") & ","
-        Sql2 = Sql2 & DBSet(vImpb5, "N") & ")"
+        sql2 = "insert into tmpinformes (codusu, codigo1, nombre1, importe1, importe2, importe3, importe4, importe5, importe6, "
+        sql2 = sql2 & "importeb1, importeb2, importeb3, importeb4, importeb5) values (" & vSesion.Codigo & ","
+        sql2 = sql2 & DBSet(Rs!codArtic, "N") & "," & DBSet(Rs!NomArtic, "T") & ","
+        sql2 = sql2 & DBSet(vImp1, "N") & "," & DBSet(vImp2, "N") & "," & DBSet(vImp3, "N") & "," & DBSet(vImp4, "N") & ","
+        sql2 = sql2 & DBSet(vImp5, "N") & "," & DBSet(vImp6, "N") & ","
+        sql2 = sql2 & DBSet(vImpb1, "N") & "," & DBSet(vImpb2, "N") & "," & DBSet(vImpb3, "N") & "," & DBSet(vImpb4, "N") & ","
+        sql2 = sql2 & DBSet(vImpb5, "N") & ")"
         
-        Conn.Execute Sql2
+        Conn.Execute sql2
     
-        rs.MoveNext
+        Rs.MoveNext
     
     Wend
     Pb1.visible = False
-    Set rs = Nothing
+    Set Rs = Nothing
     
 End Function

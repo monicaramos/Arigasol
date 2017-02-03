@@ -381,9 +381,9 @@ Dim cerrar As Boolean
 End Sub
 
 Private Sub cmdAceptar_Click()
-Dim i As Byte
-Dim sql As String
-Dim nRegs As Long
+Dim I As Byte
+Dim SQL As String
+Dim NRegs As Long
 Dim C As Object
 Dim v_Cadena As String
 Dim b As Boolean
@@ -424,7 +424,7 @@ Dim b As Boolean
             v_Cadena = v_Cadena & " group by 1, 2, 3, 4, 5, 6 "
             v_Cadena = v_Cadena & " order by 1, 2, 3, 4, 5, 6 "
             
-            sql = "select count(*) from (" & v_Cadena & ") as tabla "
+            SQL = "select count(*) from (" & v_Cadena & ") as tabla "
         
         Else
             '[Monica]09/01/2013: Nueva cooperativa de Ribarroja
@@ -443,7 +443,7 @@ Dim b As Boolean
                 v_Cadena = v_Cadena & " order by 1, 2, 6, 3, 4, 5 "
     
                 
-                sql = "select count(*) from (" & v_Cadena & ") as tabla "
+                SQL = "select count(*) from (" & v_Cadena & ") as tabla "
     
             Else                                ' regaixo
                 
@@ -460,14 +460,14 @@ Dim b As Boolean
                 v_Cadena = v_Cadena & " group by 1,2,3,4,5,6  "
                 v_Cadena = v_Cadena & " order by 1,2,6,3,4,5 "
                 
-                sql = "select count(*) from (" & v_Cadena & ") as tabla "
+                SQL = "select count(*) from (" & v_Cadena & ") as tabla "
             
             End If
         End If
     
-        nRegs = TotalRegistros(sql)
+        NRegs = TotalRegistros(SQL)
     
-        If nRegs <> 0 Then
+        If NRegs <> 0 Then
 '            '[Monica]21/03/2013: antes de generar el fichero he de ver si existen en entidaddom todos los bancos
 '            If Not ComprobarBancos(v_Cadena) Then
 '                MsgBox "No se ha realizado el proceso. Revise.", vbExclamation
@@ -488,7 +488,7 @@ Dim b As Boolean
             
             
             Pb1.visible = True
-            Pb1.Max = nRegs + 1
+            Pb1.Max = NRegs + 1
             Pb1.Value = 0
             
 '            If vParamAplic.Cooperativa = 1 Then
@@ -505,8 +505,8 @@ Dim b As Boolean
                 If CopiarFichero Then
                     MsgBox "Proceso realizado correctamente", vbExclamation
                    
-                    nRegs = TotalRegistros("select count(*) from tmpinformes where codusu = " & vSesion.Codigo)
-                    If nRegs <> 0 Then
+                    NRegs = TotalRegistros("select count(*) from tmpinformes where codusu = " & vSesion.Codigo)
+                    If NRegs <> 0 Then
                         cadParam = cadParam & "|pEmpresa=""" & vEmpresa.nomEmpre & """|"
                         numParam = numParam + 1
                         
@@ -675,7 +675,7 @@ Private Sub KEYFecha(KeyAscii As Integer, indice As Integer)
 End Sub
 
 Private Sub txtCodigo_LostFocus(Index As Integer)
-Dim cad As String, cadTipo As String 'tipo cliente
+Dim Cad As String, cadTipo As String 'tipo cliente
 
     'Quitar espacios en blanco por los lados
     txtCodigo(Index).Text = Trim(txtCodigo(Index).Text)
@@ -707,10 +707,10 @@ End Sub
 
 Private Function GeneraFichero() As Boolean
 Dim NFich As Integer
-Dim rs As adodb.Recordset
-Dim cad As String
-Dim sql As String
-Dim i As Integer
+Dim Rs As ADODB.Recordset
+Dim Cad As String
+Dim SQL As String
+Dim I As Integer
 Dim vsocio As CSocio
 Dim v_total As Currency
 Dim v_total1 As Currency
@@ -731,7 +731,7 @@ Dim Banco As Currency
     NFich = FreeFile
     Open App.path & "\gasoleob.txt" For Output As #NFich
 
-    Set rs = New adodb.Recordset
+    Set Rs = New ADODB.Recordset
     
 '    'partimos de la tabla de historico de facturas
 '    sql = "SELECT  schfac.codcoope, schfac.codsocio, sum(slhfac.implinea) "
@@ -750,93 +750,93 @@ Dim Banco As Currency
     
     '[Monica]09/01/2013: Nueva cooperativa de Ribarroja
     If vParamAplic.Cooperativa = 1 Or vParamAplic.Cooperativa = 3 Or vParamAplic.Cooperativa = 5 Then ' alzira o castelduc o Ribarroja
-        sql = "SELECT  schfac.codcoope, schfac.codsocio, sum(slhfac.implinea) "
-        sql = sql & " from slhfac, schfac where 1 = 1 "
-        If txtCodigo(0).Text <> "" Then sql = sql & " and slhfac.fecfactu >= " & DBSet(txtCodigo(0).Text, "F")
-        If txtCodigo(1).Text <> "" Then sql = sql & " and slhfac.fecfactu <= " & DBSet(txtCodigo(1).Text, "F")
-        sql = sql & " and slhfac.codartic in (select codartic from sartic where tipogaso = 3 and "
+        SQL = "SELECT  schfac.codcoope, schfac.codsocio, sum(slhfac.implinea) "
+        SQL = SQL & " from slhfac, schfac where 1 = 1 "
+        If txtCodigo(0).Text <> "" Then SQL = SQL & " and slhfac.fecfactu >= " & DBSet(txtCodigo(0).Text, "F")
+        If txtCodigo(1).Text <> "" Then SQL = SQL & " and slhfac.fecfactu <= " & DBSet(txtCodigo(1).Text, "F")
+        SQL = SQL & " and slhfac.codartic in (select codartic from sartic where tipogaso = 3 and "
         '[Monica]28/11/2011: añadida condicion
-        sql = sql & CadenaArticulos & ") "
+        SQL = SQL & CadenaArticulos & ") "
         '[Monica]28/11/2011: añadida la concidicion de socios con tarjeta de gasoleo bonificado
-        sql = sql & " and slhfac.numtarje in (select numtarje from starje where codsocio = schfac.codsocio and tiptarje = 1)"
-        sql = sql & " and slhfac.letraser = schfac.letraser and slhfac.numfactu = schfac.numfactu and slhfac.fecfactu = schfac.fecfactu "
-        sql = sql & " group by 1, 2 "
-        sql = sql & " order by 2"
+        SQL = SQL & " and slhfac.numtarje in (select numtarje from starje where codsocio = schfac.codsocio and tiptarje = 1)"
+        SQL = SQL & " and slhfac.letraser = schfac.letraser and slhfac.numfactu = schfac.numfactu and slhfac.fecfactu = schfac.fecfactu "
+        SQL = SQL & " group by 1, 2 "
+        SQL = SQL & " order by 2"
     
     Else                                ' regaixo
-        sql = "SELECT  schfacr.codcoope, schfacr.codsocio, sum(slhfacr.implinea) "
-        sql = sql & " from slhfacr, schfacr where 1 = 1 "
-        If txtCodigo(0).Text <> "" Then sql = sql & " and slhfacr.fecfactu >= " & DBSet(txtCodigo(0).Text, "F")
-        If txtCodigo(1).Text <> "" Then sql = sql & " and slhfacr.fecfactu <= " & DBSet(txtCodigo(1).Text, "F")
-        sql = sql & " and slhfacr.codartic in (select codartic from sartic where tipogaso = 3 and "
+        SQL = "SELECT  schfacr.codcoope, schfacr.codsocio, sum(slhfacr.implinea) "
+        SQL = SQL & " from slhfacr, schfacr where 1 = 1 "
+        If txtCodigo(0).Text <> "" Then SQL = SQL & " and slhfacr.fecfactu >= " & DBSet(txtCodigo(0).Text, "F")
+        If txtCodigo(1).Text <> "" Then SQL = SQL & " and slhfacr.fecfactu <= " & DBSet(txtCodigo(1).Text, "F")
+        SQL = SQL & " and slhfacr.codartic in (select codartic from sartic where tipogaso = 3 and "
         '[Monica]28/11/2011: añadida condicion
-        sql = sql & CadenaArticulos & ") "
+        SQL = SQL & CadenaArticulos & ") "
         '[Monica]28/11/2011: añadida la concidicion de socios con tarjeta de gasoleo bonificado
-        sql = sql & " and slhfacr.numtarje in (select numtarje from starje where codsocio = schfacr.codsocio and tiptarje = 1) "
-        sql = sql & " and slhfacr.letraser = schfacr.letraser and slhfacr.numfactu = schfacr.numfactu and slhfacr.fecfactu = schfacr.fecfactu "
-        sql = sql & " group by 1,2 "
-        sql = sql & " order by 1,2"
+        SQL = SQL & " and slhfacr.numtarje in (select numtarje from starje where codsocio = schfacr.codsocio and tiptarje = 1) "
+        SQL = SQL & " and slhfacr.letraser = schfacr.letraser and slhfacr.numfactu = schfacr.numfactu and slhfacr.fecfactu = schfacr.fecfactu "
+        SQL = SQL & " group by 1,2 "
+        SQL = SQL & " order by 1,2"
     
     End If
     
     
-    rs.Open sql, Conn, adOpenForwardOnly, adLockOptimistic, adCmdText
+    Rs.Open SQL, Conn, adOpenForwardOnly, adLockOptimistic, adCmdText
     
     v_lineas = 0
     
     '***************REGISTRO R1
     v_lineas = v_lineas + 1
     
-    cad = "E1"
-    cad = cad & RellenaABlancos(Format(txtCodigo(1).Text, "yymmdd"), True, 12)
+    Cad = "E1"
+    Cad = Cad & RellenaABlancos(Format(txtCodigo(1).Text, "yymmdd"), True, 12)
     '[Monica]09/01/2013: Nueva cooperativa de Ribarroja
     If vParamAplic.Cooperativa = 1 Or vParamAplic.Cooperativa = 3 Or vParamAplic.Cooperativa = 5 Then ' alzira o castelduc o Ribarroja
-        cad = cad & RellenaABlancos(Format(txtCodigo(2).Text, "0000"), True, 144)
-        cad = cad & Format(v_lineas, "0000000")
+        Cad = Cad & RellenaABlancos(Format(txtCodigo(2).Text, "0000"), True, 144)
+        Cad = Cad & Format(v_lineas, "0000000")
     Else ' regaixo
-        cad = cad & RellenaABlancos("7056", True, 144)
-        cad = cad & Format(v_lineas, "0000000")
+        Cad = Cad & RellenaABlancos("7056", True, 144)
+        Cad = Cad & Format(v_lineas, "0000000")
     End If
     
-    Print #NFich, cad
+    Print #NFich, Cad
     
     
     '***************REGISTRO R2
     v_lineas = v_lineas + 1
     
-    cad = RellenaABlancos("E2", True, 14)
+    Cad = RellenaABlancos("E2", True, 14)
     '[Monica]09/01/2013: Nueva cooperativa de Ribarroja
     If vParamAplic.Cooperativa = 1 Or vParamAplic.Cooperativa = 3 Or vParamAplic.Cooperativa = 5 Then
-        cad = cad & Format(txtCodigo(2).Text, "0000")
-        cad = cad & RellenaABlancos(Format(txtCodigo(3).Text, "0000"), True, 140)
+        Cad = Cad & Format(txtCodigo(2).Text, "0000")
+        Cad = Cad & RellenaABlancos(Format(txtCodigo(3).Text, "0000"), True, 140)
     Else
         Set vsocio = New CSocio
-        If vsocio.LeerDatos(DBLet(rs.Fields(1).Value, "N")) Then
-            If rs.Fields(0).Value = 1 Then
+        If vsocio.LeerDatos(DBLet(Rs.Fields(1).Value, "N")) Then
+            If Rs.Fields(0).Value = 1 Then
                  v_dombanco = "MAESTRO TORRES RUIZ, 23"
                  v_pobbanco = "46195 LLOMBAI"
             Else
                  v_dombanco = "PLAZA ESPAÑA, 1"
                  v_pobbanco = "46196 CATADAU"
             End If
-            cad = cad & "7056"
-            cad = cad & RellenaABlancos(Format(vsocio.Banco, "0000"), True, 140)
+            Cad = Cad & "7056"
+            Cad = Cad & RellenaABlancos(Format(vsocio.Banco, "0000"), True, 140)
             Set vsocio = Nothing
         End If
     End If
-    cad = cad & Format(v_lineas, "0000000")
-    Print #NFich, cad
+    Cad = Cad & Format(v_lineas, "0000000")
+    Print #NFich, Cad
     
-    AntCoope = rs.Fields(0).Value
+    AntCoope = Rs.Fields(0).Value
     ActCoope = AntCoope
     
     v_total = 0
     
-    While Not rs.EOF
+    While Not Rs.EOF
     
         Set vsocio = New CSocio
-        If vsocio.LeerDatos(DBLet(rs.Fields(1).Value, "N")) Then
-            ActCoope = rs.Fields(0).Value
+        If vsocio.LeerDatos(DBLet(Rs.Fields(1).Value, "N")) Then
+            ActCoope = Rs.Fields(0).Value
             
             If ActCoope <> AntCoope Then
                 '[Monica]09/01/2013: Nueva cooperativa de Ribarroja
@@ -847,35 +847,35 @@ Dim Banco As Currency
                     'grabamos el E8 antes que el E2
                     v_lineas = v_lineas + 1
                     
-                    cad = RellenaABlancos("E8", True, 14)
-                    cad = cad & RellenaABlancos(Format(Banco, "0000"), True, 20)
+                    Cad = RellenaABlancos("E8", True, 14)
+                    Cad = Cad & RellenaABlancos(Format(Banco, "0000"), True, 20)
 '                    cad = cad & RellenaABlancos(Format(vSocio.Banco, "0000"), True, 20)
                     If AntCoope = 1 Then
-                        cad = cad & Format(Round2(v_total1 * 100, 0), "000000000000")
-                        cad = cad & Format(v_socios1, "0000000000")
-                        cad = cad & RellenaABlancos(Format(v_socios1 + 2, "0000000000"), True, 102)
+                        Cad = Cad & Format(Round2(v_total1 * 100, 0), "000000000000")
+                        Cad = Cad & Format(v_socios1, "0000000000")
+                        Cad = Cad & RellenaABlancos(Format(v_socios1 + 2, "0000000000"), True, 102)
                     Else
-                        cad = cad & Format(Round2(v_total2 * 100, 0), "000000000000")
-                        cad = cad & Format(v_socios2, "0000000000")
-                        cad = cad & RellenaABlancos(Format(v_socios2 + 2, "0000000000"), True, 102)
+                        Cad = Cad & Format(Round2(v_total2 * 100, 0), "000000000000")
+                        Cad = Cad & Format(v_socios2, "0000000000")
+                        Cad = Cad & RellenaABlancos(Format(v_socios2 + 2, "0000000000"), True, 102)
                     End If
-                    cad = cad & Format(v_lineas, "0000000")
-                    Print #NFich, cad
+                    Cad = Cad & Format(v_lineas, "0000000")
+                    Print #NFich, Cad
                     
                     v_lineas = v_lineas + 1
                     
-                    cad = RellenaABlancos("E2", True, 14)
-                    If rs.Fields(0).Value = 1 Then
+                    Cad = RellenaABlancos("E2", True, 14)
+                    If Rs.Fields(0).Value = 1 Then
                          v_dombanco = "MAESTRO TORRES RUIZ, 23"
                          v_pobbanco = "46195 LLOMBAI"
                     Else
                          v_dombanco = "PLAZA ESPAÑA, 1"
                          v_pobbanco = "46196 CATADAU"
                     End If
-                    cad = cad & "7056"
-                    cad = cad & RellenaABlancos(Format(vsocio.Banco, "0000"), True, 140)
-                    cad = cad & Format(v_lineas, "0000000")
-                    Print #NFich, cad
+                    Cad = Cad & "7056"
+                    Cad = Cad & RellenaABlancos(Format(vsocio.Banco, "0000"), True, 140)
+                    Cad = Cad & Format(v_lineas, "0000000")
+                    Print #NFich, Cad
                 End If
                 AntCoope = ActCoope
             End If
@@ -885,82 +885,82 @@ Dim Banco As Currency
             v_lineas = v_lineas + 1
             
             v_socios = v_socios + 1
-            If rs.Fields(0).Value = 1 Then
+            If Rs.Fields(0).Value = 1 Then
                 v_socios1 = v_socios1 + 1
             Else
                 v_socios2 = v_socios2 + 1
             End If
             
-            cad = "E6"
-            cad = cad & RellenaABlancos(vsocio.NIF, True, 10)
-            cad = cad & "T "
+            Cad = "E6"
+            Cad = Cad & RellenaABlancos(vsocio.NIF, True, 10)
+            Cad = Cad & "T "
             '[Monica]09/01/2013: Nueva cooperativa de Ribarroja
             If vParamAplic.Cooperativa = 1 Or vParamAplic.Cooperativa = 3 Or vParamAplic.Cooperativa = 5 Then
-                cad = cad & Format(txtCodigo(3).Text, "0000")
+                Cad = Cad & Format(txtCodigo(3).Text, "0000")
             Else
-                cad = cad & Format(vsocio.Banco, "0000")
+                Cad = Cad & Format(vsocio.Banco, "0000")
             End If
-            cad = cad & Format(vsocio.Sucursal, "0000")
-            cad = cad & RellenaABlancos(vsocio.CuentaBan, True, 10)
-            cad = cad & "46"
-            cad = cad & Format(Round2(rs.Fields(2).Value * 100, 0), "000000000000")
-            cad = cad & RellenaABlancos(vsocio.Nombre, True, 36)
+            Cad = Cad & Format(vsocio.Sucursal, "0000")
+            Cad = Cad & RellenaABlancos(vsocio.CuentaBan, True, 10)
+            Cad = Cad & "46"
+            Cad = Cad & Format(Round2(Rs.Fields(2).Value * 100, 0), "000000000000")
+            Cad = Cad & RellenaABlancos(vsocio.Nombre, True, 36)
             '[Monica]09/01/2013: Nueva cooperativa de Ribarroja
             If vParamAplic.Cooperativa = 1 Or vParamAplic.Cooperativa = 3 Or vParamAplic.Cooperativa = 5 Then
-                cad = cad & RellenaABlancos(vsocio.Domicilio, True, 36)
-                cad = cad & RellenaABlancos(Trim(vsocio.CPostal) & " " & vsocio.POBLACION, True, 36)
+                Cad = Cad & RellenaABlancos(vsocio.Domicilio, True, 36)
+                Cad = Cad & RellenaABlancos(Trim(vsocio.CPostal) & " " & vsocio.POBLACION, True, 36)
             Else
-                cad = cad & RellenaABlancos(v_dombanco, True, 36)
-                cad = cad & RellenaABlancos(v_pobbanco, True, 36)
+                Cad = Cad & RellenaABlancos(v_dombanco, True, 36)
+                Cad = Cad & RellenaABlancos(v_pobbanco, True, 36)
             End If
-            cad = cad & RellenaABlancos(vsocio.Digcontrol, True, 4)
-            cad = cad & Format(v_lineas, "0000000")
+            Cad = Cad & RellenaABlancos(vsocio.Digcontrol, True, 4)
+            Cad = Cad & Format(v_lineas, "0000000")
             
-            Print #NFich, cad
+            Print #NFich, Cad
             
-            v_total = v_total + rs.Fields(2).Value
-            If rs.Fields(0).Value = 1 Then
-                v_total1 = v_total1 + rs.Fields(2).Value
+            v_total = v_total + Rs.Fields(2).Value
+            If Rs.Fields(0).Value = 1 Then
+                v_total1 = v_total1 + Rs.Fields(2).Value
             Else
-                v_total2 = v_total2 + rs.Fields(2).Value
+                v_total2 = v_total2 + Rs.Fields(2).Value
             End If
             Banco = vsocio.Banco
             Set vsocio = Nothing
             
         End If
         
-        rs.MoveNext
+        Rs.MoveNext
     Wend
        
     '[Monica]09/01/2013: Nueva cooperativa de Ribarroja
     If vParamAplic.Cooperativa = 1 Or vParamAplic.Cooperativa = 3 Or vParamAplic.Cooperativa = 5 Then
         v_lineas = v_lineas + 1
         
-        cad = RellenaABlancos("E8", True, 14)
-        cad = cad & RellenaABlancos(Format(txtCodigo(3).Text, "0000"), True, 20)
-        cad = cad & Format(Round2(v_total * 100, 0), "000000000000")
-        cad = cad & Format(v_socios, "0000000000")
-        cad = cad & RellenaABlancos(Format(v_socios + 2, "0000000000"), True, 102)
-        cad = cad & Format(v_lineas, "0000000")
+        Cad = RellenaABlancos("E8", True, 14)
+        Cad = Cad & RellenaABlancos(Format(txtCodigo(3).Text, "0000"), True, 20)
+        Cad = Cad & Format(Round2(v_total * 100, 0), "000000000000")
+        Cad = Cad & Format(v_socios, "0000000000")
+        Cad = Cad & RellenaABlancos(Format(v_socios + 2, "0000000000"), True, 102)
+        Cad = Cad & Format(v_lineas, "0000000")
         
-        Print #NFich, cad
+        Print #NFich, Cad
     Else
         v_lineas = v_lineas + 1
         
-        cad = RellenaABlancos("E8", True, 14)
-        cad = cad & RellenaABlancos(Format(Banco, "0000"), True, 20)
+        Cad = RellenaABlancos("E8", True, 14)
+        Cad = Cad & RellenaABlancos(Format(Banco, "0000"), True, 20)
         If ActCoope = 1 Then
-            cad = cad & Format(Round2(v_total1 * 100, 0), "000000000000")
-            cad = cad & Format(v_socios1, "0000000000")
-            cad = cad & RellenaABlancos(Format(v_socios1 + 2, "0000000000"), True, 102)
+            Cad = Cad & Format(Round2(v_total1 * 100, 0), "000000000000")
+            Cad = Cad & Format(v_socios1, "0000000000")
+            Cad = Cad & RellenaABlancos(Format(v_socios1 + 2, "0000000000"), True, 102)
         Else
-            cad = cad & Format(Round2(v_total2 * 100, 0), "000000000000")
-            cad = cad & Format(v_socios2, "0000000000")
-            cad = cad & RellenaABlancos(Format(v_socios2 + 2, "0000000000"), True, 102)
+            Cad = Cad & Format(Round2(v_total2 * 100, 0), "000000000000")
+            Cad = Cad & Format(v_socios2, "0000000000")
+            Cad = Cad & RellenaABlancos(Format(v_socios2 + 2, "0000000000"), True, 102)
         End If
-        cad = cad & Format(v_lineas, "0000000")
+        Cad = Cad & Format(v_lineas, "0000000")
         
-        Print #NFich, cad
+        Print #NFich, Cad
     End If
     
 '    v_total = 0
@@ -980,34 +980,34 @@ Dim Banco As Currency
     
     v_lineas = v_lineas + 1
     
-    cad = RellenaABlancos("E9", True, 34)
+    Cad = RellenaABlancos("E9", True, 34)
     '[Monica]09/01/2013: Nueva cooperativa de Ribarroja
     If vParamAplic.Cooperativa = 1 Or vParamAplic.Cooperativa = 5 Then
-        cad = cad & Format(Round2(0 * 100, 0), "000000000000")
+        Cad = Cad & Format(Round2(0 * 100, 0), "000000000000")
     Else
-        cad = cad & Format(Round2(v_total * 100, 0), "000000000000")
+        Cad = Cad & Format(Round2(v_total * 100, 0), "000000000000")
     End If
-    cad = cad & Format(v_socios, "0000000000")
-    cad = cad & Format(v_lineas, "0000000000")
+    Cad = Cad & Format(v_socios, "0000000000")
+    Cad = Cad & Format(v_lineas, "0000000000")
     
     '[Monica]09/01/2013: Nueva cooperativa de Ribarroja
     If vParamAplic.Cooperativa = 1 Or vParamAplic.Cooperativa = 3 Or vParamAplic.Cooperativa = 5 Then
-        cad = cad & RellenaABlancos("001", True, 92)
+        Cad = Cad & RellenaABlancos("001", True, 92)
     Else
-        cad = cad & RellenaABlancos("002", True, 92)
+        Cad = Cad & RellenaABlancos("002", True, 92)
     End If
-    cad = cad & Format(v_lineas, "0000000")
+    Cad = Cad & Format(v_lineas, "0000000")
     
-    Print #NFich, cad
+    Print #NFich, Cad
        
-    rs.Close
-    Set rs = Nothing
+    Rs.Close
+    Set Rs = Nothing
     
     Close (NFich)
     If v_socios > 0 Then GeneraFichero = True
     Exit Function
 EGen:
-    Set rs = Nothing
+    Set Rs = Nothing
     Close (NFich)
     MuestraError Err.Number, Err.Description
 
@@ -1044,15 +1044,15 @@ ecopiarfichero:
 End Function
 
 Private Function RellenaABlancos(Cadena As String, PorLaDerecha As Boolean, longitud As Integer) As String
-Dim cad As String
+Dim Cad As String
     
-    cad = Space(longitud)
+    Cad = Space(longitud)
     If PorLaDerecha Then
-        cad = Cadena & cad
-        RellenaABlancos = Left(cad, longitud)
+        Cad = Cadena & Cad
+        RellenaABlancos = Left(Cad, longitud)
     Else
-        cad = cad & Cadena
-        RellenaABlancos = Right(cad, longitud)
+        Cad = Cad & Cadena
+        RellenaABlancos = Right(Cad, longitud)
     End If
     
 End Function
@@ -1086,11 +1086,11 @@ End Function
 
 Private Function GeneraFicheroNew(vCadselect As String) As Boolean
 Dim NFich As Integer
-Dim rs As adodb.Recordset
-Dim RsBanco As adodb.Recordset
-Dim cad As String
-Dim sql As String
-Dim i As Integer
+Dim Rs As ADODB.Recordset
+Dim RsBanco As ADODB.Recordset
+Dim Cad As String
+Dim SQL As String
+Dim I As Integer
 Dim vsocio As CSocio
 Dim v_total As Currency
 Dim v_total1 As Currency
@@ -1104,7 +1104,7 @@ Dim v_pobbanco As String
 Dim AntBanco As Integer
 Dim ActBanco As Integer
 Dim Banco As Currency
-Dim Sql2 As String
+Dim sql2 As String
 
 Dim v_Entidades As Integer
 
@@ -1119,16 +1119,16 @@ Dim IBAN As String
     On Error GoTo EGen
     GeneraFicheroNew = False
 
-    sql = "delete from tmpinformes where codusu = " & vSesion.Codigo
-    Conn.Execute sql
+    SQL = "delete from tmpinformes where codusu = " & vSesion.Codigo
+    Conn.Execute SQL
 
 
     NFich = FreeFile
     Open App.path & "\gasoleob.txt" For Output As #NFich
 
-    Set rs = New adodb.Recordset
+    Set Rs = New ADODB.Recordset
     
-    sql = vCadselect
+    SQL = vCadselect
     
     
 '    '[Monica]09/01/2013: Nueva cooperativa de Ribarroja
@@ -1162,22 +1162,22 @@ Dim IBAN As String
 '        Sql = Sql & " order by 1,2"
 '    End If
     
-    rs.Open sql, Conn, adOpenForwardOnly, adLockOptimistic, adCmdText
+    Rs.Open SQL, Conn, adOpenForwardOnly, adLockOptimistic, adCmdText
     
     v_lineas = 0
     
     '***************REGISTRO R1
     v_lineas = v_lineas + 1
     
-    cad = "E1"
-    cad = cad & RellenaABlancos(Format(txtCodigo(1).Text, "yymmdd"), True, 12)
-    cad = cad & RellenaABlancos(Format(txtCodigo(2).Text, "0000"), True, 144)
-    cad = cad & Format(v_lineas, "0000000")
+    Cad = "E1"
+    Cad = Cad & RellenaABlancos(Format(txtCodigo(1).Text, "yymmdd"), True, 12)
+    Cad = Cad & RellenaABlancos(Format(txtCodigo(2).Text, "0000"), True, 144)
+    Cad = Cad & Format(v_lineas, "0000000")
     
-    Print #NFich, cad
+    Print #NFich, Cad
     
-    AntBanco = rs.Fields(0).Value
-    ActBanco = rs.Fields(0).Value
+    AntBanco = Rs.Fields(0).Value
+    ActBanco = Rs.Fields(0).Value
     
     v_Entidades = 0
     
@@ -1186,28 +1186,28 @@ Dim IBAN As String
     v_socios = 0 ' socios total
     v_socios1 = 0 'socios por banco
     
-    While Not rs.EOF
-        ActBanco = DBLet(rs.Fields(0).Value, "N")
+    While Not Rs.EOF
+        ActBanco = DBLet(Rs.Fields(0).Value, "N")
     
         If ActBanco <> AntBanco Or v_socios1 = 0 Then
             If v_socios1 <> 0 Then
                 '***************REGISTRO R8
                 v_lineas = v_lineas + 1
                 
-                cad = RellenaABlancos("E8", True, 14)
-                cad = cad & RellenaABlancos(Format(AntBanco, "0000"), True, 20)
-                cad = cad & Format(Round2(v_total1 * 100, 0), "000000000000")
-                cad = cad & Format(v_socios1, "0000000000")
-                cad = cad & RellenaABlancos(Format(v_socios1 + 2, "0000000000"), True, 102)
-                cad = cad & Format(v_lineas, "0000000")
+                Cad = RellenaABlancos("E8", True, 14)
+                Cad = Cad & RellenaABlancos(Format(AntBanco, "0000"), True, 20)
+                Cad = Cad & Format(Round2(v_total1 * 100, 0), "000000000000")
+                Cad = Cad & Format(v_socios1, "0000000000")
+                Cad = Cad & RellenaABlancos(Format(v_socios1 + 2, "0000000000"), True, 102)
+                Cad = Cad & Format(v_lineas, "0000000")
                 
-                Print #NFich, cad
+                Print #NFich, Cad
                 
-                Sql2 = "insert into tmpinformes (codusu, codigo1, importe1, importe2) values "
-                Sql2 = Sql2 & "(" & vSesion.Codigo & "," & DBSet(AntBanco, "N") & "," & DBSet(v_socios1, "N")
-                Sql2 = Sql2 & "," & DBSet(v_total1, "N") & ")"
+                sql2 = "insert into tmpinformes (codusu, codigo1, importe1, importe2) values "
+                sql2 = sql2 & "(" & vSesion.Codigo & "," & DBSet(AntBanco, "N") & "," & DBSet(v_socios1, "N")
+                sql2 = sql2 & "," & DBSet(v_total1, "N") & ")"
                 
-                Conn.Execute Sql2
+                Conn.Execute sql2
                 
                 v_total1 = 0
                 v_socios1 = 0
@@ -1222,19 +1222,19 @@ Dim IBAN As String
             'Nro total de socios del banco
             v_total1 = 0
             
-            cad = RellenaABlancos("E2", True, 14)
-            cad = cad & Format(txtCodigo(2).Text, "0000")
+            Cad = RellenaABlancos("E2", True, 14)
+            Cad = Cad & Format(txtCodigo(2).Text, "0000")
             
-            cad = cad & RellenaABlancos(Format(ActBanco, "0000"), True, 140)
-            cad = cad & Format(v_lineas, "0000000")
-            Print #NFich, cad
+            Cad = Cad & RellenaABlancos(Format(ActBanco, "0000"), True, 140)
+            Cad = Cad & Format(v_lineas, "0000000")
+            Print #NFich, Cad
             
             AntBanco = ActBanco
         
         End If
     
         Set vsocio = New CSocio
-        If vsocio.LeerDatos(DBLet(rs.Fields(2).Value, "N")) Then
+        If vsocio.LeerDatos(DBLet(Rs.Fields(2).Value, "N")) Then
             ' datos del banco
             v_Sucursal = 0
             v_Domicilio = ""
@@ -1255,78 +1255,78 @@ Dim IBAN As String
             v_socios = v_socios + 1
             v_socios1 = v_socios1 + 1
             
-            cad = "E6"
-            cad = cad & RellenaABlancos(vsocio.NIF, True, 10)
-            cad = cad & "T "
-            cad = cad & Format(ActBanco, "0000")
-            cad = cad & Format(v_Sucursal, "0000")
-            cad = cad & RellenaABlancos(vsocio.CuentaBan, True, 10)
-            cad = cad & Format(v_Provincia, "00")
+            Cad = "E6"
+            Cad = Cad & RellenaABlancos(vsocio.NIF, True, 10)
+            Cad = Cad & "T "
+            Cad = Cad & Format(ActBanco, "0000")
+            Cad = Cad & Format(v_Sucursal, "0000")
+            Cad = Cad & RellenaABlancos(vsocio.CuentaBan, True, 10)
+            Cad = Cad & Format(v_Provincia, "00")
 
             '[Monica]07/07/2014: si la factura es negativa ponemos un digito menos por el signo
-            If rs.Fields(3).Value < 0 Then
-                cad = cad & Format(Round2(rs.Fields(3).Value * 100, 0), "00000000000")
+            If Rs.Fields(3).Value < 0 Then
+                Cad = Cad & Format(Round2(Rs.Fields(3).Value * 100, 0), "00000000000")
             Else
-                cad = cad & Format(Round2(rs.Fields(3).Value * 100, 0), "000000000000")
+                Cad = Cad & Format(Round2(Rs.Fields(3).Value * 100, 0), "000000000000")
             End If
 
-            cad = cad & RellenaABlancos(vsocio.Nombre, True, 36)
-            cad = cad & RellenaABlancos(v_Domicilio, True, 36)
-            cad = cad & RellenaABlancos(Trim(v_CPostal) & " " & v_Poblacion, True, 36)
-            cad = cad & RellenaABlancos(vsocio.Digcontrol, True, 4)
-            cad = cad & Format(v_lineas, "0000000")
+            Cad = Cad & RellenaABlancos(vsocio.Nombre, True, 36)
+            Cad = Cad & RellenaABlancos(v_Domicilio, True, 36)
+            Cad = Cad & RellenaABlancos(Trim(v_CPostal) & " " & v_Poblacion, True, 36)
+            Cad = Cad & RellenaABlancos(vsocio.Digcontrol, True, 4)
+            Cad = Cad & Format(v_lineas, "0000000")
 
-            Print #NFich, cad
+            Print #NFich, Cad
             
-            v_total = v_total + rs.Fields(3).Value
-            v_total1 = v_total1 + rs.Fields(3).Value
+            v_total = v_total + Rs.Fields(3).Value
+            v_total1 = v_total1 + Rs.Fields(3).Value
             
             Set vsocio = Nothing
         End If
         
-        rs.MoveNext
+        Rs.MoveNext
     Wend
        
     v_lineas = v_lineas + 1
     
-    cad = RellenaABlancos("E8", True, 14)
-    cad = cad & RellenaABlancos(Format(ActBanco, "0000"), True, 20)
-    cad = cad & Format(Round2(v_total1 * 100, 0), "000000000000")
-    cad = cad & Format(v_socios1, "0000000000")
-    cad = cad & RellenaABlancos(Format(v_socios1 + 2, "0000000000"), True, 102)
-    cad = cad & Format(v_lineas, "0000000")
+    Cad = RellenaABlancos("E8", True, 14)
+    Cad = Cad & RellenaABlancos(Format(ActBanco, "0000"), True, 20)
+    Cad = Cad & Format(Round2(v_total1 * 100, 0), "000000000000")
+    Cad = Cad & Format(v_socios1, "0000000000")
+    Cad = Cad & RellenaABlancos(Format(v_socios1 + 2, "0000000000"), True, 102)
+    Cad = Cad & Format(v_lineas, "0000000")
     
-    Print #NFich, cad
+    Print #NFich, Cad
     
-    Sql2 = "insert into tmpinformes (codusu, codigo1, importe1, importe2) values "
-    Sql2 = Sql2 & "(" & vSesion.Codigo & "," & DBSet(ActBanco, "N") & "," & DBSet(v_socios1, "N")
-    Sql2 = Sql2 & "," & DBSet(v_total1, "N") & ")"
+    sql2 = "insert into tmpinformes (codusu, codigo1, importe1, importe2) values "
+    sql2 = sql2 & "(" & vSesion.Codigo & "," & DBSet(ActBanco, "N") & "," & DBSet(v_socios1, "N")
+    sql2 = sql2 & "," & DBSet(v_total1, "N") & ")"
     
-    Conn.Execute Sql2
+    Conn.Execute sql2
     
     v_Entidades = v_Entidades + 1
     
     v_lineas = v_lineas + 1
     
-    cad = RellenaABlancos("E9", True, 34)
-    cad = cad & Format(Round2(v_total * 100, 0), "000000000000")
-    cad = cad & Format(v_socios, "0000000000")
-    cad = cad & Format(v_lineas, "0000000000")
+    Cad = RellenaABlancos("E9", True, 34)
+    Cad = Cad & Format(Round2(v_total * 100, 0), "000000000000")
+    Cad = Cad & Format(v_socios, "0000000000")
+    Cad = Cad & Format(v_lineas, "0000000000")
     
-    cad = cad & RellenaABlancos(Format(v_Entidades, "000"), True, 92)
-    cad = cad & Format(v_lineas, "0000000")
+    Cad = Cad & RellenaABlancos(Format(v_Entidades, "000"), True, 92)
+    Cad = Cad & Format(v_lineas, "0000000")
     
-    Print #NFich, cad
+    Print #NFich, Cad
        
-    rs.Close
-    Set rs = Nothing
+    Rs.Close
+    Set Rs = Nothing
     
     Close (NFich)
     If v_socios > 0 Then GeneraFicheroNew = True
     Exit Function
 
 EGen:
-    Set rs = Nothing
+    Set Rs = Nothing
     Close (NFich)
     MuestraError Err.Number, Err.Description
 End Function
@@ -1334,11 +1334,11 @@ End Function
 
 Private Function GeneraFicheroNewAlz(vCadselect As String) As Boolean
 Dim NFich As Integer
-Dim rs As adodb.Recordset
-Dim RsBanco As adodb.Recordset
-Dim cad As String
-Dim sql As String
-Dim i As Integer
+Dim Rs As ADODB.Recordset
+Dim RsBanco As ADODB.Recordset
+Dim Cad As String
+Dim SQL As String
+Dim I As Integer
 Dim vsocio As CSocio
 Dim v_total As Currency
 Dim v_total1 As Currency
@@ -1352,7 +1352,7 @@ Dim v_pobbanco As String
 Dim AntBanco As Integer
 Dim ActBanco As Integer
 Dim Banco As Currency
-Dim Sql2 As String
+Dim sql2 As String
 
 Dim v_Entidades As Integer
 
@@ -1363,7 +1363,7 @@ Dim v_Poblacion As String
 Dim v_Provincia As Integer
 
 Dim SqlBic As String
-Dim RsBic As adodb.Recordset
+Dim RsBic As ADODB.Recordset
 Dim Bic As String
 
 Dim IBAN As String
@@ -1374,32 +1374,32 @@ Dim IBAN As String
     
     GeneraFicheroNewAlz = False
 
-    sql = "delete from tmpinformes where codusu = " & vSesion.Codigo
-    Conn.Execute sql
+    SQL = "delete from tmpinformes where codusu = " & vSesion.Codigo
+    Conn.Execute SQL
 
     NFich = FreeFile
     Open App.path & "\gasoleob.txt" For Output As #NFich
 
-    Set rs = New adodb.Recordset
+    Set Rs = New ADODB.Recordset
     
-    sql = vCadselect
+    SQL = vCadselect
     
-    rs.Open sql, Conn, adOpenForwardOnly, adLockOptimistic, adCmdText
+    Rs.Open SQL, Conn, adOpenForwardOnly, adLockOptimistic, adCmdText
     
     v_lineas = 0
     
     '***************REGISTRO R1
     v_lineas = v_lineas + 1
     
-    cad = "E1"
-    cad = cad & RellenaABlancos(Format(txtCodigo(1).Text, "yymmdd"), True, 12)
-    cad = cad & RellenaABlancos(Format(txtCodigo(2).Text, "0000"), True, 144)
-    cad = cad & Format(v_lineas, "0000000")
+    Cad = "E1"
+    Cad = Cad & RellenaABlancos(Format(txtCodigo(1).Text, "yymmdd"), True, 12)
+    Cad = Cad & RellenaABlancos(Format(txtCodigo(2).Text, "0000"), True, 144)
+    Cad = Cad & Format(v_lineas, "0000000")
     
-    Print #NFich, cad
+    Print #NFich, Cad
     
-    AntBanco = rs.Fields(0).Value
-    ActBanco = rs.Fields(0).Value
+    AntBanco = Rs.Fields(0).Value
+    ActBanco = Rs.Fields(0).Value
     
     v_Entidades = 0
     
@@ -1408,28 +1408,28 @@ Dim IBAN As String
     v_socios = 0 ' socios total
     v_socios1 = 0 'socios por banco
     
-    While Not rs.EOF
-        ActBanco = DBLet(rs.Fields(0).Value, "N")
+    While Not Rs.EOF
+        ActBanco = DBLet(Rs.Fields(0).Value, "N")
     
         If ActBanco <> AntBanco Or v_socios1 = 0 Then
             If v_socios1 <> 0 Then
                 '***************REGISTRO R8
                 v_lineas = v_lineas + 1
                 
-                cad = RellenaABlancos("E8", True, 14)
-                cad = cad & RellenaABlancos(Format(AntBanco, "0000"), True, 20)
-                cad = cad & Format(Round2(v_total1 * 100, 0), "000000000000")
-                cad = cad & Format(v_socios1, "0000000000")
-                cad = cad & RellenaABlancos(Format(v_socios1 + 2, "0000000000"), True, 102)
-                cad = cad & Format(v_lineas, "0000000")
+                Cad = RellenaABlancos("E8", True, 14)
+                Cad = Cad & RellenaABlancos(Format(AntBanco, "0000"), True, 20)
+                Cad = Cad & Format(Round2(v_total1 * 100, 0), "000000000000")
+                Cad = Cad & Format(v_socios1, "0000000000")
+                Cad = Cad & RellenaABlancos(Format(v_socios1 + 2, "0000000000"), True, 102)
+                Cad = Cad & Format(v_lineas, "0000000")
                 
-                Print #NFich, cad
+                Print #NFich, Cad
                 
-                Sql2 = "insert into tmpinformes (codusu, codigo1, importe1, importe2) values "
-                Sql2 = Sql2 & "(" & vSesion.Codigo & "," & DBSet(AntBanco, "N") & "," & DBSet(v_socios1, "N")
-                Sql2 = Sql2 & "," & DBSet(v_total1, "N") & ")"
+                sql2 = "insert into tmpinformes (codusu, codigo1, importe1, importe2) values "
+                sql2 = sql2 & "(" & vSesion.Codigo & "," & DBSet(AntBanco, "N") & "," & DBSet(v_socios1, "N")
+                sql2 = sql2 & "," & DBSet(v_total1, "N") & ")"
                 
-                Conn.Execute Sql2
+                Conn.Execute sql2
                 
                 v_total1 = 0
                 v_socios1 = 0
@@ -1443,18 +1443,18 @@ Dim IBAN As String
             'Nro total de socios del banco
             v_total1 = 0
             
-            cad = RellenaABlancos("E2", True, 14)
-            cad = cad & Format(txtCodigo(2).Text, "0000")
+            Cad = RellenaABlancos("E2", True, 14)
+            Cad = Cad & Format(txtCodigo(2).Text, "0000")
             
-            cad = cad & RellenaABlancos(Format(ActBanco, "0000"), True, 140)
-            cad = cad & Format(v_lineas, "0000000")
-            Print #NFich, cad
+            Cad = Cad & RellenaABlancos(Format(ActBanco, "0000"), True, 140)
+            Cad = Cad & Format(v_lineas, "0000000")
+            Print #NFich, Cad
             
             AntBanco = ActBanco
         End If
     
         Set vsocio = New CSocio
-        If vsocio.LeerDatos(DBLet(rs.Fields(5).Value, "N")) Then
+        If vsocio.LeerDatos(DBLet(Rs.Fields(5).Value, "N")) Then
             ' datos del banco
             v_Sucursal = 0
             v_Domicilio = ""
@@ -1462,7 +1462,7 @@ Dim IBAN As String
             v_Poblacion = ""
             v_Provincia = 0
             
-            v_Sucursal = rs.Fields(1).Value ' vsocio.Sucursal
+            v_Sucursal = Rs.Fields(1).Value ' vsocio.Sucursal
             v_Domicilio = vsocio.Domicilio
             v_CPostal = vsocio.CPostal
             v_Poblacion = vsocio.POBLACION
@@ -1492,77 +1492,77 @@ Dim IBAN As String
 '            Cad = Cad & RellenaABlancos(Rs.Fields(2).Value, True, 4)
 '            Cad = Cad & Format(v_lineas, "0000000")
 
-            cad = "E4"
-            cad = cad & RellenaABlancos(vsocio.NIF, True, 9)
-            cad = cad & "T"
-            cad = cad & RellenaABlancos(Format(rs.Fields(0).Value, "0000"), True, 11)
-            cad = cad & RellenaABlancos(ReemplazaCharNoAdmitidos(vsocio.Nombre), True, 30)
-            cad = cad & RellenaABlancos(ReemplazaCharNoAdmitidos(v_Domicilio), True, 30)
-            cad = cad & RellenaABlancos(Trim(v_CPostal) & " " & v_Poblacion, True, 31)
+            Cad = "E4"
+            Cad = Cad & RellenaABlancos(vsocio.NIF, True, 9)
+            Cad = Cad & "T"
+            Cad = Cad & RellenaABlancos(Format(Rs.Fields(0).Value, "0000"), True, 11)
+            Cad = Cad & RellenaABlancos(ReemplazaCharNoAdmitidos(vsocio.Nombre), True, 30)
+            Cad = Cad & RellenaABlancos(ReemplazaCharNoAdmitidos(v_Domicilio), True, 30)
+            Cad = Cad & RellenaABlancos(Trim(v_CPostal) & " " & ReemplazaCharNoAdmitidos(v_Poblacion), True, 31)
             
             '[Monica]07/07/2014: si la factura es negativa ponemos un digito menos por el signo
-            If rs.Fields(6).Value < 0 Then
-                cad = cad & Format(Round2(rs.Fields(6).Value * 100, 0), "000000000")
+            If Rs.Fields(6).Value < 0 Then
+                Cad = Cad & Format(Round2(Rs.Fields(6).Value * 100, 0), "000000000")
             Else
-                cad = cad & Format(Round2(rs.Fields(6).Value * 100, 0), "0000000000")
+                Cad = Cad & Format(Round2(Rs.Fields(6).Value * 100, 0), "0000000000")
             End If
             
             
-            IBAN = rs.Fields(4) & Format(rs.Fields(0), "0000") & Format(rs.Fields(1).Value, "0000") & Format(rs.Fields(2), "00") & Format(rs.Fields(3), "0000000000")
+            IBAN = Rs.Fields(4) & Format(Rs.Fields(0), "0000") & Format(Rs.Fields(1).Value, "0000") & Format(Rs.Fields(2), "00") & Format(Rs.Fields(3), "0000000000")
             
-            cad = cad & RellenaABlancos(IBAN, True, 34)
-            cad = cad & Format(v_lineas, "0000000")
+            Cad = Cad & RellenaABlancos(IBAN, True, 34)
+            Cad = Cad & Format(v_lineas, "0000000")
 
-            Print #NFich, cad
+            Print #NFich, Cad
             
-            v_total = v_total + rs.Fields(6).Value
-            v_total1 = v_total1 + rs.Fields(6).Value
+            v_total = v_total + Rs.Fields(6).Value
+            v_total1 = v_total1 + Rs.Fields(6).Value
             
             Set vsocio = Nothing
         End If
         
-        rs.MoveNext
+        Rs.MoveNext
     Wend
        
     v_lineas = v_lineas + 1
-    cad = RellenaABlancos("E8", True, 14)
-    cad = cad & RellenaABlancos(Format(ActBanco, "0000"), True, 20)
-    cad = cad & Format(Round2(v_total1 * 100, 0), "000000000000")
-    cad = cad & Format(v_socios1, "0000000000")
-    cad = cad & RellenaABlancos(Format(v_socios1 + 2, "0000000000"), True, 102)
-    cad = cad & Format(v_lineas, "0000000")
+    Cad = RellenaABlancos("E8", True, 14)
+    Cad = Cad & RellenaABlancos(Format(ActBanco, "0000"), True, 20)
+    Cad = Cad & Format(Round2(v_total1 * 100, 0), "000000000000")
+    Cad = Cad & Format(v_socios1, "0000000000")
+    Cad = Cad & RellenaABlancos(Format(v_socios1 + 2, "0000000000"), True, 102)
+    Cad = Cad & Format(v_lineas, "0000000")
     
-    Print #NFich, cad
+    Print #NFich, Cad
     
-    Sql2 = "insert into tmpinformes (codusu, codigo1, importe1, importe2) values "
-    Sql2 = Sql2 & "(" & vSesion.Codigo & "," & DBSet(ActBanco, "N") & "," & DBSet(v_socios1, "N")
-    Sql2 = Sql2 & "," & DBSet(v_total1, "N") & ")"
+    sql2 = "insert into tmpinformes (codusu, codigo1, importe1, importe2) values "
+    sql2 = sql2 & "(" & vSesion.Codigo & "," & DBSet(ActBanco, "N") & "," & DBSet(v_socios1, "N")
+    sql2 = sql2 & "," & DBSet(v_total1, "N") & ")"
     
-    Conn.Execute Sql2
+    Conn.Execute sql2
     
     v_Entidades = v_Entidades + 1
     
     v_lineas = v_lineas + 1
     
-    cad = RellenaABlancos("E9", True, 34)
-    cad = cad & Format(Round2(v_total * 100, 0), "000000000000")
-    cad = cad & Format(v_socios, "0000000000")
-    cad = cad & Format(v_lineas, "0000000000")
+    Cad = RellenaABlancos("E9", True, 34)
+    Cad = Cad & Format(Round2(v_total * 100, 0), "000000000000")
+    Cad = Cad & Format(v_socios, "0000000000")
+    Cad = Cad & Format(v_lineas, "0000000000")
     
-    cad = cad & RellenaABlancos(Format(v_Entidades, "000"), True, 92)
-    cad = cad & Format(v_lineas, "0000000")
+    Cad = Cad & RellenaABlancos(Format(v_Entidades, "000"), True, 92)
+    Cad = Cad & Format(v_lineas, "0000000")
     
-    Print #NFich, cad
+    Print #NFich, Cad
        
-    rs.Close
-    Set rs = Nothing
+    Rs.Close
+    Set Rs = Nothing
     
     Close (NFich)
     If v_socios > 0 Then GeneraFicheroNewAlz = True
     Exit Function
 
 EGen:
-    Set rs = Nothing
+    Set Rs = Nothing
     Close (NFich)
     MuestraError Err.Number, Err.Description
 End Function
@@ -1573,28 +1573,28 @@ End Function
 
 'Funcion que devuelve que bancos no estan creados en entidaddom
 Private Function ComprobarBancos(vSelect As String) As Boolean
-Dim sql As String
+Dim SQL As String
 
-Dim rs As adodb.Recordset
+Dim Rs As ADODB.Recordset
 
 
     On Error GoTo eComprobarBancos
     
     ComprobarBancos = False
     
-    sql = "select distinct codbanco, codsucur from (" & vSelect & ") tabla "
-    sql = sql & " where not (codbanco, codsucur)  in (select codentidad, codsucur from entidaddom) or codbanco is null or codsucur is null "
+    SQL = "select distinct codbanco, codsucur from (" & vSelect & ") tabla "
+    SQL = SQL & " where not (codbanco, codsucur)  in (select codentidad, codsucur from entidaddom) or codbanco is null or codsucur is null "
     Cadena = ""
     
-    Set rs = New adodb.Recordset
-    rs.Open sql, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+    Set Rs = New ADODB.Recordset
+    Rs.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
     
-    While Not rs.EOF
-        Cadena = Cadena & "(" & DBLet(rs!codbanco, "N") & "," & DBLet(rs!codsucur, "N") & "), "
+    While Not Rs.EOF
+        Cadena = Cadena & "(" & DBLet(Rs!codbanco, "N") & "," & DBLet(Rs!codsucur, "N") & "), "
         
-        rs.MoveNext
+        Rs.MoveNext
     Wend
-    Set rs = Nothing
+    Set Rs = Nothing
     
     If Cadena <> "" Then
         'quitamos la ultima coma
@@ -1603,7 +1603,7 @@ Dim rs As adodb.Recordset
         Set frmMens = New frmMensajes
 
         frmMens.OpcionMensaje = 23
-        frmMens.cadWhere = sql 'CADENA
+        frmMens.cadWhere = SQL 'CADENA
         frmMens.Show vbModal
 
         Set frmMens = Nothing
@@ -1623,28 +1623,28 @@ End Function
 
 'Funcion que devuelve que bancos no estan creados en entidaddom
 Private Function ComprobarBancosNew(vSelect As String) As Boolean
-Dim sql As String
+Dim SQL As String
 
-Dim rs As adodb.Recordset
+Dim Rs As ADODB.Recordset
 
 
     On Error GoTo eComprobarBancos
     
     ComprobarBancosNew = False
     
-    sql = "select distinct codsocio, codbanco, codsucur from (" & vSelect & ") tabla "
-    sql = sql & " where codbanco is null or codsucur is null or codbanco = 0 or codsucur = 0 "
+    SQL = "select distinct codsocio, codbanco, codsucur from (" & vSelect & ") tabla "
+    SQL = SQL & " where codbanco is null or codsucur is null or codbanco = 0 or codsucur = 0 "
     Cadena = ""
     
-    Set rs = New adodb.Recordset
-    rs.Open sql, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+    Set Rs = New ADODB.Recordset
+    Rs.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
     
-    While Not rs.EOF
-        Cadena = Cadena & "(" & DBLet(rs!codbanco, "N") & "," & DBLet(rs!codsucur, "N") & "), "
+    While Not Rs.EOF
+        Cadena = Cadena & "(" & DBLet(Rs!codbanco, "N") & "," & DBLet(Rs!codsucur, "N") & "), "
         
-        rs.MoveNext
+        Rs.MoveNext
     Wend
-    Set rs = Nothing
+    Set Rs = Nothing
     
     If Cadena <> "" Then
         'quitamos la ultima coma
@@ -1653,7 +1653,7 @@ Dim rs As adodb.Recordset
         Set frmMens = New frmMensajes
 
         frmMens.OpcionMensaje = 23
-        frmMens.cadWhere = sql 'CADENA
+        frmMens.cadWhere = SQL 'CADENA
         frmMens.Show vbModal
 
         Set frmMens = Nothing
@@ -1672,9 +1672,9 @@ End Function
 
 
 Private Function ComprobarIBAN(vSelect As String) As Boolean
-Dim sql As String
+Dim SQL As String
 
-Dim rs As adodb.Recordset
+Dim Rs As ADODB.Recordset
 Dim cta As String
 Dim CC As String
 Dim DCcorrecto As String
@@ -1683,38 +1683,38 @@ Dim DCcorrecto As String
     
     ComprobarIBAN = False
     
-    sql = "select distinct codsocio, codbanco, codsucur, digcontr, cuentaba, iban from (" & vSelect & ") tabla "
+    SQL = "select distinct codsocio, codbanco, codsucur, digcontr, cuentaba, iban from (" & vSelect & ") tabla "
     
     Cadena = ""
     
-    Set rs = New adodb.Recordset
-    rs.Open sql, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+    Set Rs = New ADODB.Recordset
+    Rs.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
     
-    While Not rs.EOF And Cadena = ""
-        cta = Format(DBLet(rs!codbanco), "0000") & Format(DBLet(rs!codsucur), "0000") & Format(DBLet(rs!digcontr), "00") & Format(DBLet(rs!cuentaba), "0000000000")
+    While Not Rs.EOF And Cadena = ""
+        cta = Format(DBLet(Rs!codbanco), "0000") & Format(DBLet(Rs!codsucur), "0000") & Format(DBLet(Rs!digcontr), "00") & Format(DBLet(Rs!cuentaba), "0000000000")
         If Len(cta) = 20 Then
             
             DCcorrecto = DigitoControlCorrecto(cta)
-            If DCcorrecto <> Format(DBLet(rs!digcontr), "00") Then
-                Cadena = "El socio " & DBLet(rs!codsocio) & " tiene DC incorrecto, deberia ser " & DCcorrecto
+            If DCcorrecto <> Format(DBLet(Rs!digcontr), "00") Then
+                Cadena = "El socio " & DBLet(Rs!codsocio) & " tiene DC incorrecto, deberia ser " & DCcorrecto
             Else
-                If DBLet(rs!IBAN) = "" Then
+                If DBLet(Rs!IBAN) = "" Then
                     'NO ha puesto IBAN
-                    If DevuelveIBAN2("ES", cta, cta) Then Cadena = "El socio " & DBLet(rs!codsocio) & " debería tener el iban ES" & cta
+                    If DevuelveIBAN2("ES", cta, cta) Then Cadena = "El socio " & DBLet(Rs!codsocio) & " debería tener el iban ES" & cta
                 Else
-                    CC = CStr(Mid(DBLet(rs!IBAN), 1, 2))
+                    CC = CStr(Mid(DBLet(Rs!IBAN), 1, 2))
                     If DevuelveIBAN2(CStr(CC), cta, cta) Then
-                        If Mid(DBLet(rs!IBAN), 3) <> cta Then
-                            Cadena = "El socio " & DBLet(rs!codsocio) & " tiene IBAN distinto del calculado [" & CC & cta & "]"
+                        If Mid(DBLet(Rs!IBAN), 3) <> cta Then
+                            Cadena = "El socio " & DBLet(Rs!codsocio) & " tiene IBAN distinto del calculado [" & CC & cta & "]"
                         End If
                     End If
                 End If
             End If
         End If
     
-        rs.MoveNext
+        Rs.MoveNext
     Wend
-    Set rs = Nothing
+    Set Rs = Nothing
     
     If Cadena <> "" Then
         ComprobarIBAN = False

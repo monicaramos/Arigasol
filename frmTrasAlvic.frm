@@ -224,7 +224,7 @@ Dim indCodigo As Integer 'indice para txtCodigo
 'Se inicializan para cada Informe (tabla de BD a la que hace referencia
 Dim Codigo As String 'Código para FormulaSelection de Crystal Report
 Dim TipCod As String
-Dim cad As String
+Dim Cad As String
 Dim cadTabla As String
 
 Dim vContad As Long
@@ -241,7 +241,7 @@ End Sub
 
 Private Sub cmdAceptar_Click()
 Dim SQL As String
-Dim i As Byte
+Dim I As Byte
 Dim cadWhere As String
 Dim b As Boolean
 Dim NomFic As String
@@ -400,7 +400,7 @@ Private Function TraspasoRegaixo() As Boolean
 Dim SQL As String
 Dim b As Boolean
 Dim Cadena As String
-Dim i As Integer
+Dim I As Integer
 
     On Error GoTo eTraspasoRegaixo
     
@@ -423,14 +423,14 @@ Dim i As Integer
         Shell App.path & "\trasarigasol.exe /I|" & vSesion.CadenaConexion & "|" & vSesion.Codigo & "|" & Me.CommonDialog1.FileName & "|", vbNormalFocus
 
             
-        i = 0
-        While Dir(App.path & "\trasarigasol.z") = "" And i < 300
+        I = 0
+        While Dir(App.path & "\trasarigasol.z") = "" And I < 300
             Me.lblProgres(0).Caption = "Procesando Insercion "
             DoEvents
             
             espera 1
             
-            i = i + 1
+            I = I + 1
         Wend
         
         
@@ -560,7 +560,7 @@ Dim List As Collection
     ActivarAyuda (vParamAplic.Cooperativa = 1 Or vParamAplic.Cooperativa = 5)
     
     'Esto se consigue poneinedo el cancel en el opcion k corresponda
-    Me.CmdCancel.Cancel = True
+    Me.cmdCancel.Cancel = True
 '   Me.Width = w + 70
 '   Me.Height = h + 350
 End Sub
@@ -655,7 +655,7 @@ Private Sub KEYFecha(KeyAscii As Integer, indice As Integer)
 End Sub
 
 Private Sub txtCodigo_LostFocus(Index As Integer)
-Dim cad As String, cadTipo As String 'tipo cliente
+Dim Cad As String, cadTipo As String 'tipo cliente
 
     'Quitar espacios en blanco por los lados
     txtCodigo(Index).Text = Trim(txtCodigo(Index).Text)
@@ -779,17 +779,17 @@ Dim NF As Integer
     RecuperaFichero = False
     NF = FreeFile
     Open App.path For Input As #NF ' & "\BV" & Format(CDate(txtcodigo(0).Text), "ddmmyy") & "." & Format(txtcodigo(1).Text, "000") For Input As #NF
-    Line Input #NF, cad
+    Line Input #NF, Cad
     Close #NF
-    If cad <> "" Then RecuperaFichero = True
+    If Cad <> "" Then RecuperaFichero = True
     
 End Function
 
 
 Private Function ProcesarFichero(nomFich As String) As Boolean
 Dim NF As Long
-Dim cad As String
-Dim i As Integer
+Dim Cad As String
+Dim I As Integer
 Dim longitud As Long
 Dim Rs As ADODB.Recordset
 Dim Rs1 As ADODB.Recordset
@@ -808,8 +808,8 @@ Dim NomFic As String
     
     Open nomFich For Input As #NF ' & "\BV" & Format(CDate(txtcodigo(0).Text), "ddmmyy") & "." & Format(txtcodigo(1).Text, "000") For Input As #NF
     
-    Line Input #NF, cad
-    i = 0
+    Line Input #NF, Cad
+    I = 0
     
     lblProgres(0).Caption = "Procesando Fichero: " & nomFich
     longitud = FileLen(nomFich)
@@ -821,19 +821,19 @@ Dim NomFic As String
         
     b = True
     While Not EOF(NF)
-        i = i + 1
+        I = I + 1
         
-        Me.Pb1.Value = Me.Pb1.Value + Len(cad)
-        lblProgres(1).Caption = "Linea " & i
+        Me.Pb1.Value = Me.Pb1.Value + Len(Cad)
+        lblProgres(1).Caption = "Linea " & I
         Me.Refresh
         
         '[Monica]09/01/2013: Nueva cooperativa de Ribarroja
         If vParamAplic.Cooperativa = 1 Then
-            b = InsertarLineaAlz(cad)
+            b = InsertarLineaAlz(Cad)
         ElseIf vParamAplic.Cooperativa = 5 Then
-            b = InsertarLineaRib(cad)
+            b = InsertarLineaRib(Cad)
         Else
-            b = InsertarLinea(cad)
+            b = InsertarLinea(Cad)
         End If
         
 '--monica: insertamos recaudacion leyendo de fichero al final del proceso y solo para Alzira
@@ -843,7 +843,7 @@ Dim NomFic As String
         
         '[Monica]09/01/2013: nueva cooperativa de Ribarroja
         If vParamAplic.Cooperativa <> 1 And vParamAplic.Cooperativa <> 5 Then ' regaixo
-            If b Then b = InsertarRecaudacion(cad)
+            If b Then b = InsertarRecaudacion(Cad)
         End If
         
         If b = False Then
@@ -851,18 +851,18 @@ Dim NomFic As String
             Exit Function
         End If
         
-        Line Input #NF, cad
+        Line Input #NF, Cad
     Wend
     Close #NF
     
-    If cad <> "" Then
+    If Cad <> "" Then
         '[Monica]09/01/2013: Nueva cooperativa Ribarroja
         If vParamAplic.Cooperativa = 1 Then
-            b = InsertarLineaAlz(cad)
+            b = InsertarLineaAlz(Cad)
         ElseIf vParamAplic.Cooperativa = 5 Then
-            b = InsertarLineaRib(cad)
+            b = InsertarLineaRib(Cad)
         Else
-            b = InsertarLinea(cad)
+            b = InsertarLinea(Cad)
         End If
 '--monica: insertamos recaudacion leyendo de fichero al final del proceso y solo para Alzira
 '        If b Then b = InsertarRecaudacion(cad)
@@ -871,7 +871,7 @@ Dim NomFic As String
 '          para alzira
         '[Monica]09/01/2013: nueva cooperativa de Ribarroja
         If vParamAplic.Cooperativa <> 1 And vParamAplic.Cooperativa <> 5 Then ' regaixo
-            If b Then b = InsertarRecaudacion(cad)
+            If b Then b = InsertarRecaudacion(Cad)
         End If
 
         If b = False Then
@@ -903,8 +903,8 @@ End Function
                 
 Private Function ProcesarFichero2(nomFich As String) As Boolean
 Dim NF As Long
-Dim cad As String
-Dim i As Integer
+Dim Cad As String
+Dim I As Integer
 Dim longitud As Long
 Dim Rs As ADODB.Recordset
 Dim Rs1 As ADODB.Recordset
@@ -924,8 +924,8 @@ Dim b As Boolean
     NF = FreeFile
     Open nomFich For Input As #NF ' & "\BV" & Format(CDate(txtcodigo(0).Text), "ddmmyy") & "." & Format(txtcodigo(1).Text, "000") For Input As #NF
     
-    Line Input #NF, cad
-    i = 0
+    Line Input #NF, Cad
+    I = 0
     
     lblProgres(0).Caption = "Insertando en Tabla temporal: " & nomFich
     longitud = FileLen(nomFich)
@@ -939,37 +939,37 @@ Dim b As Boolean
     b = True
 
     While Not EOF(NF) And b
-        i = i + 1
+        I = I + 1
         
-        Me.Pb1.Value = Me.Pb1.Value + Len(cad)
-        lblProgres(1).Caption = "Linea " & i
+        Me.Pb1.Value = Me.Pb1.Value + Len(Cad)
+        lblProgres(1).Caption = "Linea " & I
         Me.Refresh
         '[Monica]09/01/2013: nueva cooperativa de Ribarroja
         If vParamAplic.Cooperativa = 1 Then
-            b = ComprobarRegistroAlz(cad)
+            b = ComprobarRegistroAlz(Cad)
         ElseIf vParamAplic.Cooperativa = 5 Then
-            b = ComprobarRegistroRib(cad)
+            b = ComprobarRegistroRib(Cad)
         Else
-            b = ComprobarRegistro(cad)
+            b = ComprobarRegistro(Cad)
         End If
         
-        Line Input #NF, cad
+        Line Input #NF, Cad
     Wend
     Close #NF
     
-    If cad <> "" Then
-        i = i + 1
+    If Cad <> "" Then
+        I = I + 1
         
-        Me.Pb1.Value = Me.Pb1.Value + Len(cad)
-        lblProgres(1).Caption = "Linea " & i
+        Me.Pb1.Value = Me.Pb1.Value + Len(Cad)
+        lblProgres(1).Caption = "Linea " & I
         Me.Refresh
         '[Monica]09/01/2013: nueva cooperativa de Ribarroja
         If vParamAplic.Cooperativa = 1 Then
-            b = ComprobarRegistroAlz(cad)
+            b = ComprobarRegistroAlz(Cad)
         ElseIf vParamAplic.Cooperativa = 5 Then
-            b = ComprobarRegistroRib(cad)
+            b = ComprobarRegistroRib(Cad)
         Else
-            b = ComprobarRegistro(cad)
+            b = ComprobarRegistro(Cad)
         End If
     End If
     
@@ -984,7 +984,7 @@ eProcesarFichero2:
     ProcesarFichero2 = False
 End Function
                 
-Private Function InsertarCabecera(cad As String) As Boolean
+Private Function InsertarCabecera(Cad As String) As Boolean
 Dim numfactu As String
 Dim TipDocu As String
 Dim FechaCa As String
@@ -1006,16 +1006,16 @@ Dim SQL As String
     InsertarCabecera = False
 
     numfactu = 0
-    TipDocu = Mid(cad, 10, 1)
-    FechaCa = Mid(cad, 11, 2) & Mid(cad, 13, 2) & "20" & Mid(cad, 15, 2)
-    Turno = Mid(cad, 17, 1)
-    Hora = Mid(cad, 18, 2) & ":" & Mid(cad, 21, 2) & ":00"
-    Forpa = Mid(cad, 49, 2)
-    Tarje = Mid(cad, 53, 7)
-    Tarje1 = Mid(cad, 60, 5)
-    Matric = Mid(cad, 65, 10)
-    NomCli = Mid(cad, 91, 25)
-    NifCli = Mid(cad, 116, 9)
+    TipDocu = Mid(Cad, 10, 1)
+    FechaCa = Mid(Cad, 11, 2) & Mid(Cad, 13, 2) & "20" & Mid(Cad, 15, 2)
+    Turno = Mid(Cad, 17, 1)
+    Hora = Mid(Cad, 18, 2) & ":" & Mid(Cad, 21, 2) & ":00"
+    Forpa = Mid(Cad, 49, 2)
+    Tarje = Mid(Cad, 53, 7)
+    Tarje1 = Mid(Cad, 60, 5)
+    Matric = Mid(Cad, 65, 10)
+    NomCli = Mid(Cad, 91, 25)
+    NifCli = Mid(Cad, 116, 9)
             
     '06/03/2007 añadida estas 2 lineas que faltaba
     If CInt(Forpa) <> 2 And Trim(Tarje) <> Trim(Tarje1) Then Tarje = Tarje1
@@ -1023,14 +1023,14 @@ Dim SQL As String
     
     Select Case TipDocu
         Case "O"
-            Ticket = Mid(cad, 2, 8)
+            Ticket = Mid(Cad, 2, 8)
         Case "T"
-            Ticket = Mid(cad, 23, 8)
+            Ticket = Mid(Cad, 23, 8)
         Case "A"
-            Ticket = Mid(cad, 31, 8)
+            Ticket = Mid(Cad, 31, 8)
         Case "F"
-            Ticket = Mid(cad, 2, 8)
-            numfactu = Mid(cad, 39, 8)
+            Ticket = Mid(Cad, 2, 8)
+            numfactu = Mid(Cad, 39, 8)
         
             'SOLAMENTE EN EL CASO DE QUE SEA FACTURA COMPRUEBO QUE EXISTA EL NIF DEL SOCIO
             'Y SI NO EXISTE INTRODUCIRLO EN LA TABLA DE SOCIOS Y TARJETAS
@@ -1097,7 +1097,7 @@ eInsertarCabecera:
 
 End Function
             
-Private Function ComprobarRegistro(cad As String) As Boolean
+Private Function ComprobarRegistro(Cad As String) As Boolean
 Dim SQL As String
 
 Dim base As String
@@ -1144,39 +1144,39 @@ Dim codsoc As String
 
     ComprobarRegistro = True
 
-    base = Mid(cad, 1, 10)
-    NombreBase = Mid(cad, 11, 50)
-    Turno = Mid(cad, 982, 10) 'txtcodigo(1).Text ' el que yo le diga, antes : Mid(cad, 61, 10)
+    base = Mid(Cad, 1, 10)
+    NombreBase = Mid(Cad, 11, 50)
+    Turno = Mid(Cad, 982, 10) 'txtcodigo(1).Text ' el que yo le diga, antes : Mid(cad, 61, 10)
     If CByte(Turno) > 9 Then Turno = "9"
     
-    NumAlbaran = Mid(cad, 72, 19)
-    NumFactura = Mid(cad, 94, 17) 'antes 91,20
-    IdVendedor = Mid(cad, 121, 10)
-    NombreVendedor = Mid(cad, 131, 50)
-    fechahora = Mid(cad, 181, 14)
+    NumAlbaran = Mid(Cad, 72, 19)
+    NumFactura = Mid(Cad, 94, 17) 'antes 91,20
+    IdVendedor = Mid(Cad, 121, 10)
+    NombreVendedor = Mid(Cad, 131, 50)
+    fechahora = Mid(Cad, 181, 14)
     Fecha = Mid(fechahora, 7, 2) & "/" & Mid(fechahora, 5, 2) & "/" & Mid(fechahora, 1, 4)
     Hora = Mid(fechahora, 9, 6)
-    CodigoCliente = Mid(cad, 195, 20)
-    NombreCliente = Mid(cad, 215, 70)
-    Tarjeta = Mid(cad, 290, 20)
-    Matricula = Mid(cad, 370, 20)
-    IdProducto = Mid(cad, 493, 20)
-    Surtidor = Mid(cad, 538, 10)
-    Manguera = Mid(cad, 548, 10)
+    CodigoCliente = Mid(Cad, 195, 20)
+    NombreCliente = Mid(Cad, 215, 70)
+    Tarjeta = Mid(Cad, 290, 20)
+    Matricula = Mid(Cad, 370, 20)
+    IdProducto = Mid(Cad, 493, 20)
+    Surtidor = Mid(Cad, 538, 10)
+    Manguera = Mid(Cad, 548, 10)
     
     
     '[Monica]24/08/2015: el precio es sin el descuento en la linea 864, antes ponia 568
-    PrecioLitro = Mid(cad, 864, 18)
+    PrecioLitro = Mid(Cad, 864, 18)
     
-    cantidad = Mid(cad, 650, 18)
-    Importe = Mid(cad, 668, 18)
-    IdTipoPago = Mid(cad, 784, 10)
-    DescrTipoPago = Mid(cad, 794, 25)
-    CodigoTipoPago = Mid(cad, 1, 10)
-    NifCliente = Mid(cad, 834, 9)
+    cantidad = Mid(Cad, 650, 18)
+    Importe = Mid(Cad, 668, 18)
+    IdTipoPago = Mid(Cad, 784, 10)
+    DescrTipoPago = Mid(Cad, 794, 25)
+    CodigoTipoPago = Mid(Cad, 1, 10)
+    NifCliente = Mid(Cad, 834, 9)
     
     '[Monica]24/06/2013: introducimos los kms em el traspaso
-    Kilometros = Mid(cad, 415, 18)
+    Kilometros = Mid(Cad, 415, 18)
     
     
     If Trim(Importe) = "" Then
@@ -1331,7 +1331,7 @@ eComprobarRegistro:
     End If
 End Function
 
-Private Function ComprobarRegistroAlz(cad As String) As Boolean
+Private Function ComprobarRegistroAlz(Cad As String) As Boolean
 Dim SQL As String
 
 Dim base As String
@@ -1387,51 +1387,51 @@ Dim PorcIva As Currency
 
     ComprobarRegistroAlz = True
 
-    base = Mid(cad, 1, 10)
-    NombreBase = Mid(cad, 11, 50)
-    Turno = Mid(cad, 982, 10) 'txtcodigo(1).Text ' el que yo le diga, antes : Mid(cad, 61, 10)
+    base = Mid(Cad, 1, 10)
+    NombreBase = Mid(Cad, 11, 50)
+    Turno = Mid(Cad, 982, 10) 'txtcodigo(1).Text ' el que yo le diga, antes : Mid(cad, 61, 10)
     If CByte(Turno) > 9 Then Turno = "9"
     
-    NumAlbaran = Mid(cad, 71, 20)
-    NumFactura = Mid(cad, 94, 17) 'antes 91,20
-    IdVendedor = Mid(cad, 121, 10)
-    NombreVendedor = Mid(cad, 131, 50)
-    fechahora = Mid(cad, 181, 14)
+    NumAlbaran = Mid(Cad, 71, 20)
+    NumFactura = Mid(Cad, 94, 17) 'antes 91,20
+    IdVendedor = Mid(Cad, 121, 10)
+    NombreVendedor = Mid(Cad, 131, 50)
+    fechahora = Mid(Cad, 181, 14)
     Fecha = Mid(fechahora, 7, 2) & "/" & Mid(fechahora, 5, 2) & "/" & Mid(fechahora, 1, 4)
     Hora = Mid(fechahora, 9, 6)
 '    CodigoCliente = Mid(cad, 195, 20)
-    NombreCliente = Mid(cad, 215, 70)
+    NombreCliente = Mid(Cad, 215, 70)
 '    Tarjeta = Mid(cad, 290, 20)
-    Tarjeta = Mid(cad, 195, 20)
-    Matricula = Mid(cad, 370, 20)
-    IdProducto = Mid(cad, 493, 20)
-    Surtidor = Mid(cad, 538, 10)
-    Manguera = Mid(cad, 548, 10)
+    Tarjeta = Mid(Cad, 195, 20)
+    Matricula = Mid(Cad, 370, 20)
+    IdProducto = Mid(Cad, 493, 20)
+    Surtidor = Mid(Cad, 538, 10)
+    Manguera = Mid(Cad, 548, 10)
 
-    PrecioLitro = Mid(cad, 568, 18)
+    PrecioLitro = Mid(Cad, 568, 18)
     
     '[Monica]29/10/2015:faltaban ¿?¿?
-    cantidad = Mid(cad, 650, 18)
-    Importe = Mid(cad, 668, 18)
+    cantidad = Mid(Cad, 650, 18)
+    Importe = Mid(Cad, 668, 18)
     
     
     
     
-    Descuento = Mid(cad, 586, 18)
-    IdTipoPago = Mid(cad, 784, 10)
-    DescrTipoPago = Mid(cad, 794, 25)
-    CodigoTipoPago = Mid(cad, 1, 10)
-    NifCliente = Mid(cad, 834, 9)
+    Descuento = Mid(Cad, 586, 18)
+    IdTipoPago = Mid(Cad, 784, 10)
+    DescrTipoPago = Mid(Cad, 794, 25)
+    CodigoTipoPago = Mid(Cad, 1, 10)
+    NifCliente = Mid(Cad, 834, 9)
     
     '[Monica]25/06/2013: comprobamos el nombre del articulo y el iva
     '                    en el caso de que el nombre del articulo no coincida mostramos informe pero dejamos continuar
     '                    en el caso de que no coincida el iva mostramos informe y NO dejamos continuar
-    IvaArticulo = Mid(cad, 609, 5) ' 5 posiciones 2 decimales implicitos
-    NombreArticulo = Mid(cad, 513, 25) ' nombre del articulo para comprobarlo
+    IvaArticulo = Mid(Cad, 609, 5) ' 5 posiciones 2 decimales implicitos
+    NombreArticulo = Mid(Cad, 513, 25) ' nombre del articulo para comprobarlo
     
     
     '[Monica]24/06/2013: introducimos los kms em el traspaso
-    Kilometros = Mid(cad, 415, 18)
+    Kilometros = Mid(Cad, 415, 18)
     
     
     If Trim(Importe) = "" Then
@@ -1529,8 +1529,38 @@ Dim PorcIva As Currency
 '                            Conn.Execute SQL
 '                        End If
 
-
-
+                        SQL = "select codsocio from ssocio where codsocio >= 900000 and nifsocio = " & DBSet(NifCliente, "T")
+                        If TotalRegistrosConsulta(SQL) = 0 Then
+                            Tarje = 900000
+                            Tarje = SugerirCodigoSiguienteStr("ssocio", "codsocio", "codsocio >= 900000 and codsocio <= 999998")
+                            
+                            SQL = "INSERT INTO ssocio (codsocio, codcoope, nomsocio, domsocio, codposta, pobsocio, " & _
+                                  "prosocio, nifsocio, telsocio, faxsocio, movsocio, maisocio, wwwsocio, fechaalt, " & _
+                                  "fechabaj, codtarif, codbanco, codsucur, digcontr, cuentaba, impfactu, dtolitro, " & _
+                                  "codforpa, tipsocio, bonifbas, bonifesp, codsitua, codmacta, obssocio) VALUES (" & _
+                                  DBSet(Tarje, "N") & "," & DBSet(vParamAplic.ColecDefecto, "N") & "," & DBSet(NombreCliente, "T") & ",'DESCONOCIDA','46','VALENCIA', " & _
+                                  "'VALENCIA'," & DBSet(NifCliente, "T") & "," & ValorNulo & "," & ValorNulo & "," & ValorNulo & "," & ValorNulo & "," & ValorNulo & "," & _
+                                  DBSet(txtCodigo(0).Text, "F") & "," & _
+                                  ValorNulo & ",0," & ValorNulo & "," & ValorNulo & "," & ValorNulo & "," & ValorNulo & ",0,0," & _
+                                  "0,0,0,0,0," & DBSet(vParamAplic.CtaContable, "T") & "," & ValorNulo & ")"
+                                  
+                            Conn.Execute SQL
+                                  
+                            SQL = "INSERT INTO starje (codsocio, numlinea, numtarje, nomtarje, codbanco, codsucur, " & _
+                                  "digcontr, cuentaba, tiptarje) VALUES (" & DBSet(Tarje, "N") & ",1," & DBSet(Tarje, "N") & "," & DBSet(NombreCliente, "T") & "," & ValorNulo & "," & ValorNulo & "," & _
+                                  ValorNulo & "," & ValorNulo & ",1)"
+                            
+                            Conn.Execute SQL
+                        Else
+                            Tarje = DevuelveValor(SQL)
+                            SQL = "select * from starje where codsocio =" & DBSet(Tarje, "N") & " and tiptarje = 1"
+                            If TotalRegistrosConsulta(SQL) = 0 Then
+                                SQL = "INSERT INTO starje (codsocio, numlinea, numtarje, nomtarje, codbanco, codsucur, " & _
+                                      "digcontr, cuentaba, tiptarje) VALUES (" & DBSet(Tarje, "N") & ",1," & DBSet(Tarje, "N") & "," & DBSet(NombreCliente, "T") & "," & ValorNulo & "," & ValorNulo & "," & _
+                                      ValorNulo & "," & ValorNulo & ",1)"
+                                Conn.Execute SQL
+                            End If
+                        End If
                     End If
                 Else
                     SQL = "select count(*) from starje where codsocio= " & DBSet(Tarje, "N") & " and tiptarje = 0"
@@ -1758,7 +1788,7 @@ eComprobarRegistroAlz:
 End Function
             
             
-Private Function ComprobarRegistroRib(cad As String) As Boolean
+Private Function ComprobarRegistroRib(Cad As String) As Boolean
 Dim SQL As String
 
 Dim base As String
@@ -1808,36 +1838,36 @@ Dim codsoc As String
 
     ComprobarRegistroRib = True
 
-    base = Mid(cad, 1, 10)
-    NombreBase = Mid(cad, 11, 50)
-    Turno = Mid(cad, 982, 10) 'txtcodigo(1).Text ' el que yo le diga, antes : Mid(cad, 61, 10)
+    base = Mid(Cad, 1, 10)
+    NombreBase = Mid(Cad, 11, 50)
+    Turno = Mid(Cad, 982, 10) 'txtcodigo(1).Text ' el que yo le diga, antes : Mid(cad, 61, 10)
     If CByte(Turno) > 9 Then Turno = "9"
     
-    NumAlbaran = Mid(cad, 71, 20)
-    NumFactura = Mid(cad, 92, 7) 'antes 91,20
-    IdVendedor = Mid(cad, 121, 10)
-    NombreVendedor = Mid(cad, 131, 50)
-    fechahora = Mid(cad, 181, 14)
+    NumAlbaran = Mid(Cad, 71, 20)
+    NumFactura = Mid(Cad, 92, 7) 'antes 91,20
+    IdVendedor = Mid(Cad, 121, 10)
+    NombreVendedor = Mid(Cad, 131, 50)
+    fechahora = Mid(Cad, 181, 14)
     Fecha = Mid(fechahora, 7, 2) & "/" & Mid(fechahora, 5, 2) & "/" & Mid(fechahora, 1, 4)
     Hora = Mid(fechahora, 9, 6)
 '    CodigoCliente = Mid(cad, 195, 20)
-    NombreCliente = Mid(cad, 215, 70)
-    Tarjeta = Mid(cad, 195, 20)
-    Matricula = Mid(cad, 370, 20)
-    IdProducto = Mid(cad, 493, 20)
-    Surtidor = Mid(cad, 538, 10)
-    Manguera = Mid(cad, 548, 10)
-    PrecioLitro = Mid(cad, 568, 18)
-    cantidad = Mid(cad, 650, 18)
-    Importe = Mid(cad, 668, 18)
-    Descuento = Mid(cad, 586, 18)
-    IdTipoPago = Mid(cad, 784, 10)
-    DescrTipoPago = Mid(cad, 794, 25)
-    CodigoTipoPago = Mid(cad, 1, 10)
-    NifCliente = Mid(cad, 834, 9)
+    NombreCliente = Mid(Cad, 215, 70)
+    Tarjeta = Mid(Cad, 195, 20)
+    Matricula = Mid(Cad, 370, 20)
+    IdProducto = Mid(Cad, 493, 20)
+    Surtidor = Mid(Cad, 538, 10)
+    Manguera = Mid(Cad, 548, 10)
+    PrecioLitro = Mid(Cad, 568, 18)
+    cantidad = Mid(Cad, 650, 18)
+    Importe = Mid(Cad, 668, 18)
+    Descuento = Mid(Cad, 586, 18)
+    IdTipoPago = Mid(Cad, 784, 10)
+    DescrTipoPago = Mid(Cad, 794, 25)
+    CodigoTipoPago = Mid(Cad, 1, 10)
+    NifCliente = Mid(Cad, 834, 9)
     
     '[Monica]24/06/2013: introducimos los kms em el traspaso
-    Kilometros = Mid(cad, 415, 18)
+    Kilometros = Mid(Cad, 415, 18)
     
     
     
@@ -2349,7 +2379,7 @@ End Function
             
             
             
-Private Function InsertarLinea(cad As String) As Boolean
+Private Function InsertarLinea(Cad As String) As Boolean
 Dim NumLin As String
 Dim codpro As String
 Dim Articulo As String
@@ -2412,38 +2442,38 @@ Dim NomArtic As String
     InsertarLinea = True
     
 
-    base = Mid(cad, 1, 10)
-    NombreBase = Mid(cad, 11, 50)
-    Turno = Mid(cad, 982, 10) 'txtcodigo(1).Text 'el turno que yo le diga, antes: Mid(cad, 61, 10)
+    base = Mid(Cad, 1, 10)
+    NombreBase = Mid(Cad, 11, 50)
+    Turno = Mid(Cad, 982, 10) 'txtcodigo(1).Text 'el turno que yo le diga, antes: Mid(cad, 61, 10)
     If CByte(Turno) > 9 Then Turno = "9"
-    NumAlbaran = Mid(cad, 72, 19)
-    NumFactura = Mid(cad, 94, 17)
-    IdVendedor = Mid(cad, 121, 10)
-    NombreVendedor = Mid(cad, 131, 50)
-    fechahora = Mid(cad, 181, 14)
+    NumAlbaran = Mid(Cad, 72, 19)
+    NumFactura = Mid(Cad, 94, 17)
+    IdVendedor = Mid(Cad, 121, 10)
+    NombreVendedor = Mid(Cad, 131, 50)
+    fechahora = Mid(Cad, 181, 14)
     Fecha = Mid(fechahora, 7, 2) & "/" & Mid(fechahora, 5, 2) & "/" & Mid(fechahora, 1, 4)
     Hora = Mid(fechahora, 9, 2) & ":" & Mid(fechahora, 11, 2) & ":" & Mid(fechahora, 13, 2)
-    CodigoCliente = Mid(cad, 195, 20)
-    NombreCliente = Mid(cad, 215, 70)
-    Tarjeta = Mid(cad, 290, 20)
-    Matricula = Mid(cad, 370, 20)
-    IdProducto = Mid(cad, 493, 20)
-    Surtidor = Mid(cad, 538, 10)
-    Manguera = Mid(cad, 548, 10)
+    CodigoCliente = Mid(Cad, 195, 20)
+    NombreCliente = Mid(Cad, 215, 70)
+    Tarjeta = Mid(Cad, 290, 20)
+    Matricula = Mid(Cad, 370, 20)
+    IdProducto = Mid(Cad, 493, 20)
+    Surtidor = Mid(Cad, 538, 10)
+    Manguera = Mid(Cad, 548, 10)
     '[Monica]24/08/2015: ahora el precio es el de la posicion 864 antes era sin el de la 568
-    PrecioLitro = Mid(cad, 864, 18)
+    PrecioLitro = Mid(Cad, 864, 18)
     '[Monica]24/08/2015: añadimos el descuento
-    Descuento = Mid(cad, 586, 18)
+    Descuento = Mid(Cad, 586, 18)
     
-    cantidad = Mid(cad, 650, 18)
-    Importe = Mid(cad, 668, 18)
-    IdTipoPago = Mid(cad, 784, 10)
-    DescrTipoPago = Mid(cad, 794, 25)
-    CodigoTipoPago = Mid(cad, 1, 10)
-    NifCliente = Mid(cad, 834, 9)
+    cantidad = Mid(Cad, 650, 18)
+    Importe = Mid(Cad, 668, 18)
+    IdTipoPago = Mid(Cad, 784, 10)
+    DescrTipoPago = Mid(Cad, 794, 25)
+    CodigoTipoPago = Mid(Cad, 1, 10)
+    NifCliente = Mid(Cad, 834, 9)
     
     '[Monica]24/06/2013: introducimos los kms em el traspaso
-    Kilometros = Mid(cad, 415, 18)
+    Kilometros = Mid(Cad, 415, 18)
     
     
     
@@ -2563,7 +2593,7 @@ EInsertarLinea:
 End Function
             
             
-Private Function InsertarLineaAlz(cad As String) As Boolean
+Private Function InsertarLineaAlz(Cad As String) As Boolean
 Dim NumLin As String
 Dim codpro As String
 Dim Articulo As String
@@ -2629,36 +2659,36 @@ Dim Kilometros As String
     InsertarLineaAlz = True
     
 
-    base = Mid(cad, 1, 10)
-    NombreBase = Mid(cad, 11, 50)
-    Turno = Mid(cad, 982, 10) 'txtcodigo(1).Text 'el turno que yo le diga, antes: Mid(cad, 61, 10)
+    base = Mid(Cad, 1, 10)
+    NombreBase = Mid(Cad, 11, 50)
+    Turno = Mid(Cad, 982, 10) 'txtcodigo(1).Text 'el turno que yo le diga, antes: Mid(cad, 61, 10)
     If CByte(Turno) > 9 Then Turno = "9"
-    NumAlbaran = Mid(cad, 71, 20)
-    NumFactura = Mid(cad, 94, 17)
-    IdVendedor = Mid(cad, 121, 10)
-    NombreVendedor = Mid(cad, 131, 50)
-    fechahora = Mid(cad, 181, 14)
+    NumAlbaran = Mid(Cad, 71, 20)
+    NumFactura = Mid(Cad, 94, 17)
+    IdVendedor = Mid(Cad, 121, 10)
+    NombreVendedor = Mid(Cad, 131, 50)
+    fechahora = Mid(Cad, 181, 14)
     Fecha = Mid(fechahora, 7, 2) & "/" & Mid(fechahora, 5, 2) & "/" & Mid(fechahora, 1, 4)
     Hora = Mid(fechahora, 9, 2) & ":" & Mid(fechahora, 11, 2) & ":" & Mid(fechahora, 13, 2)
 '    CodigoCliente = Mid(cad, 195, 20)
-    NombreCliente = Mid(cad, 215, 70)
+    NombreCliente = Mid(Cad, 215, 70)
 '    Tarjeta = Mid(cad, 290, 20)
-    Tarjeta = Mid(cad, 195, 20)
-    Matricula = Mid(cad, 370, 20)
-    IdProducto = Mid(cad, 493, 20)
-    Surtidor = Mid(cad, 538, 10)
-    Manguera = Mid(cad, 548, 10)
-    PrecioLitro = Mid(cad, 568, 18)
-    cantidad = Mid(cad, 650, 18)
-    Importe = Mid(cad, 668, 18)
-    Descuento = Mid(cad, 586, 18)
-    IdTipoPago = Mid(cad, 784, 10)
-    DescrTipoPago = Mid(cad, 794, 25)
-    CodigoTipoPago = Mid(cad, 1, 10)
-    NifCliente = Mid(cad, 834, 9)
+    Tarjeta = Mid(Cad, 195, 20)
+    Matricula = Mid(Cad, 370, 20)
+    IdProducto = Mid(Cad, 493, 20)
+    Surtidor = Mid(Cad, 538, 10)
+    Manguera = Mid(Cad, 548, 10)
+    PrecioLitro = Mid(Cad, 568, 18)
+    cantidad = Mid(Cad, 650, 18)
+    Importe = Mid(Cad, 668, 18)
+    Descuento = Mid(Cad, 586, 18)
+    IdTipoPago = Mid(Cad, 784, 10)
+    DescrTipoPago = Mid(Cad, 794, 25)
+    CodigoTipoPago = Mid(Cad, 1, 10)
+    NifCliente = Mid(Cad, 834, 9)
     
     '[Monica]24/06/2013: introducimos los kms em el traspaso
-    Kilometros = Mid(cad, 415, 18)
+    Kilometros = Mid(Cad, 415, 18)
     
     If Trim(Importe) = "" Then
         Exit Function
@@ -2729,11 +2759,17 @@ Dim Kilometros As String
                 If TipArtic = 3 Then ' si el articulo es gasoleo bonificado
                     Tarjeta = DevuelveValor("select numtarje from starje where codsocio= " & DBSet(codsoc, "N") & " and tiptarje = 1")
                     
-                    '[Monica]22/11/2011: si no tiene tarjeta de gasoleo bonificado le meto la primera tarjeta que encuentre
+'[Monica]02/02/2017: quitamos esto pq lo que quiere Martin es que cojamos la tarjeta creada como cliente de paso
+'                    '[Monica]22/11/2011: si no tiene tarjeta de gasoleo bonificado le meto la primera tarjeta que encuentre
+'                    If Tarjeta = "0" Then
+'                        Tarjeta = DevuelveValor("select numtarje from starje where codsocio = " & DBSet(codsoc, "N"))
+'                    End If
                     If Tarjeta = "0" Then
-                        Tarjeta = DevuelveValor("select numtarje from starje where codsocio = " & DBSet(codsoc, "N"))
+                        codsoc = DevuelveValor("select codsocio from ssocio where codsocio >= 900000 and nifsocio = " & DBSet(NifCliente, "T"))
+                        Tarjeta = DevuelveValor("select numtarje from starje where codsocio = " & DBSet(codsoc, "N") & " and tiptarje = 1")
+                    Else
+                        Tarjeta = DevuelveValor("select numtarje from starje where codsocio= " & DBSet(codsoc, "N") & " and tiptarje = 1")
                     End If
-                    
                 Else
                     Tarjeta = DevuelveValor("select numtarje from starje where codsocio= " & DBSet(codsoc, "N") & " and tiptarje = 0")
                 End If
@@ -2871,7 +2907,7 @@ eInsertarLineaAlz:
 End Function
             
 ' la diferencia con Alzira es que inserta el turno del fichero no del frame
-Private Function InsertarLineaRib(cad As String) As Boolean
+Private Function InsertarLineaRib(Cad As String) As Boolean
 Dim NumLin As String
 Dim codpro As String
 Dim Articulo As String
@@ -2937,36 +2973,36 @@ Dim Kilometros As String
     InsertarLineaRib = True
     
 
-    base = Mid(cad, 1, 10)
-    NombreBase = Mid(cad, 11, 50)
-    Turno = Mid(cad, 982, 10) 'txtcodigo(1).Text 'el turno que yo le diga, antes: Mid(cad, 61, 10)
+    base = Mid(Cad, 1, 10)
+    NombreBase = Mid(Cad, 11, 50)
+    Turno = Mid(Cad, 982, 10) 'txtcodigo(1).Text 'el turno que yo le diga, antes: Mid(cad, 61, 10)
     If CByte(Turno) > 9 Then Turno = "9"
-    NumAlbaran = Mid(cad, 71, 20)
-    NumFactura = Mid(cad, 92, 7) '14/05/2013 antes 94,17
-    IdVendedor = Mid(cad, 121, 10)
-    NombreVendedor = Mid(cad, 131, 50)
-    fechahora = Mid(cad, 181, 14)
+    NumAlbaran = Mid(Cad, 71, 20)
+    NumFactura = Mid(Cad, 92, 7) '14/05/2013 antes 94,17
+    IdVendedor = Mid(Cad, 121, 10)
+    NombreVendedor = Mid(Cad, 131, 50)
+    fechahora = Mid(Cad, 181, 14)
     Fecha = Mid(fechahora, 7, 2) & "/" & Mid(fechahora, 5, 2) & "/" & Mid(fechahora, 1, 4)
     Hora = Mid(fechahora, 9, 2) & ":" & Mid(fechahora, 11, 2) & ":" & Mid(fechahora, 13, 2)
 '    CodigoCliente = Mid(cad, 195, 20)
-    NombreCliente = Mid(cad, 215, 70)
+    NombreCliente = Mid(Cad, 215, 70)
 '    Tarjeta = Mid(cad, 290, 20)
-    Tarjeta = Mid(cad, 195, 20)
-    Matricula = Mid(cad, 370, 20)
-    IdProducto = Mid(cad, 493, 20)
-    Surtidor = Mid(cad, 538, 10)
-    Manguera = Mid(cad, 548, 10)
-    PrecioLitro = Mid(cad, 568, 18)
-    cantidad = Mid(cad, 650, 18)
-    Importe = Mid(cad, 668, 18)
-    Descuento = Mid(cad, 586, 18)
-    IdTipoPago = Mid(cad, 784, 10)
-    DescrTipoPago = Mid(cad, 794, 25)
-    CodigoTipoPago = Mid(cad, 1, 10)
-    NifCliente = Mid(cad, 834, 9)
+    Tarjeta = Mid(Cad, 195, 20)
+    Matricula = Mid(Cad, 370, 20)
+    IdProducto = Mid(Cad, 493, 20)
+    Surtidor = Mid(Cad, 538, 10)
+    Manguera = Mid(Cad, 548, 10)
+    PrecioLitro = Mid(Cad, 568, 18)
+    cantidad = Mid(Cad, 650, 18)
+    Importe = Mid(Cad, 668, 18)
+    Descuento = Mid(Cad, 586, 18)
+    IdTipoPago = Mid(Cad, 784, 10)
+    DescrTipoPago = Mid(Cad, 794, 25)
+    CodigoTipoPago = Mid(Cad, 1, 10)
+    NifCliente = Mid(Cad, 834, 9)
     
     '[Monica]24/06/2013: insertamos los kilometros
-    Kilometros = Mid(cad, 415, 18)
+    Kilometros = Mid(Cad, 415, 18)
     
     
     If Trim(Importe) = "" Then
@@ -3183,7 +3219,7 @@ End Function
             
             
             
-Private Function InsertarRecaudacion(cad As String) As Boolean
+Private Function InsertarRecaudacion(Cad As String) As Boolean
 Dim Forpa As String
 Dim Importe As String
 Dim SQL As String
@@ -3196,7 +3232,7 @@ Dim Existe As String
     InsertarRecaudacion = True
 '    forpa = Mid(cad, 2, 2)
 '    Importe = Mid(cad, 14, 8) & "," & Mid(cad, 22, 2)
-    Importe = Mid(cad, 668, 18)
+    Importe = Mid(Cad, 668, 18)
     
     If Trim(Importe) = "" Then
         Exit Function
@@ -3204,7 +3240,7 @@ Dim Existe As String
         If CCur(Importe) = 0 Then Exit Function
     End If
     
-    IdTipoPago = Mid(cad, 784, 10)
+    IdTipoPago = Mid(Cad, 784, 10)
     vImporte = Round2(CCur(Importe) / 100, 2)
 
     Forpa = ""
@@ -3233,22 +3269,22 @@ eInsertarRecaudacion:
     
 End Function
 
-Private Function InsertarSalida(cad As String) As Boolean
+Private Function InsertarSalida(Cad As String) As Boolean
 Dim tipMov As String
 Dim Importe As Currency
 Dim SQL As String
-Dim i  As Integer
+Dim I  As Integer
 
     On Error GoTo eInsertarSalida
     
     
     InsertarSalida = False
-    tipMov = Mid(cad, 2, 6)
-    i = InStr(Mid(cad, 8, 10), "-")
-    If i = 0 Then
-        Importe = Format(CCur(TransformaPuntosComas(Mid(cad, 8, 10))), "######0.00")
+    tipMov = Mid(Cad, 2, 6)
+    I = InStr(Mid(Cad, 8, 10), "-")
+    If I = 0 Then
+        Importe = Format(CCur(TransformaPuntosComas(Mid(Cad, 8, 10))), "######0.00")
     Else
-        Importe = Format(CCur(Replace(TransformaPuntosComas(Mid(cad, 8, 10)), "-", "") * (-1)), "######0.00")
+        Importe = Format(CCur(Replace(TransformaPuntosComas(Mid(Cad, 8, 10)), "-", "") * (-1)), "######0.00")
     End If
     
     If tipMov = "MOVIMI" And CCur(Importe) <> 0 Then
@@ -3265,7 +3301,7 @@ eInsertarSalida:
     End If
 End Function
 
-Private Sub InsertarLineaTurno(cad As String)
+Private Sub InsertarLineaTurno(Cad As String)
 Dim codpro As String
 Dim cantidad As String
 Dim precio As String
@@ -3275,10 +3311,10 @@ Dim NumLin As Long
 Dim cWhere As String
 
 
-    codpro = Mid(cad, 35, 2)
-    cantidad = Mid(cad, 54, 6) & "," & Mid(cad, 60, 2)
-    precio = Mid(cad, 42, 2) & "," & Mid(cad, 44, 2)
-    Importe = Mid(cad, 47, 5) & "," & Mid(cad, 52, 2)
+    codpro = Mid(Cad, 35, 2)
+    cantidad = Mid(Cad, 54, 6) & "," & Mid(Cad, 60, 2)
+    precio = Mid(Cad, 42, 2) & "," & Mid(Cad, 44, 2)
+    Importe = Mid(Cad, 47, 5) & "," & Mid(Cad, 52, 2)
     
     SQL = ""
     SQL = DevuelveDesdeBDNew(cPTours, "sturno", "codturno", "fechatur", txtCodigo(0).Text, "F", , "codturno", txtCodigo(1).Text, "N", "codartic", codpro, "N")
@@ -3385,7 +3421,7 @@ End Sub
 
 Private Function InsertarRecaudacionAlz(fic As String) As Boolean
 Dim NF As Long
-Dim i As Long
+Dim I As Long
 Dim longitud As Long
 
 Dim Forpa As String
@@ -3414,8 +3450,8 @@ Dim Fic1 As String
     
         Open fic For Input As #NF '
         
-        Line Input #NF, cad
-        i = 0
+        Line Input #NF, Cad
+        I = 0
         
         lblProgres(0).Caption = "Procesando Fichero: " & fic
         longitud = FileLen(fic)
@@ -3426,15 +3462,15 @@ Dim Fic1 As String
         Me.Pb1.Value = 0
         
         While Not EOF(NF)
-            i = i + 1
+            I = I + 1
             
-            Me.Pb1.Value = Me.Pb1.Value + Len(cad)
-            lblProgres(1).Caption = "Linea " & i
+            Me.Pb1.Value = Me.Pb1.Value + Len(Cad)
+            lblProgres(1).Caption = "Linea " & I
             Me.Refresh
         
-            Forpa = Mid(cad, 71, 10)
-            tipoMov = Mid(cad, 106, 10)
-            Importe = Mid(cad, 141, 18)
+            Forpa = Mid(Cad, 71, 10)
+            tipoMov = Mid(Cad, 106, 10)
+            Importe = Mid(Cad, 141, 18)
             
             If CCur(Forpa) <> 0 And CCur(tipoMov) = 0 And CCur(Importe) <> 0 Then
                 Forpa1 = DevuelveDesdeBDNew(cPTours, "sforpa", "codforpa", "forpaalvic", Forpa, "N")
@@ -3449,16 +3485,16 @@ Dim Fic1 As String
                 Conn.Execute SQL
             End If
             
-            Line Input #NF, cad
+            Line Input #NF, Cad
         Wend
-        If cad <> "" Then
-            Me.Pb1.Value = Me.Pb1.Value + Len(cad)
-            lblProgres(1).Caption = "Linea " & i
+        If Cad <> "" Then
+            Me.Pb1.Value = Me.Pb1.Value + Len(Cad)
+            lblProgres(1).Caption = "Linea " & I
             Me.Refresh
         
-            Forpa = Mid(cad, 71, 10)
-            tipoMov = Mid(cad, 106, 10)
-            Importe = Mid(cad, 141, 18)
+            Forpa = Mid(Cad, 71, 10)
+            tipoMov = Mid(Cad, 106, 10)
+            Importe = Mid(Cad, 141, 18)
             
             If CCur(Forpa) <> 0 And CCur(tipoMov) = 0 And CCur(Importe) <> 0 Then
                 Forpa1 = DevuelveDesdeBDNew(cPTours, "sforpa", "codforpa", "forpaalvic", Forpa, "N")
@@ -3490,9 +3526,9 @@ Dim Fic1 As String
     Else
         Open Fic1 For Input As #NF '
     
-        Line Input #NF, cad
+        Line Input #NF, Cad
     
-        i = 0
+        I = 0
     
         lblProgres(0).Caption = "Procesando Fichero: " & Fic1
         longitud = FileLen(Fic1)
@@ -3502,14 +3538,14 @@ Dim Fic1 As String
         Me.Refresh
         Me.Pb1.Value = 0
         While Not EOF(NF)
-            i = i + 1
+            I = I + 1
     
-            Me.Pb1.Value = Me.Pb1.Value + Len(cad)
-            lblProgres(1).Caption = "Linea " & i
+            Me.Pb1.Value = Me.Pb1.Value + Len(Cad)
+            lblProgres(1).Caption = "Linea " & I
             Me.Refresh
     
-            tipoMov = Mid(cad, 254, 10)
-            Importe = Mid(cad, 236, 18)
+            tipoMov = Mid(Cad, 254, 10)
+            Importe = Mid(Cad, 236, 18)
     
             If CCur(tipoMov) = 1 And CCur(Importe) <> 0 Then
                 Importe1 = Round2(CCur(Importe) / 100000, 5)
@@ -3557,17 +3593,17 @@ Dim Fic1 As String
             End If
     
     
-            Line Input #NF, cad
+            Line Input #NF, Cad
         Wend
-        If cad <> "" Then
-            i = i + 1
+        If Cad <> "" Then
+            I = I + 1
     
-            Me.Pb1.Value = Me.Pb1.Value + Len(cad)
-            lblProgres(1).Caption = "Linea " & i
+            Me.Pb1.Value = Me.Pb1.Value + Len(Cad)
+            lblProgres(1).Caption = "Linea " & I
             Me.Refresh
     
-            tipoMov = Mid(cad, 254, 10)
-            Importe = Mid(cad, 236, 18)
+            tipoMov = Mid(Cad, 254, 10)
+            Importe = Mid(Cad, 236, 18)
     
             If CCur(tipoMov) = 1 And CCur(Importe) <> 0 Then
                 Importe1 = Round2(CCur(Importe) / 100000, 5)
@@ -3628,7 +3664,7 @@ End Function
 
 Private Function InsertarLineaTurnoNew(fic As String) As Boolean
 Dim NF As Long
-Dim i As Long
+Dim I As Long
 Dim longitud As Long
 
 
@@ -3665,8 +3701,8 @@ Dim vFinal As Currency
         
         Open fic For Input As #NF '
         
-        Line Input #NF, cad
-        i = 0
+        Line Input #NF, Cad
+        I = 0
         
         lblProgres(0).Caption = "Procesando Fichero: " & fic
         longitud = FileLen(fic)
@@ -3677,17 +3713,17 @@ Dim vFinal As Currency
         Me.Pb1.Value = 0
         
         While Not EOF(NF)
-            i = i + 1
+            I = I + 1
             
-            Me.Pb1.Value = Me.Pb1.Value + Len(cad)
-            lblProgres(1).Caption = "Linea " & i
+            Me.Pb1.Value = Me.Pb1.Value + Len(Cad)
+            lblProgres(1).Caption = "Linea " & I
             Me.Refresh
         
-            codpro = Mid(cad, 162, 10)
-            Surtidor = Mid(cad, 71, 10)
-            Manguera = Mid(cad, 91, 10)
-            Inicial = Mid(cad, 115, 18)
-            Final = Mid(cad, 133, 18)
+            codpro = Mid(Cad, 162, 10)
+            Surtidor = Mid(Cad, 71, 10)
+            Manguera = Mid(Cad, 91, 10)
+            Inicial = Mid(Cad, 115, 18)
+            Final = Mid(Cad, 133, 18)
             vInicial = Round2(CCur(Inicial) / 100, 2)
             vFinal = Round2(CCur(Final / 100), 2)
             
@@ -3706,7 +3742,7 @@ Dim vFinal As Currency
                 Conn.Execute SQL
             End If
             
-            Line Input #NF, cad
+            Line Input #NF, Cad
         Wend
         Close #NF
     End If
@@ -3796,8 +3832,8 @@ End Function
 
 Private Function ProcesarFicheroCompras(nomFich As String) As Boolean
 Dim NF As Long
-Dim cad As String
-Dim i As Integer
+Dim Cad As String
+Dim I As Integer
 Dim longitud As Long
 Dim Rs As ADODB.Recordset
 Dim Rs1 As ADODB.Recordset
@@ -3819,8 +3855,8 @@ Dim MensError As String
     
     Open nomFich For Input As #NF ' & "\BV" & Format(CDate(txtcodigo(0).Text), "ddmmyy") & "." & Format(txtcodigo(1).Text, "000") For Input As #NF
     
-    Line Input #NF, cad
-    i = 0
+    Line Input #NF, Cad
+    I = 0
     
     lblProgres(0).Caption = "Procesando Fichero Compras: " & nomFich
     longitud = FileLen(nomFich)
@@ -3843,20 +3879,20 @@ Dim MensError As String
     b = True
     MensError = "Error Insertando Linea de Albarán de Compras:"
     While Not EOF(NF) And b
-        i = i + 1
+        I = I + 1
         
-        Me.Pb1.Value = Me.Pb1.Value + Len(cad)
-        lblProgres(1).Caption = "Linea " & i
+        Me.Pb1.Value = Me.Pb1.Value + Len(Cad)
+        lblProgres(1).Caption = "Linea " & I
         Me.Refresh
         
-        b = InsertarLineaCompras(cad, MensError)
+        b = InsertarLineaCompras(Cad, MensError)
         
-        Line Input #NF, cad
+        Line Input #NF, Cad
     Wend
     Close #NF
     
-    If cad <> "" And b Then
-        b = InsertarLineaCompras(cad, MensError)
+    If Cad <> "" And b Then
+        b = InsertarLineaCompras(Cad, MensError)
         
         If b Then
             b = PasarTemporales()
@@ -3884,7 +3920,7 @@ eProcesarFicheroCompras:
 End Function
 
 
-Private Function InsertarLineaCompras(cad As String, ByRef MensError As String) As Boolean
+Private Function InsertarLineaCompras(Cad As String, ByRef MensError As String) As Boolean
 Dim SQL As String
 
 Dim c_Cantidad As Currency
@@ -3930,18 +3966,18 @@ Dim Rsf As ADODB.Recordset
     InsertarLineaCompras = False
     
 
-    Albaran = Trim(Mid(cad, 92, 15))
+    Albaran = Trim(Mid(Cad, 92, 15))
     ' si la longitud es mayor de 10 cogemos los 10 ultimos caracteres
     If Len(Albaran) > 10 Then Albaran = Mid(Albaran, Len(Albaran) - 9, 10)
-    fechahora = Mid(cad, 122, 14)
-    Proveedor = Mid(cad, 136, 10)
-    NomProve = Mid(cad, 146, 40)
-    IdProducto = Mid(cad, 580, 15)
-    NomArtic = Mid(cad, 333, 25)
-    cantidad = Mid(cad, 453, 18)
-    PorcIva = Mid(cad, 471, 18)
-    precio = Mid(cad, 543, 18)
-    Importe = Mid(cad, 561, 18)
+    fechahora = Mid(Cad, 122, 14)
+    Proveedor = Mid(Cad, 136, 10)
+    NomProve = Mid(Cad, 146, 40)
+    IdProducto = Mid(Cad, 580, 15)
+    NomArtic = Mid(Cad, 333, 25)
+    cantidad = Mid(Cad, 453, 18)
+    PorcIva = Mid(Cad, 471, 18)
+    precio = Mid(Cad, 543, 18)
+    Importe = Mid(Cad, 561, 18)
     
     Fecha = Mid(fechahora, 7, 2) & "/" & Mid(fechahora, 5, 2) & "/" & Mid(fechahora, 1, 4)
     fechahora = Mid(fechahora, 1, 4) & "-" & Mid(fechahora, 5, 2) & "-" & Mid(fechahora, 7, 2) & " " & Mid(fechahora, 9, 2) & ":" & Mid(fechahora, 11, 2) & ":" & Mid(fechahora, 13, 2)
@@ -4247,8 +4283,8 @@ End Function
 
 Private Function ComprobarFechaAlbaran(nomFich As String) As Boolean
 Dim NF As Long
-Dim cad As String
-Dim i As Integer
+Dim Cad As String
+Dim I As Integer
 Dim longitud As Long
 Dim Rs As ADODB.Recordset
 Dim Rs1 As ADODB.Recordset
@@ -4272,8 +4308,8 @@ Dim b As Boolean
     NF = FreeFile
     Open nomFich For Input As #NF ' & "\BV" & Format(CDate(txtcodigo(0).Text), "ddmmyy") & "." & Format(txtcodigo(1).Text, "000") For Input As #NF
     
-    Line Input #NF, cad
-    i = 0
+    Line Input #NF, Cad
+    I = 0
     
     lblProgres(0).Caption = "Insertando en Tabla temporal: " & nomFich
     longitud = FileLen(nomFich)
@@ -4287,26 +4323,26 @@ Dim b As Boolean
     b = True
 
     While Not EOF(NF) And b
-        i = i + 1
+        I = I + 1
         
-        Me.Pb1.Value = Me.Pb1.Value + Len(cad)
-        lblProgres(1).Caption = "Linea " & i
+        Me.Pb1.Value = Me.Pb1.Value + Len(Cad)
+        lblProgres(1).Caption = "Linea " & I
         Me.Refresh
         
-        b = ComprobarFecha(cad)
+        b = ComprobarFecha(Cad)
         
-        Line Input #NF, cad
+        Line Input #NF, Cad
     Wend
     Close #NF
     
-    If cad <> "" Then
-        i = i + 1
+    If Cad <> "" Then
+        I = I + 1
         
-        Me.Pb1.Value = Me.Pb1.Value + Len(cad)
-        lblProgres(1).Caption = "Linea " & i
+        Me.Pb1.Value = Me.Pb1.Value + Len(Cad)
+        lblProgres(1).Caption = "Linea " & I
         Me.Refresh
         
-        b = ComprobarFecha(cad)
+        b = ComprobarFecha(Cad)
     End If
     
     Pb1.visible = False
@@ -4323,7 +4359,7 @@ End Function
 
 
 
-Private Function ComprobarFecha(cad As String) As Boolean
+Private Function ComprobarFecha(Cad As String) As Boolean
 Dim SQL As String
 
 Dim Albaran As String
@@ -4341,8 +4377,8 @@ Dim codsoc As String
 
     ComprobarFecha = True
 
-    Albaran = Mid(cad, 92, 15)
-    fechahora = Mid(cad, 122, 14)
+    Albaran = Mid(Cad, 92, 15)
+    fechahora = Mid(Cad, 122, 14)
     
     Fecha = Mid(fechahora, 7, 2) & "/" & Mid(fechahora, 5, 2) & "/" & Mid(fechahora, 1, 4)
     Hora = Mid(fechahora, 9, 2) & ":" & Mid(fechahora, 11, 2) & ":" & Mid(fechahora, 13, 2)
@@ -4375,8 +4411,8 @@ End Function
 ' fichero de comprobacion
 Private Function ProcesarFicheroRegaixo2() As Boolean
 Dim NF As Long
-Dim cad As String
-Dim i As Integer
+Dim Cad As String
+Dim I As Integer
 Dim longitud As Long
 Dim Rs As ADODB.Recordset
 Dim Rs1 As ADODB.Recordset
@@ -4397,7 +4433,7 @@ Dim b As Boolean
     SQL = SQL & " order by albaran "
     
     
-    i = 0
+    I = 0
     
     lblProgres(0).Caption = "Insertando en Tabla temporal: "
     longitud = TotalRegistrosConsulta(SQL)
@@ -4414,10 +4450,10 @@ Dim b As Boolean
     Rs.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
     
     While Not Rs.EOF And b
-        i = i + 1
+        I = I + 1
         
         Me.Pb1.Value = Me.Pb1.Value + 1
-        lblProgres(1).Caption = "Linea " & i
+        lblProgres(1).Caption = "Linea " & I
         Me.Refresh
         b = ComprobarRegistroReg(Rs)
          If Not b Then Stop
@@ -4438,8 +4474,8 @@ End Function
 'fichero de proceso
 Private Function ProcesarFicheroRegaixo() As Boolean
 Dim NF As Long
-Dim cad As String
-Dim i As Integer
+Dim Cad As String
+Dim I As Integer
 Dim longitud As Long
 Dim Rs As ADODB.Recordset
 Dim Rs1 As ADODB.Recordset
@@ -4458,7 +4494,7 @@ Dim NomFic As String
     ProcesarFicheroRegaixo = False
     NF = FreeFile
     
-    i = 0
+    I = 0
     
     SQL = "select turno,albaran,factura,fecha,cliente,nomclien,tarjeta,matricula,km,producto,nomprodu,surtidor,manguera,"
     SQL = SQL & " nsuministro,precio,descuento,descuentoporc,iva,cantidad,idtipopago,desctipopago,nif,importe "
@@ -4481,10 +4517,10 @@ Dim NomFic As String
     
     
     While Not Rs.EOF
-        i = i + 1
+        I = I + 1
         
         Me.Pb1.Value = Me.Pb1.Value + 1
-        lblProgres(1).Caption = "Linea " & i
+        lblProgres(1).Caption = "Linea " & I
         Me.Refresh
         
         b = InsertarLineaReg(Rs)
@@ -4831,7 +4867,7 @@ End Function
 
 Private Function InsertarLineaTurnoReg(ByRef Rs As ADODB.Recordset) As Boolean
 Dim NF As Long
-Dim i As Long
+Dim I As Long
 Dim longitud As Long
 
 
