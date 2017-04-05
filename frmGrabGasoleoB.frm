@@ -1756,6 +1756,8 @@ Dim vAux As String
     vAux = Replace(vAux, "Ó", "O")
     vAux = Replace(vAux, "Ú", "U")
     vAux = Replace(vAux, "'", " ")
+    '[Monica]05/04/2017: faltaba la barra /
+    vAux = Replace(vAux, "/", " ")
     
     
     ReemplazaCharNoAdmitidos = vAux
