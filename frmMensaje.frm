@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.2#0"; "MSCOMCTL.OCX"
 Begin VB.Form frmMensaje 
    BackColor       =   &H80000005&
    BorderStyle     =   0  'None
@@ -610,7 +610,7 @@ Private Sub cmdAceptar_Click()
     Unload Me
 End Sub
 
-Private Sub CmdCancel_Click()
+Private Sub cmdCancel_Click()
     Unload Me
 End Sub
 
@@ -649,7 +649,7 @@ Private Sub Form_Load()
         PonerFrameCobrosPtesVisible True, 1000, 2000
         CargarListaErrComprobacion
         Me.Caption = "Errores de Comprobacion: "
-        PonerFocoBtn Me.cmdSalir
+        PonerFocoBtn Me.CmdSalir
     End If
     
 
@@ -719,7 +719,7 @@ Dim SQL As String
             ' y será codprove si llamamos desde Compras
             ItmX.Text = Rs.Fields(0).Value
             ItmX.SubItems(1) = Format(Rs!numfactu, "0000000")
-            ItmX.SubItems(2) = Rs!fecfactu
+            ItmX.SubItems(2) = Rs!Fecfactu
             ItmX.SubItems(3) = Rs!Error
             Rs.MoveNext
         Wend
@@ -745,7 +745,7 @@ Private Sub PonerFrameCobrosPtesVisible(visible As Boolean, ByRef h As Integer, 
             w = 9200
 '            Me.Label1(0).Top = 4800
 '            Me.Label1(0).Left = 3400
-            Me.cmdSalir.Caption = "&Salir"
+            Me.CmdSalir.Caption = "&Salir"
             PonerFrameVisible Me.FrameErrores, visible, h, w
             Me.frameAcercaDE.visible = False
             Me.FrameCobrosPtes.visible = False
@@ -925,7 +925,7 @@ Dim Rs As ADODB.Recordset
 Dim ItmX As ListItem
 Dim SQL As String
 Dim J As Double
-Dim i As Double
+Dim I As Double
 
     On Error GoTo ECargarList
 
@@ -949,23 +949,23 @@ Dim i As Double
         End If
     
         While Not Rs.EOF
-            For i = J To DBLet(Rs.Fields(0).Value, "N") - 1
+            For I = J To DBLet(Rs.Fields(0).Value, "N") - 1
                 Set ItmX = ListView3.ListItems.Add
-                ItmX.Text = Format(i, "0000000000000")
-            Next i
+                ItmX.Text = Format(I, "0000000000000")
+            Next I
             J = DBLet(Rs.Fields(0).Value, "N") + 1
             Rs.MoveNext
         Wend
         If Text1(1).Text <> "" Then
-            For i = J To CCur(Text1(1).Text)
+            For I = J To CCur(Text1(1).Text)
                 Set ItmX = ListView3.ListItems.Add
-                ItmX.Text = Format(i, "0000000000000")
-            Next i
+                ItmX.Text = Format(I, "0000000000000")
+            Next I
         Else
-            For i = J To 9999999999999#
+            For I = J To 9999999999999#
                 Set ItmX = ListView3.ListItems.Add
-                ItmX.Text = Format(i, "0000000000000")
-            Next i
+                ItmX.Text = Format(I, "0000000000000")
+            Next I
         End If
     Else
         If Text1(0).Text = "" Then
@@ -974,15 +974,15 @@ Dim i As Double
             J = CCur(Text1(0).Text)
         End If
         If Text1(1).Text <> "" Then
-            For i = J To CCur(Text1(1).Text)
+            For I = J To CCur(Text1(1).Text)
                 Set ItmX = ListView3.ListItems.Add
-                ItmX.Text = Format(i, "0000000000000")
-            Next i
+                ItmX.Text = Format(I, "0000000000000")
+            Next I
         Else
-            For i = J To 9999999999999#
+            For I = J To 9999999999999#
                 Set ItmX = ListView3.ListItems.Add
-                ItmX.Text = Format(i, "0000000000000")
-            Next i
+                ItmX.Text = Format(I, "0000000000000")
+            Next I
         End If
    
     End If
@@ -1020,7 +1020,7 @@ Dim cerrar As Boolean
 End Sub
 
 Private Sub Text1_LostFocus(Index As Integer)
-Dim cad As String, cadTipo As String 'tipo cliente
+Dim Cad As String, cadTipo As String 'tipo cliente
 Dim dev As String
     'Quitar espacios en blanco por los lados
     Text1(Index).Text = Trim(Text1(Index).Text)

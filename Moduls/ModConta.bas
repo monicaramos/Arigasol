@@ -13,7 +13,7 @@ Option Explicit
 Public Function PonerNombreCuenta(ByRef Txt As TextBox, Modo As Byte, Optional clien As String) As String
 'Obtener el nombre de una cuenta
 Dim DevfrmCCtas As String
-Dim cad As String
+Dim Cad As String
 
 ' ### [Monica] 07/09/2006 añadida la linea siguiente condicion vParamAplic.NumeroConta = 0
 ' para que no saque nada si no hay contabilidad
@@ -28,14 +28,14 @@ Dim cad As String
          Exit Function
     End If
     DevfrmCCtas = Txt.Text
-    If CuentaCorrectaUltimoNivel(DevfrmCCtas, cad) Then
+    If CuentaCorrectaUltimoNivel(DevfrmCCtas, Cad) Then
         ' ### [Monica] 07/09/2006
-        If InStr(cad, "No existe la cuenta") > 0 Then
+        If InStr(Cad, "No existe la cuenta") > 0 Then
             Txt.Text = DevfrmCCtas
 '            If (Modo = 4) And clien <> "" Then 'si insertar antes estaba lo de abajo
             If (Modo = 3 Or Modo = 4) And clien <> "" Then 'si insertar o modificar
-                cad = cad & "  ¿Desea crearla?"
-                If MsgBox(cad, vbQuestion + vbYesNo) = vbYes Then
+                Cad = Cad & "  ¿Desea crearla?"
+                If MsgBox(Cad, vbQuestion + vbYesNo) = vbYes Then
                     If InStr(1, Txt.Tag, "ssocio") > 0 Then
                         InsertarCuentaCble DevfrmCCtas, clien
                     ElseIf InStr(1, Txt.Tag, "proveedor") > 0 Then
@@ -46,14 +46,14 @@ Dim cad As String
                     PonerNombreCuenta = clien
                 End If
             Else
-                MsgBox cad, vbExclamation
+                MsgBox Cad, vbExclamation
             End If
         Else
             Txt.Text = DevfrmCCtas
-            PonerNombreCuenta = cad
+            PonerNombreCuenta = Cad
         End If
     Else
-        MsgBox cad, vbExclamation
+        MsgBox Cad, vbExclamation
 '        Txt.Text = ""
         PonerNombreCuenta = ""
 '        PonerFoco Txt
@@ -112,41 +112,41 @@ End Function
 
 
 'DAVID
-Public Function RellenaCodigoCuenta(vCodigo As String) As String
+Public Function RellenaCodigoCuenta(vcodigo As String) As String
 'Rellena con ceros hasta poner una cuenta.
 'Ejemplo: 43.1 --> 430000001
-Dim i As Integer
+Dim I As Integer
 Dim J As Integer
 Dim cont As Integer
-Dim cad As String
+Dim Cad As String
 
-    RellenaCodigoCuenta = vCodigo
-    If Len(vCodigo) > vEmpresa.DigitosUltimoNivel Then Exit Function
+    RellenaCodigoCuenta = vcodigo
+    If Len(vcodigo) > vEmpresa.DigitosUltimoNivel Then Exit Function
     
-    i = 0: cont = 0
+    I = 0: cont = 0
     Do
-        i = i + 1
-        i = InStr(i, vCodigo, ".")
-        If i > 0 Then
+        I = I + 1
+        I = InStr(I, vcodigo, ".")
+        If I > 0 Then
             If cont > 0 Then cont = 1000
-            cont = cont + i
+            cont = cont + I
         End If
-    Loop Until i = 0
+    Loop Until I = 0
 
     'Habia mas de un punto
     If cont > 1000 Or cont = 0 Then Exit Function
 
     'Cambiamos el punto por 0's  .-Utilizo la variable maximocaracteres, para no tener k definir mas
-    i = Len(vCodigo) - 1 'el punto lo quito
-    J = vEmpresa.DigitosUltimoNivel - i
-    cad = ""
-    For i = 1 To J
-        cad = cad & "0"
-    Next i
+    I = Len(vcodigo) - 1 'el punto lo quito
+    J = vEmpresa.DigitosUltimoNivel - I
+    Cad = ""
+    For I = 1 To J
+        Cad = Cad & "0"
+    Next I
 
-    cad = Mid(vCodigo, 1, cont - 1) & cad
-    cad = cad & Mid(vCodigo, cont + 1)
-    RellenaCodigoCuenta = cad
+    Cad = Mid(vcodigo, 1, cont - 1) & Cad
+    Cad = Cad & Mid(vcodigo, cont + 1)
+    RellenaCodigoCuenta = Cad
 End Function
 
 'DAVID
@@ -248,7 +248,7 @@ Dim vIban As String
         Rs.Open SqlBan, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
         If Not Rs.EOF Then
             SQL = SQL & DBSet(Rs!NomBanco, "T") & ",'S',1," & DBSet(Rs!NomBanco, "T") & "," & DBSet(Rs!dombanco, "T") & ","
-            SQL = SQL & DBSet(Rs!codPosta, "T") & "," & DBSet(Rs!pobbanco, "T") & "," & DBSet(Rs!probanco, "T") & "," & ValorNulo & "," & DBSet(Rs!maibanco, "T") & "," & DBSet(Rs!wwwbanco, "T") & "," & ValorNulo
+            SQL = SQL & DBSet(Rs!CodPosta, "T") & "," & DBSet(Rs!pobbanco, "T") & "," & DBSet(Rs!probanco, "T") & "," & ValorNulo & "," & DBSet(Rs!maibanco, "T") & "," & DBSet(Rs!wwwbanco, "T") & "," & ValorNulo
             
             If Not vParamAplic.ContabilidadNueva Then
             
@@ -301,18 +301,18 @@ End Function
 Public Function PonerNombreConcepto(ByRef Txt As TextBox) As String
 'Obtener el nombre de un concepto
 Dim codConce As String
-Dim cad As String
+Dim Cad As String
 
      If Txt.Text = "" Then
          PonerNombreConcepto = ""
          Exit Function
     End If
     codConce = Txt.Text
-    If ConceptoCorrecto(codConce, cad) Then
+    If ConceptoCorrecto(codConce, Cad) Then
         Txt.Text = Format(codConce, "000")
-        PonerNombreConcepto = cad
+        PonerNombreConcepto = Cad
     Else
-        MsgBox cad, vbExclamation
+        MsgBox Cad, vbExclamation
         Txt.Text = ""
         PonerNombreConcepto = ""
         PonerFoco Txt
@@ -673,6 +673,31 @@ On Error Resume Next
     If Err.Number <> 0 Then Err.Clear
 
 End Function
+
+
+Public Function CalcularBaseNew(Importe As String, iva As String) As Currency
+'devuelve la base del Importe
+'Ej el 16% de 120 = 120-19.2 = 100.8
+Dim vImp As Currency
+Dim vIva As Currency
+Dim vArt As Currency
+Dim CodIVA As String
+
+Dim IvaArt As Integer
+Dim ImpIva As Currency
+On Error Resume Next
+
+    Importe = ComprobarCero(Importe)
+    vIva = CCur(iva)
+    
+    ImpIva = Round2(Importe / (1 + (vIva / 100)), 2)
+    
+    CalcularBaseNew = CStr(ImpIva)
+    If Err.Number <> 0 Then Err.Clear
+
+End Function
+
+
 
 
 'MONICA: Cuentas del la Contabilidad
