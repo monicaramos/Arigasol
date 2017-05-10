@@ -1385,7 +1385,7 @@ Dim rsConta As ADODB.Recordset
     SqlAux = ""
     
     If Not Rs.EOF Then
-        CodigivaAnt = DBLet(Rs!codigiva)
+        CodigivaAnt = DBLet(Rs!CodigIVA)
         PorcIvaAnt = DBLet(Rs!PorcIva, "N")
         PorcRecAnt = DBLet(Rs!PorcRec, "N")
     End If
@@ -1393,7 +1393,7 @@ Dim rsConta As ADODB.Recordset
     While Not Rs.EOF
     
         '$$$ Pendiente 28/04/2017
-        If DBLet(Rs!codigiva, "N") <> CodigivaAnt Then
+        If DBLet(Rs!CodigIVA, "N") <> CodigivaAnt Then
             
             BaseImp = 0
             SqlConta = "select baseimpo from factcli_totales where numserie = " & DBSet(Rs!Letraser, "T") & " and numfactu = " & DBSet(Rs!numfactu, "N") & " and fecfactu = " & DBSet(Rs!Fecfactu, "F") & " and codigiva = " & DBSet(CodigivaAnt, "N")
@@ -1429,7 +1429,7 @@ Dim rsConta As ADODB.Recordset
            
             End If
             
-            CodigivaAnt = Rs!codigiva
+            CodigivaAnt = Rs!CodigIVA
             PorcIvaAnt = Rs!PorcIva
             PorcRecAnt = Rs!PorcRec
             
@@ -1470,7 +1470,7 @@ Dim rsConta As ADODB.Recordset
         End If
         
         SQL = SQL & "," & DBSet(Rs!Fecfactu, "F")
-        SQL = SQL & "," & DBSet(Rs!codigiva, "N")
+        SQL = SQL & "," & DBSet(Rs!CodigIVA, "N")
         SQL = SQL & "," & DBSet(Rs!PorcIva, "N")
         SQL = SQL & "," & DBSet(Rs!PorcRec, "N")
         
@@ -1494,7 +1494,7 @@ Dim rsConta As ADODB.Recordset
         ultser = Rs!Letraser
         ultfac = Rs!numfactu
         ultfec = Rs!Fecfactu
-        ultiva = Rs!codigiva
+        ultiva = Rs!CodigIVA
         
         
         I = I + 1
@@ -1653,13 +1653,16 @@ Dim TrozoComunInsert As String
     
         'Traer la baIfaccl y e tp1faccl
         sql2 = "select baseimp" & I & " baseimp ,tipoiva" & I & " tipoiva from schfac where letraser = " & DBSet(Rs!Letraser, "T") & " and numfactu = " & DBSet(Rs!numfactu, "N") & " and fecfactu = " & DBSet(Rs!Fecfactu, "F")
+        
         Set Rs2 = New ADODB.Recordset
         Rs2.Open sql2, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
         
         CodigoDeIva = -1
         If Not Rs2.EOF Then
-            BaseLin = DBLet(Rs2!BaseImp, "N")
-            CodigoDeIva = Rs2!TipoIVA
+            If Not IsNull(Rs2!TipoIVA) Then
+                BaseLin = DBLet(Rs2!BaseImp, "N")
+                CodigoDeIva = Rs2!TipoIVA
+            End If
         End If
         Rs2.Close
         Set Rs2 = Nothing
@@ -1674,7 +1677,7 @@ Dim TrozoComunInsert As String
                 
                 Sql3 = ""
                 Do
-                    If Rs!codigiva = CodigoDeIva Then
+                    If Rs!CodigIVA = CodigoDeIva Then
                         'Como mueve el RS, estos valores para la insercion HAY que guardarselos
                         
                         PorIva = Rs!PorcIva
@@ -1698,7 +1701,7 @@ Dim TrozoComunInsert As String
                         Else
                             
                             
-                            If DBLet(Rs!codigiva, "N") <> CodigoDeIva Then EsUltimoDelIva = True
+                            If DBLet(Rs!CodigIVA, "N") <> CodigoDeIva Then EsUltimoDelIva = True
                         End If
                         
                         If EsUltimoDelIva Then
@@ -2035,7 +2038,7 @@ Dim PorcRecAnt As Currency
         
         
         SQL = SQL & "," & DBSet(Rs!Fecfactu, "F")
-        SQL = SQL & "," & DBSet(Rs!codigiva, "N")
+        SQL = SQL & "," & DBSet(Rs!CodigIVA, "N")
         SQL = SQL & "," & DBSet(Rs!PorcIva, "N")
         SQL = SQL & "," & DBSet(Rs!PorcRec, "N")
         
@@ -4918,7 +4921,6 @@ Dim K As Byte
     totimp = 0
     SqlAux = ""
     While Not Rs.EOF
-        SqlAux = Cad
         
         SQL = "'" & SerieFraPro & "'," & numRegis & "," & DBSet(Rs!Fecfactu, "F") & "," & AnyoFacPr & "," & I & ","
         SQL = SQL & DBSet(Rs!Cuenta, "T")
@@ -4926,12 +4928,12 @@ Dim K As Byte
         'Vemos que tipo de IVA es en el vector de importes
         NumeroIVA = 127
         For K = 0 To 2
-            If Rs!codigiva = vTipoIva(K) Then
+            If Rs!CodigIVA = vTipoIva(K) Then
                 NumeroIVA = K
                 Exit For
             End If
         Next
-        If NumeroIVA > 100 Then Err.Raise 513, "Error obteniendo IVA: " & Rs!codigiva
+        If NumeroIVA > 100 Then Err.Raise 513, "Error obteniendo IVA: " & Rs!CodigIVA
         
         
         ImpLinea = Rs!Importe - CCur(CalcularPorcentaje(Rs!Importe, DtoPPago, 2))
@@ -4939,38 +4941,10 @@ Dim K As Byte
         '----
         totimp = totimp + ImpLinea
         
+        'Cuanto queda de base
         vBaseIva(NumeroIVA) = vBaseIva(NumeroIVA) - ImpLinea   'Para ajustar el importe y que no haya descuadre
-        HayQueAjustar = False
-        If vBaseIva(NumeroIVA) <> 0 Then
-            'falta importe.
-            'Puede ser que hayan mas lineas, o haya descuadre. Como esta ordenado por tipo de iva
-            Rs.MoveNext
-            If Rs.EOF Then
-                'No hay mas lineas
-                'Hay que ajustar SI o SI
-                HayQueAjustar = True
-            Else
-                'Si que hay mas lineas.
-                'Son del mismo tipo de IVA
-                If Rs!codigiva <> vTipoIva(0) Then
-                    'NO es el mismo tipo de IVA
-                    'Hay que ajustar
-                    HayQueAjustar = True
-                End If
-            End If
-            Rs.MovePrevious
-        End If
         
-        SQL = SQL & "," & vTipoIva(NumeroIVA) & "," & DBSet(vPorcIva(NumeroIVA), "N") & "," & DBSet(vPorcRec(NumeroIVA), "N", "S") & ","
-        
-        If HayQueAjustar Then
-            Stop
-        Else
-        
-        End If
-        
-        
-        'Caluclo el importe de IVA y el de recargo de equivalencia
+         'Caluclo el importe de IVA y el de recargo de equivalencia
         ImpImva = vPorcIva(NumeroIVA) / 100
         ImpImva = Round2(ImpLinea * ImpImva, 2)
         If vPorcRec(NumeroIVA) = 0 Then
@@ -4982,6 +4956,40 @@ Dim K As Byte
         vImpIva(NumeroIVA) = vImpIva(NumeroIVA) - ImpImva
         vImpRec(NumeroIVA) = vImpRec(NumeroIVA) - ImpRec
         
+        
+        
+        HayQueAjustar = False
+        If vBaseIva(NumeroIVA) <> 0 Or vImpIva(NumeroIVA) <> 0 Or vImpRec(NumeroIVA) <> 0 Then
+            'falta importe.
+            'Puede ser que hayan mas lineas, o haya descuadre. Como esta ordenado por tipo de iva
+            Rs.MoveNext
+            If Rs.EOF Then
+                'No hay mas lineas
+                'Hay que ajustar SI o SI
+                HayQueAjustar = True
+            Else
+                'Si que hay mas lineas.
+                'Son del mismo tipo de IVA
+                If Rs!CodigIVA <> vTipoIva(NumeroIVA) Then
+                    'NO es el mismo tipo de IVA
+                    'Hay que ajustar
+                    HayQueAjustar = True
+                End If
+            End If
+            Rs.MovePrevious
+        End If
+        
+        SQL = SQL & "," & vTipoIva(NumeroIVA) & "," & DBSet(vPorcIva(NumeroIVA), "N") & "," & DBSet(vPorcRec(NumeroIVA), "N", "S") & ","
+        
+        If HayQueAjustar Then
+
+            If vBaseIva(NumeroIVA) <> 0 Then ImpLinea = ImpLinea + vBaseIva(NumeroIVA)
+            If vImpIva(NumeroIVA) <> 0 Then ImpImva = ImpImva + vImpIva(NumeroIVA)
+            If vImpRec(NumeroIVA) <> 0 Then ImpRec = ImpRec + vImpRec(NumeroIVA)
+            
+        End If
+        
+       
         'baseimpo , impoiva, imporec, aplicret, CodCCost
         SQL = SQL & DBSet(ImpLinea, "N") & "," & DBSet(ImpImva, "N") & "," & DBSet(ImpRec, "N", "S")
         SQL = SQL & ",0,"
@@ -5005,6 +5013,7 @@ Dim K As Byte
             CCoste = ValorNulo
         End If
         
+        
         Cad = Cad & "(" & SQL & ")" & ","
         
         I = I + 1
@@ -5018,7 +5027,7 @@ Dim K As Byte
     'Insertar en la contabilidad
     If Cad <> "" Then
         Cad = Mid(Cad, 1, Len(Cad) - 1) 'quitar la ult. coma
-        
+
         SQL = "INSERT INTO factpro_lineas(numserie,numregis,fecharec,anofactu,numlinea,codmacta,codigiva,porciva,porcrec,"
         SQL = SQL & " baseimpo,impoiva,imporec,aplicret,codccost)"
         SQL = SQL & " VALUES " & Cad

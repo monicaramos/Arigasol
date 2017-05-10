@@ -108,12 +108,12 @@ End Property
 
 '**** Fecha de la Factura
 
-Public Property Let fecfactu(ByVal vData As String)
+Public Property Let Fecfactu(ByVal vData As String)
      mFecFactu = vData
 End Property
 
-Public Property Get fecfactu() As String
-     fecfactu = mFecFactu
+Public Property Get Fecfactu() As String
+     Fecfactu = mFecFactu
 End Property
 
 
@@ -534,8 +534,8 @@ Dim sql2 As String
         Mens = "Datos Factura"
         mCodProve = Rs!CodProve
         mNumFactu = CStr(Rs!numfactu)
-        mFecFactu = CStr(Rs!fecfactu)
-        mCodForpa = CStr(Rs!CodForpa)
+        mFecFactu = CStr(Rs!Fecfactu)
+        mCodForpa = CStr(Rs!Codforpa)
         mBrutofac = CStr(Rs!BrutoFac)
         mTotalfac = CStr(Rs!TotalFac)
         'obterner la ctaCble del proveedor
@@ -638,7 +638,9 @@ Dim I As Byte
             
             If Not Rs.EOF Then
                'vamos creando la cadena para insertar en spagosp de la CONTA
-               CadValuesAux2 = "('" & CtaProve & "', " & DBSet(numfactu, "T") & ", '" & Format(fecfactu, FormatoFecha) & "', "
+               CadValuesAux2 = "("
+               If vParamAplic.ContabilidadNueva Then CadValuesAux2 = CadValuesAux2 & DBSet(SerieFraPro, "T") & ","
+               CadValuesAux2 = CadValuesAux2 & "'" & CtaProve & "', " & DBSet(numfactu, "T") & ", '" & Format(Fecfactu, FormatoFecha) & "', "
               
               'Primer Vencimiento
               '------------------------------------------------------------
@@ -647,7 +649,7 @@ Dim I As Byte
               '[Monica]28/01/2013: añadimos el if dependiendo de si está o no cargada la variable
               'FECHA VTO
               If mFecVto = "" Then
-                  FecVenci = CDate(fecfactu)
+                  FecVenci = CDate(Fecfactu)
               
                   '=== Modificado: Laura 23/01/2007
     '              FecVenci = FecVenci + CByte(DBLet(rsVenci!primerve, "N"))
@@ -701,7 +703,7 @@ Dim I As Byte
 
 
               'David. JUNIO 07.   Los dos textos de grabacion de datos de csb
-              SQL = "Factura num.: " & numfactu & "-" & Format(fecfactu, "dd/mm/yyyy")
+              SQL = "Factura num.: " & numfactu & "-" & Format(Fecfactu, "dd/mm/yyyy")
               CadValues2 = CadValues2 & "'" & DevNombreSQL(SQL) & "',"
               SQL = "Vto a fecha: " & Format(FecVenci1, "dd/mm/yyyy")
               CadValues2 = CadValues2 & "'" & DevNombreSQL(SQL) & "'"
@@ -751,7 +753,7 @@ Dim I As Byte
                         End If
                   End If
 
-                  SQL = "Factura num.: " & numfactu & "-" & Format(fecfactu, "dd/mm/yyyy")
+                  SQL = "Factura num.: " & numfactu & "-" & Format(Fecfactu, "dd/mm/yyyy")
                   CadValues2 = CadValues2 & "'" & DevNombreSQL(SQL) & "',"
                   SQL = "Vto a fecha: " & Format(FecVenci1, "dd/mm/yyyy")
                   CadValues2 = CadValues2 & "'" & DevNombreSQL(SQL) & "'"
@@ -807,7 +809,7 @@ Dim I As Byte
         'SQL = "INSERT INTO spagop (ctaprove, numfactu, fecfactu, numorden, codforpa, fecefect, impefect, ctabanc1) "
         'David. Cuenta bancaria y descripcion textos
         If vParamAplic.ContabilidadNueva Then
-            SQL = "INSERT INTO pagos (codmacta, numfactu, fecfactu, numorden, codforpa, fecefect, impefect, ctabanc1,"
+            SQL = "INSERT INTO pagos (numserie, codmacta, numfactu, fecfactu, numorden, codforpa, fecefect, impefect, ctabanc1,"
             
             SQL = SQL & "iban,text1csb,text2csb,nomprove,domprove,pobprove,cpprove,proprove,nifprove,codpais) "
         
@@ -985,7 +987,7 @@ Dim Nulo3 As String
     'Insertar en la tabla cabecera de la factura de compras
     SQL = "INSERT INTO scafpc (codprove,numfactu,fecfactu,fecrecep,nomprove,domprove,codpobla,pobprove,proprove,nifprove,telprove,codforpa,brutofac,dtoppago,dtognral,impppago,impgnral,baseiva1,baseiva2,baseiva3, "
     SQL = SQL & "tipoiva1,tipoiva2,tipoiva3,porciva1,porciva2,porciva3,impoiva1,impoiva2,impoiva3,totalfac,intconta) "
-    SQL = SQL & " VALUES (" & Proveedor & "," & DBSet(numfactu, "T") & "," & DBSet(fecfactu, "F") & "," & DBSet(FecRecep, "F") & ","
+    SQL = SQL & " VALUES (" & Proveedor & "," & DBSet(numfactu, "T") & "," & DBSet(Fecfactu, "F") & "," & DBSet(FecRecep, "F") & ","
     SQL = SQL & DBSet(NombreProv, "T", "N") & "," & DBSet(DomicilioProv, "T", "N") & "," & DBSet(CPostalProv, "T", "N") & "," & DBSet(PoblacionProv, "T", "N") & "," & DBSet(ProvinciaProv, "T", "N") & ","
     SQL = SQL & DBSet(NIFProv, "T", "N") & "," & DBSet(TelefProv, "T", "N") & "," & ForPago & ","
     SQL = SQL & DBSet(BrutoFac, "N", "N") & ","
@@ -1024,7 +1026,7 @@ Dim SQL As String
     On Error GoTo EInsertarAlb
 
     SQL = "INSERT INTO scafpa (codprove,numfactu,fecfactu,numalbar,fechaalb,numpedpr,fecpedpr,observa1,observa2,observa3,observa4,observa5,fecturno,codturno) "
-    SQL = SQL & " SELECT " & Proveedor & " as codprove," & DBSet(numfactu, "T") & " as numfactu," & DBSet(fecfactu, "F") & " as fecfactu," & " numalbar,fechaalb,numpedpr,fecpedpr,observa1,observa2,observa3,observa4,observa5,fecturno,codturno "
+    SQL = SQL & " SELECT " & Proveedor & " as codprove," & DBSet(numfactu, "T") & " as numfactu," & DBSet(Fecfactu, "F") & " as fecfactu," & " numalbar,fechaalb,numpedpr,fecpedpr,observa1,observa2,observa3,observa4,observa5,fecturno,codturno "
     SQL = SQL & " FROM scaalp WHERE " & cadSQL
     Conn.Execute SQL
 
@@ -1047,7 +1049,7 @@ Dim SQL As String
     On Error GoTo EInsertarLin
 
     SQL = "INSERT INTO slifpc (codprove,numfactu,fecfactu,numalbar,numlinea,codalmac,codartic,nomartic,ampliaci,cantidad,precioar,dtoline1,dtoline2,importel) "
-    SQL = SQL & " SELECT " & Proveedor & " as codprove," & DBSet(numfactu, "T") & " as numfactu," & DBSet(fecfactu, "F") & " as fecfactu," & " numalbar,numlinea,codalmac,codartic,nomartic,ampliaci,cantidad,precioar,dtoline1,dtoline2,importel "
+    SQL = SQL & " SELECT " & Proveedor & " as codprove," & DBSet(numfactu, "T") & " as numfactu," & DBSet(Fecfactu, "F") & " as fecfactu," & " numalbar,numlinea,codalmac,codartic,nomartic,ampliaci,cantidad,precioar,dtoline1,dtoline2,importel "
     SQL = SQL & " FROM slialp WHERE " & Replace(cadSQL, "scaalp", "slialp")
     Conn.Execute SQL
 
@@ -1257,7 +1259,7 @@ Dim SQL As String
     MarcarContabilizada = False
     
     SQL = "UPDATE scafpc SET intconta=1 "
-    SQL = SQL & " WHERE codprove=" & Me.Proveedor & " AND numfactu=" & DBSet(Me.numfactu, "T") & " AND fecfactu=" & DBSet(Me.fecfactu, "F")
+    SQL = SQL & " WHERE codprove=" & Me.Proveedor & " AND numfactu=" & DBSet(Me.numfactu, "T") & " AND fecfactu=" & DBSet(Me.Fecfactu, "F")
     Conn.Execute SQL
     
     MarcarContabilizada = True
