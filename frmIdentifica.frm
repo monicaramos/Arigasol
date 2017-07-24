@@ -12,6 +12,11 @@ Begin VB.Form frmIdentifica
    ScaleWidth      =   7650
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
+   Begin VB.Timer Timer1 
+      Interval        =   1000
+      Left            =   0
+      Top             =   1590
+   End
    Begin VB.TextBox Text1 
       Alignment       =   2  'Center
       Appearance      =   0  'Flat
@@ -53,6 +58,25 @@ Begin VB.Form frmIdentifica
       TabIndex        =   0
       Top             =   3960
       Width           =   3015
+   End
+   Begin VB.Label Label3 
+      BackStyle       =   0  'Transparent
+      Caption         =   "label3"
+      BeginProperty Font 
+         Name            =   "Tahoma"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00000000&
+      Height          =   195
+      Left            =   2010
+      TabIndex        =   6
+      Top             =   1950
+      Width           =   5505
    End
    Begin VB.Label Label2 
       BackStyle       =   0  'Transparent
@@ -161,6 +185,9 @@ Option Explicit
 Dim PrimeraVez As Boolean
 Dim T1 As Single
 
+Dim vSegundos As Integer
+
+
 Private Sub Form_Activate()
     If PrimeraVez Then
         PrimeraVez = False
@@ -172,6 +199,8 @@ Private Sub Form_Activate()
          Else
             PonerFoco Text1(0)
          End If
+             
+         Me.Timer1.Enabled = True
              
          'Leemos el ultimo usuario conectado
          NumeroEmpresaMemorizar True
@@ -200,6 +229,9 @@ Private Sub Form_Load()
     PrimeraVez = True
     CargaImagen
     Label2.Caption = "Ver. " & App.Major & "." & App.Minor & "." & App.Revision
+    
+    vSegundos = 60
+    Label3.Caption = ""
 
 End Sub
 
@@ -247,8 +279,8 @@ End Sub
 
 
 Private Sub Validar()
-Dim Ok As Byte
-Dim cad As String
+Dim OK As Byte
+Dim Cad As String
 Dim SQL As String
 
 
@@ -258,23 +290,23 @@ Dim SQL As String
     If vSesion.Leer(Text1(0).Text) = 0 Then
         'Con exito
         If vSesion.PasswdPROPIO = Text1(1).Text Then
-            Ok = 0
+            OK = 0
         Else
-            Ok = 1
+            OK = 1
         End If
     Else
         If Text1(0).Text = "root" And Text1(1).Text = "aritel" Then
-            cad = "insert into usuarios (codusu, nomusu, login, passwordpropio, nivelusuges) "
-            cad = cad & " values (0,'root','root','aritel',0)"
-            Conn.Execute cad
-            Ok = 0
+            Cad = "insert into usuarios (codusu, nomusu, login, passwordpropio, nivelusuges) "
+            Cad = Cad & " values (0,'root','root','aritel',0)"
+            Conn.Execute Cad
+            OK = 0
         Else
-            Ok = 2
+            OK = 2
         End If
 
     End If
 
-    If Ok <> 0 Then
+    If OK <> 0 Then
         MsgBox "Usuario o Password Incorrecto", vbExclamation
 
         Text1(1).Text = ""
@@ -320,30 +352,41 @@ End Sub
 'a la que ha entrado, y el usuario
 Private Sub NumeroEmpresaMemorizar(Leer As Boolean)
 Dim nf As Integer
-Dim cad As String
+Dim Cad As String
 On Error GoTo ENumeroEmpresaMemorizar
 
-    cad = App.path & "\ultusu.dat"
+    Cad = App.path & "\ultusu.dat"
     If Leer Then
-        If Dir(cad) <> "" Then
+        If Dir(Cad) <> "" Then
             nf = FreeFile
-            Open cad For Input As #nf
-            Line Input #nf, cad
+            Open Cad For Input As #nf
+            Line Input #nf, Cad
             Close #nf
-            cad = Trim(cad)
+            Cad = Trim(Cad)
             
                 'El primer pipe es el usuario
-                Text1(0).Text = cad
+                Text1(0).Text = Cad
     
         End If
     Else 'Escribir
         nf = FreeFile
-        Open cad For Output As #nf
-        cad = Text1(0).Text
-        Print #nf, cad
+        Open Cad For Output As #nf
+        Cad = Text1(0).Text
+        Print #nf, Cad
         Close #nf
     End If
 ENumeroEmpresaMemorizar:
     Err.Clear
+End Sub
+
+Private Sub Timer1_Timer()
+    'Label3 = "Si no entra en " & vSegundos & " segundos. La aplicación se cerrará."
+    If vSegundos < 50 Then
+        Label3 = "Si no hace login, la pantalla se cerrará automáticamente en " & " " & vSegundos & " segundos"
+        Me.Refresh
+        DoEvents
+    End If
+    vSegundos = vSegundos - 1
+    If vSegundos = -1 Then Unload Me
 End Sub
 

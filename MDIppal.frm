@@ -606,7 +606,7 @@ Private PrimeraVez As Boolean
 Dim TieneEditorDeMenus As Boolean
 
 Public Sub GetIconsFromLibrary(ByVal sLibraryFilePath As String, ByVal op As Integer, ByVal tam As Integer)
-    Dim i As Integer
+    Dim I As Integer
     Dim tRes As ResType, iCount As Integer
         
     opcio = op
@@ -658,7 +658,7 @@ Private Sub MDIForm_Activate()
 End Sub
 
 Private Sub MDIForm_Load()
-Dim cad As String
+Dim Cad As String
 
     PrimeraVez = True
     CargarImagen
@@ -667,7 +667,7 @@ Dim cad As String
     If vEmpresa Is Nothing Then
         Caption = "AriGasol" & " ver. " & App.Major & "." & App.Minor & "." & App.Revision & "   -  " & " FALTA CONFIGURAR"
     Else
-        Caption = "AriGasol" & " ver. " & App.Major & "." & App.Minor & "." & App.Revision & "   -  Empresa: " & vEmpresa.nomEmpre & cad & _
+        Caption = "AriGasol" & " ver. " & App.Major & "." & App.Minor & "." & App.Revision & "   -  Empresa: " & vEmpresa.nomEmpre & Cad & _
                   "   -  Usuario: " & vSesion.Nombre
     End If
 
@@ -858,11 +858,11 @@ End Sub
 ' ### [Monica] 05/09/2006
 Private Sub HabilitarSoloPrametros_o_Empresas(Habilitar As Boolean)
 Dim T As Control
-Dim cad As String
+Dim Cad As String
 
     On Error Resume Next
     For Each T In Me
-        cad = T.Name
+        Cad = T.Name
         If Mid(T.Name, 1, 2) = "mn" Then
             'If LCase(Mid(T.Name, 1, 8)) <> "mn_b" Then
                 T.Enabled = Habilitar
@@ -886,14 +886,14 @@ End Sub
 ' añadida esta parte para la personalizacion de menus
 
 Private Sub LeerEditorMenus()
-Dim sql As String
-Dim miRsAux As adodb.Recordset
+Dim SQL As String
+Dim miRsAux As ADODB.Recordset
 
     On Error GoTo ELeerEditorMenus
     TieneEditorDeMenus = False
-    sql = "Select count(*) from appmenus where aplicacion='Arigasol'"
-    Set miRsAux = New adodb.Recordset
-    miRsAux.Open sql, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+    SQL = "Select count(*) from appmenus where aplicacion='Arigasol'"
+    Set miRsAux = New ADODB.Recordset
+    miRsAux.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
     If Not miRsAux.EOF Then
         If Not IsNull(miRsAux.Fields(0)) Then
             If miRsAux.Fields(0) > 0 Then TieneEditorDeMenus = True
@@ -912,33 +912,33 @@ End Sub
 
 Private Sub PoneMenusDelEditor()
 Dim T As Control
-Dim sql As String
+Dim SQL As String
 Dim C As String
-Dim miRsAux As adodb.Recordset
+Dim miRsAux As ADODB.Recordset
 
     On Error GoTo ELeerEditorMenus
     
-    sql = "Select * from appmenususuario where aplicacion='Arigasol' and codusu = " & Val(Right(CStr(vSesion.Codusu), 3))
-    Set miRsAux = New adodb.Recordset
-    miRsAux.Open sql, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
-    sql = ""
+    SQL = "Select * from appmenususuario where aplicacion='Arigasol' and codusu = " & Val(Right(CStr(vSesion.Codusu), 3))
+    Set miRsAux = New ADODB.Recordset
+    miRsAux.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+    SQL = ""
 
     While Not miRsAux.EOF
         If Not IsNull(miRsAux.Fields(3)) Then
-            sql = sql & miRsAux.Fields(3) & "·"
+            SQL = SQL & miRsAux.Fields(3) & "·"
         End If
         miRsAux.MoveNext
     Wend
     miRsAux.Close
         
    
-    If sql <> "" Then
-        sql = "·" & sql
+    If SQL <> "" Then
+        SQL = "·" & SQL
         For Each T In Me.Controls
             If TypeOf T Is menu Then
                 C = DevuelveCadenaMenu(T)
                 C = "·" & C & "·"
-                If InStr(1, sql, C) > 0 Then T.visible = False
+                If InStr(1, SQL, C) > 0 Then T.visible = False
            
             End If
         Next
@@ -960,8 +960,8 @@ EDevuelveCadenaMenu:
 End Function
 
 Private Sub LanzaHome(Opcion As String)
-    Dim i As Integer
-    Dim cad As String
+    Dim I As Integer
+    Dim Cad As String
     On Error GoTo ELanzaHome
     
     'Obtenemos la pagina web de los parametros
@@ -971,17 +971,17 @@ Private Sub LanzaHome(Opcion As String)
         Exit Sub
     End If
         
-    i = FreeFile
-    cad = ""
-    Open App.path & "\lanzaexp.dat" For Input As #i
-    Line Input #i, cad
-    Close #i
+    I = FreeFile
+    Cad = ""
+    Open App.path & "\lanzaexp.dat" For Input As #I
+    Line Input #I, Cad
+    Close #I
     
     'Lanzamos
-    If cad <> "" Then Shell cad & " " & CadenaDesdeOtroForm, vbMaximizedFocus
+    If Cad <> "" Then Shell Cad & " " & CadenaDesdeOtroForm, vbMaximizedFocus
     
 ELanzaHome:
-    If Err.Number <> 0 Then MuestraError Err.Number, cad & vbCrLf & Err.Description
+    If Err.Number <> 0 Then MuestraError Err.Number, Cad & vbCrLf & Err.Description
     CadenaDesdeOtroForm = ""
 End Sub
 
@@ -1092,7 +1092,7 @@ Dim b As Boolean
 End Sub
 
 Public Sub mnCambioEmpresa()
-Dim cad As String
+Dim Cad As String
 
     'Borramos temporal
     Conn.Execute "Delete from zbloqueos where codusu = " & vSesion.Codigo
@@ -1118,6 +1118,7 @@ Dim cad As String
     'Crea la Conexion a la BD de la Contabilidad
     LeerDatosEmpresa
 
+
     InicializarFormatos
     teclaBuscar = 43
 
@@ -1128,11 +1129,16 @@ Dim cad As String
     If vEmpresa Is Nothing Then
         Caption = "AriGasol" & " ver. " & App.Major & "." & App.Minor & "." & App.Revision & "   -  " & " FALTA CONFIGURAR"
     Else
-        Caption = "AriGasol" & " ver. " & App.Major & "." & App.Minor & "." & App.Revision & "   -  Empresa: " & vEmpresa.nomEmpre & cad & _
+        Caption = "AriGasol" & " ver. " & App.Major & "." & App.Minor & "." & App.Revision & "   -  Empresa: " & vEmpresa.nomEmpre & Cad & _
                   "   -  Usuario: " & vSesion.Nombre
     End If
     
     LeerEditorMenus
+
+    If vParamAplic.ContabilidadNueva And (vSesion.Nivel = 0 Or vSesion.Nivel = 1) Then FrasPendientesContabilizar False
+
+
+
 
     Screen.MousePointer = vbDefault
 

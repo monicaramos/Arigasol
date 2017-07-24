@@ -22,7 +22,7 @@ Public Function TraspasoHistoricoFacturas(db As BaseDatos, SQL As String, desde 
     Dim AntFecha As Date
     Dim AntSocio As Long
     Dim AntForpa As Integer
-    Dim Hayreg As Boolean
+    Dim HayReg As Boolean
     
     Dim Sql1 As String
     
@@ -47,18 +47,18 @@ Public Function TraspasoHistoricoFacturas(db As BaseDatos, SQL As String, desde 
       TotalImp = 0
       TotalImpSigaus = 0
       Set Rs = db.cursor(SQL)
-      Hayreg = False
+      HayReg = False
       NumError = 0
       If Not Rs.EOF Then
           Rs.MoveFirst
           antfactura = Rs!numfactu
           AntFecha = Rs!fecAlbar
           AntSocio = Rs!codsocio
-          AntForpa = Rs!CodForpa
+          AntForpa = Rs!Codforpa
           
           While Not Rs.EOF And NumError = 0
               actFactura = Rs!numfactu
-              Hayreg = True
+              HayReg = True
               If actFactura <> antfactura Then ' after group of numfactu
                  If NumError = 0 Then NumError = InsertCabe(db, baseimpo, antfactura, AntFecha, AntSocio, AntForpa, 0)
                  Set baseimpo = Nothing
@@ -67,18 +67,18 @@ Public Function TraspasoHistoricoFacturas(db As BaseDatos, SQL As String, desde 
                  antfactura = actFactura
                  AntFecha = Rs!fecAlbar
                  AntSocio = Rs!codsocio
-                 AntForpa = Rs!CodForpa
+                 AntForpa = Rs!Codforpa
               End If
               '-------
               ' tenemos que calcular el impuesto multiplicando cantidad de linea por impuesto por articulo
               importel = DBLet(Rs!Impuesto, "N") ' Comprueba si es nulo y lo pone a 0 o ""
               
-              If EsArticuloCombustible(Rs!codArtic) Then
+              If EsArticuloCombustible(Rs!codartic) Then
                 TotalImp = TotalImp + Round2((Rs!cantidad * importel), 2)
               End If
               baseimpo(Val(Rs!CodigIVA)) = DBLet(baseimpo(Val(Rs!CodigIVA)), "N") + DBLet(Rs!importel, "N")
               
-              TotalImpSigaus = TotalImpSigaus + ImpuestoSigausArticulo(CStr(DBLet(Rs!codArtic, "N")), CStr(DBLet(Rs!cantidad, "N")))
+              TotalImpSigaus = TotalImpSigaus + ImpuestoSigausArticulo(CStr(DBLet(Rs!codartic, "N")), CStr(DBLet(Rs!cantidad, "N")))
               
               If NumError = 0 Then NumError = InsertLinea(db, Rs)
               
@@ -89,7 +89,7 @@ Public Function TraspasoHistoricoFacturas(db As BaseDatos, SQL As String, desde 
                     Rs.MoveNext
               End If
           Wend
-          If Hayreg And NumError = 0 Then NumError = InsertCabe(db, baseimpo, actFactura, AntFecha, AntSocio, AntForpa, 0)
+          If HayReg And NumError = 0 Then NumError = InsertCabe(db, baseimpo, actFactura, AntFecha, AntSocio, AntForpa, 0)
 
 
           ' hacemos el borrado masivo de albaranes de las los albaranes
@@ -119,7 +119,7 @@ Public Function InsertCabe(ByRef db As BaseDatos, ByRef dc As Dictionary, numfac
 ' tipo 0 en la schfac
 ' tipo 1 en la schfacr
 
-    Dim i As Integer
+    Dim I As Integer
     Dim Imptot(2)
     Dim Tipiva(2)
     Dim Impbas(2)
@@ -134,18 +134,18 @@ Public Function InsertCabe(ByRef db As BaseDatos, ByRef dc As Dictionary, numfac
     MensError = ""
     ' inicializamos los importes de los totales de la cabecera
     TotFac = 0
-    For i = 0 To 2
-         Tipiva(i) = Null
-         Imptot(i) = Null
-         Impbas(i) = Null
-         ImpIva(i) = Null
-         PorIva(i) = Null
-    Next i
+    For I = 0 To 2
+         Tipiva(I) = Null
+         Imptot(I) = Null
+         Impbas(I) = Null
+         ImpIva(I) = Null
+         PorIva(I) = Null
+    Next I
     
-    For i = 0 To dc.Count - 1
-        If i <= 2 Then '  And i = 0 Then
+    For I = 0 To dc.Count - 1
+        If I <= 2 Then '  And i = 0 Then
             If SinIva Then
-                If i = 0 Then
+                If I = 0 Then
                     Tipiva(0) = vParamAplic.TipoIvaExento
                     Imptot(0) = dc.Items(0)
                     PorIva(0) = DevuelveDesdeBDNew(cConta, "tiposiva", "porceiva", "codigiva", CStr(Tipiva(0)), "N")
@@ -153,7 +153,7 @@ Public Function InsertCabe(ByRef db As BaseDatos, ByRef dc As Dictionary, numfac
                     ImpIva(0) = Imptot(0) - Impbas(0)
                     TotFac = Imptot(0)
                 Else
-                    Imptot(0) = Imptot(0) + dc.Items(i)
+                    Imptot(0) = Imptot(0) + dc.Items(I)
                     PorIva(0) = DevuelveDesdeBDNew(cConta, "tiposiva", "porceiva", "codigiva", CStr(Tipiva(0)), "N")
                     Impbas(0) = Round2(Imptot(0) / (1 + (PorIva(0) / 100)), 2)
                     ImpIva(0) = Imptot(0) - Impbas(0)
@@ -162,38 +162,38 @@ Public Function InsertCabe(ByRef db As BaseDatos, ByRef dc As Dictionary, numfac
             Else
                 '[Monica]04/02/2013: si el importe es 0 no lo insertamos
                 '                    solo si no es el primero
-                If i = 0 Then
-                    Tipiva(i) = dc.Keys(i)
-                    Imptot(i) = dc.Items(i)
-                    PorIva(i) = DevuelveDesdeBDNew(cConta, "tiposiva", "porceiva", "codigiva", CStr(Tipiva(i)), "N")
-                    Impbas(i) = Round2(Imptot(i) / (1 + (PorIva(i) / 100)), 2)
-                    ImpIva(i) = Imptot(i) - Impbas(i)
-                    TotFac = TotFac + Imptot(i)
+                If I = 0 Then
+                    Tipiva(I) = dc.Keys(I)
+                    Imptot(I) = dc.Items(I)
+                    PorIva(I) = DevuelveDesdeBDNew(cConta, "tiposiva", "porceiva", "codigiva", CStr(Tipiva(I)), "N")
+                    Impbas(I) = Round2(Imptot(I) / (1 + (PorIva(I) / 100)), 2)
+                    ImpIva(I) = Imptot(I) - Impbas(I)
+                    TotFac = TotFac + Imptot(I)
                 Else
-                    If dc.Items(i) = 0 Then
-                        i = i + 1
-                        If i = 3 Then
-                            Tipiva(i - 1) = dc.Keys(i)
-                            Imptot(i - 1) = dc.Items(i)
-                            PorIva(i - 1) = DevuelveDesdeBDNew(cConta, "tiposiva", "porceiva", "codigiva", CStr(Tipiva(i)), "N")
-                            Impbas(i - 1) = Round2(Imptot(i) / (1 + (PorIva(i) / 100)), 2)
-                            ImpIva(i - 1) = Imptot(i) - Impbas(i)
-                            TotFac = TotFac + Imptot(i)
+                    If dc.Items(I) = 0 Then
+                        I = I + 1
+                        If I = 3 Then
+                            Tipiva(I - 1) = dc.Keys(I)
+                            Imptot(I - 1) = dc.Items(I)
+                            PorIva(I - 1) = DevuelveDesdeBDNew(cConta, "tiposiva", "porceiva", "codigiva", CStr(Tipiva(I)), "N")
+                            Impbas(I - 1) = Round2(Imptot(I) / (1 + (PorIva(I) / 100)), 2)
+                            ImpIva(I - 1) = Imptot(I) - Impbas(I)
+                            TotFac = TotFac + Imptot(I)
                             
                             Exit For
                         End If
                     Else
-                        Tipiva(i) = dc.Keys(i)
-                        Imptot(i) = dc.Items(i)
-                        PorIva(i) = DevuelveDesdeBDNew(cConta, "tiposiva", "porceiva", "codigiva", CStr(Tipiva(i)), "N")
-                        Impbas(i) = Round2(Imptot(i) / (1 + (PorIva(i) / 100)), 2)
-                        ImpIva(i) = Imptot(i) - Impbas(i)
-                        TotFac = TotFac + Imptot(i)
+                        Tipiva(I) = dc.Keys(I)
+                        Imptot(I) = dc.Items(I)
+                        PorIva(I) = DevuelveDesdeBDNew(cConta, "tiposiva", "porceiva", "codigiva", CStr(Tipiva(I)), "N")
+                        Impbas(I) = Round2(Imptot(I) / (1 + (PorIva(I) / 100)), 2)
+                        ImpIva(I) = Imptot(I) - Impbas(I)
+                        TotFac = TotFac + Imptot(I)
                     End If
                 End If
             End If
         End If
-    Next i
+    Next I
     '    TotFac = TotFac - totalimp
     
     NumCoop = DevuelveDesdeBD("codcoope", "ssocio", "codsocio", CStr(Socio), "N")
@@ -259,7 +259,7 @@ On Error GoTo eInsertLinea
            "cantidad, preciove, implinea, kilometros, dtoalvic, importevale) " & _
            "values " & _
            "(" & db.Texto(numser) & "," & db.numero(Rs!numfactu) & "," & db.Fecha(Rs!fecAlbar) & "," & db.numero(Rs!NumLinea) & "," & db.Texto(Rs!numalbar) & "," & _
-           db.Fecha(Rs!fecAlbar) & "," & db.fechahora(Rs!fecAlbar & " " & Format(Rs!horalbar, "hh:mm:ss")) & "," & db.numero(Rs!codTurno) & "," & db.numero(Rs!Numtarje) & "," & db.numero(Rs!codArtic) & "," & _
+           db.Fecha(Rs!fecAlbar) & "," & db.fechahora(Rs!fecAlbar & " " & Format(Rs!horalbar, "hh:mm:ss")) & "," & db.numero(Rs!codTurno) & "," & db.numero(Rs!Numtarje) & "," & db.numero(Rs!codartic) & "," & _
            db.numero(Rs!cantidad) & "," & db.numero(Rs!preciove) & "," & db.numero(Rs!importel) & "," & _
            db.numero(Rs!Kilometros) & "," & db.numero(Rs!dtoalvic) & "," & db.numero(Rs!ImporteVale) & ")"
     
@@ -293,7 +293,7 @@ End Function
 
 Public Sub RecalculoBasesIvaFactura(ByRef Rs As ADODB.Recordset, ByRef Imptot As Variant, ByRef Tipiva As Variant, ByRef Impbas As Variant, ByRef ImpIva As Variant, ByRef PorIva As Variant, ByRef TotFac As Currency, ByRef totimp As Currency, ByRef totimpSigaus As Currency)
 
-    Dim i As Integer
+    Dim I As Integer
     Dim SQL As String
     Dim baseimpo As Dictionary
     Dim CodIVA As Integer
@@ -304,30 +304,30 @@ Public Sub RecalculoBasesIvaFactura(ByRef Rs As ADODB.Recordset, ByRef Imptot As
     TotFac = 0
     totimp = 0
     totimpSigaus = 0
-    For i = 0 To 2
-         Tipiva(i) = 0
-         Imptot(i) = 0
-         Impbas(i) = 0
-         ImpIva(i) = 0
-         PorIva(i) = 0
-    Next i
+    For I = 0 To 2
+         Tipiva(I) = 0
+         Imptot(I) = 0
+         Impbas(I) = 0
+         ImpIva(I) = 0
+         PorIva(I) = 0
+    Next I
 
     ' recorremos todas las lineas de la factura
     If Not Rs.EOF Then Rs.MoveFirst
     While Not Rs.EOF
-        If EsArticuloCombustible(CStr(Rs!codArtic)) Then
-            Impuesto = ImpuestoArticulo(Rs!codArtic)
+        If EsArticuloCombustible(CStr(Rs!codartic)) Then
+            Impuesto = ImpuestoArticulo(Rs!codartic)
             
             totimp = totimp + Round2(Rs!cantidad * Impuesto, 2)
         End If
         
-        totimpSigaus = totimpSigaus + ImpuestoSigausArticulo(CStr(DBLet(Rs!codArtic, "N")), CStr(DBLet(Rs!cantidad, "N")))
+        totimpSigaus = totimpSigaus + ImpuestoSigausArticulo(CStr(DBLet(Rs!codartic, "N")), CStr(DBLet(Rs!cantidad, "N")))
         '[Monica]25/07/2013: letra de serie
         'If Rs!letraser = vParamAplic.LetraInt Then
         If EsInterna(Rs!Letraser) Then
             CodIVA = vParamAplic.TipoIvaExento
         Else
-            CodIVA = DevuelveDesdeBD("codigiva", "sartic", "codartic", DBLet(Rs!codArtic), "N")
+            CodIVA = DevuelveDesdeBD("codigiva", "sartic", "codartic", DBLet(Rs!codartic), "N")
         End If
         
         baseimpo(Val(CodIVA)) = DBLet(baseimpo(Val(CodIVA)), "N") + DBLet(Rs!ImpLinea, "N")
@@ -335,24 +335,24 @@ Public Sub RecalculoBasesIvaFactura(ByRef Rs As ADODB.Recordset, ByRef Imptot As
         Rs.MoveNext
     Wend
 
-    For i = 0 To baseimpo.Count - 1
-        If i <= 2 Then
-            Tipiva(i) = baseimpo.Keys(i)
-            Imptot(i) = baseimpo.Items(i)
+    For I = 0 To baseimpo.Count - 1
+        If I <= 2 Then
+            Tipiva(I) = baseimpo.Keys(I)
+            Imptot(I) = baseimpo.Items(I)
 ' antes
 '            PorIva(i) = DevuelveDesdeBDNew(cConta, "tiposiva", "porceiva", "codigiva", CStr(Tipiva(i)), "N")
 '            impiva(i) = DBLet(Round2(Imptot(i) * PorIva(i) / 100, 2), "N")
 '            Impbas(i) = Imptot(i) - impiva(i)
 '            TotFac = TotFac + Imptot(i)
 ' ahora
-            PorIva(i) = DevuelveDesdeBDNew(cConta, "tiposiva", "porceiva", "codigiva", CStr(Tipiva(i)), "N")
-            Impbas(i) = Round2(Imptot(i) / (1 + (PorIva(i) / 100)), 2)
-            ImpIva(i) = Imptot(i) - Impbas(i)
-            TotFac = TotFac + Imptot(i)
+            PorIva(I) = DevuelveDesdeBDNew(cConta, "tiposiva", "porceiva", "codigiva", CStr(Tipiva(I)), "N")
+            Impbas(I) = Round2(Imptot(I) / (1 + (PorIva(I) / 100)), 2)
+            ImpIva(I) = Imptot(I) - Impbas(I)
+            TotFac = TotFac + Imptot(I)
         
         
         End If
-    Next i
+    Next I
 
 End Sub
 
@@ -376,7 +376,7 @@ Public Function InsertaLineaFactura(ByRef db As BaseDatos, Rs As ADODB.Recordset
               "cantidad, preciove, implinea, matricul, precioinicial, kilometros, dtoalvic, importevale ) " & _
               "values " & _
               "(" & db.Texto(numser) & "," & db.numero(numFac) & "," & db.Fecha(fecFac) & "," & db.numero(Linea) & "," & db.Texto(Rs!numalbar) & "," & _
-              db.Fecha(Rs!fecAlbar) & "," & db.fechahora(Rs!fecAlbar & " " & Format(Rs!horalbar, "hh:mm:ss")) & "," & db.numero(Rs!codTurno) & "," & db.numero(Rs!Numtarje) & "," & db.numero(Rs!codArtic) & "," & _
+              db.Fecha(Rs!fecAlbar) & "," & db.fechahora(Rs!fecAlbar & " " & Format(Rs!horalbar, "hh:mm:ss")) & "," & db.numero(Rs!codTurno) & "," & db.numero(Rs!Numtarje) & "," & db.numero(Rs!codartic) & "," & _
               db.numero(Rs!cantidad) & "," & db.numero(Rs!preciove) & "," & db.numero(Rs!importel) & "," & db.Texto(Rs!matricul) & "," & db.numero(Rs!precioinicial) & "," & _
               db.numero(Rs!Kilometros) & "," & db.numero(Rs!dtoalvic) & "," & db.numero(Rs!ImporteVale) & ")"
     Else
@@ -390,7 +390,7 @@ Public Function InsertaLineaFactura(ByRef db As BaseDatos, Rs As ADODB.Recordset
               "cantidad, preciove, implinea, matricul, kilometros, dtoalvic, importevale) " & _
               "values " & _
               "(" & db.Texto(numser) & "," & db.numero(numFac) & "," & db.Fecha(fecFac) & "," & db.numero(Linea) & "," & db.Texto(Rs!numalbar) & "," & _
-              db.Fecha(Rs!fecAlbar) & "," & db.fechahora(Rs!fecAlbar & " " & Format(Rs!horalbar, "hh:mm:ss")) & "," & db.numero(Rs!codTurno) & "," & db.numero(Rs!Numtarje) & "," & db.numero(Rs!codArtic) & "," & _
+              db.Fecha(Rs!fecAlbar) & "," & db.fechahora(Rs!fecAlbar & " " & Format(Rs!horalbar, "hh:mm:ss")) & "," & db.numero(Rs!codTurno) & "," & db.numero(Rs!Numtarje) & "," & db.numero(Rs!codartic) & "," & _
               db.numero(Rs!cantidad) & "," & db.numero(Rs!preciove) & "," & db.numero(Rs!importel) & "," & db.Texto(Rs!matricul) & "," & _
               db.numero(Rs!Kilometros) & "," & db.numero(Rs!dtoalvic) & "," & db.numero(Rs!ImporteVale) & ")"
               
@@ -408,7 +408,7 @@ eInsertaLineaFactura:
 End Function
 
 ' en la facturacion ajena hemos de insertar en la temporal para luego hacer la factura global
-Public Function InsertaLineaFacturaTemporal(ByRef db As BaseDatos, codArtic As String, cantidad As String, importel As String) As Long
+Public Function InsertaLineaFacturaTemporal(ByRef db As BaseDatos, codartic As String, cantidad As String, importel As String) As Long
 ' importe1 = codartic
 ' importe2 = cantidad
 ' importe3 = importel
@@ -419,15 +419,15 @@ Public Function InsertaLineaFacturaTemporal(ByRef db As BaseDatos, codArtic As S
     On Error GoTo eInsertaLineaFacturaTemporal
     MensError = ""
     
-    SQL = "select count(*) from tmpinformes where importe1 = " & db.numero(codArtic) & " and codusu = " & vSesion.Codigo
+    SQL = "select count(*) from tmpinformes where importe1 = " & db.numero(codartic) & " and codusu = " & vSesion.Codigo
     
     If TotalRegistros(SQL) <> 0 Then
         SQL = "update tmpinformes set importe2 = importe2 + " & db.numero(cantidad) & ","
         SQL = SQL & "importe3 = importe3 + " & db.numero(importel)
-        SQL = SQL & " where codusu = " & vSesion.Codigo & " and importe1 = " & db.numero(codArtic)
+        SQL = SQL & " where codusu = " & vSesion.Codigo & " and importe1 = " & db.numero(codartic)
     Else
         SQL = "insert into tmpinformes (codusu, importe1, importe2, importe3) values ("
-        SQL = SQL & vSesion.Codigo & "," & db.numero(codArtic) & "," & db.numero(cantidad) & ","
+        SQL = SQL & vSesion.Codigo & "," & db.numero(codartic) & "," & db.numero(cantidad) & ","
         SQL = SQL & db.numero(importel) & ")"
         
     End If
@@ -526,7 +526,7 @@ Dim AntTarje As String
 Dim AntSocio As Long
 Dim AntForpa As Integer
 Dim AntTurno As Integer
-Dim Hayreg As Boolean
+Dim HayReg As Boolean
 Dim v_linea As Integer
 Dim FamArtDto As String
 Dim IvaArtDto As String
@@ -667,14 +667,14 @@ Dim tipoMov As String
     End If
     
     Set Rs = db.cursor(SQL)
-    Hayreg = False
+    HayReg = False
     v_linea = 0
     NumError = 0
     If Not Rs.EOF Then
         Rs.MoveFirst
         AntSocio = Rs!codsocio
         AntAlbaran = Rs!numalbar
-        AntForpa = Rs!CodForpa
+        AntForpa = Rs!Codforpa
         AntTurno = Rs!codTurno
         AntTarje = Rs!Numtarje
         
@@ -692,8 +692,8 @@ Dim tipoMov As String
         ImpFactu = 0
         
         While Not Rs.EOF And NumError = 0
-            Hayreg = True
-            ActForpa = Rs!CodForpa
+            HayReg = True
+            ActForpa = Rs!Codforpa
             ActSocio = Rs!codsocio
             ActTarje = Rs!Numtarje                                                 '[Monica]23/07/2013
             If ((ActForpa <> AntForpa Or ActSocio <> AntSocio) And (CliTar = 1 Or (CliTar = 3 And TipoGasoB = 0))) Or _
@@ -796,14 +796,14 @@ Dim tipoMov As String
                 ' tenemos que calcular el impuesto multiplicando cantidad de linea por impuesto por articulo
                 Codigo = "codigiva"
                 Sql1 = ""
-                Sql1 = DevuelveDesdeBD("impuesto", "sartic", "codartic", DBLet(Rs!codArtic), "N", Codigo)
+                Sql1 = DevuelveDesdeBD("impuesto", "sartic", "codartic", DBLet(Rs!codartic), "N", Codigo)
                 If Sql1 = "" Then
                     Impuesto = 0
                 Else
                     Impuesto = CCur(Sql1) ' Comprueba si es nulo y lo pone a 0 o ""
                 End If
                 
-                If EsArticuloCombustible(Rs!codArtic) Then
+                If EsArticuloCombustible(Rs!codartic) Then
                     TotalImp = TotalImp + Round2((Rs!cantidad * Impuesto), 2)
                     CantCombustible = CantCombustible + DBLet(Rs!cantidad, "N")
                 End If
@@ -811,7 +811,7 @@ Dim tipoMov As String
                 '[Monica]15/02/2011: cuando el articulo es lubricante, tiene un impuesto, hemos de calcularlo
                 ' Sabemos que es lubricante pq tiene un peso por unidad.
                 ' El Impuesto se calcula multiplicandolo por el preciosigaus
-                TotalImpSigaus = TotalImpSigaus + ImpuestoSigausArticulo(Rs!codArtic, Rs!cantidad)
+                TotalImpSigaus = TotalImpSigaus + ImpuestoSigausArticulo(Rs!codartic, Rs!cantidad)
                 
                 
                 baseimpo(Val(Codigo)) = DBLet(baseimpo(Val(Codigo)), "N") + DBLet(Rs!importel, "N")
@@ -830,7 +830,7 @@ Dim tipoMov As String
             
             End If
         Wend
-        If Hayreg And NumError = 0 Then
+        If HayReg And NumError = 0 Then
                
                ' miramos el descuento/litro de socio sobre la cantidad
                
@@ -877,19 +877,19 @@ Dim SQL As String
 Dim Rs As ADODB.Recordset
 Dim RsTotal As ADODB.Recordset
 Dim rsVenci As ADODB.Recordset
-Dim SqlInsert As String
+Dim SQLinsert As String
 Dim SqlValues As String
 Dim SqlAux As String
 Dim ImpVenci As Currency
 Dim FecVenci As Date
-Dim i As Integer
+Dim I As Integer
 Dim TotalFac As Currency
     On Error GoTo eInsertarVencimientos
     
     InsertarVencimientos = 0
 
 
-    SqlInsert = "insert into svenci (letraser, numfactu, fecfactu, ordefect, fecefect, impefect) values "
+    SQLinsert = "insert into svenci (letraser, numfactu, fecfactu, ordefect, fecefect, impefect) values "
 
     SqlAux = DBSet(Serie, "T") & "," & DBSet(Factura, "N") & "," & DBSet(FecFactura, "F")
 
@@ -907,7 +907,7 @@ Dim TotalFac As Currency
         If rsVenci!numerove > 0 And CCur(TotalFac) <> 0 Then
         
             '-------- Primer Vencimiento
-            i = 1
+            I = 1
             'FECHA VTO
             FecVenci = CDate(FecFactura)
             FecVenci = DateAdd("d", DBLet(rsVenci!primerve, "N"), FecVenci)
@@ -925,11 +925,11 @@ Dim TotalFac As Currency
                 End If
             End If
 
-            SqlValues = "(" & SqlAux & "," & DBSet(i, "N") & "," & DBSet(FecVenci, "F") & "," & DBSet(ImpVenci, "N") & "),"
+            SqlValues = "(" & SqlAux & "," & DBSet(I, "N") & "," & DBSet(FecVenci, "F") & "," & DBSet(ImpVenci, "N") & "),"
 
             'Resto Vencimientos
             '--------------------------------------------------------------------
-            For i = 2 To rsVenci!numerove
+            For I = 2 To rsVenci!numerove
                'FECHA Resto Vencimientos
                 FecVenci = DateAdd("d", DBLet(rsVenci!restoven, "N"), FecVenci)
                 '===
@@ -937,13 +937,13 @@ Dim TotalFac As Currency
                 'IMPORTE Resto de Vendimientos
                 ImpVenci = Round2(TotalFactura2 / rsVenci!numerove, 2)
                 
-                SqlValues = SqlValues & "(" & SqlAux & "," & DBSet(i, "N") & "," & DBSet(FecVenci, "F") & "," & DBSet(ImpVenci, "N") & "),"
-            Next i
+                SqlValues = SqlValues & "(" & SqlAux & "," & DBSet(I, "N") & "," & DBSet(FecVenci, "F") & "," & DBSet(ImpVenci, "N") & "),"
+            Next I
 
             If SqlValues <> "" Then
                 SqlValues = Mid(SqlValues, 1, Len(SqlValues) - 1)
                 
-                InsertarVencimientos = db.ejecutar(SqlInsert & SqlValues)
+                InsertarVencimientos = db.ejecutar(SQLinsert & SqlValues)
             End If
         End If
     End If
@@ -973,7 +973,7 @@ Dim AntTarje As String 'Long
 Dim AntSocio As Long
 Dim AntForpa As Integer
 Dim AntTurno As Integer
-Dim Hayreg As Boolean
+Dim HayReg As Boolean
 Dim v_linea As Integer
 Dim FamArtDto As String
 Dim IvaArtDto As String
@@ -1022,14 +1022,14 @@ Dim TipForpa As String
     End If
     
     Set Rs = db.cursor(SQL)
-    Hayreg = False
+    HayReg = False
     v_linea = 0
     NumError = 0
     If Not Rs.EOF Then
         Rs.MoveFirst
         AntSocio = Rs!codsocio
         AntAlbaran = Rs!numalbar
-        AntForpa = Rs!CodForpa
+        AntForpa = Rs!Codforpa
         AntTurno = Rs!codTurno
         AntTarje = Rs!Numtarje
         
@@ -1045,8 +1045,8 @@ Dim TipForpa As String
         TotalImp = 0
         
         While Not Rs.EOF And NumError = 0
-            Hayreg = True
-            ActForpa = Rs!CodForpa
+            HayReg = True
+            ActForpa = Rs!Codforpa
             ActSocio = Rs!codsocio
             ActTarje = Rs!Numtarje
             If ((ActForpa <> AntForpa Or ActSocio <> AntSocio) And CliTar = 1) Or _
@@ -1111,14 +1111,14 @@ Dim TipForpa As String
             ' tenemos que calcular el impuesto multiplicando cantidad de linea por impuesto por articulo
             Codigo = "codigiva"
             Sql1 = ""
-            Sql1 = DevuelveDesdeBD("impuesto", "sartic", "codartic", DBLet(Rs!codArtic), "N", Codigo)
+            Sql1 = DevuelveDesdeBD("impuesto", "sartic", "codartic", DBLet(Rs!codartic), "N", Codigo)
             If Sql1 = "" Then
                 Impuesto = 0
             Else
                 Impuesto = CCur(Sql1) ' Comprueba si es nulo y lo pone a 0 o ""
             End If
             
-            If EsArticuloCombustible(Rs!codArtic) Then
+            If EsArticuloCombustible(Rs!codartic) Then
                 TotalImp = TotalImp + Round2((Rs!cantidad * Impuesto), 2)
                 CantCombustible = CantCombustible + DBLet(Rs!cantidad, "N")
             End If
@@ -1137,7 +1137,7 @@ Dim TipForpa As String
     
             Rs.MoveNext
         Wend
-        If Hayreg And NumError = 0 Then
+        If HayReg And NumError = 0 Then
                ' miramos el descuento/litro de socio sobre la cantidad
                
                If AdmiteBonificacion(AntForpa) Then
@@ -1337,7 +1337,7 @@ Dim AntTarje As String 'Long
 Dim AntSocio As Long
 Dim AntForpa As Integer
 Dim AntTurno As Integer
-Dim Hayreg As Boolean
+Dim HayReg As Boolean
 Dim v_linea As Integer
 Dim FamArtDto As String
 Dim IvaArtDto As String
@@ -1397,14 +1397,14 @@ Dim NumError As Long
     SQL = SQL & " order by scaalb.codsocio, scaalb.codforpa, scaalb.fecalbar, scaalb.horalbar "
     
     Set Rs = db.cursor(SQL)
-    Hayreg = False
+    HayReg = False
     v_linea = 0
     NumError = 0
     If Not Rs.EOF Then
         Rs.MoveFirst
         AntSocio = Rs!codsocio
         AntAlbaran = Rs!numalbar
-        AntForpa = Rs!CodForpa
+        AntForpa = Rs!Codforpa
         AntTurno = Rs!codTurno
         
         Set baseimpo = New Dictionary
@@ -1429,8 +1429,8 @@ Dim NumError As Long
         TotalImp = 0
         
         While Not Rs.EOF And NumError = 0
-            Hayreg = True
-            ActForpa = Rs!CodForpa
+            HayReg = True
+            ActForpa = Rs!Codforpa
             ActSocio = Rs!codsocio
             If (ActForpa <> AntForpa Or ActSocio <> AntSocio) Then
                '  ### [Monica] 05/12/2006
@@ -1474,14 +1474,14 @@ Dim NumError As Long
             ' tenemos que calcular el impuesto multiplicando cantidad de linea por impuesto por articulo
             Codigo = "codigiva"
             Sql1 = ""
-            Sql1 = DevuelveDesdeBD("impuesto", "sartic", "codartic", DBLet(Rs!codArtic), "N", Codigo)
+            Sql1 = DevuelveDesdeBD("impuesto", "sartic", "codartic", DBLet(Rs!codartic), "N", Codigo)
             If Sql1 = "" Then
                 Impuesto = 0
             Else
                 Impuesto = CCur(Sql1) ' Comprueba si es nulo y lo pone a 0 o ""
             End If
             
-            If EsArticuloCombustible(Rs!codArtic) Then
+            If EsArticuloCombustible(Rs!codartic) Then
                 TotalImp = TotalImp + Round2((Rs!cantidad * Impuesto), 2)
                 CantCombustible = CantCombustible + DBLet(Rs!cantidad, "N")
             End If
@@ -1492,14 +1492,14 @@ Dim NumError As Long
             IncrementarProgres Pb1, 1
             
             If NumError = 0 Then NumError = InsertaLineaFactura(db, Rs, numser, vCont.Contador, FecFactura, v_linea, 1)
-            If NumError = 0 Then NumError = InsertaLineaFacturaTemporal(db, CStr(Rs!codArtic), CStr(Rs!cantidad), CStr(Rs!importel))
+            If NumError = 0 Then NumError = InsertaLineaFacturaTemporal(db, CStr(Rs!codartic), CStr(Rs!cantidad), CStr(Rs!importel))
             If NumError = 0 Then NumError = BorrarLineaAlbaran(db, Rs!Codclave, True)
 
             'Siguiente
     '        antfactura = Rs!numfactu
             Rs.MoveNext
         Wend
-        If Hayreg And NumError = 0 Then
+        If HayReg And NumError = 0 Then
                ' miramos el descuento/litro de socio sobre la cantidad
                
                If AdmiteBonificacion(AntForpa) Then
@@ -1549,7 +1549,7 @@ Dim Rs As ADODB.Recordset
 Dim Socio As Long
 Dim Numtarje As String
 
-Dim i As Integer
+Dim I As Integer
 Dim Imptot(2)
 Dim Tipiva(2)
 Dim Impbas(2)
@@ -1562,7 +1562,7 @@ Dim Forpa As String
 Dim Codigo As String
 Dim preciove As Currency
 Dim Serie As String
-Dim Articulo As String
+Dim articulo As String
 
 'importe1 = articulo
 'importe2 = cantidad
@@ -1614,21 +1614,21 @@ On Error GoTo eInsertarFacturaGlobal
     
     Numtarje = ""
     Numtarje = DevuelveDesdeBDNew(cPTours, "starje", "numtarje", "codsocio", CStr(Socio), "N")
-    CodForpa = ""
-    CodForpa = DevuelveDesdeBDNew(cPTours, "ssocio", "codforpa", "codsocio", CStr(Socio), "N")
+    Codforpa = ""
+    Codforpa = DevuelveDesdeBDNew(cPTours, "ssocio", "codforpa", "codsocio", CStr(Socio), "N")
     
     While Not Rs.EOF And NumError = 0
         '-------
         ' tenemos que calcular el impuesto multiplicando cantidad de linea por impuesto por articulo
         If Tipo = 1 Then
             '11/09/08: antes: articulo = "00" & mid(rs!importe1, 3, 4)
-            Articulo = Rs!Importe1 ' "00" & Mid(Rs!Importe1, 3, 4)
+            articulo = Rs!Importe1 ' "00" & Mid(Rs!Importe1, 3, 4)
         Else
-            Articulo = Rs!Importe1
+            articulo = Rs!Importe1
         End If
         Codigo = "codigiva"
         Sql1 = ""
-        Sql1 = DevuelveDesdeBD("impuesto", "sartic", "codartic", DBLet(Articulo), "N", Codigo)
+        Sql1 = DevuelveDesdeBD("impuesto", "sartic", "codartic", DBLet(articulo), "N", Codigo)
         If Sql1 = "" Then
             Impuesto = 0
         Else
@@ -1667,24 +1667,24 @@ On Error GoTo eInsertarFacturaGlobal
     ' finalmente insertamos la cabecera de factura
     ' inicializamos los importes de los totales de la cabecera
     TotFac = 0
-    For i = 0 To 2
-         Tipiva(i) = Null
-         Imptot(i) = Null
-         Impbas(i) = Null
-         ImpIva(i) = Null
-         PorIva(i) = Null
-    Next i
+    For I = 0 To 2
+         Tipiva(I) = Null
+         Imptot(I) = Null
+         Impbas(I) = Null
+         ImpIva(I) = Null
+         PorIva(I) = Null
+    Next I
     
-    For i = 0 To baseimpo.Count - 1
-        If i <= 2 Then
-            Tipiva(i) = baseimpo.Keys(i)
-            Imptot(i) = baseimpo.Items(i)
-            PorIva(i) = DevuelveDesdeBDNew(cConta, "tiposiva", "porceiva", "codigiva", CStr(Tipiva(i)), "N")
-            Impbas(i) = Round2(Imptot(i) / (1 + (PorIva(i) / 100)), 2)
-            ImpIva(i) = Imptot(i) - Impbas(i)
-            TotFac = TotFac + Imptot(i)
+    For I = 0 To baseimpo.Count - 1
+        If I <= 2 Then
+            Tipiva(I) = baseimpo.Keys(I)
+            Imptot(I) = baseimpo.Items(I)
+            PorIva(I) = DevuelveDesdeBDNew(cConta, "tiposiva", "porceiva", "codigiva", CStr(Tipiva(I)), "N")
+            Impbas(I) = Round2(Imptot(I) / (1 + (PorIva(I) / 100)), 2)
+            ImpIva(I) = Imptot(I) - Impbas(I)
+            TotFac = TotFac + Imptot(I)
         End If
-    Next i
+    Next I
     
     NumCoop = coope
     
@@ -1735,7 +1735,7 @@ Dim Linea As Integer
 Dim vCont As CContador
 Dim NumError As Long
 Dim baseimpo As Dictionary
-Dim Hayreg As Byte
+Dim HayReg As Byte
 Dim Sql1 As String
 Dim Impuesto As Currency
 'Dim TotalImp As Currency
@@ -1792,9 +1792,9 @@ On Error GoTo eFacturacionAbonoCliente
     
     TotalImp = 0
     
-    Hayreg = 0
+    HayReg = 0
     While Not Rs.EOF And NumError = 0
-        Hayreg = 1
+        HayReg = 1
         ActSocio = Rs.Fields(0).Value
         If ActSocio <> AntSocio Then
             Set vsocio = New CSocio
@@ -1824,7 +1824,7 @@ On Error GoTo eFacturacionAbonoCliente
             Impuesto = CCur(Sql1) ' Comprueba si es nulo y lo pone a 0 o ""
         End If
         
-        If EsArticuloCombustible(Rs!codArtic) Then
+        If EsArticuloCombustible(Rs!codartic) Then
         ' restamos porque estamos en abono, en la facturacion se suma
             TotalImp = TotalImp + Round2((Rs.Fields(3).Value * Impuesto * (-1)), 2)
             CantCombustible = CantCombustible + DBLet(Rs.Fields(3).Value, "N")
@@ -1842,7 +1842,7 @@ On Error GoTo eFacturacionAbonoCliente
     Wend
     
     ' insertamos la ultima cabecera de factura
-    If Hayreg = 1 And NumError = 0 Then
+    If HayReg = 1 And NumError = 0 Then
         Set vsocio = New CSocio
         If vsocio.LeerDatos(ActSocio) Then
              NumError = InsertCabe(db, baseimpo, vCont.Contador, CDate(fecFac), vsocio.Codigo, vsocio.ForPago, 0)
@@ -1891,7 +1891,7 @@ Dim Numtarje As String
 
 eInsertaLineaFacturaAbono:
     If Err.Number <> 0 Or InsertaLineaFacturaAbono <> 0 Then
-        MensError = "Error en la inserción de la línea de factura " & numFac & " en el articulo " & Rs!codArtic
+        MensError = "Error en la inserción de la línea de factura " & numFac & " en el articulo " & Rs!codartic
         If InsertaLineaFacturaAbono = 0 Then InsertaLineaFacturaAbono = 1
     End If
     
@@ -1907,13 +1907,13 @@ Dim ActCodsocio As String
 Dim ActCodartic As String
 Dim AntCodsocio As String
 Dim AntCodartic As String
-Dim Hayreg As Byte
+Dim HayReg As Byte
 Dim v_linea As Integer
 Dim NumError As Long
 Dim BONIFICA As Currency
 Dim b As Boolean
 Dim db As BaseDatos
-Dim NRegs As Integer
+Dim nRegs As Integer
 Dim Codigo As String
 Dim Hora As String
 Dim vsocio As CSocio
@@ -1951,7 +1951,7 @@ Dim ArtDto As String
     SQL = SQL & " ORDER BY schfacr.codsocio, slhfacr.codartic "
 
     Set Rs = db.cursor(SQL)
-    Hayreg = False
+    HayReg = False
     Set Rs = db.cursor(SQL)
     
     If Rs.EOF Then
@@ -1981,9 +1981,9 @@ Dim ArtDto As String
         
     TotalImp = 0
     
-    Hayreg = 0
+    HayReg = 0
     While Not Rs.EOF And NumError = 0
-        Hayreg = 1
+        HayReg = 1
         IncrementarProgres Pb1, 1
         ActCodsocio = Rs.Fields(0).Value
         If ActCodsocio <> AntCodsocio Then
@@ -2001,7 +2001,7 @@ Dim ArtDto As String
 
         Codigo = "codigiva"
         Sql1 = ""
-        Sql1 = DevuelveDesdeBD("impuesto", "sartic", "codartic", DBLet(Rs!codArtic), "N", Codigo)
+        Sql1 = DevuelveDesdeBD("impuesto", "sartic", "codartic", DBLet(Rs!codartic), "N", Codigo)
         If Sql1 = "" Then
             Impuesto = 0
         Else
@@ -2038,7 +2038,7 @@ Dim ArtDto As String
     Wend
     
     ' insertamos la ultima cabecera de factura
-    If Hayreg = 1 And NumError = 0 Then ' añadida condicion 12/07/2007 and numerror = 0
+    If HayReg = 1 And NumError = 0 Then ' añadida condicion 12/07/2007 and numerror = 0
         Set vsocio = New CSocio
         If vsocio.LeerDatos(ActCodsocio) Then
              NumError = InsertCabe(db, baseimpo, vCont.Contador, CDate(fecFac), vsocio.Codigo, vsocio.ForPago, 1)
@@ -2129,7 +2129,7 @@ Dim Codclave As Long
          sql2 = sql2 & "intconta, observac, rectif_letraser, rectif_numfactu, rectif_fecfactu) values ("
          sql2 = sql2 & DBSet(numser, "T") & "," & DBSet(vCont.Contador, "N") & ","
          sql2 = sql2 & DBSet(NuevaFecFactu, "F") & "," & DBSet(Rs!codsocio, "N") & "," & DBSet(Rs!codcoope, "N") & ","
-         sql2 = sql2 & DBSet(Rs!CodForpa, "N") & ","
+         sql2 = sql2 & DBSet(Rs!Codforpa, "N") & ","
          
 '[Monica]16/10/2013: no puede ser nulo
 '         If DBLet(Rs!baseimp1, "N") <> 0 Then
@@ -2198,7 +2198,7 @@ Dim Codclave As Long
             sql2 = sql2 & DBSet(numser, "T") & "," & DBSet(vCont.Contador, "N") & "," & DBSet(NuevaFecFactu, "F") & ","
             sql2 = sql2 & DBSet(Rs!NumLinea, "N") & "," & DBSet(Rs!numalbar, "T") & "," & DBSet(Rs!fecAlbar, "F") & ","
             sql2 = sql2 & DBSet(Rs!horalbar, "FH") & "," & DBSet(Rs!codTurno, "N") & "," & DBSet(Rs!Numtarje, "N") & ","
-            sql2 = sql2 & DBSet(Rs!codArtic, "N") & "," & DBSet(DBLet(Rs!cantidad, "N") * (-1), "N") & ","
+            sql2 = sql2 & DBSet(Rs!codartic, "N") & "," & DBSet(DBLet(Rs!cantidad, "N") * (-1), "N") & ","
             sql2 = sql2 & DBSet(Rs!preciove, "N") & "," & DBSet(DBLet(Rs!ImpLinea, "N") * (-1), "N") & ")"
             
             NumError = db.ejecutar2(sql2, caderr)
@@ -2231,9 +2231,9 @@ Dim Codclave As Long
                     sql2 = sql2 & DBSet(Codclave, "N") & "," & DBSet(Rs2!codsocio, "N") & "," & DBSet(Rs2!Numtarje, "N") & ","
                     sql2 = sql2 & DBSet(Rs2!numalbar, "N") & "," & DBSet(Rs2!fecAlbar, "F") & ","
                     sql2 = sql2 & DBSet(Rs2!horalbar, "FH") & "," & DBSet(Rs2!codTurno, "N") & ","
-                    sql2 = sql2 & DBSet(Rs2!codArtic, "N") & "," & DBSet(Rs2!cantidad, "N") & ","
+                    sql2 = sql2 & DBSet(Rs2!codartic, "N") & "," & DBSet(Rs2!cantidad, "N") & ","
                     sql2 = sql2 & DBSet(Rs2!preciove, "N") & "," & DBSet(Rs2!ImpLinea, "N") & ","
-                    sql2 = sql2 & DBSet(Rs2!CodForpa, "N") & "," & DBSet(Rs2!matricul, "T") & ","
+                    sql2 = sql2 & DBSet(Rs2!Codforpa, "N") & "," & DBSet(Rs2!matricul, "T") & ","
                     sql2 = sql2 & DBSet(Traba, "N") & ",0,0,0," & DBSet(Rs2!precioinicial, "N") & ")"
                     
                     NumError = db.ejecutar2(sql2, caderr)
@@ -2308,7 +2308,7 @@ Dim Codclave As Long
                         sql2 = sql2 & DBSet(numser, "T") & "," & DBSet(vCont.Contador, "N") & "," & DBSet(NuevaFecFactu, "F") & ","
                         sql2 = sql2 & DBSet(Rs!NumLinea, "N") & "," & DBSet(Rs!numalbar, "T") & "," & DBSet(Rs!fecAlbar, "F") & ","
                         sql2 = sql2 & DBSet(Rs!horalbar, "FH") & "," & DBSet(Rs!codTurno, "N") & "," & DBSet(Rs!Numtarje, "N") & ","
-                        sql2 = sql2 & DBSet(Rs!codArtic, "N") & "," & DBSet(Rs!cantidad, "N") & ","
+                        sql2 = sql2 & DBSet(Rs!codartic, "N") & "," & DBSet(Rs!cantidad, "N") & ","
                         sql2 = sql2 & DBSet(Rs!preciove, "N") & "," & DBSet(Rs!ImpLinea, "N") & ")"
                         
                         NumError = db.ejecutar2(sql2, caderr)
@@ -2369,7 +2369,7 @@ Dim AntTarje As Long
 Dim AntSocio As Long
 Dim AntForpa As Integer
 Dim AntTurno As Integer
-Dim Hayreg As Boolean
+Dim HayReg As Boolean
 Dim v_linea As Integer
 Dim FamArtDto As String
 Dim IvaArtDto As String
@@ -2412,7 +2412,7 @@ Dim NumError As Long
     
     
     Set Rs = db.cursor(SQL)
-    Hayreg = False
+    HayReg = False
     v_linea = 0
     NumError = 0
     While Not Rs.EOF And NumError = 0
@@ -2498,7 +2498,7 @@ Dim EurosLitro As Double
 Dim PrecioNue As Double
 Dim PrecioNue2 As Double
 Dim ImporteNue As Currency
-Dim NRegs As Integer
+Dim nRegs As Integer
 Dim RsAlb As ADODB.Recordset
 Dim CadenaAlb As String
 
@@ -2524,9 +2524,9 @@ Dim CadenaAlb As String
     SQL = SQL & " from " & tabla & " INNER JOIN tmpinformes ON " & tabla & ".codartic = tmpinformes.codigo1 and tmpinformes.codusu = " & vSesion.Codigo
     SQL = SQL & " where " & tabla & ".codclave in (" & CadenaAlb & ")" ' & Replace(Replace(cadWhere, "{", ""), "}", "") & ")"
     
-    NRegs = TotalRegistrosConsulta(SQL)
+    nRegs = TotalRegistrosConsulta(SQL)
     
-    CargarProgres Pb1, NRegs
+    CargarProgres Pb1, nRegs
     Pb1.visible = True
     Label4.visible = True
     DoEvents
@@ -2538,9 +2538,9 @@ Dim CadenaAlb As String
         IncrementarProgres Pb1, 1
         DoEvents
         
-        margen = DevuelveValor("select margen from smargen where codsocio = " & DBSet(Rs!codsocio, "N") & " and codartic = " & DBSet(Rs!codArtic, "N"))
+        margen = DevuelveValor("select margen from smargen where codsocio = " & DBSet(Rs!codsocio, "N") & " and codartic = " & DBSet(Rs!codartic, "N"))
         '[Monica]15/12/2011: Euros/litro
-        EurosLitro = DevuelveValor("select euroslitro from smargen where codsocio = " & DBSet(Rs!codsocio, "N") & " and codartic = " & DBSet(Rs!codArtic, "N"))
+        EurosLitro = DevuelveValor("select euroslitro from smargen where codsocio = " & DBSet(Rs!codsocio, "N") & " and codartic = " & DBSet(Rs!codartic, "N"))
 
         If margen <> 0 Then
             PrecioNue = CDbl(DBLet(Rs!precio2, "N")) * (1 + (margen / 100))
@@ -2554,7 +2554,7 @@ Dim CadenaAlb As String
         Sql4 = Sql4 & " from " & tabla & " INNER JOIN tmpinformes ON " & tabla & ".codartic = tmpinformes.codigo1 and tmpinformes.codusu = " & vSesion.Codigo
         Sql4 = Sql4 & " where " & tabla & ".codclave in (" & CadenaAlb & ")" '& Replace(Replace(cadWhere, "{", ""), "}", "") & ")"
         Sql4 = Sql4 & " and " & tabla & ".codsocio = " & DBSet(Rs!codsocio, "N")
-        Sql4 = Sql4 & " and " & tabla & ".codartic = " & DBSet(Rs!codArtic, "N")
+        Sql4 = Sql4 & " and " & tabla & ".codartic = " & DBSet(Rs!codartic, "N")
         
         Set rs4 = New ADODB.Recordset
         rs4.Open Sql4, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
@@ -2614,7 +2614,7 @@ Dim AntTarje As Long
 Dim AntSocio As Long
 Dim AntForpa As Integer
 Dim AntTurno As Integer
-Dim Hayreg As Boolean
+Dim HayReg As Boolean
 Dim v_linea As Integer
 Dim FamArtDto As String
 Dim IvaArtDto As String
@@ -2628,7 +2628,7 @@ Dim NumError As Long
 Dim numFac As Long
 
 Dim tipoMov As String
-Dim NRegs As Integer
+Dim nRegs As Integer
 Dim SqlAct As String
 Dim TipForpa As String
 
@@ -2695,8 +2695,8 @@ Dim TipForpa As String
     End If
     
     
-    NRegs = TotalRegistrosConsulta(SQL)
-    CargarProgres Pb1, NRegs
+    nRegs = TotalRegistrosConsulta(SQL)
+    CargarProgres Pb1, nRegs
     Pb1.visible = True
     Label4.visible = True
     Label4.Caption = "Simulando Facturacion:"
@@ -2705,14 +2705,14 @@ Dim TipForpa As String
     Set Rs = New ADODB.Recordset
     Rs.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
     
-    Hayreg = False
+    HayReg = False
     v_linea = 0
     NumError = 0
     If Not Rs.EOF Then
         Rs.MoveFirst
         AntSocio = Rs!codsocio
         AntAlbaran = Rs!numalbar
-        AntForpa = Rs!CodForpa
+        AntForpa = Rs!Codforpa
         AntTurno = Rs!codTurno
         AntTarje = Rs!Numtarje
         
@@ -2730,8 +2730,8 @@ Dim TipForpa As String
             DoEvents
             
             
-            Hayreg = True
-            ActForpa = Rs!CodForpa
+            HayReg = True
+            ActForpa = Rs!Codforpa
             ActSocio = Rs!codsocio
             ActTarje = Rs!Numtarje
             If ((ActForpa <> AntForpa Or ActSocio <> AntSocio) And (CliTar = 1 Or CliTar = 3)) Or _
@@ -2793,14 +2793,14 @@ Dim TipForpa As String
                 ' tenemos que calcular el impuesto multiplicando cantidad de linea por impuesto por articulo
                 Codigo = "codigiva"
                 Sql1 = ""
-                Sql1 = DevuelveDesdeBD("impuesto", "sartic", "codartic", DBLet(Rs!codArtic), "N", Codigo)
+                Sql1 = DevuelveDesdeBD("impuesto", "sartic", "codartic", DBLet(Rs!codartic), "N", Codigo)
                 If Sql1 = "" Then
                     Impuesto = 0
                 Else
                     Impuesto = CCur(Sql1) ' Comprueba si es nulo y lo pone a 0 o ""
                 End If
                 
-                If EsArticuloCombustible(Rs!codArtic) Then
+                If EsArticuloCombustible(Rs!codartic) Then
                     TotalImp = TotalImp + Round2((Rs!cantidad * Impuesto), 2)
                     CantCombustible = CantCombustible + DBLet(Rs!cantidad, "N")
                 End If
@@ -2808,7 +2808,7 @@ Dim TipForpa As String
                 '[Monica]15/02/2011: cuando el articulo es lubricante, tiene un impuesto, hemos de calcularlo
                 ' Sabemos que es lubricante pq tiene un peso por unidad.
                 ' El Impuesto se calcula multiplicandolo por el preciosigaus
-                TotalImpSigaus = TotalImpSigaus + ImpuestoSigausArticulo(Rs!codArtic, Rs!cantidad)
+                TotalImpSigaus = TotalImpSigaus + ImpuestoSigausArticulo(Rs!codartic, Rs!cantidad)
                 
                 SqlAct = "update tmpscaalb set numfactu = " & DBSet(numFac, "N") & " where codusu = " & vSesion.Codigo & " and codclave = " & DBSet(Rs!Codclave, "N")
                 Conn.Execute SqlAct
@@ -2817,7 +2817,7 @@ Dim TipForpa As String
             
             End If
         Wend
-        If Hayreg And b Then
+        If HayReg And b Then
             ' miramos el descuento/litro de socio sobre la cantidad
             If AdmiteBonificacion(AntForpa) Then
                  SQL = ""

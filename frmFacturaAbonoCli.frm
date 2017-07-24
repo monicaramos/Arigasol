@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.2#0"; "MSCOMCTL.OCX"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Begin VB.Form frmFacturaAbonoCli 
    BorderStyle     =   3  'Fixed Dialog
@@ -375,11 +375,11 @@ End Sub
 Private Sub cmdAceptar_Click()
 Dim cDesde As String, cHasta As String 'cadena codigo Desde/Hasta
 Dim nDesde As String, nHasta As String 'cadena Descripcion Desde/Hasta
-Dim cadTABLA As String, cOrden As String
+Dim cadTabla As String, cOrden As String
 Dim cadMen As String
-Dim i As Byte
-Dim sql As String
-Dim tipo As Byte
+Dim I As Byte
+Dim SQL As String
+Dim Tipo As Byte
 Dim nRegs As Integer
 Dim NumError As Long
 Dim tipofac As String
@@ -445,23 +445,23 @@ Dim tipofac As String
     
     
     'Comprobar si hay registros a procesar
-    sql = "select count(distinct sligru.codempre, slhfac.codartic, ssocio.tipsocio) "
-    sql = sql & "from sligru, schfac, slhfac, ssocio, sartic, sfamia "
-    sql = sql & " where sfamia.tipfamia = 1 " ' unicamente carburantes
-    If txtCodigo(4).Text <> "" Then sql = sql & " and sligru.codempre >= " & DBSet(txtCodigo(4).Text, "N")
-    If txtCodigo(5).Text <> "" Then sql = sql & " and sligru.codempre <= " & DBSet(txtCodigo(5).Text, "N")
-    If txtCodigo(2).Text <> "" Then sql = sql & " and slhfac.fecfactu >= " & DBSet(txtCodigo(2).Text, "F")
-    If txtCodigo(3).Text <> "" Then sql = sql & " and slhfac.fecfactu <= " & DBSet(txtCodigo(3).Text, "F")
-    sql = sql & " and schfac.letraser = " & DBSet(SerGasol, "T")
+    SQL = "select count(distinct sligru.codempre, slhfac.codartic, ssocio.tipsocio) "
+    SQL = SQL & "from sligru, schfac, slhfac, ssocio, sartic, sfamia "
+    SQL = SQL & " where sfamia.tipfamia = 1 " ' unicamente carburantes
+    If txtCodigo(4).Text <> "" Then SQL = SQL & " and sligru.codempre >= " & DBSet(txtCodigo(4).Text, "N")
+    If txtCodigo(5).Text <> "" Then SQL = SQL & " and sligru.codempre <= " & DBSet(txtCodigo(5).Text, "N")
+    If txtCodigo(2).Text <> "" Then SQL = SQL & " and slhfac.fecfactu >= " & DBSet(txtCodigo(2).Text, "F")
+    If txtCodigo(3).Text <> "" Then SQL = SQL & " and slhfac.fecfactu <= " & DBSet(txtCodigo(3).Text, "F")
+    SQL = SQL & " and schfac.letraser = " & DBSet(SerGasol, "T")
 '    sql = sql & " and schfac.letraser <> " & DBSet(SerBonif, "T")
-    sql = sql & " and ssocio.codcoope = " & DBSet(txtCodigo(0).Text, "N")
-    sql = sql & " and sligru.codsocio = schfac.codsocio "
-    sql = sql & " and sligru.codsocio = ssocio.codsocio "
-    sql = sql & " and sfamia.codfamia = sartic.codfamia "
-    sql = sql & " and slhfac.codartic = sartic.codartic "
-    sql = sql & " and slhfac.letraser = schfac.letraser and slhfac.numfactu = schfac.numfactu and slhfac.fecfactu = schfac.fecfactu "
+    SQL = SQL & " and ssocio.codcoope = " & DBSet(txtCodigo(0).Text, "N")
+    SQL = SQL & " and sligru.codsocio = schfac.codsocio "
+    SQL = SQL & " and sligru.codsocio = ssocio.codsocio "
+    SQL = SQL & " and sfamia.codfamia = sartic.codfamia "
+    SQL = SQL & " and slhfac.codartic = sartic.codartic "
+    SQL = SQL & " and slhfac.letraser = schfac.letraser and slhfac.numfactu = schfac.numfactu and slhfac.fecfactu = schfac.fecfactu "
     
-    nRegs = TotalRegistros(sql)
+    nRegs = TotalRegistros(SQL)
     
     If nRegs <> 0 Then
         ' cargamos el progresbar
@@ -677,7 +677,7 @@ Private Sub KEYFecha(KeyAscii As Integer, indice As Integer)
 End Sub
 
 Private Sub txtCodigo_LostFocus(Index As Integer)
-Dim cad As String, cadTipo As String 'tipo cliente
+Dim Cad As String, cadTipo As String 'tipo cliente
 
     'Quitar espacios en blanco por los lados
     txtCodigo(Index).Text = Trim(txtCodigo(Index).Text)
@@ -829,7 +829,7 @@ Private Sub AbrirEMail()
     If CadenaDesdeOtroForm <> "" Then frmEMail.Show vbModal
 End Sub
 
-Private Function PendientePasarTPV(sql As String, tipo As Byte) As Boolean
+Private Function PendientePasarTPV(SQL As String, Tipo As Byte) As Boolean
 'Dim sql As String
 Dim cadMen As String
 
@@ -837,13 +837,13 @@ Dim cadMen As String
 '    sql = "select count(*) from scaalb, ssocio, scoope where " & Formula & " and numfactu <> 0 and " & _
 '          " scaalb.codsocio = ssocio.codsocio and ssocio.codcoope = scoope.codcoope "
     
-    If tipo <> 2 Then
-        sql = sql & " and scoope.tipfactu = " & DBSet(tipo, "N")
+    If Tipo <> 2 Then
+        SQL = SQL & " and scoope.tipfactu = " & DBSet(Tipo, "N")
     Else 'VRS:2.0.2(1) añadida nueva opción
-        sql = sql & " and (scoope.tipfactu = 0 or scoope.tipfactu = 1)"
+        SQL = SQL & " and (scoope.tipfactu = 0 or scoope.tipfactu = 1)"
     End If
     
-    If (RegistrosAListar(sql) <> 0) Then
+    If (RegistrosAListar(SQL) <> 0) Then
         cadMen = "Hay registros pendientes de Traspaso a TPV." & vbCrLf & vbCrLf & _
                  "Debe realizar este proceso previamente." & vbCrLf & vbCrLf
         MsgBox cadMen, vbExclamation
@@ -852,15 +852,15 @@ Dim cadMen As String
 End Function
 
 Private Function PendienteCierresTurno(DesFec As String, HasFec As String) As Boolean
-Dim sql As String
+Dim SQL As String
 Dim cadMen As String
 
     PendienteCierresTurno = False
-    sql = "select count(*) from srecau where intconta = 0 "
-    If DesFec <> "" Then sql = sql & " and fechatur >= " & DBSet(CDate(DesFec), "F") & " "
-    If HasFec <> "" Then sql = sql & " and fechatur <= " & DBSet(CDate(HasFec), "F") & " "
+    SQL = "select count(*) from srecau where intconta = 0 "
+    If DesFec <> "" Then SQL = SQL & " and fechatur >= " & DBSet(CDate(DesFec), "F") & " "
+    If HasFec <> "" Then SQL = SQL & " and fechatur <= " & DBSet(CDate(HasFec), "F") & " "
 
-    If (RegistrosAListar(sql) <> 0) Then
+    If (RegistrosAListar(SQL) <> 0) Then
         cadMen = "Quedan cierres de Turno por contabilizar. Revise." & vbCrLf & vbCrLf
         MsgBox cadMen, vbExclamation
         PendienteCierresTurno = True
@@ -870,7 +870,7 @@ End Function
 
 Private Function DatosOk() As Boolean
 Dim b As Boolean
-Dim sql As String
+Dim SQL As String
 Dim Mens As String
 Dim numfactu As String
 Dim numser As String
@@ -889,23 +889,32 @@ Dim tipofac As String
             b = False
             PonerFoco txtCodigo(6)
         Else
-            'VRS:2.0.1(0)
-            If Not FechaSuperiorUltimaLiquidacion(CDate(txtCodigo(6).Text)) Then
-                Mens = "  La Fecha de Facturación es inferior a la última liquidación de Iva. " & vbCrLf & vbCrLf
-                ' unicamente si el usuario es root el proceso continuará
-                If vSesion.Nivel > 0 Then
-                    Mens = Mens & "  El proceso no continuará."
-                    MsgBox Mens, vbExclamation
-                    b = False
-                    PonerFoco txtCodigo(6)
-                Else
-                    Mens = Mens & "                        ¿ Desea continuar ?    " & vbCrLf
-                    If MsgBox(Mens, vbQuestion + vbYesNo + vbDefaultButton2) = vbNo Then
+            '[Monica]20/06/2017: control de fechas que antes no estaba
+            ResultadoFechaContaOK = EsFechaOKConta(CDate(txtCodigo(6)))
+            If ResultadoFechaContaOK > 0 Then
+                If ResultadoFechaContaOK <> 4 Then MsgBox MensajeFechaOkConta, vbExclamation
+                b = False
+                PonerFoco txtCodigo(6)
+            Else
+                'VRS:2.0.1(0)
+                If Not FechaSuperiorUltimaLiquidacion(CDate(txtCodigo(6).Text)) Then
+                    Mens = "  La Fecha de Facturación es inferior a la última liquidación de Iva. " & vbCrLf & vbCrLf
+                    ' unicamente si el usuario es root el proceso continuará
+                    If vSesion.Nivel > 0 Then
+                        Mens = Mens & "  El proceso no continuará."
+                        MsgBox Mens, vbExclamation
                         b = False
                         PonerFoco txtCodigo(6)
+                    Else
+                        Mens = Mens & "                        ¿ Desea continuar ?    " & vbCrLf
+                        If MsgBox(Mens, vbQuestion + vbYesNo + vbDefaultButton2) = vbNo Then
+                            b = False
+                            PonerFoco txtCodigo(6)
+                        End If
                     End If
                 End If
             End If
+            
             ' la fecha de factura no debe ser inferior a la ultima factura de la serie
             numser = "letraser"
             numfactu = ""
@@ -947,9 +956,9 @@ Dim tipofac As String
         PonerFocoBtn cmdCancel
     Else
         'comprobamos que el articulo de descuento existe
-        sql = ""
-        sql = DevuelveDesdeBD("nomartic", "sartic", "codartic", vParamAplic.ArticDto, "N")
-        If sql = "" Then
+        SQL = ""
+        SQL = DevuelveDesdeBD("nomartic", "sartic", "codartic", vParamAplic.ArticDto, "N")
+        If SQL = "" Then
             MsgBox "El artículo descuento de la tabla de parámetros no existe. Revise.", vbExclamation
             b = False
             PonerFocoBtn cmdCancel
@@ -969,9 +978,9 @@ Dim tipofac As String
 End Function
 
 Private Function FacturaAbonoCli() As Boolean
-Dim sql As String
+Dim SQL As String
 Dim sql2 As String
-Dim RS As ADODB.Recordset
+Dim Rs As ADODB.Recordset
 Dim ActCodempre As String
 Dim ActCodartic As String
 Dim ActTipsocio As String
@@ -990,36 +999,36 @@ Dim nRegs As Integer
 
      Set db = New BaseDatos
      db.abrir vSesion.CadenaConexion, "root", "aritel"
-     db.tipo = "MYSQL"
+     db.Tipo = "MYSQL"
      db.AbrirTrans
 
     NumError = 0
 
     ' realizamos la facturacion
-    sql = "select sligru.codempre, slhfac.codartic, ssocio.tipsocio, sum(cantidad) "
-    sql = sql & "from sligru, schfac, slhfac, ssocio, sartic, sfamia "
-    sql = sql & " where sfamia.tipfamia = 1 " ' unicamente carburantes
-    If txtCodigo(4).Text <> "" Then sql = sql & " and sligru.codempre >= " & DBSet(txtCodigo(4).Text, "N")
-    If txtCodigo(5).Text <> "" Then sql = sql & " and sligru.codempre <= " & DBSet(txtCodigo(5).Text, "N")
-    If txtCodigo(2).Text <> "" Then sql = sql & " and slhfac.fecfactu >= " & DBSet(txtCodigo(2).Text, "F")
-    If txtCodigo(3).Text <> "" Then sql = sql & " and slhfac.fecfactu <= " & DBSet(txtCodigo(3).Text, "F")
-    sql = sql & " and schfac.letraser = " & DBSet(SerGasol, "T")
+    SQL = "select sligru.codempre, slhfac.codartic, ssocio.tipsocio, sum(cantidad) "
+    SQL = SQL & "from sligru, schfac, slhfac, ssocio, sartic, sfamia "
+    SQL = SQL & " where sfamia.tipfamia = 1 " ' unicamente carburantes
+    If txtCodigo(4).Text <> "" Then SQL = SQL & " and sligru.codempre >= " & DBSet(txtCodigo(4).Text, "N")
+    If txtCodigo(5).Text <> "" Then SQL = SQL & " and sligru.codempre <= " & DBSet(txtCodigo(5).Text, "N")
+    If txtCodigo(2).Text <> "" Then SQL = SQL & " and slhfac.fecfactu >= " & DBSet(txtCodigo(2).Text, "F")
+    If txtCodigo(3).Text <> "" Then SQL = SQL & " and slhfac.fecfactu <= " & DBSet(txtCodigo(3).Text, "F")
+    SQL = SQL & " and schfac.letraser = " & DBSet(SerGasol, "T")
 '    sql = sql & " and schfac.letraser <> " & DBSet(SerBonif, "T")
-    sql = sql & " and ssocio.codcoope = " & DBSet(txtCodigo(0).Text, "N")
-    sql = sql & " and sligru.codsocio = schfac.codsocio "
-    sql = sql & " and sligru.codsocio = ssocio.codsocio "
-    sql = sql & " and sfamia.codfamia = sartic.codfamia "
-    sql = sql & " and slhfac.codartic = sartic.codartic "
-    sql = sql & " and slhfac.letraser = schfac.letraser and slhfac.numfactu = schfac.numfactu and slhfac.fecfactu = schfac.fecfactu "
-    sql = sql & " GROUP BY sligru.codempre, slhfac.codartic, ssocio.tipsocio "
-    sql = sql & " ORDER BY sligru.codempre, slhfac.codartic, ssocio.tipsocio "
+    SQL = SQL & " and ssocio.codcoope = " & DBSet(txtCodigo(0).Text, "N")
+    SQL = SQL & " and sligru.codsocio = schfac.codsocio "
+    SQL = SQL & " and sligru.codsocio = ssocio.codsocio "
+    SQL = SQL & " and sfamia.codfamia = sartic.codfamia "
+    SQL = SQL & " and slhfac.codartic = sartic.codartic "
+    SQL = SQL & " and slhfac.letraser = schfac.letraser and slhfac.numfactu = schfac.numfactu and slhfac.fecfactu = schfac.fecfactu "
+    SQL = SQL & " GROUP BY sligru.codempre, slhfac.codartic, ssocio.tipsocio "
+    SQL = SQL & " ORDER BY sligru.codempre, slhfac.codartic, ssocio.tipsocio "
 
-    Set RS = db.cursor(sql)
+    Set Rs = db.cursor(SQL)
     HayReg = False
     v_linea = 0
-    If Not RS.EOF Then
-        RS.MoveFirst
-        AntCodempre = RS!codEmpre
+    If Not Rs.EOF Then
+        Rs.MoveFirst
+        AntCodempre = Rs!codEmpre
 '        AntCodartic = RS!codartic
 '        AntTipsocio = RS!tipsocio
 
@@ -1028,10 +1037,10 @@ Dim nRegs As Integer
 
         NumError = BorramosTemporal(db)
         
-        While Not RS.EOF And NumError = 0
+        While Not Rs.EOF And NumError = 0
             HayReg = True
             IncrementarProgres Pb1, 1
-            ActCodempre = RS!codEmpre
+            ActCodempre = Rs!codEmpre
 '            ActCodartic = RS!codartic
 '            ActTipsocio = RS!tipsocio
             If (ActCodempre <> AntCodempre) Then
@@ -1042,14 +1051,14 @@ Dim nRegs As Integer
                 AntCodempre = ActCodempre '03/05/07 añadida esta linea
             End If
 
-            BONIFICA = Bonificacion(db, RS.Fields(1).Value, RS.Fields(3).Value, RS.Fields(2).Value)
+            BONIFICA = Bonificacion(db, Rs.Fields(1).Value, Rs.Fields(3).Value, Rs.Fields(2).Value)
             If BONIFICA <> 0 Then
-                sql = "insert into tmpinformes (codusu, codigo1, precio1) values ( "
-                sql = sql & vSesion.Codigo & "," & DBSet(RS.Fields(1).Value, "N") & "," & DBSet(BONIFICA, "N") & ")"
+                SQL = "insert into tmpinformes (codusu, codigo1, precio1) values ( "
+                SQL = SQL & vSesion.Codigo & "," & DBSet(Rs.Fields(1).Value, "N") & "," & DBSet(BONIFICA, "N") & ")"
 
-                db.ejecutar sql
+                db.ejecutar SQL
             End If
-            RS.MoveNext
+            Rs.MoveNext
 
         Wend
         If HayReg And NumError = 0 Then
@@ -1076,29 +1085,29 @@ End Function
 
 
 Private Function Bonificacion(db As BaseDatos, articulo As String, cantidad As Currency, tipsocio As Byte) As Currency
-Dim sql As String
-Dim RS As ADODB.Recordset
+Dim SQL As String
+Dim Rs As ADODB.Recordset
 Dim Encontrado As Boolean
 Dim bonif As Currency
 
-    sql = "select numlinea, desdecan, hastacan, bonifica from sbonif "
-    sql = sql & " where codartic = " & DBSet(articulo, "N") & " and tipsocio = " & DBSet(tipsocio, "N")
-    sql = sql & " order by numlinea "
+    SQL = "select numlinea, desdecan, hastacan, bonifica from sbonif "
+    SQL = SQL & " where codartic = " & DBSet(articulo, "N") & " and tipsocio = " & DBSet(tipsocio, "N")
+    SQL = SQL & " order by numlinea "
     
     Encontrado = False
     bonif = 0
-    Set RS = db.cursor(sql)
-    While Not RS.EOF And Not Encontrado
-        If RS.Fields(1).Value <= cantidad And cantidad < RS.Fields(2).Value Then
+    Set Rs = db.cursor(SQL)
+    While Not Rs.EOF And Not Encontrado
+        If Rs.Fields(1).Value <= cantidad And cantidad < Rs.Fields(2).Value Then
             Encontrado = True
-            bonif = RS.Fields(3).Value
+            bonif = Rs.Fields(3).Value
         End If
-        RS.MoveNext
+        Rs.MoveNext
     Wend
         
     Bonificacion = bonif
 
-    Set RS = Nothing
+    Set Rs = Nothing
     
 End Function
 

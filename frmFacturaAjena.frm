@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.2#0"; "MSCOMCTL.OCX"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Begin VB.Form frmFacturaAjena 
    BorderStyle     =   3  'Fixed Dialog
@@ -194,6 +194,15 @@ Begin VB.Form frmFacturaAjena
       End
       Begin VB.Label Label4 
          Caption         =   "Fecha Factura"
+         BeginProperty Font 
+            Name            =   "Tahoma"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
          ForeColor       =   &H00972E0B&
          Height          =   255
          Index           =   3
@@ -234,6 +243,15 @@ Begin VB.Form frmFacturaAjena
       End
       Begin VB.Label Label4 
          Caption         =   "Fecha"
+         BeginProperty Font 
+            Name            =   "Tahoma"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
          ForeColor       =   &H00972E0B&
          Height          =   255
          Index           =   16
@@ -398,18 +416,18 @@ End Sub
 Private Sub cmdAceptar_Click()
 Dim cDesde As String, cHasta As String 'cadena codigo Desde/Hasta
 Dim nDesde As String, nHasta As String 'cadena Descripcion Desde/Hasta
-Dim cadTABLA As String, cOrden As String
+Dim cadTabla As String, cOrden As String
 Dim cadMen As String
 Dim I As Byte
-Dim Sql As String
+Dim SQL As String
 Dim Tipo As Byte
 Dim nRegs As Integer
 Dim NumError As Long
 Dim db As BaseDatos
 
-Dim Sql2 As String
+Dim sql2 As String
 
-    If Not DatosOK Then Exit Sub
+    If Not DatosOk Then Exit Sub
     
     InicializarVbles
     
@@ -454,60 +472,60 @@ Dim Sql2 As String
     
         
     ' la cooperativa tiene que ser de facturacion ajena condicion obligatoria en datosok
-    Sql = "select count(*) "
-    Sql = Sql & "from (scaalb inner join ssocio on scaalb.codsocio = ssocio.codsocio) "
+    SQL = "select count(*) "
+    SQL = SQL & "from (scaalb inner join ssocio on scaalb.codsocio = ssocio.codsocio) "
     
-    Sql2 = Sql
+    sql2 = SQL
     
-    Sql = Sql & " where scaalb.numfactu = 0 "
-    Sql = Sql & " and ssocio.codcoope = " & DBSet(txtCodigo(4).Text, "N")
+    SQL = SQL & " where scaalb.numfactu = 0 "
+    SQL = SQL & " and ssocio.codcoope = " & DBSet(txtCodigo(4).Text, "N")
     
-    Sql2 = Sql2 & " where ssocio.codcoope = " & DBSet(txtCodigo(4).Text, "N")
+    sql2 = sql2 & " where ssocio.codcoope = " & DBSet(txtCodigo(4).Text, "N")
     
     If txtCodigo(2).Text <> "" Then
-        Sql = Sql & " and scaalb.fecalbar >= " & DBSet(txtCodigo(2).Text, "F") & " "
-        Sql2 = Sql2 & " and scaalb.fecalbar >= " & DBSet(txtCodigo(2).Text, "F") & " "
+        SQL = SQL & " and scaalb.fecalbar >= " & DBSet(txtCodigo(2).Text, "F") & " "
+        sql2 = sql2 & " and scaalb.fecalbar >= " & DBSet(txtCodigo(2).Text, "F") & " "
     End If
     If txtCodigo(3).Text <> "" Then
-        Sql = Sql & " and scaalb.fecalbar <= " & DBSet(txtCodigo(3).Text, "F") & " "
-        Sql2 = Sql2 & " and scaalb.fecalbar <= " & DBSet(txtCodigo(3).Text, "F") & " "
+        SQL = SQL & " and scaalb.fecalbar <= " & DBSet(txtCodigo(3).Text, "F") & " "
+        sql2 = sql2 & " and scaalb.fecalbar <= " & DBSet(txtCodigo(3).Text, "F") & " "
     End If
     If txtCodigo(0).Text <> "" Then
-        Sql = Sql & " and scaalb.codsocio >= " & DBSet(txtCodigo(0).Text, "N")
-        Sql2 = Sql2 & " and scaalb.codsocio >= " & DBSet(txtCodigo(0).Text, "N")
+        SQL = SQL & " and scaalb.codsocio >= " & DBSet(txtCodigo(0).Text, "N")
+        sql2 = sql2 & " and scaalb.codsocio >= " & DBSet(txtCodigo(0).Text, "N")
     End If
     If txtCodigo(1).Text <> "" Then
-        Sql = Sql & " and scaalb.codsocio <= " & DBSet(txtCodigo(1).Text, "N")
-        Sql2 = Sql2 & " and scaalb.codsocio <= " & DBSet(txtCodigo(1).Text, "N")
+        SQL = SQL & " and scaalb.codsocio <= " & DBSet(txtCodigo(1).Text, "N")
+        sql2 = sql2 & " and scaalb.codsocio <= " & DBSet(txtCodigo(1).Text, "N")
     End If
     
     '[Monica]19/06/2013: en la facturacion ajena tambien diferenciamos en facturas diferentes el gasoleo bonificado del resto de articulos
     Select Case Combo2.ListIndex
         Case 0
-            Sql = Sql & " and not scaalb.codartic in (select codartic from sartic where tipogaso = 3 union " & _
+            SQL = SQL & " and not scaalb.codartic in (select codartic from sartic where tipogaso = 3 union " & _
                                                      "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3)"
-            Sql2 = Sql2 & " and not scaalb.codartic in (select codartic from sartic where tipogaso = 3 union " & _
+            sql2 = sql2 & " and not scaalb.codartic in (select codartic from sartic where tipogaso = 3 union " & _
                                                      "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3)"
         Case 1
-            Sql = Sql & " and scaalb.codartic in (select codartic from sartic where tipogaso = 3 And esdomiciliado = 0 union " & _
+            SQL = SQL & " and scaalb.codartic in (select codartic from sartic where tipogaso = 3 And esdomiciliado = 0 union " & _
                                                  "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3 And esdomiciliado = 0)"
-            Sql2 = Sql2 & " and scaalb.codartic in (select codartic from sartic where tipogaso = 3 And esdomiciliado = 0 union " & _
+            sql2 = sql2 & " and scaalb.codartic in (select codartic from sartic where tipogaso = 3 And esdomiciliado = 0 union " & _
                                                  "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3 And esdomiciliado = 0)"
         Case 2
-            Sql = Sql & " and scaalb.codartic in (select codartic from sartic where tipogaso = 3 And esdomiciliado = 1 union " & _
+            SQL = SQL & " and scaalb.codartic in (select codartic from sartic where tipogaso = 3 And esdomiciliado = 1 union " & _
                                                  "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3 And esdomiciliado = 1)"
-            Sql2 = Sql2 & " and scaalb.codartic in (select codartic from sartic where tipogaso = 3 And esdomiciliado = 1 union " & _
+            sql2 = sql2 & " and scaalb.codartic in (select codartic from sartic where tipogaso = 3 And esdomiciliado = 1 union " & _
                                                  "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3 And esdomiciliado = 1)"
     End Select
 
     
-    nRegs = TotalRegistros(Sql)
+    nRegs = TotalRegistros(SQL)
     If nRegs <> 0 Then
         '031008:comprobamos que existan todas las tarjetas en starjet
-        If Not TarjetasInexistentes(Sql2) Then
+        If Not TarjetasInexistentes(sql2) Then
     
           ' comprobamos si hay registros pendientes para pasar a tpv
-          If Not PendientePasarTPV(Replace(Sql, "scaalb.numfactu = 0", "scaalb.numfactu <> 0"), Tipo) Then
+          If Not PendientePasarTPV(Replace(SQL, "scaalb.numfactu = 0", "scaalb.numfactu <> 0"), Tipo) Then
               If Not PendienteCierresTurno(Trim(txtCodigo(2).Text), Trim(txtCodigo(3).Text)) Then
                     On Error GoTo eError
                     Pb1.visible = True
@@ -731,7 +749,7 @@ Private Sub KEYFecha(KeyAscii As Integer, indice As Integer)
 End Sub
 
 Private Sub txtCodigo_LostFocus(Index As Integer)
-Dim cad As String, cadTipo As String 'tipo cliente
+Dim Cad As String, cadTipo As String 'tipo cliente
 
     'Quitar espacios en blanco por los lados
     txtCodigo(Index).Text = Trim(txtCodigo(Index).Text)
@@ -883,7 +901,7 @@ Private Sub AbrirEMail()
     If CadenaDesdeOtroForm <> "" Then frmEMail.Show vbModal
 End Sub
 
-Private Function PendientePasarTPV(Sql As String, Tipo As Byte) As Boolean
+Private Function PendientePasarTPV(SQL As String, Tipo As Byte) As Boolean
 'Dim sql As String
 Dim cadMen As String
 
@@ -892,12 +910,12 @@ Dim cadMen As String
 '          " scaalb.codsocio = ssocio.codsocio and ssocio.codcoope = scoope.codcoope "
     
     If Tipo <> 2 Then
-        Sql = Sql & " and scoope.tipfactu = " & DBSet(Tipo, "N")
+        SQL = SQL & " and scoope.tipfactu = " & DBSet(Tipo, "N")
     Else 'VRS:2.0.2(1) añadida nueva opción
-        Sql = Sql & " and (scoope.tipfactu = 0 or scoope.tipfactu = 1)"
+        SQL = SQL & " and (scoope.tipfactu = 0 or scoope.tipfactu = 1)"
     End If
     
-    If (RegistrosAListar(Sql) <> 0) Then
+    If (RegistrosAListar(SQL) <> 0) Then
         cadMen = "Hay registros pendientes de Traspaso a TPV." & vbCrLf & vbCrLf & _
                  "Debe realizar este proceso previamente." & vbCrLf & vbCrLf
         MsgBox cadMen, vbExclamation
@@ -906,15 +924,15 @@ Dim cadMen As String
 End Function
 
 Private Function PendienteCierresTurno(DesFec As String, HasFec As String) As Boolean
-Dim Sql As String
+Dim SQL As String
 Dim cadMen As String
 
     PendienteCierresTurno = False
-    Sql = "select count(*) from srecau where intconta = 0 "
-    If DesFec <> "" Then Sql = Sql & " and fechatur >= " & DBSet(CDate(DesFec), "F") & " "
-    If HasFec <> "" Then Sql = Sql & " and fechatur <= " & DBSet(CDate(HasFec), "F") & " "
+    SQL = "select count(*) from srecau where intconta = 0 "
+    If DesFec <> "" Then SQL = SQL & " and fechatur >= " & DBSet(CDate(DesFec), "F") & " "
+    If HasFec <> "" Then SQL = SQL & " and fechatur <= " & DBSet(CDate(HasFec), "F") & " "
 
-    If (RegistrosAListar(Sql) <> 0) Then
+    If (RegistrosAListar(SQL) <> 0) Then
         cadMen = "Quedan cierres de Turno por contabilizar. Revise." & vbCrLf & vbCrLf
         MsgBox cadMen, vbExclamation
         PendienteCierresTurno = True
@@ -922,9 +940,9 @@ Dim cadMen As String
     
 End Function
 
-Private Function DatosOK() As Boolean
+Private Function DatosOk() As Boolean
 Dim b As Boolean
-Dim Sql As String
+Dim SQL As String
 Dim Mens As String
 Dim numser As String
 Dim numfactu As String
@@ -942,23 +960,34 @@ Dim numfactu As String
             b = False
             PonerFoco txtCodigo(6)
         Else
-            'VRS:2.0.1(0)
-            If Not FechaSuperiorUltimaLiquidacion(CDate(txtCodigo(6).Text)) Then
-                Mens = "  La Fecha de Facturación es inferior a la última liquidación de Iva. " & vbCrLf & vbCrLf
-                ' unicamente si el usuario es root el proceso continuará
-                If vSesion.Nivel > 0 Then
-                    Mens = Mens & "  El proceso no continuará."
-                    MsgBox Mens, vbExclamation
-                    b = False
-                    PonerFoco txtCodigo(6)
-                Else
-                    Mens = Mens & "                        ¿ Desea continuar ?    " & vbCrLf
-                    If MsgBox(Mens, vbQuestion + vbYesNo + vbDefaultButton2) = vbNo Then
+            '[Monica]20/06/2017: control de fechas que antes no estaba
+            ResultadoFechaContaOK = EsFechaOKConta(CDate(txtCodigo(6)))
+            If ResultadoFechaContaOK > 0 Then
+                If ResultadoFechaContaOK <> 4 Then MsgBox MensajeFechaOkConta, vbExclamation
+                b = False
+                PonerFoco txtCodigo(6)
+            Else
+                'VRS:2.0.1(0)
+                If Not FechaSuperiorUltimaLiquidacion(CDate(txtCodigo(6).Text)) Then
+                    Mens = "  La Fecha de Facturación es inferior a la última liquidación de Iva. " & vbCrLf & vbCrLf
+                    ' unicamente si el usuario es root el proceso continuará
+                    If vSesion.Nivel > 0 Then
+                        Mens = Mens & "  El proceso no continuará."
+                        MsgBox Mens, vbExclamation
                         b = False
                         PonerFoco txtCodigo(6)
+                    Else
+                        Mens = Mens & "                        ¿ Desea continuar ?    " & vbCrLf
+                        If MsgBox(Mens, vbQuestion + vbYesNo + vbDefaultButton2) = vbNo Then
+                            b = False
+                            PonerFoco txtCodigo(6)
+                        End If
                     End If
                 End If
             End If
+            '
+            
+            
             ' la fecha de factura no debe ser inferior a la ultima factura de la serie
             numser = "letraser"
             numfactu = ""
@@ -986,9 +1015,9 @@ Dim numfactu As String
         PonerFocoBtn cmdCancel
     Else
         'comprobamos que el articulo de descuento existe
-        Sql = ""
-        Sql = DevuelveDesdeBD("nomartic", "sartic", "codartic", vParamAplic.ArticDto, "N")
-        If Sql = "" Then
+        SQL = ""
+        SQL = DevuelveDesdeBD("nomartic", "sartic", "codartic", vParamAplic.ArticDto, "N")
+        If SQL = "" Then
             MsgBox "El artículo descuento de la tabla de parámetros no existe. Revise.", vbExclamation
             b = False
             PonerFocoBtn cmdCancel
@@ -1000,15 +1029,15 @@ Dim numfactu As String
         b = False
         PonerFocoBtn cmdCancel
     Else
-        Sql = ""
-        Sql = DevuelveDesdeBD("tipfactu", "scoope", "codcoope", txtCodigo(4).Text, "N")
-        If CCur(Sql) <> 2 Then
+        SQL = ""
+        SQL = DevuelveDesdeBD("tipfactu", "scoope", "codcoope", txtCodigo(4).Text, "N")
+        If CCur(SQL) <> 2 Then
             MsgBox "El colectivo a facturar tiene que ser de facturación ajena", vbExclamation
             b = False
             PonerFocoBtn cmdCancel
         End If
     End If
-    DatosOK = b
+    DatosOk = b
 End Function
 
 

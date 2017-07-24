@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.2#0"; "MSCOMCTL.OCX"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Begin VB.Form frmTrasTpv 
    BorderStyle     =   3  'Fixed Dialog
@@ -171,8 +171,8 @@ End Sub
 Private Sub cmdAceptar_Click()
 Dim cDesde As String, cHasta As String 'cadena codigo Desde/Hasta
 Dim nDesde As String, nHasta As String 'cadena Descripcion Desde/Hasta
-Dim cadTABLA As String, cOrden As String
-Dim i As Byte
+Dim cadTabla As String, cOrden As String
+Dim I As Byte
     
     'D/H Fecha factura
     cDesde = Trim(txtCodigo(2).Text)
@@ -310,7 +310,7 @@ Private Sub KEYFecha(KeyAscii As Integer, indice As Integer)
 End Sub
 
 Private Sub txtCodigo_LostFocus(Index As Integer)
-Dim cad As String, cadTipo As String 'tipo cliente
+Dim Cad As String, cadTipo As String 'tipo cliente
 
     'Quitar espacios en blanco por los lados
     txtCodigo(Index).Text = Trim(txtCodigo(Index).Text)
@@ -333,9 +333,9 @@ Private Sub FrameCobrosVisible(visible As Boolean, ByRef h As Integer, ByRef w A
 End Sub
 
 Private Function TraspasoTPV(desde As String, hasta As String) As Boolean
-    Dim sql As String
+    Dim SQL As String
     Dim SqlWhere As String
-    Dim RS As ADODB.Recordset
+    Dim Rs As ADODB.Recordset
     Dim importel As Currency
     Dim impbase As Currency
     
@@ -347,19 +347,19 @@ Private Function TraspasoTPV(desde As String, hasta As String) As Boolean
     
     TraspasoTPV = False
     MensError = ""
-    sql = "SELECT count(*) from scaalb " & _
+    SQL = "SELECT count(*) from scaalb " & _
             " where fecalbar >= " & DBSet(desde, "F") & _
             " and fecalbar <= " & DBSet(hasta, "F") & _
             " and numfactu <> 0 "
     
-    TotalReg = TotalRegistros(sql)
+    TotalReg = TotalRegistros(SQL)
     
     If TotalReg = 0 Then
         MsgBox "No existen valores entre estos límites. Reintroduzca.", vbExclamation
     Else
         Pb1.visible = True
         Pb1.Max = TotalReg
-        sql = "SELECT scaalb.*, sartic.codigiva, sartic.impuesto from scaalb, sartic " & _
+        SQL = "SELECT scaalb.*, sartic.codigiva, sartic.impuesto from scaalb, sartic " & _
                 " where fecalbar >= " & DBSet(txtCodigo(2), "F") & _
                 " and fecalbar <= " & DBSet(txtCodigo(3), "F") & _
                 " and numfactu <> 0 and scaalb.codartic=sartic.codartic" & _
@@ -369,7 +369,7 @@ Private Function TraspasoTPV(desde As String, hasta As String) As Boolean
         db.abrir vSesion.CadenaConexion, "root", "aritel"
         db.Tipo = "MYSQL"
                 
-        If TraspasoHistoricoFacturas(db, sql, txtCodigo(2).Text, txtCodigo(3).Text, Pb1) Then TraspasoTPV = True
+        If TraspasoHistoricoFacturas(db, SQL, txtCodigo(2).Text, txtCodigo(3).Text, Pb1) Then TraspasoTPV = True
         
         Set db = Nothing
     End If

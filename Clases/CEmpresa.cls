@@ -68,7 +68,10 @@ Private mvarNumDiarioInt  As Byte 'numero de diario
 
 Private mvarNorma19_34Nueva As Byte
 
-
+'[Monica]15/06/2017: SII
+Private mvarTieneSII As Boolean
+Private mvarSIIFechaInicio As Date
+Private mvarSIIDiasAviso As Byte
 
 
 '------------------------------------------------
@@ -326,6 +329,24 @@ Public Property Get HayNorma19_34Nueva() As Byte
 End Property
 
 
+'[Monica]15/06/2017: fecha de inicio y dias de aviso del sii
+Public Property Get TieneSII() As Boolean
+     TieneSII = mvarTieneSII
+End Property
+
+
+Public Property Get SIIDiasAviso() As Byte
+     SIIDiasAviso = mvarSIIDiasAviso
+End Property
+
+
+Public Property Get SIIFechaInicio() As Date
+     SIIFechaInicio = mvarSIIFechaInicio
+End Property
+
+
+
+
 '------------------------------------------------
 'FUNCIONES del modulo Cempresa
 '------------------------------------------------
@@ -395,7 +416,7 @@ Dim SQL As String
         mvarCodempre = Rs!codEmpre
         mvarNomempre = Rs!nomEmpre
         mvarDomempre = Rs!domempre
-        mvarCodpobla = Rs!codPosta
+        mvarCodpobla = Rs!CodPosta
         mvarPobempre = Rs!pobempre
         mvarProempre = Rs!proempre
         mvarCifempre = Rs!nifempre
@@ -470,6 +491,8 @@ Dim SQL As String
         mvarNorma19_34Nueva = TieneNorma19_34Nueva
        
 
+        '[Monica]15/06/2017: miramos si tiene el sii
+        mvarTieneSII = LeerSII
 
 
         LeerNiveles = True
@@ -487,6 +510,39 @@ ELeerNiv:
     Set Rs = Nothing
     LeerNiveles = False
 End Function
+
+
+Private Function LeerSII() As Boolean
+Dim SQL As String
+Dim Rs As ADODB.Recordset
+
+    On Error Resume Next
+
+    SQL = "select SIIFechaInicio, SIIDiasAviso from parametros "
+    
+    Set Rs = New ADODB.Recordset
+    Rs.Open SQL, ConnConta, adOpenForwardOnly, adLockPessimistic, adCmdText
+    
+    LeerSII = True
+    If Not Rs.EOF Then
+        If Not IsNull(Rs!SIIFechaInicio) Then
+            mvarSIIFechaInicio = CDate(Rs!SIIFechaInicio)
+        Else
+            mvarSIIFechaInicio = Rs!SIIFechaInicio
+        End If
+        mvarSIIDiasAviso = DBLet(Rs!SIIDiasAviso, "N")
+    End If
+    Rs.Close
+    Set Rs = Nothing
+
+    If Err.Number <> 0 Then
+        LeerSII = False
+        Err.Clear
+    End If
+End Function
+
+
+
 
 Private Function TieneNorma19_34Nueva() As Byte
 Dim SQL As String
@@ -512,31 +568,31 @@ End Function
 
 
 Private Sub FijaLongitudMaxima()
-Dim i As Byte
+Dim I As Byte
 
     Select Case mvarNumnivel
         Case 1
-                i = mvarNumdigi1
+                I = mvarNumdigi1
         Case 2
-                i = mvarNumdigi2
+                I = mvarNumdigi2
         Case 3
-                i = mvarNumdigi3
+                I = mvarNumdigi3
         Case 4
-                i = mvarNumdigi4
+                I = mvarNumdigi4
         Case 5
-                i = mvarNumdigi5
+                I = mvarNumdigi5
         Case 6
-                i = mvarNumdigi6
+                I = mvarNumdigi6
         Case 7
-                i = mvarNumdigi7
+                I = mvarNumdigi7
         Case 8
-                i = mvarNumdigi8
+                I = mvarNumdigi8
         Case 9
-                i = mvarNumdigi9
+                I = mvarNumdigi9
         Case 10
-                i = mvarNumdigi10
+                I = mvarNumdigi10
     End Select
-    mvarDigitosUltimoNivel = i
+    mvarDigitosUltimoNivel = I
 End Sub
 
 
