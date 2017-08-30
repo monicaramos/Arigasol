@@ -25,15 +25,35 @@ Begin VB.Form frmEstCliimp
    Begin VB.Frame FrameCobros 
       Height          =   6015
       Left            =   120
-      TabIndex        =   10
+      TabIndex        =   12
       Top             =   120
       Width           =   6915
+      Begin VB.TextBox txtCodigo 
+         Alignment       =   1  'Right Justify
+         Height          =   285
+         Index           =   8
+         Left            =   1845
+         MaxLength       =   3
+         TabIndex        =   3
+         Top             =   1935
+         Width           =   830
+      End
+      Begin VB.TextBox txtCodigo 
+         Alignment       =   1  'Right Justify
+         Height          =   285
+         Index           =   7
+         Left            =   1845
+         MaxLength       =   3
+         TabIndex        =   2
+         Top             =   1560
+         Width           =   830
+      End
       Begin VB.Frame Frame1 
          BorderStyle     =   0  'None
          ForeColor       =   &H00972E0B&
          Height          =   945
          Left            =   3390
-         TabIndex        =   26
+         TabIndex        =   28
          Top             =   4050
          Width           =   2835
          Begin VB.TextBox txtCodigo 
@@ -42,7 +62,7 @@ Begin VB.Form frmEstCliimp
             Index           =   6
             Left            =   600
             MaxLength       =   15
-            TabIndex        =   7
+            TabIndex        =   9
             Top             =   420
             Width           =   1875
          End
@@ -52,7 +72,7 @@ Begin VB.Form frmEstCliimp
             Height          =   195
             Index           =   3
             Left            =   120
-            TabIndex        =   27
+            TabIndex        =   29
             Top             =   60
             Width           =   1995
          End
@@ -64,9 +84,9 @@ Begin VB.Form frmEstCliimp
          Index           =   5
          Left            =   2745
          Locked          =   -1  'True
-         TabIndex        =   21
+         TabIndex        =   23
          Text            =   "Text5"
-         Top             =   3375
+         Top             =   3735
          Width           =   3135
       End
       Begin VB.TextBox txtNombre 
@@ -76,9 +96,9 @@ Begin VB.Form frmEstCliimp
          Index           =   4
          Left            =   2745
          Locked          =   -1  'True
-         TabIndex        =   20
+         TabIndex        =   22
          Text            =   "Text5"
-         Top             =   3000
+         Top             =   3360
          Width           =   3135
       End
       Begin VB.TextBox txtCodigo 
@@ -87,8 +107,8 @@ Begin VB.Form frmEstCliimp
          Index           =   5
          Left            =   1845
          MaxLength       =   6
-         TabIndex        =   5
-         Top             =   3360
+         TabIndex        =   7
+         Top             =   3720
          Width           =   830
       End
       Begin VB.TextBox txtCodigo 
@@ -97,8 +117,8 @@ Begin VB.Form frmEstCliimp
          Index           =   4
          Left            =   1845
          MaxLength       =   6
-         TabIndex        =   4
-         Top             =   3000
+         TabIndex        =   6
+         Top             =   3360
          Width           =   830
       End
       Begin VB.TextBox txtCodigo 
@@ -107,9 +127,9 @@ Begin VB.Form frmEstCliimp
          Index           =   3
          Left            =   1845
          MaxLength       =   10
-         TabIndex        =   3
+         TabIndex        =   5
          Tag             =   "Código Postal|T|S|||clientes|codposta|||"
-         Top             =   2280
+         Top             =   2880
          Width           =   1050
       End
       Begin VB.TextBox txtCodigo 
@@ -118,16 +138,16 @@ Begin VB.Form frmEstCliimp
          Index           =   2
          Left            =   1845
          MaxLength       =   10
-         TabIndex        =   2
+         TabIndex        =   4
          Tag             =   "Código Postal|T|S|||clientes|codposta|||"
-         Top             =   1920
+         Top             =   2520
          Width           =   1050
       End
       Begin VB.CommandButton cmdCancel 
          Caption         =   "&Cancelar"
          Height          =   375
          Left            =   4905
-         TabIndex        =   9
+         TabIndex        =   11
          Top             =   5400
          Width           =   975
       End
@@ -135,7 +155,7 @@ Begin VB.Form frmEstCliimp
          Caption         =   "&Aceptar"
          Height          =   375
          Left            =   3720
-         TabIndex        =   8
+         TabIndex        =   10
          Top             =   5400
          Width           =   975
       End
@@ -146,7 +166,7 @@ Begin VB.Form frmEstCliimp
          Left            =   1845
          MaxLength       =   6
          TabIndex        =   0
-         Top             =   840
+         Top             =   720
          Width           =   830
       End
       Begin VB.TextBox txtCodigo 
@@ -156,7 +176,7 @@ Begin VB.Form frmEstCliimp
          Left            =   1845
          MaxLength       =   6
          TabIndex        =   1
-         Top             =   1215
+         Top             =   1095
          Width           =   830
       End
       Begin VB.TextBox txtNombre 
@@ -166,9 +186,9 @@ Begin VB.Form frmEstCliimp
          Index           =   0
          Left            =   2745
          Locked          =   -1  'True
-         TabIndex        =   13
+         TabIndex        =   15
          Text            =   "Text5"
-         Top             =   840
+         Top             =   720
          Width           =   3135
       End
       Begin VB.TextBox txtNombre 
@@ -178,9 +198,9 @@ Begin VB.Form frmEstCliimp
          Index           =   1
          Left            =   2745
          Locked          =   -1  'True
-         TabIndex        =   12
+         TabIndex        =   14
          Text            =   "Text5"
-         Top             =   1215
+         Top             =   1095
          Width           =   3135
       End
       Begin VB.Frame Frame4 
@@ -188,7 +208,7 @@ Begin VB.Form frmEstCliimp
          ForeColor       =   &H00972E0B&
          Height          =   1000
          Left            =   600
-         TabIndex        =   11
+         TabIndex        =   13
          Top             =   4080
          Width           =   2235
          Begin VB.OptionButton Option1 
@@ -196,7 +216,7 @@ Begin VB.Form frmEstCliimp
             Height          =   255
             Index           =   1
             Left            =   240
-            TabIndex        =   25
+            TabIndex        =   27
             Top             =   600
             Width           =   1815
          End
@@ -205,11 +225,49 @@ Begin VB.Form frmEstCliimp
             Height          =   255
             Index           =   0
             Left            =   240
-            TabIndex        =   6
+            TabIndex        =   8
             Top             =   240
             Value           =   -1  'True
             Width           =   1815
          End
+      End
+      Begin VB.Label Label4 
+         AutoSize        =   -1  'True
+         Caption         =   "Serie"
+         BeginProperty Font 
+            Name            =   "Tahoma"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         ForeColor       =   &H00972E0B&
+         Height          =   195
+         Index           =   6
+         Left            =   600
+         TabIndex        =   32
+         Top             =   1320
+         Width           =   360
+      End
+      Begin VB.Label Label4 
+         Caption         =   "Hasta"
+         Height          =   195
+         Index           =   5
+         Left            =   960
+         TabIndex        =   31
+         Top             =   1935
+         Width           =   420
+      End
+      Begin VB.Label Label4 
+         Caption         =   "Desde"
+         Height          =   195
+         Index           =   4
+         Left            =   960
+         TabIndex        =   30
+         Top             =   1560
+         Width           =   465
       End
       Begin VB.Image imgBuscar 
          Height          =   240
@@ -218,7 +276,7 @@ Begin VB.Form frmEstCliimp
          MouseIcon       =   "frmEstCliimp.frx":000C
          MousePointer    =   4  'Icon
          ToolTipText     =   "Buscar colectivo"
-         Top             =   3375
+         Top             =   3735
          Width           =   240
       End
       Begin VB.Image imgBuscar 
@@ -228,7 +286,7 @@ Begin VB.Form frmEstCliimp
          MouseIcon       =   "frmEstCliimp.frx":015E
          MousePointer    =   4  'Icon
          ToolTipText     =   "Buscar colectivo"
-         Top             =   3000
+         Top             =   3360
          Width           =   240
       End
       Begin VB.Label Label4 
@@ -247,8 +305,8 @@ Begin VB.Form frmEstCliimp
          Height          =   195
          Index           =   2
          Left            =   600
-         TabIndex        =   24
-         Top             =   2760
+         TabIndex        =   26
+         Top             =   3120
          Width           =   660
       End
       Begin VB.Label Label4 
@@ -256,8 +314,8 @@ Begin VB.Form frmEstCliimp
          Height          =   195
          Index           =   1
          Left            =   960
-         TabIndex        =   23
-         Top             =   3375
+         TabIndex        =   25
+         Top             =   3735
          Width           =   420
       End
       Begin VB.Label Label4 
@@ -265,8 +323,8 @@ Begin VB.Form frmEstCliimp
          Height          =   195
          Index           =   0
          Left            =   960
-         TabIndex        =   22
-         Top             =   3000
+         TabIndex        =   24
+         Top             =   3360
          Width           =   465
       End
       Begin VB.Label Label4 
@@ -275,8 +333,8 @@ Begin VB.Form frmEstCliimp
          Height          =   255
          Index           =   16
          Left            =   600
-         TabIndex        =   19
-         Top             =   1680
+         TabIndex        =   21
+         Top             =   2280
          Width           =   1815
       End
       Begin VB.Label Label4 
@@ -284,8 +342,8 @@ Begin VB.Form frmEstCliimp
          Height          =   195
          Index           =   15
          Left            =   960
-         TabIndex        =   18
-         Top             =   1920
+         TabIndex        =   20
+         Top             =   2520
          Width           =   465
       End
       Begin VB.Label Label4 
@@ -293,8 +351,8 @@ Begin VB.Form frmEstCliimp
          Height          =   195
          Index           =   14
          Left            =   960
-         TabIndex        =   17
-         Top             =   2280
+         TabIndex        =   19
+         Top             =   2880
          Width           =   420
       End
       Begin VB.Image imgFec 
@@ -303,7 +361,7 @@ Begin VB.Form frmEstCliimp
          Left            =   1530
          Picture         =   "frmEstCliimp.frx":02B0
          ToolTipText     =   "Buscar fecha"
-         Top             =   1920
+         Top             =   2520
          Width           =   240
       End
       Begin VB.Image imgFec 
@@ -312,7 +370,7 @@ Begin VB.Form frmEstCliimp
          Left            =   1530
          Picture         =   "frmEstCliimp.frx":033B
          ToolTipText     =   "Buscar fecha"
-         Top             =   2280
+         Top             =   2880
          Width           =   240
       End
       Begin VB.Label Label4 
@@ -320,8 +378,8 @@ Begin VB.Form frmEstCliimp
          Height          =   195
          Index           =   13
          Left            =   960
-         TabIndex        =   16
-         Top             =   840
+         TabIndex        =   18
+         Top             =   720
          Width           =   465
       End
       Begin VB.Label Label4 
@@ -329,8 +387,8 @@ Begin VB.Form frmEstCliimp
          Height          =   195
          Index           =   12
          Left            =   960
-         TabIndex        =   15
-         Top             =   1215
+         TabIndex        =   17
+         Top             =   1095
          Width           =   420
       End
       Begin VB.Label Label4 
@@ -349,8 +407,8 @@ Begin VB.Form frmEstCliimp
          Height          =   195
          Index           =   11
          Left            =   600
-         TabIndex        =   14
-         Top             =   600
+         TabIndex        =   16
+         Top             =   480
          Width           =   495
       End
       Begin VB.Image imgBuscar 
@@ -360,7 +418,7 @@ Begin VB.Form frmEstCliimp
          MouseIcon       =   "frmEstCliimp.frx":03C6
          MousePointer    =   4  'Icon
          ToolTipText     =   "Buscar cliente"
-         Top             =   840
+         Top             =   720
          Width           =   240
       End
       Begin VB.Image imgBuscar 
@@ -370,7 +428,7 @@ Begin VB.Form frmEstCliimp
          MouseIcon       =   "frmEstCliimp.frx":0518
          MousePointer    =   4  'Icon
          ToolTipText     =   "Buscar cliente"
-         Top             =   1215
+         Top             =   1095
          Width           =   240
       End
    End
@@ -417,7 +475,7 @@ Dim indCodigo As Integer 'indice para txtCodigo
 Dim indFrame As Single 'nº de frame en el que estamos
  
 'Se inicializan para cada Informe (tabla de BD a la que hace referencia
-Dim Tabla As String
+Dim tabla As String
 Dim Codigo As String 'Código para FormulaSelection de Crystal Report
 Dim TipCod As String
 Dim Orden1 As String 'Campo de Ordenacion (por codigo) para Cristal Report
@@ -442,7 +500,7 @@ End Sub
 Private Sub cmdAceptar_Click()
 Dim cDesde As String, cHasta As String 'cadena codigo Desde/Hasta
 Dim nDesde As String, nHasta As String 'cadena Descripcion Desde/Hasta
-Dim cadTABLA As String, cOrden As String
+Dim cadTabla As String, cOrden As String
 Dim I As Byte
 InicializarVbles
     
@@ -465,17 +523,30 @@ InicializarVbles
     nHasta = txtNombre(1).Text
     If Not (cDesde = "" And cHasta = "") Then
         'Cadena para seleccion Desde y Hasta
-        Codigo = "{" & Tabla & ".codsocio}"
+        Codigo = "{" & tabla & ".codsocio}"
         TipCod = "N"
         If Not PonerDesdeHasta(cDesde, cHasta, nDesde, nHasta, "pDHcliente= """) Then Exit Sub
     End If
+    
+    
+    'D/H Serie
+    cDesde = Trim(txtCodigo(7).Text)
+    cHasta = Trim(txtCodigo(8).Text)
+    If Not (cDesde = "" And cHasta = "") Then
+        'Cadena para seleccion Desde y Hasta
+        Codigo = "{" & tabla & ".letraser}"
+        TipCod = "T"
+        If Not PonerDesdeHasta(cDesde, cHasta, "", "", "pDHserieFac= """) Then Exit Sub
+    End If
+    
+    
     
     'D/H Fecha factura
     cDesde = Trim(txtCodigo(2).Text)
     cHasta = Trim(txtCodigo(3).Text)
     If Not (cDesde = "" And cHasta = "") Then
         'Cadena para seleccion Desde y Hasta
-        Codigo = "{" & Tabla & ".fecfactu}"
+        Codigo = "{" & tabla & ".fecfactu}"
         TipCod = "F"
         If Not PonerDesdeHasta(cDesde, cHasta, "", "", "pDHfechaFac= """) Then Exit Sub
     End If
@@ -512,31 +583,48 @@ InicializarVbles
     
     
     'Comprobar si hay registros a Mostrar antes de abrir el Informe
-    cadTABLA = Tabla & " INNER JOIN ssocio ON " & Tabla & ".codsocio=ssocio.codsocio "
+    cadTabla = tabla & " INNER JOIN ssocio ON " & tabla & ".codsocio=ssocio.codsocio "
     
+    
+    Dim indRPT As Byte 'Indica el tipo de Documento en la tabla "scryst"
+    Dim nomDocu As String 'Nombre de Informe rpt de crystal
+     
+    indRPT = 8 'Estadistica por cliente
+     
+    If Not PonerParamRPT(indRPT, cadParam, numParam, nomDocu) Then Exit Sub
+    
+    ' he añadido estas dos lineas para que llame al rpt correspondiente
+    frmImprimir.NombreRPT = nomDocu
+    cadNombreRPT = nomDocu  ' "rEstCliimp.rpt"
     
     If Option1(0) = True Then
-        If HayRegParaInforme(cadTABLA, cadSelect) Then
+        If HayRegParaInforme(cadTabla, cadSelect) Then
+            
+           '[Monica]29/08/2017: en el caso de pobla del duc, sacamos los litros
+           If vParamAplic.Cooperativa = 4 Then
+                CargarTemporal cadTabla, cadSelect
+           End If
+           
            If Option1(0) = True Then
               cadTitulo = "Detalle Ventas por Cliente"
               '[Monica]28/02/2014
               If NumCod = 0 Then
-                    cadNombreRPT = "rEstCliimp.rpt"
+                    cadNombreRPT = cadNombreRPT '"EstCliimp.rpt"
               Else
-                    cadNombreRPT = "rEstCliAjena.rpt"
+                    cadNombreRPT = Replace(cadNombreRPT, "EstCliimp.rpt", "EstCliAjena.rpt") '"rEstCliAjena.rpt"
               End If
               LlamarImprimir
               'AbrirVisReport
            End If
         End If
     Else
-        If HayRegistros(cadTABLA, cadSelect) Then
-            If CargarTablaIntermedia(cadTABLA, cadSelect) Then
+        If HayRegistros(cadTabla, cadSelect) Then
+            If CargarTablaIntermedia(cadTabla, cadSelect) Then
                 cadTitulo = "Resumen Ventas por Cliente/Trimestre"
                 If NumCod = 0 Then
-                    cadNombreRPT = "rEstCliimp1.rpt"
+                    cadNombreRPT = Replace(cadNombreRPT, ".rpt", "1.rpt") '"rEstCliimp1.rpt"
                 Else
-                    cadNombreRPT = "rEstCliAjena1.rpt"
+                    cadNombreRPT = Replace(cadNombreRPT, "EstCliimp.rpt", "EstCliAjena1.rpt") '"rEstCliAjena1.rpt"
                 End If
                 cadParam = cadParam & "Importe= " & DBSet(txtCodigo(6).Text, "N") & "|"
                 numParam = numParam + 1
@@ -546,6 +634,25 @@ InicializarVbles
         End If
     End If
 End Sub
+
+Private Function CargarTemporal(cadTabla, cadSelect)
+Dim Sql As String
+
+    Sql = "delete from tmpinformes where codusu = " & vSesion.Codigo
+    Conn.Execute Sql
+    
+    Sql = "Insert into tmpinformes (codusu,codigo1,fecha1,nombre1,importe1) "
+    Sql = Sql & " select " & vSesion.Codigo & ", schfac.numfactu, schfac.fecfactu, schfac.letraser, sum(coalesce(slhfac.cantidad,0)) "
+    Sql = Sql & " from (" & cadTabla & ") inner join slhfac on schfac.letraser = slhfac.letraser and schfac.numfactu = slhfac.numfactu and schfac.fecfactu = slhfac.fecfactu "
+    Sql = Sql & " where (1=1) "
+    If cadSelect <> "" Then Sql = Sql & " and " & cadSelect
+    Sql = Sql & " group by 1,2,3,4 order by 1,2,3,4 "
+    
+    
+    Conn.Execute Sql
+    
+End Function
+
 
 Private Sub cmdCancel_Click()
     Unload Me
@@ -574,9 +681,9 @@ End Sub
 
 
 
-Private Function CargarTablaIntermedia(Tabla As String, vSelect As String) As Boolean
+Private Function CargarTablaIntermedia(tabla As String, vSelect As String) As Boolean
 Dim Sql As String
-Dim Sql2 As String
+Dim sql2 As String
 Dim SqlAux As String
 Dim Rs As ADODB.Recordset
 Dim Rs2 As ADODB.Recordset
@@ -599,7 +706,7 @@ Dim sTabla As String
     End If
     
     
-    SqlAux = "select " & sTabla & ".codsocio, sum(totalfac) from " & Tabla & " where (1=1) "
+    SqlAux = "select " & sTabla & ".codsocio, sum(totalfac) from " & tabla & " where (1=1) "
     If vSelect <> "" Then SqlAux = SqlAux & " and  " & vSelect
     SqlAux = SqlAux & " group by 1 "
     
@@ -616,81 +723,81 @@ Dim sTabla As String
     
     While Not Rs.EOF
         ' periodo 1
-        Sql2 = "select " & sTabla & ".codsocio, sum(coalesce(baseimp1,0)+ coalesce(baseimp2,0)+ coalesce(baseimp3,0)) base,    "
-        Sql2 = Sql2 & " sum(coalesce(impoiva1,0)+ coalesce(impoiva2,0)+ coalesce(impoiva3,0)) iva, sum(totalfac) total, "
-        Sql2 = Sql2 & " count(*) nfactu "
-        Sql2 = Sql2 & " from " & Tabla
-        Sql2 = Sql2 & " where " & sTabla & ".codsocio = " & DBSet(Rs!codsocio, "N")
-        If vSelect <> "" Then Sql2 = Sql2 & " and  " & vSelect
-        Sql2 = Sql2 & " and " & sTabla & ".fecfactu " & Periodo1
-        Sql2 = Sql2 & " group by 1"
+        sql2 = "select " & sTabla & ".codsocio, sum(coalesce(baseimp1,0)+ coalesce(baseimp2,0)+ coalesce(baseimp3,0)) base,    "
+        sql2 = sql2 & " sum(coalesce(impoiva1,0)+ coalesce(impoiva2,0)+ coalesce(impoiva3,0)) iva, sum(totalfac) total, "
+        sql2 = sql2 & " count(*) nfactu "
+        sql2 = sql2 & " from " & tabla
+        sql2 = sql2 & " where " & sTabla & ".codsocio = " & DBSet(Rs!codsocio, "N")
+        If vSelect <> "" Then sql2 = sql2 & " and  " & vSelect
+        sql2 = sql2 & " and " & sTabla & ".fecfactu " & Periodo1
+        sql2 = sql2 & " group by 1"
         
         Set Rs2 = New ADODB.Recordset
-        Rs2.Open Sql2, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+        Rs2.Open sql2, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
         
         If Not Rs2.EOF Then
             CadValues = CadValues & "(" & vSesion.Codigo & "," & DBSet(Rs!codsocio, "N") & ",1," & DBSet(Rs2!base, "N") & ","
-            CadValues = CadValues & DBSet(Rs2!iva, "N") & "," & DBSet(Rs2!Total, "N") & "," & DBSet(Rs2!nfactu, "N") & "),"
+            CadValues = CadValues & DBSet(Rs2!iva, "N") & "," & DBSet(Rs2!total, "N") & "," & DBSet(Rs2!nfactu, "N") & "),"
         End If
         
         Set Rs2 = Nothing
     
         ' periodo 2
-        Sql2 = "select " & sTabla & ".codsocio, sum(coalesce(baseimp1,0)+ coalesce(baseimp2,0)+ coalesce(baseimp3,0)) base,    "
-        Sql2 = Sql2 & " sum(coalesce(impoiva1,0)+ coalesce(impoiva2,0)+ coalesce(impoiva3,0)) iva, sum(totalfac) total, "
-        Sql2 = Sql2 & " count(*) nfactu "
-        Sql2 = Sql2 & " from " & Tabla
-        Sql2 = Sql2 & " where " & sTabla & ".codsocio = " & DBSet(Rs!codsocio, "N")
-        If vSelect <> "" Then Sql2 = Sql2 & " and  " & vSelect
-        Sql2 = Sql2 & " and " & sTabla & ".fecfactu " & Periodo2
-        Sql2 = Sql2 & " group by 1"
+        sql2 = "select " & sTabla & ".codsocio, sum(coalesce(baseimp1,0)+ coalesce(baseimp2,0)+ coalesce(baseimp3,0)) base,    "
+        sql2 = sql2 & " sum(coalesce(impoiva1,0)+ coalesce(impoiva2,0)+ coalesce(impoiva3,0)) iva, sum(totalfac) total, "
+        sql2 = sql2 & " count(*) nfactu "
+        sql2 = sql2 & " from " & tabla
+        sql2 = sql2 & " where " & sTabla & ".codsocio = " & DBSet(Rs!codsocio, "N")
+        If vSelect <> "" Then sql2 = sql2 & " and  " & vSelect
+        sql2 = sql2 & " and " & sTabla & ".fecfactu " & Periodo2
+        sql2 = sql2 & " group by 1"
         
         Set Rs2 = New ADODB.Recordset
-        Rs2.Open Sql2, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+        Rs2.Open sql2, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
         
         If Not Rs2.EOF Then
             CadValues = CadValues & "(" & vSesion.Codigo & "," & DBSet(Rs!codsocio, "N") & ",2," & DBSet(Rs2!base, "N") & ","
-            CadValues = CadValues & DBSet(Rs2!iva, "N") & "," & DBSet(Rs2!Total, "N") & "," & DBSet(Rs2!nfactu, "N") & "),"
+            CadValues = CadValues & DBSet(Rs2!iva, "N") & "," & DBSet(Rs2!total, "N") & "," & DBSet(Rs2!nfactu, "N") & "),"
         End If
         
         Set Rs2 = Nothing
     
         ' periodo 3
-        Sql2 = "select " & sTabla & ".codsocio, sum(coalesce(baseimp1,0)+ coalesce(baseimp2,0)+ coalesce(baseimp3,0)) base,    "
-        Sql2 = Sql2 & " sum(coalesce(impoiva1,0)+ coalesce(impoiva2,0)+ coalesce(impoiva3,0)) iva, sum(totalfac) total, "
-        Sql2 = Sql2 & " count(*) nfactu "
-        Sql2 = Sql2 & " from " & Tabla
-        Sql2 = Sql2 & " where " & sTabla & ".codsocio = " & DBSet(Rs!codsocio, "N")
-        If vSelect <> "" Then Sql2 = Sql2 & " and  " & vSelect
-        Sql2 = Sql2 & " and " & sTabla & ".fecfactu " & Periodo3
-        Sql2 = Sql2 & " group by 1"
+        sql2 = "select " & sTabla & ".codsocio, sum(coalesce(baseimp1,0)+ coalesce(baseimp2,0)+ coalesce(baseimp3,0)) base,    "
+        sql2 = sql2 & " sum(coalesce(impoiva1,0)+ coalesce(impoiva2,0)+ coalesce(impoiva3,0)) iva, sum(totalfac) total, "
+        sql2 = sql2 & " count(*) nfactu "
+        sql2 = sql2 & " from " & tabla
+        sql2 = sql2 & " where " & sTabla & ".codsocio = " & DBSet(Rs!codsocio, "N")
+        If vSelect <> "" Then sql2 = sql2 & " and  " & vSelect
+        sql2 = sql2 & " and " & sTabla & ".fecfactu " & Periodo3
+        sql2 = sql2 & " group by 1"
         
         Set Rs2 = New ADODB.Recordset
-        Rs2.Open Sql2, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+        Rs2.Open sql2, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
         
         If Not Rs2.EOF Then
             CadValues = CadValues & "(" & vSesion.Codigo & "," & DBSet(Rs!codsocio, "N") & ",3," & DBSet(Rs2!base, "N") & ","
-            CadValues = CadValues & DBSet(Rs2!iva, "N") & "," & DBSet(Rs2!Total, "N") & "," & DBSet(Rs2!nfactu, "N") & "),"
+            CadValues = CadValues & DBSet(Rs2!iva, "N") & "," & DBSet(Rs2!total, "N") & "," & DBSet(Rs2!nfactu, "N") & "),"
         End If
         
         Set Rs2 = Nothing
     
         ' periodo 4
-        Sql2 = "select " & sTabla & ".codsocio, sum(coalesce(baseimp1,0)+ coalesce(baseimp2,0)+ coalesce(baseimp3,0)) base,    "
-        Sql2 = Sql2 & " sum(coalesce(impoiva1,0)+ coalesce(impoiva2,0)+ coalesce(impoiva3,0)) iva, sum(totalfac) total, "
-        Sql2 = Sql2 & " count(*) nfactu "
-        Sql2 = Sql2 & " from " & Tabla
-        Sql2 = Sql2 & " where " & sTabla & ".codsocio = " & DBSet(Rs!codsocio, "N")
-        If vSelect <> "" Then Sql2 = Sql2 & " and  " & vSelect
-        Sql2 = Sql2 & " and " & sTabla & ".fecfactu " & Periodo4
-        Sql2 = Sql2 & " group by 1"
+        sql2 = "select " & sTabla & ".codsocio, sum(coalesce(baseimp1,0)+ coalesce(baseimp2,0)+ coalesce(baseimp3,0)) base,    "
+        sql2 = sql2 & " sum(coalesce(impoiva1,0)+ coalesce(impoiva2,0)+ coalesce(impoiva3,0)) iva, sum(totalfac) total, "
+        sql2 = sql2 & " count(*) nfactu "
+        sql2 = sql2 & " from " & tabla
+        sql2 = sql2 & " where " & sTabla & ".codsocio = " & DBSet(Rs!codsocio, "N")
+        If vSelect <> "" Then sql2 = sql2 & " and  " & vSelect
+        sql2 = sql2 & " and " & sTabla & ".fecfactu " & Periodo4
+        sql2 = sql2 & " group by 1"
         
         Set Rs2 = New ADODB.Recordset
-        Rs2.Open Sql2, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+        Rs2.Open sql2, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
         
         If Not Rs2.EOF Then
             CadValues = CadValues & "(" & vSesion.Codigo & "," & DBSet(Rs!codsocio, "N") & ",4," & DBSet(Rs2!base, "N") & ","
-            CadValues = CadValues & DBSet(Rs2!iva, "N") & "," & DBSet(Rs2!Total, "N") & "," & DBSet(Rs2!nfactu, "N") & "),"
+            CadValues = CadValues & DBSet(Rs2!iva, "N") & "," & DBSet(Rs2!total, "N") & "," & DBSet(Rs2!nfactu, "N") & "),"
         End If
         
         Set Rs2 = Nothing
@@ -715,9 +822,9 @@ eCargarTablaIntermedia:
 End Function
 
 
-Private Function CargarTablaIntermediaNew(Tabla As String, vSelect As String) As Boolean
+Private Function CargarTablaIntermediaNew(tabla As String, vSelect As String) As Boolean
 Dim Sql As String
-Dim Sql2 As String
+Dim sql2 As String
 Dim SqlAux As String
 Dim Rs As ADODB.Recordset
 Dim Rs2 As ADODB.Recordset
@@ -740,7 +847,7 @@ Dim sTabla As String
         sTabla = "schfacr"
     End If
     
-    SqlAux = "select " & sTabla & ".codsocio, sum(totalfac) total , count(*) nfac from " & Tabla & " where (1=1) "
+    SqlAux = "select " & sTabla & ".codsocio, sum(totalfac) total , count(*) nfac from " & tabla & " where (1=1) "
     If vSelect <> "" Then SqlAux = SqlAux & " and  " & vSelect
     SqlAux = SqlAux & " group by 1 "
     
@@ -754,22 +861,22 @@ Dim sTabla As String
     Rs.Open SqlAux, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
     
     While Not Rs.EOF
-        CadValues = CadValues & "(" & vSesion.Codigo & "," & DBSet(Rs!codsocio, "N") & "," & DBSet(Rs!Total, "N") & "," & DBSet(Rs!nfac, "N") & ","
+        CadValues = CadValues & "(" & vSesion.Codigo & "," & DBSet(Rs!codsocio, "N") & "," & DBSet(Rs!total, "N") & "," & DBSet(Rs!nfac, "N") & ","
         ' periodo 1
-        Sql2 = "select " & sTabla & ".codsocio, "
-        Sql2 = Sql2 & " sum(totalfac) total, "
-        Sql2 = Sql2 & " count(*) nfactu "
-        Sql2 = Sql2 & " from " & Tabla
-        Sql2 = Sql2 & " where " & sTabla & ".codsocio = " & DBSet(Rs!codsocio, "N")
-        If vSelect <> "" Then Sql2 = Sql2 & " and  " & vSelect
-        Sql2 = Sql2 & " and " & sTabla & ".fecfactu " & Periodo1
-        Sql2 = Sql2 & " group by 1"
+        sql2 = "select " & sTabla & ".codsocio, "
+        sql2 = sql2 & " sum(totalfac) total, "
+        sql2 = sql2 & " count(*) nfactu "
+        sql2 = sql2 & " from " & tabla
+        sql2 = sql2 & " where " & sTabla & ".codsocio = " & DBSet(Rs!codsocio, "N")
+        If vSelect <> "" Then sql2 = sql2 & " and  " & vSelect
+        sql2 = sql2 & " and " & sTabla & ".fecfactu " & Periodo1
+        sql2 = sql2 & " group by 1"
         
         Set Rs2 = New ADODB.Recordset
-        Rs2.Open Sql2, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+        Rs2.Open sql2, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
         
         If Not Rs2.EOF Then
-            CadValues = CadValues & DBSet(Rs2!Total, "N") & "," & DBSet(Rs2!nfactu, "N") & ","
+            CadValues = CadValues & DBSet(Rs2!total, "N") & "," & DBSet(Rs2!nfactu, "N") & ","
         Else
             CadValues = CadValues & "0,0,"
         End If
@@ -777,20 +884,20 @@ Dim sTabla As String
         Set Rs2 = Nothing
     
         ' periodo 2
-        Sql2 = "select " & sTabla & ".codsocio, "
-        Sql2 = Sql2 & " sum(totalfac) total, "
-        Sql2 = Sql2 & " count(*) nfactu "
-        Sql2 = Sql2 & " from " & Tabla
-        Sql2 = Sql2 & " where " & sTabla & ".codsocio = " & DBSet(Rs!codsocio, "N")
-        If vSelect <> "" Then Sql2 = Sql2 & " and  " & vSelect
-        Sql2 = Sql2 & " and " & sTabla & ".fecfactu " & Periodo2
-        Sql2 = Sql2 & " group by 1"
+        sql2 = "select " & sTabla & ".codsocio, "
+        sql2 = sql2 & " sum(totalfac) total, "
+        sql2 = sql2 & " count(*) nfactu "
+        sql2 = sql2 & " from " & tabla
+        sql2 = sql2 & " where " & sTabla & ".codsocio = " & DBSet(Rs!codsocio, "N")
+        If vSelect <> "" Then sql2 = sql2 & " and  " & vSelect
+        sql2 = sql2 & " and " & sTabla & ".fecfactu " & Periodo2
+        sql2 = sql2 & " group by 1"
         
         Set Rs2 = New ADODB.Recordset
-        Rs2.Open Sql2, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+        Rs2.Open sql2, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
         
         If Not Rs2.EOF Then
-            CadValues = CadValues & DBSet(Rs2!Total, "N") & "," & DBSet(Rs2!nfactu, "N") & ","
+            CadValues = CadValues & DBSet(Rs2!total, "N") & "," & DBSet(Rs2!nfactu, "N") & ","
         Else
             CadValues = CadValues & "0,0,"
         End If
@@ -798,20 +905,20 @@ Dim sTabla As String
         Set Rs2 = Nothing
     
         ' periodo 3
-        Sql2 = "select " & sTabla & ".codsocio,    "
-        Sql2 = Sql2 & " sum(totalfac) total, "
-        Sql2 = Sql2 & " count(*) nfactu "
-        Sql2 = Sql2 & " from " & Tabla
-        Sql2 = Sql2 & " where " & sTabla & ".codsocio = " & DBSet(Rs!codsocio, "N")
-        If vSelect <> "" Then Sql2 = Sql2 & " and  " & vSelect
-        Sql2 = Sql2 & " and " & sTabla & ".fecfactu " & Periodo3
-        Sql2 = Sql2 & " group by 1"
+        sql2 = "select " & sTabla & ".codsocio,    "
+        sql2 = sql2 & " sum(totalfac) total, "
+        sql2 = sql2 & " count(*) nfactu "
+        sql2 = sql2 & " from " & tabla
+        sql2 = sql2 & " where " & sTabla & ".codsocio = " & DBSet(Rs!codsocio, "N")
+        If vSelect <> "" Then sql2 = sql2 & " and  " & vSelect
+        sql2 = sql2 & " and " & sTabla & ".fecfactu " & Periodo3
+        sql2 = sql2 & " group by 1"
         
         Set Rs2 = New ADODB.Recordset
-        Rs2.Open Sql2, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+        Rs2.Open sql2, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
         
         If Not Rs2.EOF Then
-            CadValues = CadValues & DBSet(Rs2!Total, "N") & "," & DBSet(Rs2!nfactu, "N") & ","
+            CadValues = CadValues & DBSet(Rs2!total, "N") & "," & DBSet(Rs2!nfactu, "N") & ","
         Else
             CadValues = CadValues & "0,0,"
         End If
@@ -819,20 +926,20 @@ Dim sTabla As String
         Set Rs2 = Nothing
     
         ' periodo 4
-        Sql2 = "select " & sTabla & ".codsocio,    "
-        Sql2 = Sql2 & "  sum(totalfac) total, "
-        Sql2 = Sql2 & " count(*) nfactu "
-        Sql2 = Sql2 & " from " & Tabla
-        Sql2 = Sql2 & " where " & sTabla & ".codsocio = " & DBSet(Rs!codsocio, "N")
-        If vSelect <> "" Then Sql2 = Sql2 & " and  " & vSelect
-        Sql2 = Sql2 & " and " & sTabla & ".fecfactu " & Periodo4
-        Sql2 = Sql2 & " group by 1"
+        sql2 = "select " & sTabla & ".codsocio,    "
+        sql2 = sql2 & "  sum(totalfac) total, "
+        sql2 = sql2 & " count(*) nfactu "
+        sql2 = sql2 & " from " & tabla
+        sql2 = sql2 & " where " & sTabla & ".codsocio = " & DBSet(Rs!codsocio, "N")
+        If vSelect <> "" Then sql2 = sql2 & " and  " & vSelect
+        sql2 = sql2 & " and " & sTabla & ".fecfactu " & Periodo4
+        sql2 = sql2 & " group by 1"
         
         Set Rs2 = New ADODB.Recordset
-        Rs2.Open Sql2, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+        Rs2.Open sql2, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
         
         If Not Rs2.EOF Then
-            CadValues = CadValues & DBSet(Rs2!Total, "N") & "," & DBSet(Rs2!nfactu, "N") & "),"
+            CadValues = CadValues & DBSet(Rs2!total, "N") & "," & DBSet(Rs2!nfactu, "N") & "),"
         Else
             CadValues = CadValues & "0,0),"
         End If
@@ -889,9 +996,9 @@ Dim List As Collection
     FrameCobrosVisible True, h, w
     indFrame = 5
     If NumCod = 0 Then
-        Tabla = "schfac"
+        tabla = "schfac"
     Else
-        Tabla = "schfacr"
+        tabla = "schfacr"
     End If
     
     Frame1.visible = False
@@ -1025,7 +1132,7 @@ Private Sub KEYFecha(KeyAscii As Integer, indice As Integer)
 End Sub
 
 Private Sub txtCodigo_LostFocus(Index As Integer)
-Dim cad As String, cadTipo As String 'tipo cliente
+Dim Cad As String, cadTipo As String 'tipo cliente
 
     'Quitar espacios en blanco por los lados
     txtCodigo(Index).Text = Trim(txtCodigo(Index).Text)
@@ -1050,6 +1157,10 @@ Dim cad As String, cadTipo As String 'tipo cliente
             
         Case 6 ' IMPORTE DESDE EN CASO DE QUE SEA RESUMEN
             If txtCodigo(Index).Text <> "" Then PonerFormatoDecimal txtCodigo(Index), 3
+                        
+        Case 7, 8 'SERIE
+              txtCodigo(Index).Text = UCase(txtCodigo(Index).Text)
+                        
                         
     End Select
 End Sub

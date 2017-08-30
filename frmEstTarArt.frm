@@ -25,17 +25,59 @@ Begin VB.Form frmEstTarArt
    Begin VB.Frame FrameCobros 
       Height          =   6255
       Left            =   120
-      TabIndex        =   11
+      TabIndex        =   13
       Top             =   120
       Width           =   6675
+      Begin VB.TextBox txtCodigo 
+         Height          =   285
+         Index           =   7
+         Left            =   1860
+         MaxLength       =   16
+         TabIndex        =   6
+         Tag             =   "Código de articulo|N|N|0|999999|sartic|codartic|000000|S|"
+         Top             =   3480
+         Width           =   1065
+      End
+      Begin VB.TextBox txtCodigo 
+         Height          =   285
+         Index           =   8
+         Left            =   1860
+         MaxLength       =   16
+         TabIndex        =   7
+         Tag             =   "Código de articulo|N|N|0|999999|sartic|codartic|000000|S|"
+         Top             =   3840
+         Width           =   1065
+      End
+      Begin VB.TextBox txtNombre 
+         BackColor       =   &H80000018&
+         Height          =   285
+         Index           =   7
+         Left            =   2985
+         Locked          =   -1  'True
+         TabIndex        =   31
+         Text            =   "Text5"
+         Top             =   3480
+         Width           =   3280
+      End
+      Begin VB.TextBox txtNombre 
+         BackColor       =   &H80000018&
+         Height          =   285
+         Index           =   8
+         Left            =   2985
+         Locked          =   -1  'True
+         TabIndex        =   30
+         Text            =   "Text5"
+         Top             =   3840
+         Width           =   3280
+      End
       Begin VB.TextBox txtCodigo 
          Alignment       =   1  'Right Justify
          Height          =   285
          Index           =   6
          Left            =   1845
          MaxLength       =   2
-         TabIndex        =   6
-         Top             =   3960
+         TabIndex        =   8
+         Top             =   4320
          Width           =   830
       End
       Begin VB.TextBox txtNombre 
@@ -45,25 +87,25 @@ Begin VB.Form frmEstTarArt
          Index           =   6
          Left            =   2745
          Locked          =   -1  'True
-         TabIndex        =   26
+         TabIndex        =   28
          Text            =   "Text5"
-         Top             =   3960
-         Width           =   3135
+         Top             =   4320
+         Width           =   3480
       End
       Begin VB.Frame Frame4 
          Caption         =   "Tipo Informe"
          ForeColor       =   &H00972E0B&
          Height          =   1000
          Left            =   960
-         TabIndex        =   25
-         Top             =   4560
+         TabIndex        =   27
+         Top             =   4920
          Width           =   2175
          Begin VB.OptionButton Option1 
             Caption         =   "Detalle"
             Height          =   255
             Index           =   0
             Left            =   240
-            TabIndex        =   7
+            TabIndex        =   9
             Top             =   240
             Value           =   -1  'True
             Width           =   1815
@@ -73,7 +115,7 @@ Begin VB.Form frmEstTarArt
             Height          =   255
             Index           =   1
             Left            =   240
-            TabIndex        =   8
+            TabIndex        =   10
             Top             =   600
             Width           =   1815
          End
@@ -85,10 +127,10 @@ Begin VB.Form frmEstTarArt
          Index           =   5
          Left            =   2745
          Locked          =   -1  'True
-         TabIndex        =   24
+         TabIndex        =   26
          Text            =   "Text5"
-         Top             =   3375
-         Width           =   3135
+         Top             =   2895
+         Width           =   3495
       End
       Begin VB.TextBox txtNombre 
          BackColor       =   &H80000018&
@@ -97,10 +139,10 @@ Begin VB.Form frmEstTarArt
          Index           =   4
          Left            =   2745
          Locked          =   -1  'True
-         TabIndex        =   23
+         TabIndex        =   25
          Text            =   "Text5"
-         Top             =   3000
-         Width           =   3135
+         Top             =   2520
+         Width           =   3495
       End
       Begin VB.TextBox txtCodigo 
          Alignment       =   1  'Right Justify
@@ -109,7 +151,7 @@ Begin VB.Form frmEstTarArt
          Left            =   1845
          MaxLength       =   2
          TabIndex        =   5
-         Top             =   3375
+         Top             =   2895
          Width           =   830
       End
       Begin VB.TextBox txtCodigo 
@@ -119,7 +161,7 @@ Begin VB.Form frmEstTarArt
          Left            =   1845
          MaxLength       =   2
          TabIndex        =   4
-         Top             =   3000
+         Top             =   2520
          Width           =   830
       End
       Begin VB.TextBox txtCodigo 
@@ -130,7 +172,7 @@ Begin VB.Form frmEstTarArt
          MaxLength       =   10
          TabIndex        =   3
          Tag             =   "Código Postal|T|S|||clientes|codposta|||"
-         Top             =   2280
+         Top             =   1920
          Width           =   1050
       End
       Begin VB.TextBox txtCodigo 
@@ -141,14 +183,14 @@ Begin VB.Form frmEstTarArt
          MaxLength       =   10
          TabIndex        =   2
          Tag             =   "Código Postal|T|S|||clientes|codposta|||"
-         Top             =   1920
+         Top             =   1560
          Width           =   1050
       End
       Begin VB.CommandButton cmdCancel 
          Caption         =   "&Cancelar"
          Height          =   375
          Left            =   4905
-         TabIndex        =   10
+         TabIndex        =   12
          Top             =   5640
          Width           =   975
       End
@@ -156,7 +198,7 @@ Begin VB.Form frmEstTarArt
          Caption         =   "&Aceptar"
          Height          =   375
          Left            =   3720
-         TabIndex        =   9
+         TabIndex        =   11
          Top             =   5640
          Width           =   975
       End
@@ -167,7 +209,7 @@ Begin VB.Form frmEstTarArt
          Left            =   1860
          MaxLength       =   8
          TabIndex        =   0
-         Top             =   840
+         Top             =   600
          Width           =   830
       End
       Begin VB.TextBox txtCodigo 
@@ -177,7 +219,7 @@ Begin VB.Form frmEstTarArt
          Left            =   1845
          MaxLength       =   8
          TabIndex        =   1
-         Top             =   1215
+         Top             =   975
          Width           =   830
       End
       Begin VB.TextBox txtNombre 
@@ -187,10 +229,10 @@ Begin VB.Form frmEstTarArt
          Index           =   0
          Left            =   2745
          Locked          =   -1  'True
-         TabIndex        =   21
+         TabIndex        =   23
          Text            =   "Text5"
-         Top             =   840
-         Width           =   3135
+         Top             =   600
+         Width           =   3615
       End
       Begin VB.TextBox txtNombre 
          BackColor       =   &H80000018&
@@ -199,10 +241,64 @@ Begin VB.Form frmEstTarArt
          Index           =   1
          Left            =   2745
          Locked          =   -1  'True
-         TabIndex        =   22
+         TabIndex        =   24
          Text            =   "Text5"
-         Top             =   1215
-         Width           =   3135
+         Top             =   975
+         Width           =   3615
+      End
+      Begin VB.Label Label3 
+         Caption         =   "Desde"
+         Height          =   195
+         Index           =   23
+         Left            =   990
+         TabIndex        =   34
+         Top             =   3480
+         Width           =   465
+      End
+      Begin VB.Label Label3 
+         Caption         =   "Hasta"
+         Height          =   195
+         Index           =   22
+         Left            =   990
+         TabIndex        =   33
+         Top             =   3840
+         Width           =   420
+      End
+      Begin VB.Label Label4 
+         AutoSize        =   -1  'True
+         Caption         =   "Artículo"
+         BeginProperty Font 
+            Name            =   "Tahoma"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         ForeColor       =   &H00972E0B&
+         Height          =   195
+         Index           =   4
+         Left            =   600
+         TabIndex        =   32
+         Top             =   3240
+         Width           =   540
+      End
+      Begin VB.Image imgBuscar 
+         Height          =   240
+         Index           =   7
+         Left            =   1560
+         ToolTipText     =   "Buscar artículo"
+         Top             =   3480
+         Width           =   240
+      End
+      Begin VB.Image imgBuscar 
+         Height          =   240
+         Index           =   8
+         Left            =   1560
+         ToolTipText     =   "Buscar artículo"
+         Top             =   3870
+         Width           =   240
       End
       Begin VB.Label Label4 
          AutoSize        =   -1  'True
@@ -220,8 +316,8 @@ Begin VB.Form frmEstTarArt
          Height          =   195
          Index           =   3
          Left            =   600
-         TabIndex        =   27
-         Top             =   3960
+         TabIndex        =   29
+         Top             =   4320
          Width           =   660
       End
       Begin VB.Image imgBuscar 
@@ -231,7 +327,7 @@ Begin VB.Form frmEstTarArt
          MouseIcon       =   "frmEstTarArt.frx":000C
          MousePointer    =   4  'Icon
          ToolTipText     =   "Buscar colectivo"
-         Top             =   3960
+         Top             =   4320
          Width           =   240
       End
       Begin VB.Image imgBuscar 
@@ -241,7 +337,7 @@ Begin VB.Form frmEstTarArt
          MouseIcon       =   "frmEstTarArt.frx":015E
          MousePointer    =   4  'Icon
          ToolTipText     =   "Buscar familia"
-         Top             =   3375
+         Top             =   2895
          Width           =   240
       End
       Begin VB.Image imgBuscar 
@@ -251,7 +347,7 @@ Begin VB.Form frmEstTarArt
          MouseIcon       =   "frmEstTarArt.frx":02B0
          MousePointer    =   4  'Icon
          ToolTipText     =   "Buscar familia"
-         Top             =   3000
+         Top             =   2520
          Width           =   240
       End
       Begin VB.Label Label4 
@@ -270,8 +366,8 @@ Begin VB.Form frmEstTarArt
          Height          =   195
          Index           =   2
          Left            =   600
-         TabIndex        =   20
-         Top             =   2760
+         TabIndex        =   22
+         Top             =   2280
          Width           =   480
       End
       Begin VB.Label Label4 
@@ -279,8 +375,8 @@ Begin VB.Form frmEstTarArt
          Height          =   195
          Index           =   1
          Left            =   960
-         TabIndex        =   19
-         Top             =   3375
+         TabIndex        =   21
+         Top             =   2895
          Width           =   420
       End
       Begin VB.Label Label4 
@@ -288,8 +384,8 @@ Begin VB.Form frmEstTarArt
          Height          =   195
          Index           =   0
          Left            =   960
-         TabIndex        =   18
-         Top             =   3000
+         TabIndex        =   20
+         Top             =   2520
          Width           =   465
       End
       Begin VB.Label Label4 
@@ -298,8 +394,8 @@ Begin VB.Form frmEstTarArt
          Height          =   255
          Index           =   16
          Left            =   600
-         TabIndex        =   17
-         Top             =   1680
+         TabIndex        =   19
+         Top             =   1320
          Width           =   1815
       End
       Begin VB.Label Label4 
@@ -307,8 +403,8 @@ Begin VB.Form frmEstTarArt
          Height          =   195
          Index           =   15
          Left            =   960
-         TabIndex        =   16
-         Top             =   1920
+         TabIndex        =   18
+         Top             =   1560
          Width           =   465
       End
       Begin VB.Label Label4 
@@ -316,8 +412,8 @@ Begin VB.Form frmEstTarArt
          Height          =   195
          Index           =   14
          Left            =   960
-         TabIndex        =   15
-         Top             =   2280
+         TabIndex        =   17
+         Top             =   1920
          Width           =   420
       End
       Begin VB.Image imgFec 
@@ -326,7 +422,7 @@ Begin VB.Form frmEstTarArt
          Left            =   1530
          Picture         =   "frmEstTarArt.frx":0402
          ToolTipText     =   "Buscar fecha"
-         Top             =   1920
+         Top             =   1560
          Width           =   240
       End
       Begin VB.Image imgFec 
@@ -335,7 +431,7 @@ Begin VB.Form frmEstTarArt
          Left            =   1530
          Picture         =   "frmEstTarArt.frx":048D
          ToolTipText     =   "Buscar fecha"
-         Top             =   2280
+         Top             =   1920
          Width           =   240
       End
       Begin VB.Label Label4 
@@ -343,8 +439,8 @@ Begin VB.Form frmEstTarArt
          Height          =   195
          Index           =   13
          Left            =   960
-         TabIndex        =   14
-         Top             =   840
+         TabIndex        =   16
+         Top             =   600
          Width           =   465
       End
       Begin VB.Label Label4 
@@ -352,8 +448,8 @@ Begin VB.Form frmEstTarArt
          Height          =   195
          Index           =   12
          Left            =   960
-         TabIndex        =   13
-         Top             =   1215
+         TabIndex        =   15
+         Top             =   975
          Width           =   420
       End
       Begin VB.Label Label4 
@@ -372,8 +468,8 @@ Begin VB.Form frmEstTarArt
          Height          =   195
          Index           =   11
          Left            =   600
-         TabIndex        =   12
-         Top             =   600
+         TabIndex        =   14
+         Top             =   360
          Width           =   525
       End
       Begin VB.Image imgBuscar 
@@ -383,7 +479,7 @@ Begin VB.Form frmEstTarArt
          MouseIcon       =   "frmEstTarArt.frx":0518
          MousePointer    =   4  'Icon
          ToolTipText     =   "Buscar tarjeta"
-         Top             =   840
+         Top             =   600
          Width           =   240
       End
       Begin VB.Image imgBuscar 
@@ -393,7 +489,7 @@ Begin VB.Form frmEstTarArt
          MouseIcon       =   "frmEstTarArt.frx":066A
          MousePointer    =   4  'Icon
          ToolTipText     =   "Buscar tarjeta"
-         Top             =   1215
+         Top             =   975
          Width           =   240
       End
    End
@@ -429,6 +525,8 @@ Private WithEvents frmTar As frmManTarje 'Tarjetas
 Attribute frmTar.VB_VarHelpID = -1
 Private WithEvents frmC As frmCal 'calendario fechas
 Attribute frmC.VB_VarHelpID = -1
+Private WithEvents frmArt As frmManArtic 'Articulos
+Attribute frmArt.VB_VarHelpID = -1
 
 'GENERALES PARA PASARLE A CRYSTAL REPORT
 Private cadFormula As String 'Cadena con la FormulaSelection para Crystal Report
@@ -460,8 +558,8 @@ End Sub
 Private Sub cmdAceptar_Click()
 Dim cDesde As String, cHasta As String 'cadena codigo Desde/Hasta
 Dim nDesde As String, nHasta As String 'cadena Descripcion Desde/Hasta
-Dim cadTABLA As String, cOrden As String
-Dim i As Byte
+Dim cadTabla As String, cOrden As String
+Dim I As Byte
 InicializarVbles
     
     If txtCodigo(6).Text = "" Then
@@ -508,6 +606,20 @@ InicializarVbles
         If Not PonerDesdeHasta(cDesde, cHasta, nDesde, nHasta, "pDHFami= """) Then Exit Sub
     End If
     
+    '[Monica]29/08/2017: añadido el desde/hasta articulo
+    'D/H Articulo
+    cDesde = Trim(txtCodigo(7).Text)
+    cHasta = Trim(txtCodigo(8).Text)
+    nDesde = txtNombre(7).Text
+    nHasta = txtNombre(8).Text
+    If Not (cDesde = "" And cHasta = "") Then
+        'Cadena para seleccion Desde y Hasta
+        Codigo = "{sartic.codartic}"
+        TipCod = "N"
+        If Not PonerDesdeHasta(cDesde, cHasta, nDesde, nHasta, "pDHArtic= """) Then Exit Sub
+    End If
+    
+    
     'Colectivo
     cDesde = Trim(txtCodigo(6).Text)
     cHasta = Trim(txtCodigo(6).Text)
@@ -521,12 +633,12 @@ InicializarVbles
     End If
     
     'Comprobar si hay registros a Mostrar antes de abrir el Informe
-    cadTABLA = "((" & "(" & tabla & " INNER JOIN starje ON " & tabla & ".numtarje=starje.numtarje) "
-    cadTABLA = cadTABLA & "inner join sartic on slhfac.codartic = sartic.codartic )"
-    cadTABLA = cadTABLA & "inner join sfamia on sartic.codfamia = sfamia.codfamia )"
-    cadTABLA = cadTABLA & "INNER JOIN schfac ON " & "slhfac.letraser=schfac.letraser AND slhfac.numfactu=schfac.numfactu AND slhfac.fecfactu=schfac.fecfactu"
+    cadTabla = "((" & "(" & tabla & " INNER JOIN starje ON " & tabla & ".numtarje=starje.numtarje) "
+    cadTabla = cadTabla & "inner join sartic on slhfac.codartic = sartic.codartic )"
+    cadTabla = cadTabla & "inner join sfamia on sartic.codfamia = sfamia.codfamia )"
+    cadTabla = cadTabla & "INNER JOIN schfac ON " & "slhfac.letraser=schfac.letraser AND slhfac.numfactu=schfac.numfactu AND slhfac.fecfactu=schfac.fecfactu"
     
-    If HayRegParaInforme(cadTABLA, cadSelect) Then
+    If HayRegParaInforme(cadTabla, cadSelect) Then
        If Option1(0) = True Then
           cadTitulo = "Ventas Artículos por Tarjeta"
           cadNombreRPT = "rEstTarart.rpt"
@@ -565,6 +677,8 @@ Dim List As Collection
      Me.imgBuscar(4).Picture = frmPpal.imgListImages16.ListImages(1).Picture
      Me.imgBuscar(5).Picture = frmPpal.imgListImages16.ListImages(1).Picture
      Me.imgBuscar(6).Picture = frmPpal.imgListImages16.ListImages(1).Picture
+     Me.imgBuscar(7).Picture = frmPpal.imgListImages16.ListImages(1).Picture
+     Me.imgBuscar(8).Picture = frmPpal.imgListImages16.ListImages(1).Picture
 
     '###Descomentar
 '    CommitConexion
@@ -575,6 +689,12 @@ Dim List As Collection
             
     'Esto se consigue poneinedo el cancel en el opcion k corresponda
     Me.cmdCancel.Cancel = True
+End Sub
+
+Private Sub frmArt_DatoSeleccionado(CadenaSeleccion As String)
+'Form de Consulta de articulos
+    txtCodigo(indCodigo).Text = Format(RecuperaValor(CadenaSeleccion, 1), "000000")
+    txtNombre(indCodigo).Text = RecuperaValor(CadenaSeleccion, 2)
 End Sub
 
 Private Sub frmC_Selec(vFecha As Date)
@@ -643,6 +763,9 @@ Private Sub imgBuscar_Click(Index As Integer)
         Case 6 'COLECTIVO
             AbrirFrmColectivos (Index)
         
+        Case 7, 8 'ARTICULOS
+            AbrirFrmArticulos (Index)
+        
     End Select
     PonerFoco txtCodigo(indCodigo)
 End Sub
@@ -668,6 +791,11 @@ Private Sub txtCodigo_KeyPress(Index As Integer, KeyAscii As Integer)
             Case 5: KEYBusqueda KeyAscii, 5 'familia hasta
             Case 2: KEYFecha KeyAscii, 2 'fecha desde
             Case 3: KEYFecha KeyAscii, 3 'fecha hasta
+            
+            Case 7: KEYBusqueda KeyAscii, 7 'articulo desde
+            Case 8: KEYBusqueda KeyAscii, 8 'articulo hasta
+            
+            
         End Select
     Else
         KEYpress KeyAscii
@@ -686,7 +814,7 @@ Private Sub KEYFecha(KeyAscii As Integer, indice As Integer)
 End Sub
 
 Private Sub txtCodigo_LostFocus(Index As Integer)
-Dim cad As String, cadTipo As String 'tipo cliente
+Dim Cad As String, cadTipo As String 'tipo cliente
 
     'Quitar espacios en blanco por los lados
     txtCodigo(Index).Text = Trim(txtCodigo(Index).Text)
@@ -712,6 +840,11 @@ Dim cad As String, cadTipo As String 'tipo cliente
         Case 6 'COLECTIVOS
             txtNombre(Index).Text = PonerNombreDeCod(txtCodigo(Index), "scoope", "nomcoope", "codcoope", "N")
             If txtCodigo(Index).Text <> "" Then txtCodigo(Index).Text = Format(txtCodigo(Index).Text, "00")
+            
+        Case 7, 8 'ARTICULOS
+            txtNombre(Index).Text = PonerNombreDeCod(txtCodigo(Index), "sartic", "nomartic", "codartic", "N")
+            If txtCodigo(Index).Text <> "" Then txtCodigo(Index).Text = Format(txtCodigo(Index).Text, "000000")
+            
     End Select
 End Sub
 
@@ -836,5 +969,15 @@ End Sub
 
 Private Sub AbrirEMail()
     If CadenaDesdeOtroForm <> "" Then frmEMail.Show vbModal
+End Sub
+
+Private Sub AbrirFrmArticulos(indice As Integer)
+    indCodigo = indice
+    Set frmArt = New frmManArtic
+    frmArt.DatosADevolverBusqueda = "0|1|"
+    frmArt.DeConsulta = True
+    frmArt.CodigoActual = txtCodigo(indCodigo)
+    frmArt.Show vbModal
+    Set frmArt = Nothing
 End Sub
 
