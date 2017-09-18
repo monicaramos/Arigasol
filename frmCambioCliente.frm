@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.2#0"; "MSCOMCTL.OCX"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Begin VB.Form frmCambioCliente 
    BorderStyle     =   3  'Fixed Dialog
@@ -532,8 +532,8 @@ Private WithEvents frmcli As frmManClien 'Clientes
 Attribute frmcli.VB_VarHelpID = -1
 Private WithEvents frmC As frmCal 'calendario fechas
 Attribute frmC.VB_VarHelpID = -1
-Private WithEvents frmFpa As frmManFpago 'mantenimiento de formas de pago
-Attribute frmFpa.VB_VarHelpID = -1
+Private WithEvents frmFPa As frmManFpago 'mantenimiento de formas de pago
+Attribute frmFPa.VB_VarHelpID = -1
 Private WithEvents frmTDia As frmDiaConta
 Attribute frmTDia.VB_VarHelpID = -1
 Private WithEvents frmConce As frmConceConta 'conceptos de contabilidad
@@ -573,11 +573,11 @@ End Sub
 Private Sub cmdAceptar_Click(Index As Integer)
 Dim cDesde As String, cHasta As String 'cadena codigo Desde/Hasta
 Dim nDesde As String, nHasta As String 'cadena Descripcion Desde/Hasta
-Dim cadTABLA As String, cOrden As String
+Dim cadTabla As String, cOrden As String
 Dim cadMen As String
-Dim i As Byte
-Dim sql As String
-Dim tipo As Byte
+Dim I As Byte
+Dim SQL As String
+Dim Tipo As Byte
 Dim nRegs As Integer
 Dim NumError As Long
 Dim db As BaseDatos
@@ -632,7 +632,7 @@ End Sub
 Private Sub Form_Load()
 Dim h As Integer, w As Integer
 Dim List As Collection
-Dim i As Integer
+Dim I As Integer
 
     PrimeraVez = True
     limpiar Me
@@ -698,7 +698,7 @@ Private Sub frmConce_DatoSeleccionado(CadenaSeleccion As String)
 End Sub
 
 Private Sub Image1_Click(Index As Integer)
-Dim i As Integer
+Dim I As Integer
 Dim TotalCant As Currency
 Dim TotalImporte As Currency
 
@@ -710,16 +710,16 @@ Dim TotalImporte As Currency
     
     Select Case Index
         Case 0
-            For i = 1 To ListView1.ListItems.Count
-                ListView1.ListItems(i).Checked = True
-                TotalCant = TotalCant + CCur(ListView1.ListItems(i).SubItems(3))
-                TotalImporte = TotalImporte + CCur(ListView1.ListItems(i).SubItems(4))
+            For I = 1 To ListView1.ListItems.Count
+                ListView1.ListItems(I).Checked = True
+                TotalCant = TotalCant + CCur(ListView1.ListItems(I).SubItems(3))
+                TotalImporte = TotalImporte + CCur(ListView1.ListItems(I).SubItems(4))
                 NRegSelec = NRegSelec + 1
-            Next i
+            Next I
         Case 1
-            For i = 1 To ListView1.ListItems.Count
-                ListView1.ListItems(i).Checked = False
-            Next i
+            For I = 1 To ListView1.ListItems.Count
+                ListView1.ListItems(I).Checked = False
+            Next I
 
     End Select
     Screen.MousePointer = vbDefault
@@ -766,7 +766,7 @@ Private Sub imgFec_Click(Index As Integer)
 End Sub
 
 Private Sub ListView1_ItemCheck(ByVal item As MSComctlLib.ListItem)
-Dim i As Integer
+Dim I As Integer
 Dim TotalCant As Currency
 Dim TotalImporte As Currency
     
@@ -777,13 +777,13 @@ Dim TotalImporte As Currency
     NRegSelec = 0
     
     ' vemos si lo podemos seleccionar
-    For i = 1 To ListView1.ListItems.Count
-        If ListView1.ListItems(i).Checked Then
-            TotalCant = TotalCant + CCur(ListView1.ListItems(i).SubItems(3))
-            TotalImporte = TotalImporte + CCur(ListView1.ListItems(i).SubItems(4))
+    For I = 1 To ListView1.ListItems.Count
+        If ListView1.ListItems(I).Checked Then
+            TotalCant = TotalCant + CCur(ListView1.ListItems(I).SubItems(3))
+            TotalImporte = TotalImporte + CCur(ListView1.ListItems(I).SubItems(4))
             NRegSelec = NRegSelec + 1
         End If
-    Next i
+    Next I
     
     Screen.MousePointer = vbDefault
 
@@ -850,7 +850,7 @@ End Sub
 
 
 Private Sub txtCodigo_LostFocus(Index As Integer)
-Dim cad As String, cadTipo As String 'tipo cliente
+Dim Cad As String, cadTipo As String 'tipo cliente
 
     'Quitar espacios en blanco por los lados
     txtCodigo(Index).Text = Trim(txtCodigo(Index).Text)
@@ -944,24 +944,24 @@ End Sub
 
 Private Sub AbrirFrmFpagos(indice As Integer)
     indCodigo = indice
-    Set frmFpa = New frmManFpago
-    frmFpa.DatosADevolverBusqueda = "0|1|"
-    frmFpa.DeConsulta = True
-    frmFpa.CodigoActual = txtCodigo(indCodigo)
-    frmFpa.Show vbModal
-    Set frmFpa = Nothing
+    Set frmFPa = New frmManFpago
+    frmFPa.DatosADevolverBusqueda = "0|1|"
+    frmFPa.DeConsulta = True
+    frmFPa.CodigoActual = txtCodigo(indCodigo)
+    frmFPa.Show vbModal
+    Set frmFPa = Nothing
 End Sub
 
 Private Function DatosOk() As Boolean
 Dim b As Boolean
-Dim sql As String
+Dim SQL As String
 
     b = True
     
     If vParamAplic.CtaContable <> "" Then
-        sql = ""
-        sql = DevuelveDesdeBD("codsocio", "ssocio", "codmacta", vParamAplic.CtaContable, "T")
-        If sql = "" Then
+        SQL = ""
+        SQL = DevuelveDesdeBD("codsocio", "ssocio", "codmacta", vParamAplic.CtaContable, "T")
+        If SQL = "" Then
             MsgBox "No existe un cliente de contado. Revise", vbExclamation
             b = False
             DatosOk = b
@@ -984,9 +984,9 @@ Dim sql As String
             Exit Function
         Else
             ' vemos si la cuenta contable existe en contabilidad
-            sql = ""
-            sql = DevuelveDesdeBDNew(cConta, "cuentas", "codmacta", "codmacta", CtaNuevoCliente, "T")
-            If sql = "" Then
+            SQL = ""
+            SQL = DevuelveDesdeBDNew(cConta, "cuentas", "codmacta", "codmacta", CtaNuevoCliente, "T")
+            If SQL = "" Then
                 MsgBox "La Cuenta Contable del cliente no existe en la Contabilidad", vbExclamation
                 b = False
                 DatosOk = b
@@ -1002,10 +1002,10 @@ Dim sql As String
         DatosOk = b
         Exit Function
     Else
-        sql = ""
-        sql = DevuelveDesdeBD("tipforpa", "sforpa", "codforpa", txtCodigo(2).Text, "N")
+        SQL = ""
+        SQL = DevuelveDesdeBD("tipforpa", "sforpa", "codforpa", txtCodigo(2).Text, "N")
         '[Monica]04/01/2013: efectivos
-        If sql <> "0" And sql <> "6" Then
+        If SQL <> "0" And SQL <> "6" Then
             MsgBox "Debe introducir una Forma de Pago de Efectivo. Reintroduzca.", vbExclamation
             b = False
             DatosOk = b
@@ -1027,9 +1027,9 @@ End Function
 Private Function CargarListView() As Integer
 'Muestra la lista Detallada de Facturas que dieron error al contabilizar
 'en un ListView
-Dim RS As ADODB.Recordset
+Dim Rs As ADODB.Recordset
 Dim ItmX As ListItem
-Dim sql As String
+Dim SQL As String
 Dim HayReg As Integer
 
     On Error GoTo ECargarList
@@ -1046,19 +1046,19 @@ Dim HayReg As Integer
     Me.Width = 8370
     
 
-    sql = " SELECT  scaalb.numalbar, scaalb.fecalbar, sartic.nomartic, scaalb.cantidad, scaalb.importel, scaalb.codclave, scaalb.codsocio, scaalb.codturno "
-    sql = sql & " FROM scaalb, sartic, ssocio where ssocio.codmacta = " & DBSet(vParamAplic.CtaContable, "T")
+    SQL = " SELECT  scaalb.numalbar, scaalb.fecalbar, sartic.nomartic, scaalb.cantidad, scaalb.importel, scaalb.codclave, scaalb.codsocio, scaalb.codturno "
+    SQL = SQL & " FROM scaalb, sartic, ssocio where ssocio.codmacta = " & DBSet(vParamAplic.CtaContable, "T")
 '    SQL = SQL & " and scaalb.codforpa = " & DBSet(txtCodigo(2).Text, "N")
-    If txtCodigo(6).Text <> "" Then sql = sql & " and fecalbar >= " & DBSet(txtCodigo(6).Text, "F")
-    If txtCodigo(3).Text <> "" Then sql = sql & " and fecalbar <= " & DBSet(txtCodigo(3).Text, "F")
-    sql = sql & " and scaalb.numfactu = 0 "
-    sql = sql & " and scaalb.declaradogp = 0 " ' que no haya sido declarado como gp
-    sql = sql & " and scaalb.codsocio = ssocio.codsocio  and scaalb.codartic = sartic.codartic"
-    sql = sql & " order by scaalb.fecalbar, scaalb.numalbar "
+    If txtCodigo(6).Text <> "" Then SQL = SQL & " and fecalbar >= " & DBSet(txtCodigo(6).Text, "F")
+    If txtCodigo(3).Text <> "" Then SQL = SQL & " and fecalbar <= " & DBSet(txtCodigo(3).Text, "F")
+    SQL = SQL & " and scaalb.numfactu = 0 "
+    SQL = SQL & " and scaalb.declaradogp = 0 " ' que no haya sido declarado como gp
+    SQL = SQL & " and scaalb.codsocio = ssocio.codsocio  and scaalb.codartic = sartic.codartic"
+    SQL = SQL & " order by scaalb.fecalbar, scaalb.numalbar "
     
-    Set RS = New ADODB.Recordset
-    RS.Open sql, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
-    If Not RS.EOF Then
+    Set Rs = New ADODB.Recordset
+    Rs.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+    If Not Rs.EOF Then
         VisualizarListview True
     
         'Los encabezados
@@ -1076,24 +1076,24 @@ Dim HayReg As Integer
        
         ListView1.ListItems.Clear
         
-        While Not RS.EOF
+        While Not Rs.EOF
             Set ItmX = ListView1.ListItems.Add
             'El primer campo será codtipom si llamamos desde Ventas
             ' y será codprove si llamamos desde Compras
-            ItmX.Text = Format(RS!numalbar, "00000000")
-            ItmX.SubItems(1) = DBLet(RS!fecAlbar, "F")
-            ItmX.SubItems(2) = DBLet(RS!NomArtic, "T")
-            ItmX.SubItems(3) = DBLet(RS!cantidad, "N")
-            ItmX.SubItems(4) = DBLet(RS!importel, "N")
-            ItmX.SubItems(5) = DBLet(RS!Codclave, "N")
-            ItmX.SubItems(6) = DBLet(RS!codsocio, "N")
-            ItmX.SubItems(7) = DBLet(RS!codTurno, "N")
+            ItmX.Text = Format(Rs!numalbar, "00000000")
+            ItmX.SubItems(1) = DBLet(Rs!fecAlbar, "F")
+            ItmX.SubItems(2) = DBLet(Rs!NomArtic, "T")
+            ItmX.SubItems(3) = DBLet(Rs!cantidad, "N")
+            ItmX.SubItems(4) = DBLet(Rs!importel, "N")
+            ItmX.SubItems(5) = DBLet(Rs!Codclave, "N")
+            ItmX.SubItems(6) = DBLet(Rs!codsocio, "N")
+            ItmX.SubItems(7) = DBLet(Rs!codTurno, "N")
             HayReg = 1
-            RS.MoveNext
+            Rs.MoveNext
         Wend
     End If
-    RS.Close
-    Set RS = Nothing
+    Rs.Close
+    Set Rs = Nothing
     CargarListView = HayReg
     
     Screen.MousePointer = vbDefault
@@ -1115,44 +1115,44 @@ Private Sub VisualizarListview(Modo As Boolean)
 End Sub
 
 Private Sub CargaCombo()
-Dim sql As String
-Dim RS As ADODB.Recordset
+Dim SQL As String
+Dim Rs As ADODB.Recordset
 
     Combo1.Clear
     
-    sql = "select * from starje where codsocio = " & DBSet(txtCodigo(0).Text, "N")
+    SQL = "select * from starje where codsocio = " & DBSet(txtCodigo(0).Text, "N")
     
-    Set RS = New ADODB.Recordset
-    RS.Open sql, Conn, adOpenForwardOnly, adLockOptimistic, adCmdText
+    Set Rs = New ADODB.Recordset
+    Rs.Open SQL, Conn, adOpenForwardOnly, adLockOptimistic, adCmdText
     
     'Combo1.AddItem "" 'pose uno en blanc sinse valor
-    While Not RS.EOF
-        Combo1.AddItem RS!Numtarje
-        Combo1.ItemData(Combo1.NewIndex) = RS!NumLinea
-        RS.MoveNext
+    While Not Rs.EOF
+        Combo1.AddItem Rs!Numtarje
+        Combo1.ItemData(Combo1.NewIndex) = Rs!NumLinea
+        Rs.MoveNext
     Wend
     
     Combo1.Text = Combo1.List(0)
 
-    RS.Close
-    Set RS = Nothing
+    Rs.Close
+    Set Rs = Nothing
     
 ErrCarga:
     If Err.Number <> 0 Then MuestraError Err.Number, "Cargar datos combo.", Err.Description
 End Sub
     
 Private Function ProcesarCambios() As Boolean
-Dim sql As String
-Dim SQL1 As String
-Dim i As Integer
+Dim SQL As String
+Dim Sql1 As String
+Dim I As Integer
 Dim HayReg As Integer
 Dim b As Boolean
 
 On Error GoTo eProcesarCambios
 
     
-    sql = "update scaalb set codsocio = " & DBSet(txtCodigo(0).Text, "N") & ", numtarje = " & DBSet(Combo1.Text, "N")
-    sql = sql & ", codforpa = " & DBSet(txtCodigo(2).Text, "N")
+    SQL = "update scaalb set codsocio = " & DBSet(txtCodigo(0).Text, "N") & ", numtarje = " & DBSet(Combo1.Text, "N")
+    SQL = SQL & ", codforpa = " & DBSet(txtCodigo(2).Text, "N")
     HayReg = 0
     
     VisualizarListview False
@@ -1161,26 +1161,27 @@ On Error GoTo eProcesarCambios
         
         Conn.BeginTrans
         
-        For i = 1 To ListView1.ListItems.Count
-            If ListView1.ListItems(i).Checked Then
+        For I = 1 To ListView1.ListItems.Count
+            If ListView1.ListItems(I).Checked Then
                
                 ' si esta la contabilizacion del cierre de turno tengo que deshacerla
                 ' realizando un asiento que introduzco en el diario
-                If EstaContabilizadoCierre(ListView1.ListItems(i).SubItems(5)) Then
+                If EstaContabilizadoCierre(ListView1.ListItems(I).SubItems(5)) Then
                     HayReg = 1
 '                    Debug.Print ListView1.ListItems(i).SubItems(1)
-                    InsertaLineaEnTemporal ListView1.ListItems(i)
+                    InsertaLineaEnTemporal ListView1.ListItems(I)
                 End If
                 
-                SQL1 = sql & " where codclave = " & ListView1.ListItems(i).SubItems(5)
-                Conn.Execute SQL1
+                Sql1 = SQL & " where codclave = " & ListView1.ListItems(I).SubItems(5)
+                Conn.Execute Sql1
             
             End If
-        Next i
+        Next I
         If HayReg = 1 Then b = InsertarAsientoContabilidad
     End If
 '    conn.RollbackTrans
-    Conn.CommitTrans
+    '[Monica]18/09/2017: añado la condicion de if b
+    If b Then Conn.CommitTrans
     
     BorrarTMPAsiento
     
@@ -1193,29 +1194,29 @@ eProcesarCambios:
     End If
 End Function
 
-Private Function EstaContabilizadoCierre(NumReg As Long) As Boolean
-Dim RS As ADODB.Recordset
+Private Function EstaContabilizadoCierre(Numreg As Long) As Boolean
+Dim Rs As ADODB.Recordset
 Dim Rs1 As ADODB.Recordset
-Dim sql As String
-Dim Sql2 As String
+Dim SQL As String
+Dim sql2 As String
 
     EstaContabilizadoCierre = False
 
-    sql = "select * from scaalb where codclave = " & DBSet(NumReg, "N")
+    SQL = "select * from scaalb where codclave = " & DBSet(Numreg, "N")
     
-    Set RS = New ADODB.Recordset
-    RS.Open sql, Conn, adOpenForwardOnly, adLockOptimistic, adCmdText
+    Set Rs = New ADODB.Recordset
+    Rs.Open SQL, Conn, adOpenForwardOnly, adLockOptimistic, adCmdText
     
-    If Not RS.EOF Then
-        Sql2 = "SELECT count(*)" & _
+    If Not Rs.EOF Then
+        sql2 = "SELECT count(*)" & _
               " FROM srecau " & _
-              "WHERE srecau.fechatur = " & DBSet(RS!fecAlbar, "F") & " and " & _
-                   " srecau.codturno = " & DBSet(RS!codTurno, "N") & " and " & _
-                   " srecau.codforpa = " & DBSet(RS!Codforpa, "N") & " and " & _
+              "WHERE srecau.fechatur = " & DBSet(Rs!fecAlbar, "F") & " and " & _
+                   " srecau.codturno = " & DBSet(Rs!codTurno, "N") & " and " & _
+                   " srecau.codforpa = " & DBSet(Rs!Codforpa, "N") & " and " & _
                    " srecau.intconta = 1 "
                    
         Set Rs1 = New ADODB.Recordset
-        Rs1.Open Sql2, Conn, adOpenForwardOnly, adLockOptimistic, adCmdText
+        Rs1.Open sql2, Conn, adOpenForwardOnly, adLockOptimistic, adCmdText
     
         If Not Rs1.EOF Then
             If Rs1.Fields(0).Value <> 0 Then EstaContabilizadoCierre = True
@@ -1223,35 +1224,35 @@ Dim Sql2 As String
         Set Rs1 = Nothing
         
     End If
-    Set RS = Nothing
+    Set Rs = Nothing
 End Function
 
 
 Private Sub InsertaLineaEnTemporal(ByRef ItmX As ListItem)
-Dim sql As String
+Dim SQL As String
 Dim Codmacta As String
-Dim RS As ADODB.Recordset
-Dim SQL1 As String
+Dim Rs As ADODB.Recordset
+Dim Sql1 As String
 
         Codmacta = ""
         Codmacta = DevuelveDesdeBD("codmacta", "ssocio", "codsocio", ItmX.SubItems(6), "N")
         
-        SQL1 = "insert into tmpasien(fecalbar, codturno, codmacta, importel) values ("
-        SQL1 = SQL1 & DBSet(ItmX.SubItems(1), "F") & ","
-        SQL1 = SQL1 & DBSet(ItmX.SubItems(7), "N") & ","
-        SQL1 = SQL1 & DBSet(Codmacta, "T") & ","
-        SQL1 = SQL1 & DBSet(ItmX.SubItems(4), "N") & ")"
+        Sql1 = "insert into tmpasien(fecalbar, codturno, codmacta, importel) values ("
+        Sql1 = Sql1 & DBSet(ItmX.SubItems(1), "F") & ","
+        Sql1 = Sql1 & DBSet(ItmX.SubItems(7), "N") & ","
+        Sql1 = Sql1 & DBSet(Codmacta, "T") & ","
+        Sql1 = Sql1 & DBSet(ItmX.SubItems(4), "N") & ")"
 
-        Conn.Execute SQL1
+        Conn.Execute Sql1
     
-    Set RS = Nothing
+    Set Rs = Nothing
     
 End Sub
 
 
 Private Function InsertarAsientoContabilidad() As Boolean
-Dim RS As ADODB.Recordset
-Dim sql As String
+Dim Rs As ADODB.Recordset
+Dim SQL As String
 Dim Mc As CContadorContab
 Dim AntFec As String
 Dim AntTur As String
@@ -1261,11 +1262,11 @@ Dim NumLinea As Integer
 Dim Obs As String
 Dim cadMen As String
 Dim b As Boolean
-Dim i As Integer
+Dim I As Integer
 Dim ImporteD As Currency
 Dim ImporteH As Currency
 Dim Diferencia As Currency
-Dim cad As String
+Dim Cad As String
 Dim numdocum As String
 Dim ampliacion As String
 Dim ampliaciond As String
@@ -1276,45 +1277,55 @@ Dim ampliacionh As String
      
     ConnConta.BeginTrans
     
-    sql = "select count(distinct fecalbar, codmacta) from tmpasien "
+    SQL = "select count(distinct fecalbar, codmacta) from tmpasien "
     
-    NumLinea = TotalRegistros(sql)
+    NumLinea = TotalRegistros(SQL)
     NumLinea = NumLinea + 1
     Me.Pb1.visible = True
     
     If NumLinea > 0 Then
     
-        sql = "select fecalbar, codmacta, sum(importel) from tmpasien " & _
+        SQL = "select fecalbar, codmacta, sum(importel) from tmpasien " & _
                   "group by fecalbar, codmacta " & _
                   "order by fecalbar, codmacta "
         
-        Set RS = New ADODB.Recordset
-        RS.Open sql, Conn, adOpenForwardOnly, adLockOptimistic, adCmdText
+        Set Rs = New ADODB.Recordset
+        Rs.Open SQL, Conn, adOpenForwardOnly, adLockOptimistic, adCmdText
         
         CargarProgres Me.Pb1, NumLinea
 
-        AntFec = RS!fecAlbar
+        AntFec = Rs!fecAlbar
 '        AntTur = RS!codTurno
         Set Mc = New CContadorContab
         
-        If Mc.ConseguirContador("0", (CDate(RS!fecAlbar) <= CDate(FFin)), True) = 0 Then
+        If Mc.ConseguirContador("0", (CDate(Rs!fecAlbar) <= CDate(FFin)), True) = 0 Then
         
-            Obs = "Regularización Cierre Turno de fecha " & Format(RS!fecAlbar, "dd/mm/yyyy") '& " y turno T-" & Format(RS!codTurno, "0")
+            Obs = "Regularización Cierre Turno de fecha " & Format(Rs!fecAlbar, "dd/mm/yyyy") '& " y turno T-" & Format(RS!codTurno, "0")
             
-            ActFec = RS!fecAlbar
+            ActFec = Rs!fecAlbar
             
-            While Not RS.EOF
-                ActFec = RS!fecAlbar
+            '[Monica]18/09/2017: En la nueva contabilidad hay una referencial de hlinapu a hcabapu, luego se tiene que
+            '                    grabar primero la cabecera
+            If Not Rs.EOF Then
+                Obs = "Cambio Cierre Turno de fecha " & Format(AntFec, "dd/mm/yyyy") '& " y turno T-" & Format(RS!codTurno, "0")
+            
+                'Insertar en la conta Cabecera Asiento
+                b = InsertarCabAsientoDia(txtCodigo(1), Mc.Contador, AntFec, Obs, cadMen)
+                cadMen = "Insertando Cab. Asiento: " & cadMen
+            End If
+                        
+            
+            While Not Rs.EOF And b
+                ActFec = Rs!fecAlbar
                 If AntFec <> ActFec Then 'Or AntTur <> RS!codTurno Then
-                    
-                        Obs = "Cambio Cierre Turno de fecha " & Format(AntFec, "dd/mm/yyyy") '& " y turno T-" & Format(RS!codTurno, "0")
-                    
-                        'Insertar en la conta Cabecera Asiento
-                        b = InsertarCabAsientoDia(txtCodigo(1), Mc.Contador, AntFec, Obs, cadMen)
-                        cadMen = "Insertando Cab. Asiento: " & cadMen
+'[Monica]18/09/2017: se graba antes, he quitado la grabacion de la cabecera
+'                        Obs = "Cambio Cierre Turno de fecha " & Format(AntFec, "dd/mm/yyyy") '& " y turno T-" & Format(RS!codTurno, "0")
+'                        'Insertar en la conta Cabecera Asiento
+'                        b = InsertarCabAsientoDia(txtCodigo(1), Mc.Contador, AntFec, Obs, cadMen)
+'                        cadMen = "Insertando Cab. Asiento: " & cadMen
                         
                         'Insertar la linea de diferencias en el haber del cliente nuevo
-                        i = i + 1
+                        I = I + 1
                         
                         If ImporteD > ImporteH Then
                             Diferencia = ImporteD - ImporteH
@@ -1322,121 +1333,136 @@ Dim ampliacionh As String
                             Diferencia = ImporteH - ImporteD
                         End If
                         
-                        cad = DBSet(txtCodigo(1).Text, "N") & "," & DBSet(AntFec, "F") & "," & DBSet(Mc.Contador, "N") & ","
-                        cad = cad & DBSet(i, "N") & "," & DBSet(CtaNuevoCliente, "T") & "," & DBSet(numdocum, "T") & ","
+                        Cad = DBSet(txtCodigo(1).Text, "N") & "," & DBSet(AntFec, "F") & "," & DBSet(Mc.Contador, "N") & ","
+                        Cad = Cad & DBSet(I, "N") & "," & DBSet(CtaNuevoCliente, "T") & "," & DBSet(numdocum, "T") & ","
                         
                         If ImporteD < ImporteH Then
-                            cad = cad & DBSet(txtCodigo(4).Text, "N") & "," & DBSet(ampliacion, "T") & ","
-                            cad = cad & DBSet(Diferencia, "N") & "," & ValorNulo & ","
+                            Cad = Cad & DBSet(txtCodigo(4).Text, "N") & "," & DBSet(ampliacion, "T") & ","
+                            Cad = Cad & DBSet(Diferencia, "N") & "," & ValorNulo & ","
                         Else
-                            cad = cad & DBSet(txtCodigo(5).Text, "N") & "," & DBSet(ampliacion, "T") & ","
-                            cad = cad & ValorNulo & "," & DBSet(Diferencia, "N") & ","
+                            Cad = Cad & DBSet(txtCodigo(5).Text, "N") & "," & DBSet(ampliacion, "T") & ","
+                            Cad = Cad & ValorNulo & "," & DBSet(Diferencia, "N") & ","
                         End If
                         
-                        cad = cad & ValorNulo & "," & ValorNulo & "," & ValorNulo & ",0"
+                        Cad = Cad & ValorNulo & "," & ValorNulo & "," & ValorNulo & ",0"
                         
-                        cad = "(" & cad & ")"
+                        Cad = "(" & Cad & ")"
                     
-                        b = InsertarLinAsientoDia(cad, cadMen)
-                        cadMen = "Insertando Lin. Asiento: " & i
-            
+                        If b Then
+                            b = InsertarLinAsientoDia(Cad, cadMen)
+                            cadMen = "Insertando Lin. Asiento: " & I
+                        End If
+                        
                         IncrementarProgres Me.Pb1, 1
                         Me.Refresh
                         
-                        AntFec = RS!fecAlbar
+                        AntFec = Rs!fecAlbar
 '                        AntTur = RS!codTurno
                         
-                        Mc.ConseguirContador "0", (CDate(RS!fecAlbar) <= CDate(FFin)), True
+                        Mc.ConseguirContador "0", (CDate(Rs!fecAlbar) <= CDate(FFin)), True
+                
+'[Monica]18/09/2017: añado esto aqui
+                        Obs = "Cambio Cierre Turno de fecha " & Format(AntFec, "dd/mm/yyyy") '& " y turno T-" & Format(RS!codTurno, "0")
+                        'Insertar en la conta Cabecera Asiento
+                        If b Then
+                            b = InsertarCabAsientoDia(txtCodigo(1), Mc.Contador, AntFec, Obs, cadMen)
+                            cadMen = "Insertando Cab. Asiento: " & cadMen
+                        End If
                 End If
                 
                 ImporteD = 0
                 ImporteH = 0
                 
-                numdocum = Format(CDate(RS!fecAlbar), "ddmmyy") '& "-T" & Format(RS!codTurno, "0")
-                ampliacion = "C.Turno " & Format(RS!fecAlbar, "dd/mm/yy") '& " T-" & Format(RS!codTurno, "0")
+                numdocum = Format(CDate(Rs!fecAlbar), "ddmmyy") '& "-T" & Format(RS!codTurno, "0")
+                ampliacion = "C.Turno " & Format(Rs!fecAlbar, "dd/mm/yy") '& " T-" & Format(RS!codTurno, "0")
                 ampliaciond = Trim(DevuelveDesdeBDNew(cConta, "conceptos", "nomconce", "codconce", txtCodigo(4).Text, "N")) & " " & ampliacion
                 ampliacionh = Trim(DevuelveDesdeBDNew(cConta, "conceptos", "nomconce", "codconce", txtCodigo(5).Text, "N")) & " " & ampliacion
             
-                i = i + 1
+                I = I + 1
                 
-                cad = DBSet(txtCodigo(1).Text, "N") & "," & DBSet(RS!fecAlbar, "F") & "," & DBSet(Mc.Contador, "N") & ","
-                cad = cad & DBSet(i, "N") & "," & DBSet(RS!Codmacta, "T") & "," & DBSet(numdocum, "T") & ","
+                Cad = DBSet(txtCodigo(1).Text, "N") & "," & DBSet(Rs!fecAlbar, "F") & "," & DBSet(Mc.Contador, "N") & ","
+                Cad = Cad & DBSet(I, "N") & "," & DBSet(Rs!Codmacta, "T") & "," & DBSet(numdocum, "T") & ","
                 
                 ' COMPROBAMOS EL SIGNO DEL IMPORTE PQ NO PERMITIMOS INTRODUCIR APUNTES CON IMPORTES NEGATIVOS
-                If RS.Fields(2).Value > 0 Then
+                If Rs.Fields(2).Value > 0 Then
                     ' importe al debe en positivo
-                    cad = cad & DBSet(txtCodigo(4).Text, "N") & "," & DBSet(ampliaciond, "T") & "," & DBSet(RS.Fields(2).Value, "N") & ","
-                    cad = cad & ValorNulo & "," & ValorNulo & "," & ValorNulo & "," & ValorNulo & ",0"
+                    Cad = Cad & DBSet(txtCodigo(4).Text, "N") & "," & DBSet(ampliaciond, "T") & "," & DBSet(Rs.Fields(2).Value, "N") & ","
+                    Cad = Cad & ValorNulo & "," & ValorNulo & "," & ValorNulo & "," & ValorNulo & ",0"
                 
-                    ImporteD = ImporteD + CCur(RS.Fields(2).Value)
+                    ImporteD = ImporteD + CCur(Rs.Fields(2).Value)
                 Else
                     ' importe al haber en positivo, cambiamos el signo
-                    cad = cad & DBSet(txtCodigo(5).Text, "N") & "," & DBSet(ampliacionh, "T") & "," & ValorNulo & "," & DBSet((RS.Fields(2).Value * -1), "N") & "," & ValorNulo & ","
-                    cad = cad & ValorNulo & "," & ValorNulo & ",0"
+                    Cad = Cad & DBSet(txtCodigo(5).Text, "N") & "," & DBSet(ampliacionh, "T") & "," & ValorNulo & "," & DBSet((Rs.Fields(2).Value * -1), "N") & "," & ValorNulo & ","
+                    Cad = Cad & ValorNulo & "," & ValorNulo & ",0"
                 
-                    ImporteH = ImporteH + (CCur(RS.Fields(2).Value) * (-1))
+                    ImporteH = ImporteH + (CCur(Rs.Fields(2).Value) * (-1))
                 End If
                 
-                cad = "(" & cad & ")"
+                Cad = "(" & Cad & ")"
                 
-                b = InsertarLinAsientoDia(cad, cadMen)
-                cadMen = "Insertando Lin. Asiento: " & i
-            
+                If b Then
+                    b = InsertarLinAsientoDia(Cad, cadMen)
+                    cadMen = "Insertando Lin. Asiento: " & I
+                End If
+                
                 IncrementarProgres Me.Pb1, 1
                 Me.Refresh
                 
-                RS.MoveNext
+                Rs.MoveNext
                 
                ' ActTur = RS!codTurno
             Wend
 
-        
-            Obs = "Cambio Cierre Turno de fecha " & Format(ActFec, "dd/mm/yyyy") '& " y turno T-" & Format(AntTur, "0")
-        
-            'Insertar en la conta Cabecera Asiento
-            b = InsertarCabAsientoDia(txtCodigo(1).Text, Mc.Contador, CStr(ActFec), Obs, cadMen)
-            cadMen = "Insertando Cab. Asiento: " & cadMen
+'[Monica]18/09/2017: quito esto de aqui pq se graba primero la cabecera
+'            Obs = "Cambio Cierre Turno de fecha " & Format(ActFec, "dd/mm/yyyy") '& " y turno T-" & Format(AntTur, "0")
+'
+'            'Insertar en la conta Cabecera Asiento
+'            b = InsertarCabAsientoDia(txtCodigo(1).Text, Mc.Contador, CStr(ActFec), Obs, cadMen)
+'            cadMen = "Insertando Cab. Asiento: " & cadMen
             
-            'Insertar la linea de diferencias en el haber del cliente nuevo
-            i = i + 1
+            If b Then
+                'Insertar la linea de diferencias en el haber del cliente nuevo
+                I = I + 1
+                
+                If ImporteD > ImporteH Then
+                    Diferencia = ImporteD - ImporteH
+                Else
+                    Diferencia = ImporteH - ImporteD
+                End If
+                
+                Cad = DBSet(txtCodigo(1).Text, "N") & "," & DBSet(ActFec, "F") & "," & DBSet(Mc.Contador, "N") & ","
+                Cad = Cad & DBSet(I, "N") & "," & DBSet(CtaNuevoCliente, "T") & "," & DBSet(numdocum, "T") & ","
+                
+                If ImporteD < ImporteH Then
+                    Cad = Cad & DBSet(txtCodigo(4).Text, "N") & "," & DBSet(ampliaciond, "T") & ","
+                    Cad = Cad & DBSet(Diferencia, "N") & "," & ValorNulo & ","
+                Else
+                    Cad = Cad & DBSet(txtCodigo(5).Text, "N") & "," & DBSet(ampliacionh, "T") & ","
+                    Cad = Cad & ValorNulo & "," & DBSet(Diferencia, "N") & ","
+                End If
+                
+                Cad = Cad & ValorNulo & "," & ValorNulo & "," & ValorNulo & ",0"
+                
+                Cad = "(" & Cad & ")"
             
-            If ImporteD > ImporteH Then
-                Diferencia = ImporteD - ImporteH
-            Else
-                Diferencia = ImporteH - ImporteD
+                If b Then
+                    b = InsertarLinAsientoDia(Cad, cadMen)
+                    cadMen = "Insertando Lin. Asiento: " & I
+                End If
+                
+                IncrementarProgres Me.Pb1, 1
+        '        Me.lblProgres(1).Caption = "Insertando línea de Asiento en Contabilidad...   (" & i & " de " & NumLinea & ")"
+                Me.Refresh
+                
             End If
-            
-            cad = DBSet(txtCodigo(1).Text, "N") & "," & DBSet(ActFec, "F") & "," & DBSet(Mc.Contador, "N") & ","
-            cad = cad & DBSet(i, "N") & "," & DBSet(CtaNuevoCliente, "T") & "," & DBSet(numdocum, "T") & ","
-            
-            If ImporteD < ImporteH Then
-                cad = cad & DBSet(txtCodigo(4).Text, "N") & "," & DBSet(ampliaciond, "T") & ","
-                cad = cad & DBSet(Diferencia, "N") & "," & ValorNulo & ","
-            Else
-                cad = cad & DBSet(txtCodigo(5).Text, "N") & "," & DBSet(ampliacionh, "T") & ","
-                cad = cad & ValorNulo & "," & DBSet(Diferencia, "N") & ","
-            End If
-            
-            cad = cad & ValorNulo & "," & ValorNulo & "," & ValorNulo & ",0"
-            
-            cad = "(" & cad & ")"
-        
-            b = InsertarLinAsientoDia(cad, cadMen)
-            cadMen = "Insertando Lin. Asiento: " & i
-    
-            IncrementarProgres Me.Pb1, 1
-    '        Me.lblProgres(1).Caption = "Insertando línea de Asiento en Contabilidad...   (" & i & " de " & NumLinea & ")"
-            Me.Refresh
-            
-
         End If
 
-    Set RS = Nothing
+    Set Rs = Nothing
     
     End If
 eInsertarAsientoContabilidad:
-    If Err.Number <> 0 Then
-        MsgBox "Error en la contabilización de asientos.", vbExclamation
+    If Err.Number <> 0 Or Not b Then
+        MsgBox "Error en la contabilización de asientos. " & cadMen, vbExclamation
         InsertarAsientoContabilidad = False
         ConnConta.RollbackTrans
     Else
@@ -1447,20 +1473,20 @@ End Function
 
 
 Private Function DatosContablesRequeridos() As Boolean
-Dim i As Integer
-Dim RS As ADODB.Recordset
+Dim I As Integer
+Dim Rs As ADODB.Recordset
 
     DatosContablesRequeridos = False
     If txtCodigo(1).Text = "" Or txtCodigo(4).Text = "" Or txtCodigo(5).Text = "" Then
-        For i = 1 To ListView1.ListItems.Count
-            If ListView1.ListItems(i).Checked Then
+        For I = 1 To ListView1.ListItems.Count
+            If ListView1.ListItems(I).Checked Then
                 ' si esta la contabilizacion del cierre de turno tengo que deshacerla
                 ' realizando un asiento que introduzco en el diario
-                If EstaContabilizadoCierre(ListView1.ListItems(i).SubItems(5)) Then
+                If EstaContabilizadoCierre(ListView1.ListItems(I).SubItems(5)) Then
                     DatosContablesRequeridos = True
                     Exit Function
                 End If
             End If
-        Next i
+        Next I
     End If
 End Function
