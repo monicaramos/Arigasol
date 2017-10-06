@@ -1239,7 +1239,10 @@ Dim Orden2 As String
         'Si tiene SII
         If vParamAplic.ContabilidadNueva Then
             If vEmpresa.TieneSII Then
-                If DateDiff("d", Fecha, Now) > vEmpresa.SIIDiasAviso Then
+                '[Monica]06/10/2017: añadida la segunda condicion: fecha > vEmpresa.SIIFechaInicio
+                '                    fallaba cuando la fecha es anterior a la declaracion del SII.
+                '                    Caso de Coopic con una factura interna
+                If DateDiff("d", Fecha, Now) > vEmpresa.SIIDiasAviso And Fecha > vEmpresa.SIIFechaInicio Then
                     MensajeFechaOkConta = "Fecha fuera de periodo de comunicación SII."
                     'LLEVA SII y han trascurrido los dias
                     If vSesion.Nivel = 0 Then
