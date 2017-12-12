@@ -88,11 +88,11 @@ Public Sub ImprimirElTicketDirecto2(NumTicket As String, FechaTicket As Date, Pr
   '  Dim FechaT As Date
     Dim Rs1 As ADODB.Recordset
     Dim Rs2 As ADODB.Recordset
-    Dim rs3 As ADODB.Recordset
+    Dim Rs3 As ADODB.Recordset
     Dim rs4 As ADODB.Recordset
-    Dim Sql As String
+    Dim SQL As String
     Dim lin As String ' línea de impresión
-    Dim i As Integer
+    Dim I As Integer
     Dim N As Integer
     Dim ImporteIva As Currency
     Dim EnEfectivo As Boolean
@@ -124,18 +124,18 @@ On Error GoTo EImpTickD
 '    End If
     
     '-- Obtenemos cabeceras y pies en un recordset (rs1)
-    Sql = "select scaalb.*, ssocio.nomsocio from scaalb, ssocio where scaalb.codsocio = ssocio.codsocio "
-    Sql = Sql & " and scaalb.numalbar = " & DBSet(NumTicket, "N")
+    SQL = "select scaalb.*, ssocio.nomsocio from scaalb, ssocio where scaalb.codsocio = ssocio.codsocio "
+    SQL = SQL & " and scaalb.numalbar = " & DBSet(NumTicket, "N")
     
     Set Rs1 = New ADODB.Recordset
-    Rs1.Open Sql, Conn, adOpenForwardOnly
+    Rs1.Open SQL, Conn, adOpenForwardOnly
     If Not Rs1.EOF Then
             '-- Consultamos la forma de pago pa 2 cosas
             '   Para imprimirla en el pie y para en el caso de contado mostrar entregado
             '   y cambio.
-            Sql = "select * from sforpa where codforpa = " & CStr(Rs1!Codforpa)
+            SQL = "select * from sforpa where codforpa = " & CStr(Rs1!Codforpa)
             Set rs4 = New ADODB.Recordset
-            rs4.Open Sql, Conn, adOpenForwardOnly
+            rs4.Open SQL, Conn, adOpenForwardOnly
             If Not rs4.EOF Then
                 '[Monica]04/01/2013: efectivos
                 If rs4!TipForpa = 0 Or rs4!TipForpa = 6 Then EnEfectivo = True
@@ -153,7 +153,7 @@ On Error GoTo EImpTickD
             lin = LineaCentrada(vEmpresa.DomicilioEmpresa)
             If lin <> "" Then Printer.Print lin
             ' poblacion
-            lin = LineaCentrada(vEmpresa.CPostal & " - " & vEmpresa.Poblacion)
+            lin = LineaCentrada(vEmpresa.CPostal & " - " & vEmpresa.POBLACION)
             If lin <> "" Then Printer.Print lin
             ' provincia
             lin = LineaCentrada(vEmpresa.Provincia)
@@ -215,9 +215,9 @@ On Error GoTo EImpTickD
             lin = LineaCentrada("IVA INCLUIDO")
             Printer.Print lin
             
-            For i = 1 To 8
+            For I = 1 To 8
                 Printer.Print String(40, " ")
-            Next i
+            Next I
             
 
 '            Printer.Print Chr$(29) & Chr$(86) & "0"
@@ -251,28 +251,21 @@ On Error GoTo EImpTickD
             
             '-- Fin de impresión
             Printer.NewPage
+            
+'[Monica]11/12/2017: añado el corte de pagina
+            Printer.Print Chr$(27); "m"
+            
             Printer.EndDoc
 
 
-'            Printer.Print Chr$(29); Chr$(86); Chr$(0) 'arigasol1
-
-'            Printer.Print Chr$(29) & Chr$(86) & Chr$(0)  'arigasol4
-
-'            Dim Puerto As String            ' arigasol5
+'[Monica]11/12/2017: quito esta secuencia pq ya no es una impresora lpt1
+'            Dim Puerto As String            ' arigasol7  **********CORRECTA
 '            Dim nFicSalCajon As Integer
 '            Puerto = "LPT1"
 '            nFicSalCajon = FreeFile
 '            Open Puerto For Output As #nFicSalCajon
-'                Print #nFicSalCajon, Chr$(29); Chr$(86); Chr$(0)
+'                Print #nFicSalCajon, Chr$(27); "i"
 '            Close nFicSalCajon
-
-            Dim Puerto As String            ' arigasol7  **********CORRECTA
-            Dim nFicSalCajon As Integer
-            Puerto = "LPT1"
-            nFicSalCajon = FreeFile
-            Open Puerto For Output As #nFicSalCajon
-                Print #nFicSalCajon, Chr$(27); "i"
-            Close nFicSalCajon
 '**********
     Else
         MsgBox "No se ha encontrado el ticket " & CStr(NumTicket) & " de " & Format(FechaTicket, "dd/mm/yyyy"), vbCritical
@@ -291,7 +284,7 @@ EImpTickD:
 End Sub
 
 
-Private Sub ImprimePorLaCom(cadena As String)
+Private Sub ImprimePorLaCom(Cadena As String)
     On Error GoTo EI
     
     Dim nFicSalCajon As Integer
@@ -316,8 +309,8 @@ Private Sub ImprimePorLaCom(cadena As String)
     
     Exit Sub
 EI:
-    cadena = "Error en COM: " & vbCrLf & vbCrLf & Err.Description
-    MsgBox cadena, vbCritical
+    Cadena = "Error en COM: " & vbCrLf & vbCrLf & Err.Description
+    MsgBox Cadena, vbCritical
 End Sub
 
 
@@ -341,11 +334,11 @@ Private Function LineaCentrada(lin As String) As String
     End If
 End Function
 
-Private Function CuadraParteD(longitud As Integer, cadena As String) As String
-    CuadraParteD = Right(String(longitud, " ") & cadena, longitud)
+Private Function CuadraParteD(longitud As Integer, Cadena As String) As String
+    CuadraParteD = Right(String(longitud, " ") & Cadena, longitud)
 End Function
 
-Private Function CuadraParteI(longitud As Integer, cadena As String) As String
-    CuadraParteI = Left(cadena & String(longitud, " "), longitud)
+Private Function CuadraParteI(longitud As Integer, Cadena As String) As String
+    CuadraParteI = Left(Cadena & String(longitud, " "), longitud)
 End Function
 
