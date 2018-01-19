@@ -255,7 +255,15 @@ On Error GoTo EImpTickD
 '[Monica]11/12/2017: añado el corte de pagina
             Printer.Print Chr$(27); "m"
             
+'            Printer.Print Chr$(29) & Chr$(86)  'C1
+'            Printer.Print Chr$(29) & "V"  'C2
+'            Printer.Print Chr$(29); Chr$(86)   'C3
+'            Printer.Print Chr$(29); "V"   'C4
             Printer.EndDoc
+'            Printer.Print Chr$(29) & Chr$(86)  'C11
+'            Printer.Print Chr$(29) & "V"  'C21
+'            Printer.Print Chr$(29); Chr$(86)   'C31
+'            Printer.Print Chr$(29); "V"   'C41
 
 
 '[Monica]11/12/2017: quito esta secuencia pq ya no es una impresora lpt1

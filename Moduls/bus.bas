@@ -105,10 +105,12 @@ Public MensajeFechaOkConta As String
 'Inicio Aplicación
 Public Sub Main()
 Dim SQL As String
-    If App.PrevInstance Then
-        MsgBox "AriGasol ya se esta ejecutando", vbExclamation
-        End
-     End If
+
+'[Monica]19/01/2018: quito esto para que puedan ejecutarse mas de una sesion
+'    If App.PrevInstance Then
+'        MsgBox "AriGasol ya se esta ejecutando", vbExclamation
+'        End
+'     End If
      
      'obric la conexio
     If AbrirConexionAriGasol("root", "aritel", "arigasol") = False Then
