@@ -345,8 +345,6 @@ Public Property Get SIIFechaInicio() As Date
 End Property
 
 
-
-
 '------------------------------------------------
 'FUNCIONES del modulo Cempresa
 '------------------------------------------------

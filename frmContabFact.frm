@@ -378,6 +378,9 @@ Public NumCod As String 'Para indicar cod. Traspaso,Movimiento, etc. que llama
 
 Public CadTag As String 'Cadena con el Tag del campo que se va a poner en D/H en los listados
                         'Se necesita si el tipo de codigo es texto
+                        
+Public pFecDesde As String
+Public pFecHasta As String
 
     
 Private Conexion As Byte
@@ -438,8 +441,8 @@ Dim NumError As Long
     cadSelect = tabla & ".intconta=0 "
     
     'D/H Fecha factura
-    cDesde = Trim(txtCodigo(2).Text)
-    cHasta = Trim(txtCodigo(3).Text)
+    cDesde = Trim(txtcodigo(2).Text)
+    cHasta = Trim(txtcodigo(3).Text)
     If Not (cDesde = "" And cHasta = "") Then
         'Cadena para seleccion Desde y Hasta
         Codigo = "{" & tabla & ".fecfactu}"
@@ -448,8 +451,8 @@ Dim NumError As Long
     End If
     
     'D/H letra de serie
-    cDesde = Trim(txtCodigo(4).Text)
-    cHasta = Trim(txtCodigo(5).Text)
+    cDesde = Trim(txtcodigo(4).Text)
+    cHasta = Trim(txtcodigo(5).Text)
     If Not (cDesde = "" And cHasta = "") Then
         'Cadena para seleccion Desde y Hasta
         Codigo = "{" & tabla & ".letraser}"
@@ -458,8 +461,8 @@ Dim NumError As Long
     End If
     
     'D/H numero de factura
-    cDesde = Trim(txtCodigo(0).Text)
-    cHasta = Trim(txtCodigo(1).Text)
+    cDesde = Trim(txtcodigo(0).Text)
+    cHasta = Trim(txtcodigo(1).Text)
     If Not (cDesde = "" And cHasta = "") Then
         'Cadena para seleccion Desde y Hasta
         Codigo = "{" & tabla & ".numfactu}"
@@ -494,7 +497,15 @@ Private Sub Form_Activate()
     If PrimeraVez Then
         PrimeraVez = False
         ValoresPorDefecto
-        PonerFoco txtCodigo(6)
+        
+        '[Monica]15/02/2018: se concatenan procesos
+        If pFecDesde <> "" Then
+            txtcodigo(2).Text = pFecDesde
+            txtcodigo(7).Text = pFecDesde
+        End If
+        If pFecHasta <> "" Then txtcodigo(3).Text = pFecHasta
+        
+        PonerFoco txtcodigo(6)
     End If
     Screen.MousePointer = vbDefault
 End Sub
@@ -538,12 +549,12 @@ Dim List As Collection
 '     Orden2 = ""
 '     Orden2 = DevuelveDesdeBDNew(cConta, "parametros", "fechafin", "", "", "", "", "", "", "", "", "", "")
      
-     If txtCodigo(2).Text = "" Then
-        txtCodigo(2).Text = Orden1 'fechaini del ejercicio de la conta
+     If txtcodigo(2).Text = "" Then
+        txtcodigo(2).Text = Orden1 'fechaini del ejercicio de la conta
      End If
      
-     If txtCodigo(3).Text = "" Then
-        txtCodigo(3).Text = Orden2 'fecha fin del ejercicio de la conta
+     If txtcodigo(3).Text = "" Then
+        txtcodigo(3).Text = Orden2 'fecha fin del ejercicio de la conta
      End If
      
 
@@ -551,13 +562,13 @@ End Sub
 
 Private Sub frmBpr_DatoSeleccionado(CadenaSeleccion As String)
 'Form de Consulta de Colectivos
-    txtCodigo(indCodigo).Text = Format(RecuperaValor(CadenaSeleccion, 1), "00")
+    txtcodigo(indCodigo).Text = Format(RecuperaValor(CadenaSeleccion, 1), "00")
     txtNombre(indCodigo).Text = RecuperaValor(CadenaSeleccion, 2)
 End Sub
 
 Private Sub frmC_Selec(vFecha As Date)
  'Fecha
-    txtCodigo(CByte(imgFec(2).Tag)).Text = Format(vFecha, "dd/MM/yyyy")
+    txtcodigo(CByte(imgFec(2).Tag)).Text = Format(vFecha, "dd/MM/yyyy")
 End Sub
 
 Private Sub imgAyuda_Click(Index As Integer)
@@ -599,11 +610,11 @@ Private Sub imgFec_Click(Index As Integer)
 
     ' ***canviar l'index de imgFec pel 1r index de les imagens de buscar data***
     imgFec(2).Tag = Index 'independentment de les dates que tinga, sempre pose l'index en la 27
-    If txtCodigo(Index).Text <> "" Then frmC.NovaData = txtCodigo(Index).Text
+    If txtcodigo(Index).Text <> "" Then frmC.NovaData = txtcodigo(Index).Text
 
     frmC.Show vbModal
     Set frmC = Nothing
-    PonerFoco txtCodigo(CByte(imgFec(2).Tag) + 2)
+    PonerFoco txtcodigo(CByte(imgFec(2).Tag) + 2)
     ' ***************************
 End Sub
 
@@ -618,7 +629,7 @@ Private Sub imgBuscar_Click(Index As Integer)
             AbrirFrmBancoPropio (Index)
         
     End Select
-    PonerFoco txtCodigo(indCodigo)
+    PonerFoco txtcodigo(indCodigo)
 End Sub
 
 Private Sub Optcodigo_KeyPress(KeyAscii As Integer)
@@ -648,7 +659,7 @@ Private Sub Option1_Click(Index As Integer)
 End Sub
 
 Private Sub txtCodigo_GotFocus(Index As Integer)
-    ConseguirFoco txtCodigo(Index), 3
+    ConseguirFoco txtcodigo(Index), 3
 End Sub
 
 Private Sub txtCodigo_KeyDown(Index As Integer, KeyCode As Integer, Shift As Integer)
@@ -686,7 +697,7 @@ Private Sub txtCodigo_LostFocus(Index As Integer)
 Dim Cad As String, cadTipo As String 'tipo cliente
 
     'Quitar espacios en blanco por los lados
-    txtCodigo(Index).Text = Trim(txtCodigo(Index).Text)
+    txtcodigo(Index).Text = Trim(txtcodigo(Index).Text)
     
     'Si se ha abierto otro formulario, es que se ha pinchado en prismaticos y no
     'mostrar mensajes ni hacer nada
@@ -695,23 +706,23 @@ Dim Cad As String, cadTipo As String 'tipo cliente
     
     Select Case Index
         Case 8 ' BANCO PROPIO
-            If txtCodigo(Index).Text <> "" Then
-                PonerFormatoEntero txtCodigo(Index)
-                txtNombre(Index).Text = PonerNombreDeCod(txtCodigo(Index), "sbanco", "nombanco", "codbanpr", "N")
+            If txtcodigo(Index).Text <> "" Then
+                PonerFormatoEntero txtcodigo(Index)
+                txtNombre(Index).Text = PonerNombreDeCod(txtcodigo(Index), "sbanco", "nombanco", "codbanpr", "N")
                 If txtNombre(Index).Text = "" Then
                     MsgBox "El Banco introducido no existe. Reintroduzca.", vbExclamation
-                    PonerFoco txtCodigo(Index)
+                    PonerFoco txtcodigo(Index)
                 End If
             End If
             
         Case 2, 3, 7  'FECHAS
-            If txtCodigo(Index).Text <> "" Then PonerFormatoFecha txtCodigo(Index)
+            If txtcodigo(Index).Text <> "" Then PonerFormatoFecha txtcodigo(Index)
         
         Case 0, 1 ' NUMERO DE FACTURA
-            If txtCodigo(Index).Text <> "" Then PonerFormatoEntero txtCodigo(Index)
+            If txtcodigo(Index).Text <> "" Then PonerFormatoEntero txtcodigo(Index)
         
         Case 4, 5 ' LETRA DE SERIE
-            If txtCodigo(Index).Text <> "" Then txtCodigo(Index).Text = UCase(txtCodigo(Index).Text)
+            If txtcodigo(Index).Text <> "" Then txtcodigo(Index).Text = UCase(txtcodigo(Index).Text)
         
         
     End Select
@@ -776,7 +787,7 @@ Private Sub AbrirFrmBancoPropio(indice As Integer)
     Set frmBpr = New frmManBanco
     frmBpr.DatosADevolverBusqueda = "0|1|"
     frmBpr.DeConsulta = True
-    frmBpr.CodigoActual = txtCodigo(indCodigo)
+    frmBpr.CodigoActual = txtcodigo(indCodigo)
     frmBpr.Show vbModal
     Set frmBpr = Nothing
 End Sub
@@ -788,26 +799,26 @@ Dim b As Boolean
 
     b = True
 
-    If txtCodigo(7).Text = "" Then
+    If txtcodigo(7).Text = "" Then
         If MsgBox("Si no hay Fecha de Vencimiento se utilizará la fecha de factura." & vbCrLf & vbCrLf & "¿Desea continuar?.", vbQuestion + vbYesNo + vbDefaultButton2) = vbNo Then
             b = False
-            PonerFoco txtCodigo(7)
+            PonerFoco txtcodigo(7)
         End If
     End If
-    If txtCodigo(8).Text = "" Then
+    If txtcodigo(8).Text = "" Then
         MsgBox "Debe introducir obligatoriamente un Banco para realizar el cobro.", vbExclamation
         b = False
-        PonerFoco txtCodigo(8)
+        PonerFoco txtcodigo(8)
     End If
 
      
     '07022007 he añadido esto tambien aquí
-     If txtCodigo(2).Text = "" Then
-        txtCodigo(2).Text = Orden1 'fechaini del ejercicio de la conta
+     If txtcodigo(2).Text = "" Then
+        txtcodigo(2).Text = Orden1 'fechaini del ejercicio de la conta
      End If
      
-     If txtCodigo(3).Text = "" Then
-        txtCodigo(3).Text = Orden2 'fecha fin del ejercicio de la conta
+     If txtcodigo(3).Text = "" Then
+        txtcodigo(3).Text = Orden2 'fecha fin del ejercicio de la conta
      End If
 
 
@@ -846,23 +857,23 @@ Dim CCoste As String
      Orden2 = ""
      Orden2 = DevuelveDesdeBDNew(cConta, "parametros", "fechafin", "", "", "", "", "", "", "", "", "", "")
 
-     If txtCodigo(2).Text = "" Then
-        txtCodigo(2).Text = Orden1 'fechaini del ejercicio de la conta
+     If txtcodigo(2).Text = "" Then
+        txtcodigo(2).Text = Orden1 'fechaini del ejercicio de la conta
      End If
 
-     If txtCodigo(3).Text = "" Then
-        txtCodigo(3).Text = Orden2 'fecha fin del ejercicio de la conta
+     If txtcodigo(3).Text = "" Then
+        txtcodigo(3).Text = Orden2 'fecha fin del ejercicio de la conta
      End If
 '14/02/2007 hasta aqui lo he descomentado
 
     'comprobar si existen en Arigasol facturas anteriores al periodo solicitado
     'sin contabilizar
-    If Me.txtCodigo(2).Text <> "" Then
+    If Me.txtcodigo(2).Text <> "" Then
         SQL = "SELECT COUNT(*) FROM " & cadTabla
         If cadTabla = "schfac" Then
             SQL = SQL & " WHERE fecfactu <"
         End If
-        SQL = SQL & DBSet(txtCodigo(2), "F") & " AND intconta=0 "
+        SQL = SQL & DBSet(txtcodigo(2), "F") & " AND intconta=0 "
         If RegistrosAListar(SQL) > 0 Then
             MsgBox "Hay Facturas anteriores sin contabilizar.", vbExclamation
             Exit Sub
@@ -911,9 +922,9 @@ Dim CCoste As String
     If cadTabla = "schfac" Then
         Me.lblProgres(1).Caption = "Comprobando Nº Facturas en contabilidad ..."
         If vParamAplic.ContabilidadNueva Then
-            SQL = "anofactu>=" & Year(txtCodigo(2).Text) & " AND anofactu<= " & Year(txtCodigo(3).Text)
+            SQL = "anofactu>=" & Year(txtcodigo(2).Text) & " AND anofactu<= " & Year(txtcodigo(3).Text)
         Else
-            SQL = "anofaccl>=" & Year(txtCodigo(2).Text) & " AND anofaccl<= " & Year(txtCodigo(3).Text)
+            SQL = "anofaccl>=" & Year(txtcodigo(2).Text) & " AND anofaccl<= " & Year(txtcodigo(3).Text)
         End If
         b = ComprobarNumFacturas(cadTabla, SQL)
     End If
@@ -976,7 +987,7 @@ Dim CCoste As String
     '-----------------------------------------------------------------------------
     Me.lblProgres(1).Caption = "Comprobando Cuentas Contables del Banco en contabilidad ..."
     
-    b = ComprobarCtaContable(CStr(txtCodigo(8).Text), 4)
+    b = ComprobarCtaContable(CStr(txtcodigo(8).Text), 4)
     IncrementarProgres Me.Pb1, 20
     Me.Refresh
     If Not b Then
@@ -1019,7 +1030,7 @@ Dim CCoste As String
     
     
     
-    b = PasarFacturasAContab(cadTabla, txtCodigo(7).Text, txtCodigo(8).Text, CCoste)
+    b = PasarFacturasAContab(cadTabla, txtcodigo(7).Text, txtcodigo(8).Text, CCoste)
     
     If Not b Then
         If tmpErrores Then

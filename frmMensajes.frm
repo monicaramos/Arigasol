@@ -1391,7 +1391,7 @@ Dim Seleccionados As Integer
 Dim Cad As String, SQL As String
 Dim articulo As String
 Dim Rs As ADODB.Recordset
-Dim C1 As String * 10, C2 As String * 10, c3 As String * 10
+Dim c1 As String * 10, C2 As String * 10, c3 As String * 10
 
 
     If OpcionMensaje = 4 Then
@@ -1474,29 +1474,29 @@ Dim C1 As String * 10, C2 As String * 10, c3 As String * 10
     'Lineas Factura a rectificar
         'cad = "(" & cadWHERE & ")"
         Cad = ""
-        C1 = ""
+        c1 = ""
         C2 = ""
         c3 = ""
         SQL = ""
         For I = 1 To ListView2.ListItems.Count
             If ListView2.ListItems(I).Checked Then
                 If SQL = "" Then
-                    C1 = DBSet(ListView2.ListItems(I), "T", "N")
+                    c1 = DBSet(ListView2.ListItems(I), "T", "N")
                     C2 = ListView2.ListItems(I).ListSubItems(1)
 '                    c3 = ListView2.ListItems(i).ListSubItems(2)
-                    Cad = "(codtipoa=" & Trim(C1) & " and numalbar=" & Val(C2) & " and numlinea IN (" & ListView2.ListItems(I).ListSubItems(2)
+                    Cad = "(codtipoa=" & Trim(c1) & " and numalbar=" & Val(C2) & " and numlinea IN (" & ListView2.ListItems(I).ListSubItems(2)
 
                 Else
-                    If Trim(DBSet(ListView2.ListItems(I), "T", "N")) = Trim(C1) And Trim(ListView2.ListItems(I).ListSubItems(1)) = Trim(C2) Then
+                    If Trim(DBSet(ListView2.ListItems(I), "T", "N")) = Trim(c1) And Trim(ListView2.ListItems(I).ListSubItems(1)) = Trim(C2) Then
                     'es el mismo albaran y concatenamos lineas
                         Cad = "," & ListView2.ListItems(I).ListSubItems(2)
 
                     Else
                         If Cad <> "" Then SQL = SQL & ")) "
-                        C1 = DBSet(ListView2.ListItems(I), "T", "N")
+                        c1 = DBSet(ListView2.ListItems(I), "T", "N")
                         C2 = ListView2.ListItems(I).ListSubItems(1)
 '                    c3 = ListView2.ListItems(i).ListSubItems(2)
-                        Cad = " or (codtipoa=" & Trim(C1) & " and numalbar=" & Val(C2) & " and numlinea IN (" & ListView2.ListItems(I).ListSubItems(2)
+                        Cad = " or (codtipoa=" & Trim(c1) & " and numalbar=" & Val(C2) & " and numlinea IN (" & ListView2.ListItems(I).ListSubItems(2)
                         
 '                       cad=cad &
                     End If
@@ -1803,7 +1803,7 @@ Private Sub Combo1_GotFocus(Index As Integer)
 End Sub
 
 Private Sub Form_Activate()
-Dim Ok As Boolean
+Dim OK As Boolean
 
     
     Select Case OpcionMensaje
@@ -1812,9 +1812,9 @@ Dim Ok As Boolean
                 PrimeraVez = False
                 Me.Refresh
                 Screen.MousePointer = vbHourglass
-                Ok = ObtenerTamanyosArray
-                If Ok Then Ok = SeparaCampos
-                If Not Ok Then
+                OK = ObtenerTamanyosArray
+                If OK Then OK = SeparaCampos
+                If Not OK Then
                     'Error en SQL
                     'Salimos
                     Unload Me
@@ -1875,7 +1875,7 @@ Dim Cad As String
 On Error Resume Next
 
     Me.FrameCobrosPtes.visible = False
-    Me.frameAcercaDE.visible = False
+    Me.FrameAcercaDe.visible = False
     Me.FrameNSeries.visible = False
     Me.FrameComponentes.visible = False
     Me.FrameComponentes2.visible = False
@@ -1898,13 +1898,13 @@ On Error Resume Next
             PonerFrameCobrosPtesVisible True, h, w
             CargarListaCobrosPtes
             Me.Caption = "Cobros Pendientes"
-            PonerFocoBtn Me.CmdAceptarCobros
+            PonerFocoBtn Me.cmdAceptarCobros
             
         Case 2 'Mensaje de no hay suficiente Stock
             PonerFrameCobrosPtesVisible True, h, w
             CargarListaArtSinStock (vCampos)
             Me.Caption = "Artículos sin stock suficiente"
-            PonerFocoBtn Me.CmdAceptarCobros
+            PonerFocoBtn Me.cmdAceptarCobros
             
         Case 3 'Mensaje ACERCA DE
             CargaImagen
@@ -1972,7 +1972,7 @@ On Error Resume Next
             PonerFrameCobrosPtesVisible True, h, w
             CargarListaErrContab
             Me.Caption = "Facturas NO contabilizadas: "
-            PonerFocoBtn Me.CmdAceptarCobros
+            PonerFocoBtn Me.cmdAceptarCobros
         
         Case 11 'Lineas Factura a Rectificar
             PonerFrameNSeriesVisible True, h, w
@@ -1990,7 +1990,7 @@ On Error Resume Next
             Me.Label1(0).Caption = "Existen Albaranes que NO se van a Facturar:"
             Me.Label1(0).Top = 260
             Me.Label1(0).Left = 480
-            PonerFocoBtn Me.CmdAceptarCobros
+            PonerFocoBtn Me.cmdAceptarCobros
             
         Case 13 'Muestra Errores
             h = 6000
@@ -2094,32 +2094,32 @@ Private Sub PonerFrameCobrosPtesVisible(visible As Boolean, ByRef h As Integer, 
             Me.Label1(0).Caption = "CLIENTE: " & vCampos
         Case 2
             w = 8800
-            Me.CmdAceptarCobros.Top = 4000
-            Me.CmdAceptarCobros.Left = 4200
+            Me.cmdAceptarCobros.Top = 4000
+            Me.cmdAceptarCobros.Left = 4200
         Case 5 'Componentes
             w = 6000
             h = 5000
-            Me.CmdAceptarCobros.Left = 4000
+            Me.cmdAceptarCobros.Left = 4000
 
         Case 6, 7 'Prefacturar Albaranes
             w = 7000
             h = 6000
-            Me.CmdAceptarCobros.Top = 5400
-            Me.CmdAceptarCobros.Left = 4600
+            Me.cmdAceptarCobros.Top = 5400
+            Me.cmdAceptarCobros.Left = 4600
 
         Case 10, 12 'Errores al contabilizar facturas
             h = 6000
             w = 8400
-            Me.CmdAceptarCobros.Top = 5300
-            Me.CmdAceptarCobros.Left = 4900
+            Me.cmdAceptarCobros.Top = 5300
+            Me.cmdAceptarCobros.Left = 4900
             If OpcionMensaje = 12 Then
-                Me.CmdCancelarCobros.Top = 5300
-                Me.CmdCancelarCobros.Left = 4600
-                Me.CmdAceptarCobros.Left = 3300
+                Me.cmdCancelarCobros.Top = 5300
+                Me.cmdCancelarCobros.Left = 4600
+                Me.cmdAceptarCobros.Left = 3300
                 Me.Label1(1).Top = 4800
                 Me.Label1(1).Left = 3400
-                Me.CmdAceptarCobros.Caption = "&SI"
-                Me.CmdCancelarCobros.Caption = "&NO"
+                Me.cmdAceptarCobros.Caption = "&SI"
+                Me.cmdCancelarCobros.Caption = "&NO"
             End If
     End Select
             
@@ -2128,7 +2128,7 @@ Private Sub PonerFrameCobrosPtesVisible(visible As Boolean, ByRef h As Integer, 
     If visible = True Then
         Me.txtParam.visible = (OpcionMensaje = 6 Or OpcionMensaje = 7)
         Me.Label1(0).visible = (OpcionMensaje = 1) Or (OpcionMensaje = 5) Or (OpcionMensaje = 12)
-        Me.CmdCancelarCobros.visible = (OpcionMensaje = 12)
+        Me.cmdCancelarCobros.visible = (OpcionMensaje = 12)
         Me.Label1(1).visible = (OpcionMensaje = 12)
     End If
 End Sub
@@ -2159,16 +2159,16 @@ End Sub
 Private Sub PonerFrameAcercaDeVisible(visible As Boolean, ByRef h As Integer, ByRef w As Integer)
 'Pone el Frame ACERCA DE visible y Ajustado al Formulario
 
-    Me.frameAcercaDE.visible = visible
+    Me.FrameAcercaDe.visible = visible
     If visible = True Then
         'Ajustar Tamaño del Frame para ajustar tamaño de Formulario al del Frame
-        Me.frameAcercaDE.Top = -90
-        Me.frameAcercaDE.Left = 0
-        Me.frameAcercaDE.Height = 4555
-        Me.frameAcercaDE.Width = 6600
+        Me.FrameAcercaDe.Top = -90
+        Me.FrameAcercaDe.Left = 0
+        Me.FrameAcercaDe.Height = 4555
+        Me.FrameAcercaDe.Width = 6600
         
-        w = Me.frameAcercaDE.Width
-        h = Me.frameAcercaDE.Height
+        w = Me.FrameAcercaDe.Width
+        h = Me.FrameAcercaDe.Height
     End If
 End Sub
 
@@ -3671,11 +3671,20 @@ Dim It As ListItem
         
         
         If vEmpresa.TieneSII Then
-            If DBLet(Rs!Fecha1, "F") < DateAdd("d", vEmpresa.SIIDiasAviso * (-1), Now) Then
+'[Monica]19/02/2018: lo cambiamos por la funcion de David, y añadimos que si es igual esté en azul
+'            If DBLet(Rs!Fecha1, "F") < DateAdd("d", vEmpresa.SIIDiasAviso * (-1), Now) Then
+            If DBLet(Rs!Fecha1, "F") < UltimaFechaCorrectaSII(vEmpresa.SIIDiasAviso, Now) Then
                 It.ForeColor = vbRed
                 It.ListSubItems.item(1).ForeColor = vbRed
                 It.ListSubItems.item(2).ForeColor = vbRed
                 It.ListSubItems.item(3).ForeColor = vbRed
+            Else
+                If DBLet(Rs!Fecha1, "F") = UltimaFechaCorrectaSII(vEmpresa.SIIDiasAviso, Now) Then
+                    It.ForeColor = vbBlue
+                    It.ListSubItems.item(1).ForeColor = vbBlue
+                    It.ListSubItems.item(2).ForeColor = vbBlue
+                    It.ListSubItems.item(3).ForeColor = vbBlue
+                End If
             End If
         End If
         

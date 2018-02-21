@@ -87,9 +87,7 @@ Public Const SerieFraPro = "1"
 Public ResultadoFechaContaOK As Byte
 Public MensajeFechaOkConta As String
 
-
-
-
+Public DesdeCierreTurno As Boolean
 
 ' **** DATOS DEL LOGIN ****
 'Public CodEmple As Integer
@@ -156,9 +154,44 @@ Dim SQL As String
     
     If vParamAplic.ContabilidadNueva And (vSesion.Nivel = 0 Or vSesion.Nivel = 1) Then FrasPendientesContabilizar False
     
-    
-    
 End Sub
+
+
+Public Function UltimaFechaCorrectaSII(DiasAVisoSII As Integer, FechaPresentacion As Date) As Date
+Dim DiaSemanaPresen As Integer
+Dim DiaSemanaUltimoDiaPresentar As Integer
+Dim F As Date
+Dim Resta As Integer
+    
+    If DiasAVisoSII > 5 Then
+        UltimaFechaCorrectaSII = DateAdd("d", -DiasAVisoSII, FechaPresentacion)
+    Else
+        DiaSemanaPresen = Weekday(FechaPresentacion, vbMonday)
+        If DiaSemanaPresen >= 6 Then
+            'Si presento el sabado o el domingo tengo mas dias
+            If DiaSemanaPresen = 6 Then
+                Resta = DiasAVisoSII
+            Else
+                Resta = DiasAVisoSII + 1
+            End If
+        Else
+            F = DateAdd("d", -DiasAVisoSII, FechaPresentacion)
+            DiaSemanaUltimoDiaPresentar = Weekday(F, vbMonday)
+            If DiaSemanaUltimoDiaPresentar > DiaSemanaPresen Then
+                Resta = DiasAVisoSII + 2
+            Else
+                'Directamente la resta son 4
+                Resta = DiasAVisoSII
+            End If
+        End If
+        UltimaFechaCorrectaSII = DateAdd("d", -Resta, FechaPresentacion)
+    End If
+    UltimaFechaCorrectaSII = Format(UltimaFechaCorrectaSII, "dd/mm/yyyy")
+
+End Function
+
+
+
 
 Public Sub FrasPendientesContabilizar(EsRecoleccion As Boolean)
 Dim SQL As String
@@ -176,7 +209,6 @@ Dim frmMens As frmMensajes
     Conn.Execute SQL
 
     SQLinsert = "insert into tmpinformes (codusu,codigo1,nombre1,importe1,nombre2,fecha1,importe2) "
-
         
     SQL = " select " & vSesion.Codigo & ",0, concat(letraser,numfactu),schfac.codsocio, nomsocio, fecfactu, totalfac from schfac inner join ssocio on schfac.codsocio = ssocio.codsocio where intconta = 0 "
     If vEmpresa.TieneSII Then
@@ -194,10 +226,7 @@ Dim frmMens As frmMensajes
         SQL = SQL & " and fecrecep >= " & DBSet(vEmpresa.SIIFechaInicio, "F") & " and fecrecep <= " & DBSet(DateAdd("d", -1, Now), "F")
     End If
 
-
     Conn.Execute SQLinsert & SQL
-            
-            
     
     SQL = "select codusu,codigo1,nombre1,importe1,nombre2,fecha1,importe2 from tmpinformes where codusu = " & vSesion.Codigo
     
@@ -215,7 +244,6 @@ Dim frmMens As frmMensajes
 eFrasPendientesContabilizar:
     MuestraError Err.Number, "Facturas Pendientes de Integrar a Contabilidad", Err.Description
 End Sub
-
 
 
 
@@ -666,18 +694,18 @@ End Sub
 '
 '   Cogemos un numero formateado: 1.256.256,98  y deevolvemos 1256256,98
 '   Tiene que venir numérico
-Public Function ImporteFormateado(Importe As String) As Double
+Public Function ImporteFormateado(IMPORTE As String) As Double
 Dim I As Integer
 
-    If Importe = "" Then
+    If IMPORTE = "" Then
         ImporteFormateado = 0
     Else
         'Primero quitamos los puntos
         Do
-            I = InStr(1, Importe, ".")
-            If I > 0 Then Importe = Mid(Importe, 1, I - 1) & Mid(Importe, I + 1)
+            I = InStr(1, IMPORTE, ".")
+            If I > 0 Then IMPORTE = Mid(IMPORTE, 1, I - 1) & Mid(IMPORTE, I + 1)
         Loop Until I = 0
-        ImporteFormateado = Importe
+        ImporteFormateado = IMPORTE
     End If
 End Function
 
@@ -1244,7 +1272,10 @@ Dim Orden2 As String
                 '[Monica]06/10/2017: añadida la segunda condicion: fecha > vEmpresa.SIIFechaInicio
                 '                    fallaba cuando la fecha es anterior a la declaracion del SII.
                 '                    Caso de Coopic con una factura interna
-                If DateDiff("d", Fecha, Now) > vEmpresa.SIIDiasAviso And Fecha > vEmpresa.SIIFechaInicio Then
+'                If DateDiff("d",Fecha, Now) > vEmpresa.SIIDiasAviso And Fecha > vEmpresa.SIIFechaInicio Then
+
+                '[Monica]19/02/2018: comprobamos la fecha para ver si es correcta con la funcion de david con los fines de semana
+                If Fecha < UltimaFechaCorrectaSII(vEmpresa.SIIDiasAviso, Now) Then
                     MensajeFechaOkConta = "Fecha fuera de periodo de comunicación SII."
                     'LLEVA SII y han trascurrido los dias
                     If vSesion.Nivel = 0 Then
@@ -1263,6 +1294,30 @@ Dim Orden2 As String
     End If
 
 End Function
+
+
+Private Function DateDiffSinFinde(FecIni As Date, FecFin As Date)
+Dim Finde As Integer
+Dim F1 As Date
+Dim F2 As Date
+Dim difdias As Integer
+Dim DiaIni As Integer
+Dim I As Integer
+    
+    Finde = 0
+    F1 = FecIni
+    F2 = FecFin
+    difdias = DateDiff("d", F1, F2)
+    DiaIni = Day(F1)
+    For I = DiaIni To difdias + 1
+        F1 = DateAdd("d", 1, F1)
+        If Weekday(F1, vbMonday) >= 6 Then Finde = Finde + 1
+    Next I
+    
+    DateDiffSinFinde = DateDiff("d", F1, F2) + Finde
+    
+End Function
+
 
 '--------------------------------------------------------------------
 '-------------------------------------------------------------------

@@ -137,6 +137,10 @@ Attribute VB_Exposed = False
 
 Option Explicit
 
+Public pFecDesde As String
+Public pFecHasta As String
+
+
 Private numser As String 'LETRA DE SERIE
 Private TotalImp As Currency
     
@@ -148,6 +152,7 @@ Private HaDevueltoDatos As Boolean
 Private WithEvents frmC As frmCal 'calendario fechas
 Attribute frmC.VB_VarHelpID = -1
 
+Private frmContFact As frmContabFact
 
 Dim indCodigo As Integer 'indice para txtCodigo
 Dim indFrame As Single 'nº de frame en el que estamos
@@ -182,6 +187,19 @@ Dim I As Byte
         If TraspasoTPV(cDesde, cHasta) Then
             MsgBox "Traspaso a TPV realizado correctamente.", vbExclamation
             Pb1.visible = False
+            
+            '[Monica]15/02/2018: si es Alzira preguntamos si quiere hacer el traspaso de TPV
+            If vParamAplic.Cooperativa = 1 And DesdeCierreTurno Then
+                If MsgBox("¿ Desea realizar la contabilización de las facturas TPV ?", vbQuestion + vbYesNo + vbDefaultButton1) = vbYes Then
+                    Set frmContFact = New frmContabFact
+                    frmContFact.pFecDesde = txtCodigo(2).Text
+                    frmContFact.pFecHasta = txtCodigo(3).Text
+                    
+                    frmContFact.Show vbModal
+                    Set frmContFact = Nothing
+                End If
+            End If
+                
             cmdCancel_Click
         End If
     End If
@@ -196,6 +214,10 @@ Private Sub Form_Activate()
     If PrimeraVez Then
         PrimeraVez = False
         Pb1.visible = False
+        '[Monica]15/02/2018: se concatenan procesos
+        If pFecDesde <> "" Then txtCodigo(2).Text = pFecDesde
+        If pFecHasta <> "" Then txtCodigo(3).Text = pFecHasta
+        
         PonerFoco txtCodigo(2)
     End If
     Screen.MousePointer = vbDefault

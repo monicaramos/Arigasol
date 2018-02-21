@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.2#0"; "MSCOMCTL.OCX"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Begin VB.Form frmContCieTurno 
    BorderStyle     =   3  'Fixed Dialog
@@ -438,6 +438,8 @@ Attribute frmConce.VB_VarHelpID = -1
 Private WithEvents frmTDia As frmDiaConta 'diarios de contabilidad
 Attribute frmTDia.VB_VarHelpID = -1
 
+Private frmTPV As frmTrasTpv
+
 
 'GENERALES PARA PASARLE A CRYSTAL REPORT
 Private cadFormula As String 'Cadena con la FormulaSelection para Crystal Report
@@ -468,68 +470,68 @@ Dim cerrar As Boolean
 End Sub
 
 Private Sub cmdAceptar_Click()
-Dim Sql As String
+Dim SQL As String
 Dim I As Byte
-Dim cadWHERE As String
+Dim cadWhere As String
 
     If Not DatosOk Then Exit Sub
              
-    FechasIguales = (txtcodigo(0).Text = txtcodigo(6).Text)
+    FechasIguales = (txtCodigo(0).Text = txtCodigo(6).Text)
     
     If FechasIguales Then
-        Sql = "SELECT count(*)" & _
+        SQL = "SELECT count(*)" & _
               " FROM srecau, sforpa " & _
-              "WHERE srecau.fechatur = " & DBSet(txtcodigo(0).Text, "F") & " and " & _
-                   " srecau.codturno = " & DBSet(txtcodigo(1).Text, "N") & " and " & _
+              "WHERE srecau.fechatur = " & DBSet(txtCodigo(0).Text, "F") & " and " & _
+                   " srecau.codturno = " & DBSet(txtCodigo(1).Text, "N") & " and " & _
                    " srecau.codforpa = sforpa.codforpa and " & _
                    " srecau.intconta = 0 and " & _
                    " sforpa.cuadresn = 1 and not sforpa.codmacta is null and mid(sforpa.codmacta,1,1) <> ' '"
     Else
         ' si han puesto mas de un dia, no se tiene en cuenta el turno, son todos los turnos entre esas fechas
-        Sql = "SELECT count(*)" & _
+        SQL = "SELECT count(*)" & _
               " FROM srecau, sforpa " & _
-              "WHERE srecau.fechatur >= " & DBSet(txtcodigo(0).Text, "F") & " and " & _
-                   " srecau.fechatur <= " & DBSet(txtcodigo(6).Text, "F") & " and " & _
+              "WHERE srecau.fechatur >= " & DBSet(txtCodigo(0).Text, "F") & " and " & _
+                   " srecau.fechatur <= " & DBSet(txtCodigo(6).Text, "F") & " and " & _
                    " srecau.codforpa = sforpa.codforpa and " & _
                    " srecau.intconta = 0 and " & _
                    " sforpa.cuadresn = 1 and not sforpa.codmacta is null and mid(sforpa.codmacta,1,1) <> ' '"
                    
-        CadFechas = DevuelveFechas(Sql)
+        CadFechas = DevuelveFechas(SQL)
         
     End If
     
-    If RegistrosAListar(Sql) = 0 Then
+    If RegistrosAListar(SQL) = 0 Then
         MsgBox "No existen datos a contabilizar a esa fecha.", vbExclamation
         ' añadido, se han de marcar como contabilizados
         If FechasIguales Then
-            Sql = "update srecau set intconta = 1 where srecau.fechatur = " & DBSet(txtcodigo(0).Text, "F") & _
-                 " and srecau.codturno = " & DBSet(txtcodigo(1).Text, "N")
+            SQL = "update srecau set intconta = 1 where srecau.fechatur = " & DBSet(txtCodigo(0).Text, "F") & _
+                 " and srecau.codturno = " & DBSet(txtCodigo(1).Text, "N")
         Else
 '[Monica]19/12/2012: Corrijo error de si una fecha esta contabilizada que no la incluya en un rango de fechas mayor
 '            Sql = "update srecau set intconta = 1 where srecau.fechatur >= " & DBSet(txtcodigo(0).Text, "F") & _
 '                 " and srecau.fechatur <= " & DBSet(txtcodigo(6).Text, "F")
-            Sql = "update srecau set intconta = 1 where srecau.fechatur in " & CadFechas
+            SQL = "update srecau set intconta = 1 where srecau.fechatur in " & CadFechas
 
         End If
-        Conn.Execute Sql
+        Conn.Execute SQL
         Exit Sub
     End If
     
     
     If FechasIguales Then
-        cadWHERE = " scaalb.fecalbar = " & DBSet(txtcodigo(0).Text, "F") & " and " & _
-                   " scaalb.codturno = " & DBSet(txtcodigo(1).Text, "N") & " and " & _
+        cadWhere = " scaalb.fecalbar = " & DBSet(txtCodigo(0).Text, "F") & " and " & _
+                   " scaalb.codturno = " & DBSet(txtCodigo(1).Text, "N") & " and " & _
                    " sforpa.contabilizasn = 1 "
     Else
 '[Monica]19/12/2012: Corrijo error de si una fecha esta contabilizada que no la incluya en un rango de fechas mayor
 '        cadWhere = " scaalb.fecalbar >= " & DBSet(txtcodigo(0).Text, "F") & " and " & _
 '                   " scaalb.fecalbar <= " & DBSet(txtcodigo(6).Text, "F") & " and " & _
 '                   " sforpa.contabilizasn = 1 "
-        cadWHERE = " scaalb.fecalbar in " & CadFechas & " and " & _
+        cadWhere = " scaalb.fecalbar in " & CadFechas & " and " & _
                    " sforpa.contabilizasn = 1 "
     End If
     
-    ContabilizarCierre (cadWHERE)
+    ContabilizarCierre (cadWhere)
      'Eliminar la tabla TMP
     BorrarTMPErrComprob
 
@@ -550,7 +552,7 @@ End Sub
 
 
 Private Function DevuelveFechas(vSQL As String) As String
-Dim Sql2 As String
+Dim sql2 As String
 Dim Rs As ADODB.Recordset
 Dim CadResul As String
 
@@ -558,10 +560,10 @@ Dim CadResul As String
 
     CadResul = ""
     
-    Sql2 = Replace(vSQL, "count(*)", "distinct fechatur")
+    sql2 = Replace(vSQL, "count(*)", "distinct fechatur")
     
     Set Rs = New ADODB.Recordset
-    Rs.Open Sql2, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+    Rs.Open sql2, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
     
     While Not Rs.EOF
         CadResul = CadResul & DBSet(Rs!fechatur, "F") & ","
@@ -590,7 +592,7 @@ End Sub
 Private Sub Form_Activate()
     If PrimeraVez Then
         PrimeraVez = False
-        PonerFoco txtcodigo(0)
+        PonerFoco txtCodigo(0)
     End If
     Screen.MousePointer = vbDefault
 End Sub
@@ -607,17 +609,17 @@ Dim List As Collection
      Me.imgBuscar(4).Picture = frmPpal.imgListImages16.ListImages(1).Picture
      Me.imgBuscar(5).Picture = frmPpal.imgListImages16.ListImages(1).Picture
      Me.imgBuscar(7).Picture = frmPpal.imgListImages16.ListImages(1).Picture
-     txtcodigo(0).Text = Format(Now, "dd/mm/yyyy")
-     txtcodigo(6).Text = txtcodigo(0).Text
+     txtCodigo(0).Text = Format(Now, "dd/mm/yyyy")
+     txtCodigo(6).Text = txtCodigo(0).Text
      
-     txtcodigo(2).Text = Format(vParamAplic.NumDiario, "000")
-     txtcodigo(4).Text = Format(vParamAplic.ConceptoDebe, "000")
-     txtcodigo(5).Text = Format(vParamAplic.ConceptoHaber, "000")
-     txtcodigo(7).Text = Format(vParamAplic.ConceptoHaberResto, "000")
-     txtNombre(2).Text = DevuelveDesdeBDNew(cConta, "tiposdiario", "desdiari", "numdiari", txtcodigo(2).Text, "N")
-     txtNombre(4).Text = PonerNombreConcepto(txtcodigo(4))
-     txtNombre(5).Text = PonerNombreConcepto(txtcodigo(5))
-     txtNombre(7).Text = PonerNombreConcepto(txtcodigo(7))
+     txtCodigo(2).Text = Format(vParamAplic.NumDiario, "000")
+     txtCodigo(4).Text = Format(vParamAplic.ConceptoDebe, "000")
+     txtCodigo(5).Text = Format(vParamAplic.ConceptoHaber, "000")
+     txtCodigo(7).Text = Format(vParamAplic.ConceptoHaberResto, "000")
+     txtNombre(2).Text = DevuelveDesdeBDNew(cConta, "tiposdiario", "desdiari", "numdiari", txtCodigo(2).Text, "N")
+     txtNombre(4).Text = PonerNombreConcepto(txtCodigo(4))
+     txtNombre(5).Text = PonerNombreConcepto(txtCodigo(5))
+     txtNombre(7).Text = PonerNombreConcepto(txtCodigo(7))
     '###Descomentar
 '    CommitConexion
          
@@ -634,18 +636,18 @@ End Sub
 
 Private Sub frmC_Selec(vFecha As Date)
  'Fecha
-    txtcodigo(indCodigo) = Format(vFecha, "dd/mm/yyyy") 'CByte(imgFec(0).Tag)).Text = Format(vFecha, "dd/MM/yyyy")
+    txtCodigo(indCodigo) = Format(vFecha, "dd/mm/yyyy") 'CByte(imgFec(0).Tag)).Text = Format(vFecha, "dd/MM/yyyy")
 End Sub
 
 Private Sub frmTDia_DatoSeleccionado(CadenaSeleccion As String)
 'Form de Consulta de Clientes
-    txtcodigo(indCodigo).Text = Format(RecuperaValor(CadenaSeleccion, 1), "00")
+    txtCodigo(indCodigo).Text = Format(RecuperaValor(CadenaSeleccion, 1), "00")
     txtNombre(indCodigo).Text = RecuperaValor(CadenaSeleccion, 2)
 End Sub
 
 Private Sub frmConce_DatoSeleccionado(CadenaSeleccion As String)
 'Form de Consulta de Clientes
-    txtcodigo(indCodigo).Text = Format(RecuperaValor(CadenaSeleccion, 1), "000")
+    txtCodigo(indCodigo).Text = Format(RecuperaValor(CadenaSeleccion, 1), "000")
     txtNombre(indCodigo).Text = RecuperaValor(CadenaSeleccion, 2)
 End Sub
 
@@ -697,11 +699,11 @@ Private Sub imgFec_Click(Index As Integer)
 
     ' ***canviar l'index de imgFec pel 1r index de les imagens de buscar data***
     imgFec(0).Tag = indCodigo 'independentment de les dates que tinga, sempre pose l'index en la 27
-    If txtcodigo(indCodigo).Text <> "" Then frmC.NovaData = txtcodigo(indCodigo).Text
+    If txtCodigo(indCodigo).Text <> "" Then frmC.NovaData = txtCodigo(indCodigo).Text
 
     frmC.Show vbModal
     Set frmC = Nothing
-    PonerFoco txtcodigo(indCodigo) 'CByte(imgFec(0).Tag) + 1)
+    PonerFoco txtCodigo(indCodigo) 'CByte(imgFec(0).Tag) + 1)
     ' ***************************
 End Sub
 
@@ -718,7 +720,7 @@ Private Sub imgBuscar_Click(Index As Integer)
             AbrirFrmConceptos (Index)
         
     End Select
-    PonerFoco txtcodigo(indCodigo)
+    PonerFoco txtCodigo(indCodigo)
 End Sub
 
 Private Sub Optcodigo_KeyPress(KeyAscii As Integer)
@@ -736,7 +738,7 @@ Private Sub OptNombre_KeyPress(KeyAscii As Integer)
 End Sub
 
 Private Sub txtCodigo_GotFocus(Index As Integer)
-    ConseguirFoco txtcodigo(Index), 3
+    ConseguirFoco txtCodigo(Index), 3
 End Sub
 
 Private Sub txtCodigo_KeyDown(Index As Integer, KeyCode As Integer, Shift As Integer)
@@ -773,10 +775,10 @@ Private Sub KEYFecha(KeyAscii As Integer, indice As Integer)
 End Sub
 
 Private Sub txtCodigo_LostFocus(Index As Integer)
-Dim cad As String, cadTipo As String 'tipo cliente
+Dim Cad As String, cadTipo As String 'tipo cliente
 
     'Quitar espacios en blanco por los lados
-    txtcodigo(Index).Text = Trim(txtcodigo(Index).Text)
+    txtCodigo(Index).Text = Trim(txtCodigo(Index).Text)
     
     'Si se ha abierto otro formulario, es que se ha pinchado en prismaticos y no
     'mostrar mensajes ni hacer nada
@@ -785,9 +787,9 @@ Dim cad As String, cadTipo As String 'tipo cliente
     
     Select Case Index
         Case 2 ' NUMERO DE DIARIO
-            If txtcodigo(Index).Text <> "" Then
+            If txtCodigo(Index).Text <> "" Then
                 txtNombre(Index).Text = ""
-                txtNombre(Index).Text = DevuelveDesdeBDNew(cConta, "tiposdiario", "desdiari", "numdiari", txtcodigo(Index).Text, "N")
+                txtNombre(Index).Text = DevuelveDesdeBDNew(cConta, "tiposdiario", "desdiari", "numdiari", txtCodigo(Index).Text, "N")
                 If txtNombre(Index).Text = "" Then
                     MsgBox "Número de Diario no existe en la contabilidad. Reintroduzca.", vbExclamation
 '                    PonerFoco txtcodigo(Index)
@@ -795,17 +797,17 @@ Dim cad As String, cadTipo As String 'tipo cliente
             End If
         
         Case 4, 5, 7 'CONCEPTOS
-            If txtcodigo(Index).Text <> "" Then txtNombre(Index).Text = PonerNombreConcepto(txtcodigo(Index))
+            If txtCodigo(Index).Text <> "" Then txtNombre(Index).Text = PonerNombreConcepto(txtCodigo(Index))
             If txtNombre(Index).Text = "" Then
                 MsgBox "Número de Concepto no existe en la contabilidad. Reintroduzca.", vbExclamation
 '                PonerFoco txtcodigo(Index)
             End If
 
         Case 0, 3, 6 'FECHAS
-            If txtcodigo(Index).Text <> "" Then PonerFormatoFecha txtcodigo(Index)
+            If txtCodigo(Index).Text <> "" Then PonerFormatoFecha txtCodigo(Index)
             '26/03/2007 cuando cambien la fecha del cierre cambia la del asiento
             If Index = 0 Then 'And txtcodigo(3).Text = "" Then
-                txtcodigo(3).Text = txtcodigo(0).Text
+                txtCodigo(3).Text = txtCodigo(0).Text
             End If
             
     End Select
@@ -857,7 +859,7 @@ Private Sub AbrirFrmDiario(indice As Integer)
     indCodigo = indice
     Set frmTDia = New frmDiaConta
     frmTDia.DatosADevolverBusqueda = "0|1|"
-    frmTDia.CodigoActual = txtcodigo(indCodigo)
+    frmTDia.CodigoActual = txtCodigo(indCodigo)
     frmTDia.Show vbModal
     Set frmTDia = Nothing
 End Sub
@@ -866,24 +868,24 @@ Private Sub AbrirFrmConceptos(indice As Integer)
     indCodigo = indice
     Set frmConce = New frmConceConta
     frmConce.DatosADevolverBusqueda = "0|1|"
-    frmConce.CodigoActual = txtcodigo(indCodigo)
+    frmConce.CodigoActual = txtCodigo(indCodigo)
     frmConce.Show vbModal
     Set frmConce = Nothing
 End Sub
  
-Private Sub ContabilizarCierre(cadWHERE As String)
+Private Sub ContabilizarCierre(cadWhere As String)
 'Contabiliza Facturas de Clientes o de Proveedores
-Dim Sql As String
+Dim SQL As String
 Dim b As Boolean
 Dim tmpErrores As Boolean 'Indica si se creo correctamente la tabla de errores
 Dim CCoste As String
-Dim cadTABLA As String
+Dim cadTabla As String
 
-    Sql = "CIEREC" 'contabilizar CIERRE DE RECAUDACION
+    SQL = "CIEREC" 'contabilizar CIERRE DE RECAUDACION
 
     'Bloquear para que nadie mas pueda contabilizar
-    DesBloqueoManual (Sql)
-    If Not BloqueoManual(Sql, "1") Then
+    DesBloqueoManual (SQL)
+    If Not BloqueoManual(SQL, "1") Then
         MsgBox "No se pueden Contabilizar Cierre de Recaudación. Hay otro usuario contabilizándolo.", vbExclamation
         Screen.MousePointer = vbDefault
         Exit Sub
@@ -912,8 +914,8 @@ Dim cadTABLA As String
     Me.MousePointer = vbHourglass
 
     Me.lblProgres(1).Caption = "Comprobando Cuentas Contables en contabilidad ..."
-    cadTABLA = "ssocio"
-    b = ComprobarCtaContable(cadTABLA, 1, cadWHERE)
+    cadTabla = "ssocio"
+    b = ComprobarCtaContable(cadTabla, 1, cadWhere)
     IncrementarProgres Me.Pb1, 20
     Me.Refresh
     If Not b Then
@@ -929,7 +931,7 @@ Dim cadTABLA As String
     'contabilizar existen en la Conta: sforpa.ctaventa IN (conta.cuentas.codmacta)
     '-----------------------------------------------------------------------------
     Me.lblProgres(1).Caption = "Comprobando Cuentas Ctbles de Pago en contabilidad ..."
-    b = ComprobarCtaContable(cadTABLA, 5)
+    b = ComprobarCtaContable(cadTabla, 5)
     IncrementarProgres Me.Pb1, 20
     Me.Refresh
     If Not b Then
@@ -942,7 +944,7 @@ Dim cadTABLA As String
     'en la Conta: sparam.ctaposit IN (conta.cuentas.codmacta)
     '-----------------------------------------------------------------------------
     Me.lblProgres(1).Caption = "Comprobando Cuenta Ctble Diferencias Positivas en contabilidad ..."
-    b = ComprobarCtaContable(cadTABLA, 6)
+    b = ComprobarCtaContable(cadTabla, 6)
     IncrementarProgres Me.Pb1, 20
     Me.Refresh
     If Not b Then
@@ -954,7 +956,7 @@ Dim cadTABLA As String
     'en la Conta: sparam.ctanegtat IN (conta.cuentas.codmacta)
     '-----------------------------------------------------------------------------
     Me.lblProgres(1).Caption = "Comprobando Cuenta Ctble Diferencias Negativas en contabilidad ..."
-    b = ComprobarCtaContable(cadTABLA, 7)
+    b = ComprobarCtaContable(cadTabla, 7)
     IncrementarProgres Me.Pb1, 20
     Me.Refresh
     If Not b Then
@@ -973,14 +975,14 @@ Dim cadTABLA As String
     
     
     If FechasIguales Then
-        cadWHERE = "fechatur = " & DBSet(txtcodigo(0).Text, "F") & " and codturno = " & DBSet(txtcodigo(1).Text, "N")
+        cadWhere = "fechatur = " & DBSet(txtCodigo(0).Text, "F") & " and codturno = " & DBSet(txtCodigo(1).Text, "N")
     Else
         '[Monica]19/12/2012: Corrijo error de si una fecha esta contabilizada que no la incluya en un rango de fechas mayor
 '        cadWhere = "fechatur >= " & DBSet(txtcodigo(0).Text, "F") & " and fechatur <= " & DBSet(txtcodigo(6).Text, "F")
-        cadWHERE = "fechatur in " & CadFechas
+        cadWhere = "fechatur in " & CadFechas
     End If
     
-    b = PasarCierreAContab(cadWHERE)
+    b = PasarCierreAContab(cadWhere)
     
     If Not b Then
         If tmpErrores Then
@@ -993,6 +995,26 @@ Dim cadTABLA As String
         End If
     Else
         MsgBox "El proceso ha finalizado correctamente.", vbInformation
+        
+        
+        '[Monica]15/02/2018: si es Alzira preguntamos si quiere hacer el traspaso de TPV
+        If vParamAplic.Cooperativa = 1 Then
+            If MsgBox("¿ Desea realizar el traspaso de facturas TPV ?", vbQuestion + vbYesNo + vbDefaultButton1) = vbYes Then
+                
+                DesdeCierreTurno = True
+            
+                Set frmTPV = New frmTrasTpv
+                
+                frmTPV.pFecDesde = txtCodigo(0).Text
+                frmTPV.pFecHasta = txtCodigo(6).Text
+                frmTPV.Show vbModal
+                
+                Set frmTPV = Nothing
+                
+                DesdeCierreTurno = False
+            End If
+        End If
+        
     End If
     
 End Sub
@@ -1002,43 +1024,43 @@ Dim b As Boolean
 Dim Orden1 As String
 Dim Orden2 As String
 Dim FFin As Date
-Dim Sql As String
+Dim SQL As String
 
    b = True
 
-   If txtcodigo(0).Text = "" And b Then
+   If txtCodigo(0).Text = "" And b Then
         MsgBox "Introduzca la Fecha Desde de recaudación a contabilizar.", vbExclamation
         b = False
-        PonerFoco txtcodigo(0)
+        PonerFoco txtCodigo(0)
     End If
     
-   If txtcodigo(6).Text = "" And b Then
+   If txtCodigo(6).Text = "" And b Then
         MsgBox "Introduzca la Fecha Hasta de recaudación a contabilizar.", vbExclamation
         b = False
-        PonerFoco txtcodigo(6)
+        PonerFoco txtCodigo(6)
     End If
     
     'si la fechadesde y fechahasta coinciden debemos introducir el turno obligatoriamente
-    If b And txtcodigo(0).Text = txtcodigo(6).Text Then
-        If txtcodigo(1).Text = "" Then
+    If b And txtCodigo(0).Text = txtCodigo(6).Text Then
+        If txtCodigo(1).Text = "" Then
             MsgBox "Introduzca Nº del Turno a contabilizar.", vbExclamation
             b = False
-            PonerFoco txtcodigo(1)
+            PonerFoco txtCodigo(1)
         End If
     End If
     ' comprobamos que han introducido los datos de la contabilidad
     ' +++NUMERO DE DIARIO+++
-    If txtcodigo(2).Text = "" And b Then
+    If txtCodigo(2).Text = "" And b Then
         MsgBox "Introduzca Nº de diario a contabilizar.", vbExclamation
         b = False
-        PonerFoco txtcodigo(2)
+        PonerFoco txtCodigo(2)
     End If
     
     ' +++FECHA DE ENTRADA+++
-    If txtcodigo(3).Text = "" And b Then
+    If txtCodigo(3).Text = "" And b Then
         MsgBox "Introduzca la fecha de entrada del asiento.", vbExclamation
         b = False
-        PonerFoco txtcodigo(3)
+        PonerFoco txtCodigo(3)
     Else
         ' comprobamos que la contabilizacion se encuentre en los ejercicios contables
          Orden1 = ""
@@ -1047,63 +1069,63 @@ Dim Sql As String
          Orden2 = ""
          Orden2 = DevuelveDesdeBDNew(cConta, "parametros", "fechafin", "", "", "", "", "", "", "", "", "", "")
          FFin = CDate(Orden2)
-         If Not (CDate(Orden1) <= CDate(txtcodigo(3).Text) And CDate(txtcodigo(3).Text) < CDate(Day(FIni) & "/" & Month(FIni) & "/" & Year(FIni) + 2)) Then
+         If Not (CDate(Orden1) <= CDate(txtCodigo(3).Text) And CDate(txtCodigo(3).Text) < CDate(Day(FIni) & "/" & Month(FIni) & "/" & Year(FIni) + 2)) Then
             MsgBox "La Fecha de la contabilización no es del ejercicio actual ni del siguiente. Reintroduzca.", vbExclamation
             b = False
-            PonerFoco txtcodigo(3)
+            PonerFoco txtCodigo(3)
          End If
     End If
     
     
     ' +++CONCEPTO AL DEBE+++
-    If txtcodigo(4).Text = "" And b Then
+    If txtCodigo(4).Text = "" And b Then
         MsgBox "Introduzca el Concepto al Debe.", vbExclamation
         b = False
-        PonerFoco txtcodigo(4)
+        PonerFoco txtCodigo(4)
     End If
     
     ' +++CONCEPTO AL HABER para efectivo+++
     If b Then
-        If txtcodigo(5).Text = "" Then
+        If txtCodigo(5).Text = "" Then
             MsgBox "Introduzca el Concepto al Haber para efectivo.", vbExclamation
             b = False
-            PonerFoco txtcodigo(5)
+            PonerFoco txtCodigo(5)
         Else
             ' comprobamos que el tipo de concepto de contabilidad para efectivo sea del tipo correspondiente
-            Sql = DevuelveDesdeBDNew(cConta, "conceptos", "EsEfectivo340", "codconce", txtcodigo(5).Text, "N")
-            If Sql = "0" Then
+            SQL = DevuelveDesdeBDNew(cConta, "conceptos", "EsEfectivo340", "codconce", txtCodigo(5).Text, "N")
+            If SQL = "0" Then
                 MsgBox "El codigo de concepto ha de ser de Efectivo. Revise.", vbExclamation
                 b = False
-                PonerFoco txtcodigo(5)
+                PonerFoco txtCodigo(5)
             End If
         End If
     End If
     ' +++CONCEPTO AL HABER para el resto+++
     If b Then
-        If txtcodigo(7).Text = "" Then
+        If txtCodigo(7).Text = "" Then
             MsgBox "Introduzca el Concepto al Haber para el resto.", vbExclamation
             b = False
-            PonerFoco txtcodigo(7)
+            PonerFoco txtCodigo(7)
         Else
             ' comprobamos que el tipo de concepto de contabilidad no sea para efectivo
-            Sql = DevuelveDesdeBDNew(cConta, "conceptos", "EsEfectivo340", "codconce", txtcodigo(7).Text, "N")
-            If Sql = "1" Then
+            SQL = DevuelveDesdeBDNew(cConta, "conceptos", "EsEfectivo340", "codconce", txtCodigo(7).Text, "N")
+            If SQL = "1" Then
                 MsgBox "El codigo de concepto no ha de ser de Efectivo. Revise.", vbExclamation
                 b = False
-                PonerFoco txtcodigo(7)
+                PonerFoco txtCodigo(7)
             End If
         End If
     End If
     DatosOk = b
 End Function
 
-Private Function PasarCierreAContab(cadWHERE As String) As Boolean
-Dim Sql As String
+Private Function PasarCierreAContab(cadWhere As String) As Boolean
+Dim SQL As String
 Dim Rs As ADODB.Recordset
 Dim Rs2 As ADODB.Recordset
 Dim b As Boolean
 Dim I As Integer
-Dim numlinea As Integer
+Dim NumLinea As Integer
 Dim Mc As CContadorContab
 Dim numdocum As String
 Dim ampliacion As String
@@ -1115,7 +1137,7 @@ Dim ImporteH As Currency
 Dim Diferencia As Currency
 Dim Obs As String
 Dim cadMen As String
-Dim cad As String
+Dim Cad As String
 Dim CtaDifer As String
 
 Dim FechaAsiento As String
@@ -1131,17 +1153,17 @@ Dim FechaAsiento As String
     
     
     ' Vamos a hacer un asiento por cada fecha / turno
-    Sql = "delete from tmpinformes where codusu = " & vSesion.Codigo
-    Conn.Execute Sql
+    SQL = "delete from tmpinformes where codusu = " & vSesion.Codigo
+    Conn.Execute SQL
     
     ' insertamos los registros en la temporal
-    Sql = "insert into tmpinformes (codusu, fecha1, codigo1) "
-    Sql = Sql & " SELECT distinct " & vSesion.Codigo & ", fechatur, codturno " & _
+    SQL = "insert into tmpinformes (codusu, fecha1, codigo1) "
+    SQL = SQL & " SELECT distinct " & vSesion.Codigo & ", fechatur, codturno " & _
               " FROM srecau, sforpa " & _
               "WHERE srecau.codforpa = sforpa.codforpa and " & _
                    " srecau.intconta = 0 and " & _
-                   " sforpa.cuadresn = 1 and not sforpa.codmacta is null and mid(sforpa.codmacta,1,1) <> ' ' and " & cadWHERE
-    Conn.Execute Sql
+                   " sforpa.cuadresn = 1 and not sforpa.codmacta is null and mid(sforpa.codmacta,1,1) <> ' ' and " & cadWhere
+    Conn.Execute SQL
     
     
 '[Monica]15/10/2013: introducia asientos sin nada en srecau todo a la cuenta de diferencias. Quito la insercion de estos albaranes
@@ -1155,17 +1177,17 @@ Dim FechaAsiento As String
 '                   " and (scaalb.fecalbar, scaalb.codturno) in (select fecha1, codigo1 from tmpinformes where codusu = " & vSesion.Codigo & ")"
 '    Conn.Execute Sql
     
-    Sql = "select fecha1, codigo1 from tmpinformes where codusu = " & DBSet(vSesion.Codigo, "N")
-    Sql = Sql & " group by 1, 2 "
-    Sql = Sql & " order by 1, 2 "
+    SQL = "select fecha1, codigo1 from tmpinformes where codusu = " & DBSet(vSesion.Codigo, "N")
+    SQL = SQL & " group by 1, 2 "
+    SQL = SQL & " order by 1, 2 "
     
     Set Rs2 = New ADODB.Recordset
-    Rs2.Open Sql, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+    Rs2.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
     
     While Not Rs2.EOF And b
         
         'Total de lineas de asiento a Insertar en la contabilidad
-        Sql = "SELECT count(codmacta)" & _
+        SQL = "SELECT count(codmacta)" & _
               " FROM srecau, sforpa " & _
               "WHERE srecau.fechatur = " & DBSet(Rs2.Fields(0).Value, "F") & " and " & _
                    " srecau.codturno = " & DBSet(Rs2.Fields(1).Value, "N") & " and " & _
@@ -1173,9 +1195,9 @@ Dim FechaAsiento As String
                    " srecau.intconta = 0 and " & _
                    " sforpa.cuadresn = 1 and not sforpa.codmacta is null and mid(sforpa.codmacta,1,1) <> ' '"
                  
-        numlinea = TotalRegistros(Sql)
+        NumLinea = TotalRegistros(SQL)
         
-        Sql = "SELECT count(distinct ssocio.codmacta)" & _
+        SQL = "SELECT count(distinct ssocio.codmacta)" & _
               " FROM scaalb, sforpa, ssocio  " & _
               "WHERE scaalb.fecalbar = " & DBSet(Rs2.Fields(0).Value, "F") & " and " & _
                    " scaalb.codturno = " & DBSet(Rs2.Fields(1).Value, "N") & " and " & _
@@ -1183,10 +1205,10 @@ Dim FechaAsiento As String
                    " scaalb.codsocio = ssocio.codsocio and " & _
                    " sforpa.contabilizasn = 1 and " & _
                    " sforpa.tipforpa = 0 "
-        numlinea = numlinea + TotalRegistros(Sql)
+        NumLinea = NumLinea + TotalRegistros(SQL)
         
 '[Monica]03/01/2012: añadida la condicion de las formas de pago de contado de las que no lo son
-        Sql = "SELECT count(distinct ssocio.codmacta)" & _
+        SQL = "SELECT count(distinct ssocio.codmacta)" & _
               " FROM scaalb, sforpa, ssocio  " & _
               "WHERE scaalb.fecalbar = " & DBSet(Rs2.Fields(0).Value, "F") & " and " & _
                    " scaalb.codturno = " & DBSet(Rs2.Fields(1).Value, "N") & " and " & _
@@ -1194,20 +1216,20 @@ Dim FechaAsiento As String
                    " scaalb.codsocio = ssocio.codsocio and " & _
                    " sforpa.contabilizasn = 1 and " & _
                    " sforpa.tipforpa <> 0 "
-        numlinea = numlinea + TotalRegistros(Sql)
+        NumLinea = NumLinea + TotalRegistros(SQL)
         
-        If numlinea = 0 Then Exit Function
+        If NumLinea = 0 Then Exit Function
         
-        If numlinea > 0 Then
-            numlinea = numlinea + 1
+        If NumLinea > 0 Then
+            NumLinea = NumLinea + 1
             
-            CargarProgres Me.Pb1, numlinea
+            CargarProgres Me.Pb1, NumLinea
             
             
             Set Mc = New CContadorContab
             
             If FechasIguales Then
-                FechaAsiento = txtcodigo(3).Text
+                FechaAsiento = txtCodigo(3).Text
             Else
                 FechaAsiento = Format(DBLet(Rs2.Fields(0).Value, "F"), "dd/mm/yyyy")
             End If
@@ -1218,11 +1240,11 @@ Dim FechaAsiento As String
     
         
             'Insertar en la conta Cabecera Asiento
-            b = InsertarCabAsientoDia(txtcodigo(2).Text, Mc.Contador, FechaAsiento, Obs, cadMen)
+            b = InsertarCabAsientoDia(txtCodigo(2).Text, Mc.Contador, FechaAsiento, Obs, cadMen)
             cadMen = "Insertando Cab. Asiento: " & cadMen
             
             If b Then
-                Sql = "SELECT sforpa.codforpa, sforpa.codmacta, sum(importel)" & _
+                SQL = "SELECT sforpa.codforpa, sforpa.codmacta, sum(importel)" & _
                       " FROM srecau, sforpa " & _
                       " WHERE srecau.fechatur = " & DBSet(Rs2.Fields(0).Value, "F") & " and " & _
                             " srecau.codturno = " & DBSet(Rs2.Fields(1).Value, "N") & " and " & _
@@ -1233,7 +1255,7 @@ Dim FechaAsiento As String
                 
                 Set Rs = New ADODB.Recordset
                 
-                Rs.Open Sql, Conn, adOpenDynamic, adLockOptimistic, adCmdText
+                Rs.Open SQL, Conn, adOpenDynamic, adLockOptimistic, adCmdText
                 
                 I = 0
                 ImporteD = 0
@@ -1242,41 +1264,41 @@ Dim FechaAsiento As String
                 numdocum = Format(DBLet(Rs2.Fields(0).Value, "F"), "ddmmyy") & "-T" & Format(DBLet(Rs2.Fields(1).Value, "N"), "0")
     '            ampliacion = "Cierre Turno " & Format(txtcodigo(0).Text, "dd/mm/yyyy") & " T-" & Format(txtcodigo(1).Text, "0")
                 ampliacion = "CTu." & Format(DBLet(Rs2.Fields(0).Value, "F"), "dd/mm/yy") & "-T" & Format(DBLet(Rs2.Fields(1).Value, "N"), "0")
-                ampliaciond = Trim(DevuelveDesdeBDNew(cConta, "conceptos", "nomconce", "codconce", txtcodigo(4).Text, "N")) & " " & ampliacion
-                ampliacionh = Trim(DevuelveDesdeBDNew(cConta, "conceptos", "nomconce", "codconce", txtcodigo(5).Text, "N")) & " " & ampliacion
+                ampliaciond = Trim(DevuelveDesdeBDNew(cConta, "conceptos", "nomconce", "codconce", txtCodigo(4).Text, "N")) & " " & ampliacion
+                ampliacionh = Trim(DevuelveDesdeBDNew(cConta, "conceptos", "nomconce", "codconce", txtCodigo(5).Text, "N")) & " " & ampliacion
                 '[Monica]15/10/2013: faltaba añadir el concepto del haber del resto
-                ampliacionh1 = Trim(DevuelveDesdeBDNew(cConta, "conceptos", "nomconce", "codconce", txtcodigo(7).Text, "N")) & " " & ampliacion
+                ampliacionh1 = Trim(DevuelveDesdeBDNew(cConta, "conceptos", "nomconce", "codconce", txtCodigo(7).Text, "N")) & " " & ampliacion
                 
                 
                 If Not Rs.EOF Then Rs.MoveFirst
                 While Not Rs.EOF And b
                     I = I + 1
                     
-                    cad = DBSet(txtcodigo(2).Text, "N") & "," & DBSet(FechaAsiento, "F") & "," & DBSet(Mc.Contador, "N") & ","
-                    cad = cad & DBSet(I, "N") & "," & DBSet(Rs!Codmacta, "T") & "," & DBSet(numdocum, "T") & ","
+                    Cad = DBSet(txtCodigo(2).Text, "N") & "," & DBSet(FechaAsiento, "F") & "," & DBSet(Mc.Contador, "N") & ","
+                    Cad = Cad & DBSet(I, "N") & "," & DBSet(Rs!codmacta, "T") & "," & DBSet(numdocum, "T") & ","
                     
                     ' COMPROBAMOS EL SIGNO DEL IMPORTE PQ NO PERMITIMOS INTRODUCIR APUNTES CON IMPORTES NEGATIVOS
                     If Rs.Fields(2).Value > 0 Then
                         ' importe al debe en positivo
-                        cad = cad & DBSet(txtcodigo(4).Text, "N") & "," & DBSet(ampliaciond, "T") & "," & DBSet(Rs.Fields(2).Value, "N") & ","
-                        cad = cad & ValorNulo & "," & ValorNulo & "," & ValorNulo & "," & ValorNulo & ",0"
+                        Cad = Cad & DBSet(txtCodigo(4).Text, "N") & "," & DBSet(ampliaciond, "T") & "," & DBSet(Rs.Fields(2).Value, "N") & ","
+                        Cad = Cad & ValorNulo & "," & ValorNulo & "," & ValorNulo & "," & ValorNulo & ",0"
                     
                         ImporteD = ImporteD + CCur(Rs.Fields(2).Value)
                     Else
                         ' importe al haber en positivo, cambiamos el signo
-                        cad = cad & DBSet(txtcodigo(5).Text, "N") & "," & DBSet(ampliacionh, "T") & "," & ValorNulo & ","
-                        cad = cad & DBSet((Rs.Fields(2).Value * -1), "N") & "," & ValorNulo & "," & ValorNulo & "," & ValorNulo & ",0"
+                        Cad = Cad & DBSet(txtCodigo(5).Text, "N") & "," & DBSet(ampliacionh, "T") & "," & ValorNulo & ","
+                        Cad = Cad & DBSet((Rs.Fields(2).Value * -1), "N") & "," & ValorNulo & "," & ValorNulo & "," & ValorNulo & ",0"
                     
                         ImporteH = ImporteH + (CCur(Rs.Fields(2).Value) * (-1))
                     End If
                     
-                    cad = "(" & cad & ")"
+                    Cad = "(" & Cad & ")"
                     
-                    b = InsertarLinAsientoDia(cad, cadMen)
+                    b = InsertarLinAsientoDia(Cad, cadMen)
                     cadMen = "Insertando Lin. Asiento: " & I
                 
                     IncrementarProgres Me.Pb1, 1
-                    Me.lblProgres(1).Caption = "Insertando línea de Asiento en Contabilidad...   (" & I & " de " & numlinea & ")"
+                    Me.lblProgres(1).Caption = "Insertando línea de Asiento en Contabilidad...   (" & I & " de " & NumLinea & ")"
                     Me.Refresh
                 
                     Rs.MoveNext
@@ -1284,7 +1306,7 @@ Dim FechaAsiento As String
                 Rs.Close
                 
                 If b Then
-                    Sql = "SELECT ssocio.codmacta, 0 as tipo, sum(importel) " & _
+                    SQL = "SELECT ssocio.codmacta, 0 as tipo, sum(importel) " & _
                           "FROM scaalb, ssocio, sforpa " & _
                           "WHERE scaalb.fecalbar = " & DBSet(Rs2.Fields(0).Value, "F") & " and " & _
                           " scaalb.codturno = " & DBSet(Rs2.Fields(1).Value, "N") & " and " & _
@@ -1305,42 +1327,42 @@ Dim FechaAsiento As String
                           " GROUP BY ssocio.codmacta, 2 " & _
                           " ORDER BY 1,2 "
     
-                    Rs.Open Sql, Conn, adOpenDynamic, adLockOptimistic, adCmdText
+                    Rs.Open SQL, Conn, adOpenDynamic, adLockOptimistic, adCmdText
                     
                     If Not Rs.EOF Then Rs.MoveFirst
                     
                     While Not Rs.EOF And b
                         I = I + 1
                     
-                        cad = DBSet(txtcodigo(2).Text, "N") & "," & DBSet(FechaAsiento, "F") & "," & DBSet(Mc.Contador, "N") & ","
-                        cad = cad & DBSet(I, "N") & "," & DBSet(Rs!Codmacta, "T") & "," & DBSet(numdocum, "T") & ","
+                        Cad = DBSet(txtCodigo(2).Text, "N") & "," & DBSet(FechaAsiento, "F") & "," & DBSet(Mc.Contador, "N") & ","
+                        Cad = Cad & DBSet(I, "N") & "," & DBSet(Rs!codmacta, "T") & "," & DBSet(numdocum, "T") & ","
                     
                         ' COMPROBAMOS EL SIGNO DEL IMPORTE SI ES NEGATIVO LO PONEMOS EN EL DEBE CON SIGNO POSITIVO
                         If Rs.Fields(2).Value > 0 Then
                             '[Monica]03/01/2013: si es efectivo el concepto al debe es el de efectivo
                             If Rs.Fields(1).Value = 0 Then
-                                cad = cad & DBSet(txtcodigo(5).Text, "N") & "," & DBSet(ampliacionh, "T") & "," & ValorNulo & "," & DBSet(Rs.Fields(2).Value, "N") & ","
-                                cad = cad & ValorNulo & "," & ValorNulo & "," & ValorNulo & ",0"
+                                Cad = Cad & DBSet(txtCodigo(5).Text, "N") & "," & DBSet(ampliacionh, "T") & "," & ValorNulo & "," & DBSet(Rs.Fields(2).Value, "N") & ","
+                                Cad = Cad & ValorNulo & "," & ValorNulo & "," & ValorNulo & ",0"
                             Else
-                                cad = cad & DBSet(txtcodigo(7).Text, "N") & "," & DBSet(ampliacionh1, "T") & "," & ValorNulo & "," & DBSet(Rs.Fields(2).Value, "N") & ","
-                                cad = cad & ValorNulo & "," & ValorNulo & "," & ValorNulo & ",0"
+                                Cad = Cad & DBSet(txtCodigo(7).Text, "N") & "," & DBSet(ampliacionh1, "T") & "," & ValorNulo & "," & DBSet(Rs.Fields(2).Value, "N") & ","
+                                Cad = Cad & ValorNulo & "," & ValorNulo & "," & ValorNulo & ",0"
                             End If
                             ImporteH = ImporteH + CCur(Rs.Fields(2).Value)
                         
                         Else
-                            cad = cad & DBSet(txtcodigo(4).Text, "N") & "," & DBSet(ampliaciond, "T") & "," & DBSet((Rs.Fields(2).Value * -1), "N") & "," & ValorNulo & ","
-                            cad = cad & ValorNulo & "," & ValorNulo & "," & ValorNulo & ",0"
+                            Cad = Cad & DBSet(txtCodigo(4).Text, "N") & "," & DBSet(ampliaciond, "T") & "," & DBSet((Rs.Fields(2).Value * -1), "N") & "," & ValorNulo & ","
+                            Cad = Cad & ValorNulo & "," & ValorNulo & "," & ValorNulo & ",0"
                         
                             ImporteD = ImporteD + (CCur(Rs.Fields(2).Value) * (-1))
                         
                         End If
-                        cad = "(" & cad & ")"
+                        Cad = "(" & Cad & ")"
                         
-                        b = InsertarLinAsientoDia(cad, cadMen)
+                        b = InsertarLinAsientoDia(Cad, cadMen)
                         cadMen = "Insertando Lin. Asiento: " & I
                     
                         IncrementarProgres Me.Pb1, 1
-                        Me.lblProgres(1).Caption = "Insertando línea de Asiento en Contabilidad...   (" & I & " de " & numlinea & ")"
+                        Me.lblProgres(1).Caption = "Insertando línea de Asiento en Contabilidad...   (" & I & " de " & NumLinea & ")"
                         Me.Refresh
                     
                         Rs.MoveNext
@@ -1361,26 +1383,26 @@ Dim FechaAsiento As String
                                 CtaDifer = vParamAplic.CtaNegativa
                             End If
                             
-                            cad = DBSet(txtcodigo(2).Text, "N") & "," & DBSet(FechaAsiento, "F") & "," & DBSet(Mc.Contador, "N") & ","
-                            cad = cad & DBSet(I, "N") & "," & DBSet(CtaDifer, "T") & "," & DBSet(numdocum, "T") & ","
+                            Cad = DBSet(txtCodigo(2).Text, "N") & "," & DBSet(FechaAsiento, "F") & "," & DBSet(Mc.Contador, "N") & ","
+                            Cad = Cad & DBSet(I, "N") & "," & DBSet(CtaDifer, "T") & "," & DBSet(numdocum, "T") & ","
                             
                             If ImporteD < ImporteH Then
-                                cad = cad & DBSet(txtcodigo(4).Text, "N") & "," & DBSet(ampliaciond, "T") & ","
-                                cad = cad & DBSet(Diferencia, "N") & "," & ValorNulo & ","
+                                Cad = Cad & DBSet(txtCodigo(4).Text, "N") & "," & DBSet(ampliaciond, "T") & ","
+                                Cad = Cad & DBSet(Diferencia, "N") & "," & ValorNulo & ","
                             Else
-                                cad = cad & DBSet(txtcodigo(5).Text, "N") & "," & DBSet(ampliacionh, "T") & ","
-                                cad = cad & ValorNulo & "," & DBSet(Diferencia, "N") & ","
+                                Cad = Cad & DBSet(txtCodigo(5).Text, "N") & "," & DBSet(ampliacionh, "T") & ","
+                                Cad = Cad & ValorNulo & "," & DBSet(Diferencia, "N") & ","
                             End If
                             
-                            cad = cad & ValorNulo & "," & ValorNulo & "," & ValorNulo & ",0"
+                            Cad = Cad & ValorNulo & "," & ValorNulo & "," & ValorNulo & ",0"
                             
-                            cad = "(" & cad & ")"
+                            Cad = "(" & Cad & ")"
                         
-                            b = InsertarLinAsientoDia(cad, cadMen)
+                            b = InsertarLinAsientoDia(Cad, cadMen)
                             cadMen = "Insertando Lin. Asiento: " & I
                 
                             IncrementarProgres Me.Pb1, 1
-                            Me.lblProgres(1).Caption = "Insertando línea de Asiento en Contabilidad...   (" & I & " de " & numlinea & ")"
+                            Me.lblProgres(1).Caption = "Insertando línea de Asiento en Contabilidad...   (" & I & " de " & NumLinea & ")"
                             Me.Refresh
                         End If
                         
@@ -1412,8 +1434,8 @@ Dim FechaAsiento As String
 '[Monica]19/12/2012: Corrijo error de si una fecha esta contabilizada que no la incluya en un rango de fechas mayor
 '           Sql = "update srecau set intconta = 1 where srecau.fechatur >= " & DBSet(txtcodigo(0).Text, "F") & _
 '                 " and srecau.fechatur <= " & DBSet(txtcodigo(6).Text, "F")
-           Sql = "update srecau set intconta = 1 where srecau.fechatur in " & CadFechas
-           Conn.Execute Sql
+           SQL = "update srecau set intconta = 1 where srecau.fechatur in " & CadFechas
+           Conn.Execute SQL
         End If
     End If
     '04/10/2011
