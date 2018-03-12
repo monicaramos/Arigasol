@@ -381,10 +381,13 @@ Private Function TraspasoTPV(desde As String, hasta As String) As Boolean
     Else
         Pb1.visible = True
         Pb1.Max = TotalReg
+        
+        '[Monica]07/03/2018: añadimos la condicion de articulos de facturar
         SQL = "SELECT scaalb.*, sartic.codigiva, sartic.impuesto from scaalb, sartic " & _
                 " where fecalbar >= " & DBSet(txtCodigo(2), "F") & _
                 " and fecalbar <= " & DBSet(txtCodigo(3), "F") & _
                 " and numfactu <> 0 and scaalb.codartic=sartic.codartic" & _
+                " and sartic.facturar = 1 " & _
                 " order by scaalb.numfactu, scaalb.numlinea"
                 
         Set db = New BaseDatos

@@ -499,25 +499,33 @@ Dim sql2 As String
         sql2 = sql2 & " and scaalb.codsocio <= " & DBSet(txtCodigo(1).Text, "N")
     End If
     
+    
+    '[Monica]07/03/2018: seleccionamos los albaranes de articulos que se facturen : and facturar = 1
+    SQL = SQL & " and scaalb.codartic in (select codartic from sartic where facturar = 1) "
+    sql2 = sql2 & " and scaalb.codartic in (select codartic from sartic where facturar = 1) "
+    
     '[Monica]19/06/2013: en la facturacion ajena tambien diferenciamos en facturas diferentes el gasoleo bonificado del resto de articulos
     Select Case Combo2.ListIndex
         Case 0
             SQL = SQL & " and not scaalb.codartic in (select codartic from sartic where tipogaso = 3 union " & _
-                                                     "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3)"
+                                                     "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3 )"
             sql2 = sql2 & " and not scaalb.codartic in (select codartic from sartic where tipogaso = 3 union " & _
-                                                     "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3)"
+                                                     "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3 )"
         Case 1
-            SQL = SQL & " and scaalb.codartic in (select codartic from sartic where tipogaso = 3 And esdomiciliado = 0 union " & _
-                                                 "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3 And esdomiciliado = 0)"
-            sql2 = sql2 & " and scaalb.codartic in (select codartic from sartic where tipogaso = 3 And esdomiciliado = 0 union " & _
-                                                 "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3 And esdomiciliado = 0)"
+            SQL = SQL & " and scaalb.codartic in (select codartic from sartic where tipogaso = 3 And esdomiciliado = 0  union " & _
+                                                 "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3 And esdomiciliado = 0 )"
+            sql2 = sql2 & " and scaalb.codartic in (select codartic from sartic where tipogaso = 3 And esdomiciliado = 0  union " & _
+                                                 "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3 And esdomiciliado = 0 )"
         Case 2
             SQL = SQL & " and scaalb.codartic in (select codartic from sartic where tipogaso = 3 And esdomiciliado = 1 union " & _
-                                                 "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3 And esdomiciliado = 1)"
+                                                 "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3 And esdomiciliado = 1 )"
             sql2 = sql2 & " and scaalb.codartic in (select codartic from sartic where tipogaso = 3 And esdomiciliado = 1 union " & _
-                                                 "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3 And esdomiciliado = 1)"
+                                                 "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3 And esdomiciliado = 1 )"
     End Select
 
+    
+    
+    
     
     nRegs = TotalRegistros(SQL)
     If nRegs <> 0 Then

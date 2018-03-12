@@ -874,8 +874,8 @@ Dim nDesde As String, nHasta As String 'cadena Descripcion Desde/Hasta
 Dim cadTabla As String, cOrden As String
 Dim cadMen As String
 Dim I As Byte
-Dim SQL As String
-Dim sql2 As String
+Dim Sql As String
+Dim Sql2 As String
 Dim Sql3 As String
 Dim Sql4 As String
 Dim Tipo As Byte
@@ -942,11 +942,11 @@ Dim Sql5 As String
     'Comprobar si hay registros a Mostrar antes de abrir el Informe
     cadTabla = tabla & " INNER JOIN ssocio ON " & tabla & ".codsocio=ssocio.codsocio "
     
-    SQL = "select count(*) "
+    Sql = "select count(*) "
     If vParamAplic.Cooperativa = 4 Then
-        SQL = SQL & "from ((scaalb inner join ssocio on scaalb.codsocio = ssocio.codsocio) "
-        SQL = SQL & " inner join scoope on ssocio.codcoope = scoope.codcoope) "
-        SQL = SQL & " inner join sartic on scaalb.codartic = sartic.codartic "
+        Sql = Sql & "from ((scaalb inner join ssocio on scaalb.codsocio = ssocio.codsocio) "
+        Sql = Sql & " inner join scoope on ssocio.codcoope = scoope.codcoope) "
+        Sql = Sql & " inner join sartic on scaalb.codartic = sartic.codartic "
         
 '[Monica]30/06/2014: ya no hay facturacion cepsa en la pobla del duc
 '--        If Check1.Value = 1 Then
@@ -955,17 +955,17 @@ Dim Sql5 As String
 '            Sql = Sql & " and sartic.tipogaso = 0"
 '        End If
 '++
-        If Option1(5).Value Then SQL = SQL & " and sartic.tipogaso = 0"
-        If Option1(6).Value Then SQL = SQL & " and sartic.tipogaso in (1,2,4)"
-        If Option1(7).Value Then SQL = SQL & " and sartic.tipogaso = 3"
+        If Option1(5).Value Then Sql = Sql & " and sartic.tipogaso = 0"
+        If Option1(6).Value Then Sql = Sql & " and sartic.tipogaso in (1,2,4)"
+        If Option1(7).Value Then Sql = Sql & " and sartic.tipogaso = 3"
 '++
     Else
-        SQL = SQL & "from ((scaalb inner join ssocio on scaalb.codsocio = ssocio.codsocio) "
-        SQL = SQL & " inner join scoope on ssocio.codcoope = scoope.codcoope) "
+        Sql = Sql & "from ((scaalb inner join ssocio on scaalb.codsocio = ssocio.codsocio) "
+        Sql = Sql & " inner join scoope on ssocio.codcoope = scoope.codcoope) "
         
         '[Monica]19/06/2013: si es alzira hemos de diferenciar entre gasoleo B, domiciliado y los demas articulos
         If vParamAplic.Cooperativa = 1 Or vParamAplic.Cooperativa = 2 Then
-            SQL = SQL & " inner join sartic on scaalb.codartic = sartic.codartic "
+            Sql = Sql & " inner join sartic on scaalb.codartic = sartic.codartic "
 
         End If
         
@@ -989,67 +989,72 @@ Dim Sql5 As String
     '[Monica]19/06/2013: añadido el tema de facturacion de gasoleo B
     If Tipo = 0 And Combo2.ListIndex > 0 Then Tipo = 4
     
-    sql2 = SQL & " where scaalb.codforpa <> 98 "
+    '[Monica]07/03/2018: añadido articulos que se facturen: facturar = 1
+    Sql2 = Sql & " where scaalb.codforpa <> 98 " & " and scaalb.codartic in (select codartic from sartic where facturar = 1) "
+    
+    
+    
+    
     '[Monica]07/03/2012: lo dejo aqui.
-    If txtCodigo(4).Text <> "" Then sql2 = sql2 & " and ssocio.codcoope >= " & DBSet(txtCodigo(4).Text, "N")
-    If txtCodigo(5).Text <> "" Then sql2 = sql2 & " and ssocio.codcoope <= " & DBSet(txtCodigo(5).Text, "N")
+    If txtCodigo(4).Text <> "" Then Sql2 = Sql2 & " and ssocio.codcoope >= " & DBSet(txtCodigo(4).Text, "N")
+    If txtCodigo(5).Text <> "" Then Sql2 = Sql2 & " and ssocio.codcoope <= " & DBSet(txtCodigo(5).Text, "N")
     
     If Tipo < 2 Or Tipo = 3 Then ' 04/03/2011: tipo de facturacion interna
-        sql2 = sql2 & " and scoope.tipfactu = " & DBSet(Tipo, "N")
+        Sql2 = Sql2 & " and scoope.tipfactu = " & DBSet(Tipo, "N")
     Else
        'VRS:2.0.2(1) añadida nueva opción 2 facturacion ajena
        ' SQL = SQL & ")"
-        sql2 = sql2 & " and (scoope.tipfactu = 0 or scoope.tipfactu = 1) "
+        Sql2 = Sql2 & " and (scoope.tipfactu = 0 or scoope.tipfactu = 1) "
     End If
     
     '[Monica]19/06/2013: añadimos la condicion
     If vParamAplic.Cooperativa = 1 Or vParamAplic.Cooperativa = 2 Then
         Select Case Combo2.ListIndex
             Case 0
-                sql2 = sql2 & " and not scaalb.codartic in (select codartic from sartic where tipogaso = 3 union " & _
+                Sql2 = Sql2 & " and not scaalb.codartic in (select codartic from sartic where tipogaso = 3 union " & _
                                                          "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3)"
             Case 1
-                sql2 = sql2 & " and scaalb.codartic in (select codartic from sartic where tipogaso = 3 And esdomiciliado = 0 union " & _
+                Sql2 = Sql2 & " and scaalb.codartic in (select codartic from sartic where tipogaso = 3 And esdomiciliado = 0 union " & _
                                                      "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3 And esdomiciliado = 0)"
             Case 2
-                sql2 = sql2 & " and scaalb.codartic in (select codartic from sartic where tipogaso = 3 And esdomiciliado = 1 union " & _
+                Sql2 = Sql2 & " and scaalb.codartic in (select codartic from sartic where tipogaso = 3 And esdomiciliado = 1 union " & _
                                                      "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3 And esdomiciliado = 1)"
         End Select
     End If
     
-    SQL = SQL & " where scaalb.numfactu = 0 and scaalb.codforpa <>98 "
+    Sql = Sql & " where scaalb.numfactu = 0 and scaalb.codforpa <>98 " & " and scaalb.codartic in (select codartic from sartic where facturar = 1) "
     
     If Tipo < 2 Or Tipo = 3 Then ' 04/03/2011: tipo de facturacion interna
-        SQL = SQL & " and scoope.tipfactu = " & DBSet(Tipo, "N")
+        Sql = Sql & " and scoope.tipfactu = " & DBSet(Tipo, "N")
     Else
        'VRS:2.0.2(1) añadida nueva opción 2 facturacion ajena
        ' SQL = SQL & ")"
-        SQL = SQL & " and (scoope.tipfactu = 0 or scoope.tipfactu = 1) "
+        Sql = Sql & " and (scoope.tipfactu = 0 or scoope.tipfactu = 1) "
     End If
     
     '[Monica]19/06/2013: añadimos la condicion
     If vParamAplic.Cooperativa = 1 Or vParamAplic.Cooperativa = 2 Then
         Select Case Combo2.ListIndex
             Case 0
-                SQL = SQL & " and not scaalb.codartic in (select codartic from sartic where tipogaso = 3 union " & _
+                Sql = Sql & " and not scaalb.codartic in (select codartic from sartic where tipogaso = 3 union " & _
                                                          "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3)"
             Case 1
-                SQL = SQL & " and scaalb.codartic in (select codartic from sartic where tipogaso = 3 And esdomiciliado = 0 union " & _
+                Sql = Sql & " and scaalb.codartic in (select codartic from sartic where tipogaso = 3 And esdomiciliado = 0 union " & _
                                                      "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3 And esdomiciliado = 0)"
             Case 2
-                SQL = SQL & " and scaalb.codartic in (select codartic from sartic where tipogaso = 3 And esdomiciliado = 1 union " & _
+                Sql = Sql & " and scaalb.codartic in (select codartic from sartic where tipogaso = 3 And esdomiciliado = 1 union " & _
                                                      "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3 And esdomiciliado = 1)"
         End Select
     End If
     
-    Sql4 = SQL
+    Sql4 = Sql
     
     '[Monica]07/03/2012: lo dejo aqui.
-    If txtCodigo(4).Text <> "" Then SQL = SQL & " and ssocio.codcoope >= " & DBSet(txtCodigo(4).Text, "N")
-    If txtCodigo(5).Text <> "" Then SQL = SQL & " and ssocio.codcoope <= " & DBSet(txtCodigo(5).Text, "N")
+    If txtCodigo(4).Text <> "" Then Sql = Sql & " and ssocio.codcoope >= " & DBSet(txtCodigo(4).Text, "N")
+    If txtCodigo(5).Text <> "" Then Sql = Sql & " and ssocio.codcoope <= " & DBSet(txtCodigo(5).Text, "N")
     
     
-    Sql3 = " scaalb.codforpa <>98 "
+    Sql3 = " scaalb.codforpa <>98 " & " and scaalb.codartic in (select codartic from sartic where facturar = 1) "
     
     If Tipo < 2 Or Tipo = 3 Then ' 04/03/2011: tipo de facturacion interna
         Sql3 = Sql3 & " and scoope.tipfactu = " & DBSet(Tipo, "N")
@@ -1079,39 +1084,39 @@ Dim Sql5 As String
     If txtCodigo(5).Text <> "" Then Sql3 = Sql3 & " and ssocio.codcoope <= " & DBSet(txtCodigo(5).Text, "N")
     
     If txtCodigo(2).Text <> "" Then
-        SQL = SQL & " and scaalb.fecalbar >= " & DBSet(txtCodigo(2).Text, "F") & " "
-        sql2 = sql2 & " and scaalb.fecalbar >= " & DBSet(txtCodigo(2).Text, "F") & " "
+        Sql = Sql & " and scaalb.fecalbar >= " & DBSet(txtCodigo(2).Text, "F") & " "
+        Sql2 = Sql2 & " and scaalb.fecalbar >= " & DBSet(txtCodigo(2).Text, "F") & " "
         Sql3 = Sql3 & " and scaalb.fecalbar >= " & DBSet(txtCodigo(2).Text, "F") & " "
         Sql4 = Sql4 & " and scaalb.fecalbar >= " & DBSet(txtCodigo(2).Text, "F") & " "
     End If
     
     If txtCodigo(3).Text <> "" Then
-        SQL = SQL & " and scaalb.fecalbar <= " & DBSet(txtCodigo(3).Text, "F") & " "
-        sql2 = sql2 & " and scaalb.fecalbar <= " & DBSet(txtCodigo(3).Text, "F") & " "
+        Sql = Sql & " and scaalb.fecalbar <= " & DBSet(txtCodigo(3).Text, "F") & " "
+        Sql2 = Sql2 & " and scaalb.fecalbar <= " & DBSet(txtCodigo(3).Text, "F") & " "
         Sql3 = Sql3 & " and scaalb.fecalbar <= " & DBSet(txtCodigo(3).Text, "F") & " "
         Sql4 = Sql4 & " and scaalb.fecalbar <= " & DBSet(txtCodigo(3).Text, "F") & " "
     End If
     If txtCodigo(0).Text <> "" Then
-        SQL = SQL & " and scaalb.codsocio >= " & DBSet(txtCodigo(0).Text, "N")
-        sql2 = sql2 & " and scaalb.codsocio >= " & DBSet(txtCodigo(0).Text, "N")
+        Sql = Sql & " and scaalb.codsocio >= " & DBSet(txtCodigo(0).Text, "N")
+        Sql2 = Sql2 & " and scaalb.codsocio >= " & DBSet(txtCodigo(0).Text, "N")
         Sql3 = Sql3 & " and scaalb.codsocio >= " & DBSet(txtCodigo(0).Text, "N")
     End If
     If txtCodigo(1).Text <> "" Then
-        SQL = SQL & " and scaalb.codsocio <= " & DBSet(txtCodigo(1).Text, "N")
-        sql2 = sql2 & " and scaalb.codsocio <= " & DBSet(txtCodigo(1).Text, "N")
+        Sql = Sql & " and scaalb.codsocio <= " & DBSet(txtCodigo(1).Text, "N")
+        Sql2 = Sql2 & " and scaalb.codsocio <= " & DBSet(txtCodigo(1).Text, "N")
         Sql3 = Sql3 & " and scaalb.codsocio <= " & DBSet(txtCodigo(1).Text, "N")
     End If
     
     '[Monica]29/12/2016: para el caso de Ribarroja cogemos las entradas de contado o no
     If vParamAplic.Cooperativa = 5 Then
         If Me.ChkContado.Value = 1 Then ' contados
-            SQL = SQL & " and scaalb.codforpa in (select codforpa from sforpa where tipforpa in (0,6)) "
-            sql2 = sql2 & " and scaalb.codforpa in (select codforpa from sforpa where tipforpa in (0,6)) "
+            Sql = Sql & " and scaalb.codforpa in (select codforpa from sforpa where tipforpa in (0,6)) "
+            Sql2 = Sql2 & " and scaalb.codforpa in (select codforpa from sforpa where tipforpa in (0,6)) "
             Sql3 = Sql3 & " and scaalb.codforpa in (select codforpa from sforpa where tipforpa in (0,6)) "
             Sql4 = Sql4 & " and scaalb.codforpa in (select codforpa from sforpa where tipforpa in (0,6)) "
         Else ' no contados
-            SQL = SQL & " and scaalb.codforpa in (select codforpa from sforpa where not tipforpa in (0,6)) "
-            sql2 = sql2 & " and scaalb.codforpa in (select codforpa from sforpa where not tipforpa in (0,6)) "
+            Sql = Sql & " and scaalb.codforpa in (select codforpa from sforpa where not tipforpa in (0,6)) "
+            Sql2 = Sql2 & " and scaalb.codforpa in (select codforpa from sforpa where not tipforpa in (0,6)) "
             Sql3 = Sql3 & " and scaalb.codforpa in (select codforpa from sforpa where not tipforpa in (0,6)) "
             Sql4 = Sql4 & " and scaalb.codforpa in (select codforpa from sforpa where not tipforpa in (0,6)) "
         End If
@@ -1126,25 +1131,25 @@ Dim Sql5 As String
         Case 1 ' clientes con bonificacion especial
             TipoClien = "1"
             
-            SQL = SQL & " and ssocio.bonifesp = 1"
-            sql2 = sql2 & " and ssocio.bonifesp = 1"
+            Sql = Sql & " and ssocio.bonifesp = 1"
+            Sql2 = Sql2 & " and ssocio.bonifesp = 1"
             Sql3 = Sql3 & " and ssocio.bonifesp = 1"
             Sql4 = Sql4 & " and ssocio.bonifesp = 1"
         
         Case 2 ' clientes sin bonificacion especial
             TipoClien = "2"
             
-            SQL = SQL & " and ssocio.bonifesp = 0"
-            sql2 = sql2 & " and ssocio.bonifesp = 0"
+            Sql = Sql & " and ssocio.bonifesp = 0"
+            Sql2 = Sql2 & " and ssocio.bonifesp = 0"
             Sql3 = Sql3 & " and ssocio.bonifesp = 0"
             Sql4 = Sql4 & " and ssocio.bonifesp = 0"
     End Select
     
-    nRegs = TotalRegistros(SQL)
+    nRegs = TotalRegistros(Sql)
     
     If nRegs <> 0 Then
         '090908:comprobamos que existan todas las tarjetas en starjet
-        If Not TarjetasInexistentes(sql2) Then
+        If Not TarjetasInexistentes(Sql2) Then
         
           '[Monica]04/03/2011: si hay articulos y la facturacion no es interna
           '                    añadida la condicion : and Tipo <> 3
@@ -1156,7 +1161,7 @@ Dim Sql5 As String
         
           '[Monica]25/01/2013: Comprobamos que no hay ningun albaran de importe superior a 2500
           If vParamAplic.Cooperativa = 1 And vParamAplic.LimiteFra <> 0 Then
-              Sql5 = SQL & " and scaalb.importel > " & DBSet(vParamAplic.LimiteFra, "N") & " and ssocio.esdevarios = 0 and scaalb.codforpa in (select codforpa from sforpa where tipforpa = 0) "
+              Sql5 = Sql & " and scaalb.importel > " & DBSet(vParamAplic.LimiteFra, "N") & " and ssocio.esdevarios = 0 and scaalb.codforpa in (select codforpa from sforpa where tipforpa = 0) "
               If TotalRegistros(Sql5) > 0 Then
                  MsgBox "Hay albaranes con importe superior a " & vParamAplic.LimiteFra & " euros. Revise.", vbExclamation
                  Exit Sub
@@ -1691,7 +1696,7 @@ Private Sub AbrirEMail()
     If CadenaDesdeOtroForm <> "" Then frmEMail.Show vbModal
 End Sub
 
-Private Function PendientePasarTPV(SQL As String, Tipo As Byte) As Boolean
+Private Function PendientePasarTPV(Sql As String, Tipo As Byte) As Boolean
 'Dim sql As String
 Dim cadMen As String
 
@@ -1700,12 +1705,12 @@ Dim cadMen As String
 '          " scaalb.codsocio = ssocio.codsocio and ssocio.codcoope = scoope.codcoope "
     
     If Tipo <> 2 Then
-        SQL = SQL & " and scoope.tipfactu = " & DBSet(Tipo, "N")
+        Sql = Sql & " and scoope.tipfactu = " & DBSet(Tipo, "N")
     Else 'VRS:2.0.2(1) añadida nueva opción
-        SQL = SQL & " and (scoope.tipfactu = 0 or scoope.tipfactu = 1)"
+        Sql = Sql & " and (scoope.tipfactu = 0 or scoope.tipfactu = 1)"
     End If
     
-    If (RegistrosAListar(SQL) <> 0) Then
+    If (RegistrosAListar(Sql) <> 0) Then
         cadMen = "Hay registros pendientes de Traspaso a TPV." & vbCrLf & vbCrLf & _
                  "Debe realizar este proceso previamente." & vbCrLf & vbCrLf
         MsgBox cadMen, vbExclamation
@@ -1714,7 +1719,7 @@ Dim cadMen As String
 End Function
 
 Private Function PendienteCierresTurno(DesFec As String, HasFec As String) As Boolean
-Dim SQL As String
+Dim Sql As String
 Dim cadMen As String
 
     PendienteCierresTurno = False
@@ -1724,11 +1729,11 @@ Dim cadMen As String
     
     
     
-    SQL = "select count(*) from srecau where intconta = 0 "
-    If DesFec <> "" Then SQL = SQL & " and fechatur >= " & DBSet(CDate(DesFec), "F") & " "
-    If HasFec <> "" Then SQL = SQL & " and fechatur <= " & DBSet(CDate(HasFec), "F") & " "
+    Sql = "select count(*) from srecau where intconta = 0 "
+    If DesFec <> "" Then Sql = Sql & " and fechatur >= " & DBSet(CDate(DesFec), "F") & " "
+    If HasFec <> "" Then Sql = Sql & " and fechatur <= " & DBSet(CDate(HasFec), "F") & " "
 
-    If (RegistrosAListar(SQL) <> 0) Then
+    If (RegistrosAListar(Sql) <> 0) Then
         cadMen = "Quedan cierres de Turno por contabilizar. Revise." & vbCrLf & vbCrLf
         MsgBox cadMen, vbExclamation
         PendienteCierresTurno = True
@@ -1738,7 +1743,7 @@ End Function
 
 Private Function DatosOk() As Boolean
 Dim b As Boolean
-Dim SQL As String
+Dim Sql As String
 Dim Mens As String
 Dim numfactu As String
 Dim numser As String
@@ -1754,8 +1759,8 @@ Dim Fecha As Date
             DatosOk = False
             Exit Function
         Else
-            SQL = DevuelveValor("select count(*) from scoope where codcoope = " & DBSet(txtCodigo(4).Text, "N"))
-            If SQL = "0" Then
+            Sql = DevuelveValor("select count(*) from scoope where codcoope = " & DBSet(txtCodigo(4).Text, "N"))
+            If Sql = "0" Then
                 MsgBox "No existe el colectivo. Revise.", vbExclamation
                 PonerFoco txtCodigo(4)
                 DatosOk = False
@@ -1908,9 +1913,9 @@ Dim Fecha As Date
         PonerFocoBtn cmdCancel
     Else
         'comprobamos que el articulo de descuento existe
-        SQL = ""
-        SQL = DevuelveDesdeBD("nomartic", "sartic", "codartic", vParamAplic.ArticDto, "N")
-        If SQL = "" Then
+        Sql = ""
+        Sql = DevuelveDesdeBD("nomartic", "sartic", "codartic", vParamAplic.ArticDto, "N")
+        If Sql = "" Then
             MsgBox "El artículo descuento de la tabla de parámetros no existe. Revise.", vbExclamation
             b = False
             PonerFocoBtn cmdCancel
@@ -1938,26 +1943,26 @@ End Function
 
 Private Function ArticulosConIva(vSQL As String) As Boolean
 Dim Rs As ADODB.Recordset
-Dim SQL As String
-Dim sql2 As String
+Dim Sql As String
+Dim Sql2 As String
 Dim b As Boolean
 
 
     ArticulosConIva = False
 
-    SQL = "select distinct codigiva from sartic, scaalb, ssocio, scoope where sartic.codartic = scaalb.codartic "
-    SQL = SQL & " and scaalb.codsocio = ssocio.codsocio and ssocio.codcoope = scoope.codcoope "
-    If vSQL <> "" Then SQL = SQL & " and " & vSQL
+    Sql = "select distinct codigiva from sartic, scaalb, ssocio, scoope where sartic.codartic = scaalb.codartic "
+    Sql = Sql & " and scaalb.codsocio = ssocio.codsocio and ssocio.codcoope = scoope.codcoope "
+    If vSQL <> "" Then Sql = Sql & " and " & vSQL
     
     Set Rs = New ADODB.Recordset
-    Rs.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+    Rs.Open Sql, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
 
     b = True
     
     While Not Rs.EOF And b
-        sql2 = ""
-        sql2 = DevuelveDesdeBDNew(cConta, "tiposiva", "porceiva", "codigiva", DBLet(Rs!CodigIVA, "N"), "N")
-        If sql2 = "" Then b = False
+        Sql2 = ""
+        Sql2 = DevuelveDesdeBDNew(cConta, "tiposiva", "porceiva", "codigiva", DBLet(Rs!CodigIVA, "N"), "N")
+        If Sql2 = "" Then b = False
         
         Rs.MoveNext
     Wend

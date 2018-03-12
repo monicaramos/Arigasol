@@ -99,6 +99,7 @@ Public Function TraspasoHistoricoFacturas(db As BaseDatos, SQL As String, desde 
           If NumError = 0 Then NumError = BorradoAlbaranesPrueba(db, desde, hasta)
 
         End If
+        
     Set Rs = Nothing
     If NumError <> 0 Then Err.Raise NumError
         
@@ -444,7 +445,7 @@ End Function
 
 
 
-Public Function InsertaLineaDescuento(ByRef db As BaseDatos, numser As String, numFac As Long, fecFac As Date, Linea As Integer, cantidad As Currency, Importe As Currency, Turno As Integer, precio As Currency, Tarjeta As String, Tipo As Byte) As Long
+Public Function InsertaLineaDescuento(ByRef db As BaseDatos, numser As String, numFac As Long, fecFac As Date, Linea As Integer, cantidad As Currency, IMPORTE As Currency, Turno As Integer, precio As Currency, TARJETA As String, Tipo As Byte) As Long
 ' tipo = 0 facturacion normal
 ' tipo = 1 facturacion ajena
     Dim SQL As String
@@ -467,8 +468,8 @@ Public Function InsertaLineaDescuento(ByRef db As BaseDatos, numser As String, n
            "cantidad, preciove, implinea) " & _
            "values " & _
            "(" & db.Texto(numser) & "," & db.numero(numFac) & "," & db.Fecha(fecFac) & "," & db.numero(Linea) & "," & db.Texto(Texto) & "," & _
-           db.Fecha(fecFac) & "," & db.fechahora(fecFac & " 0:00:00") & "," & db.numero(Turno) & "," & db.numero(Tarjeta) & "," & db.numero(vParamAplic.ArticDto) & "," & _
-           db.numero(cantidad) & "," & db.numero(precio) & "," & db.numero(Importe) & ")"
+           db.Fecha(fecFac) & "," & db.fechahora(fecFac & " 0:00:00") & "," & db.numero(Turno) & "," & db.numero(TARJETA) & "," & db.numero(vParamAplic.ArticDto) & "," & _
+           db.numero(cantidad) & "," & db.numero(precio) & "," & db.numero(IMPORTE) & ")"
            
     InsertaLineaDescuento = db.ejecutar(SQL)
     
@@ -481,7 +482,7 @@ eInsertaLineaDescuento:
     
 End Function
 
-Public Function InsertaLineaDescuentoTemporal(ByRef db As BaseDatos, cantidad As Currency, Importe As Currency) As Long
+Public Function InsertaLineaDescuentoTemporal(ByRef db As BaseDatos, cantidad As Currency, IMPORTE As Currency) As Long
     Dim SQL As String
     Dim ImpLinea As Currency
     Dim Texto As String
@@ -493,12 +494,12 @@ Public Function InsertaLineaDescuentoTemporal(ByRef db As BaseDatos, cantidad As
     
     If TotalRegistros(SQL) <> 0 Then
         SQL = "update tmpinformes set importe2 = importe2 + " & db.numero(cantidad) & ","
-        SQL = SQL & "importe3 = importe3 + " & db.numero(Importe)
+        SQL = SQL & "importe3 = importe3 + " & db.numero(IMPORTE)
         SQL = SQL & " where codusu = " & vSesion.Codigo & " and importe1 = " & db.numero(vParamAplic.ArticDto)
     Else
         SQL = "insert into tmpinformes (codusu, importe1, importe2, importe3) values ("
         SQL = SQL & vSesion.Codigo & "," & db.numero(vParamAplic.ArticDto) & "," & db.numero(cantidad) & ","
-        SQL = SQL & db.numero(Importe) & ")"
+        SQL = SQL & db.numero(IMPORTE) & ")"
         
     End If
            
@@ -539,7 +540,7 @@ Dim baseimpo As Dictionary
 
 Dim NumError As Long
 
-Dim tipoMov As String
+Dim TipoMov As String
 
 
 
@@ -556,6 +557,7 @@ Dim tipoMov As String
     SQL = SQL & " scaalb.dtoalvic, "
     '[Monica]28/12/2015: añadimos el importe de vale para el regaixo
     SQL = SQL & " scaalb.importevale "
+    
     
     SQL = SQL & " from ((scaalb inner join ssocio on scaalb.codsocio = ssocio.codsocio) "
     SQL = SQL & " inner join scoope on ssocio.codcoope = scoope.codcoope "
@@ -604,6 +606,12 @@ Dim tipoMov As String
     End If
     
     
+    '[Monica]07/03/2018: solo los articulos que se facturan
+    SQL = SQL & " and scaalb.codartic in (select codartic from sartic where facturar = 1) "
+    
+    
+    
+    
     Select Case TipoClien
         Case "0"
         
@@ -639,30 +647,30 @@ Dim tipoMov As String
         '[Monica]15/07/2013: añadida la condicion de tipo de gasoleo (nuevo tipo de movimiento para las internas gasoleo bonificado)
         Select Case TipoGasoB
             Case 0
-                tipoMov = "FAI"
+                TipoMov = "FAI"
             Case 1, 2
-                tipoMov = "FIB"
+                TipoMov = "FIB"
         End Select
     Else
         Select Case TipoGasoB
             Case 0
-                tipoMov = "FAG"
+                TipoMov = "FAG"
                 '[Monica]30/06/2014: para el caso de pobla del duc ya no hay facturacion cepsa y hay tres contadores
                 If vParamAplic.Cooperativa = 4 Then
-                    If TipoArt = 0 Then tipoMov = "FAG" ' facturas de resto de productos
-                    If TipoArt = 1 Then tipoMov = "FGA" ' facturas de gasolina
-                    If TipoArt = 2 Then tipoMov = "FGB" ' facturas de gasoleo B
+                    If TipoArt = 0 Then TipoMov = "FAG" ' facturas de resto de productos
+                    If TipoArt = 1 Then TipoMov = "FGA" ' facturas de gasolina
+                    If TipoArt = 2 Then TipoMov = "FGB" ' facturas de gasoleo B
                 End If
                 
                 '[Monica]29/12/2016: para el caso de Ribarroja hay 2 tipos de contadores (uno para contados y otro no)
                 If vParamAplic.Cooperativa = 5 Then
-                    If EsContado Then tipoMov = "FA1"
+                    If EsContado Then TipoMov = "FA1"
                 End If
                 
             Case 1 'Gasoleo B
-                tipoMov = "FGB"
+                TipoMov = "FGB"
             Case 2 'Gasoleo B Domiciliado
-                tipoMov = "FGD"
+                TipoMov = "FGD"
         End Select
     End If
     
@@ -682,10 +690,10 @@ Dim tipoMov As String
         ' cogemos el numero de factura de parametros
         
         Set vCont = New CContador
-        If Not vCont.ConseguirContador(tipoMov, True, db) Then Exit Function
+        If Not vCont.ConseguirContador(TipoMov, True, db) Then Exit Function
         
         numser = ""
-        numser = DevuelveDesdeBD("letraser", "stipom", "codtipom", tipoMov, "T")
+        numser = DevuelveDesdeBD("letraser", "stipom", "codtipom", TipoMov, "T")
         
         TotalImp = 0
         TotalImpSigaus = 0
@@ -752,7 +760,7 @@ Dim tipoMov As String
                 '[Monica]24/01/2013: si el socio es un cliente no de varios vemos si hay q partirle la factura
                ImpFactu = 0
                
-               If Not vCont.ConseguirContador(tipoMov, True, db) Then Exit Function
+               If Not vCont.ConseguirContador(TipoMov, True, db) Then Exit Function
             End If
             
             '[Monica]24/01/2013: si el socio es un cliente no de varios vemos si hay q partirle la factura
@@ -786,7 +794,7 @@ Dim tipoMov As String
                
                ImpFactu = 0
                
-               If Not vCont.ConseguirContador(tipoMov, True, db) Then Exit Function
+               If Not vCont.ConseguirContador(TipoMov, True, db) Then Exit Function
            
             Else
                 '[Monica]24/01/2013: añado esta variable de importe total de factura para ver si se pasa de la cantidad de parametros
@@ -865,12 +873,116 @@ Dim tipoMov As String
                     End If
                End If
                
+               If NumError = 0 Then
+               
+                   '[Monica]07/03/2018: borramos los albaranes que son articulos que no se facturan
+                    Dim SqlNue As String
+                    
+                    SqlNue = "delete from scaalb where codsocio  in (select codsocio from ssocio inner join scoope on ssocio.codcoope = scoope.codcoope where (1=1) "
+                    If descop <> "" Then SqlNue = SqlNue & " and ssocio.codcoope >= " & DBSet(descop, "N")
+                    If hascop <> "" Then SqlNue = SqlNue & " and ssocio.codcoope <= " & DBSet(hascop, "N")
+                    
+                    '[Monica]19/06/2013: Añadimos el if de cooperativa y tipogasob
+                    If (vParamAplic.Cooperativa = 1 Or vParamAplic.Cooperativa = 2) And TipoGasoB > 0 Then
+                        '[Monica]15/07/2013: añadido el caso de que sea interna
+                        If CliTar = 3 Then
+                            SqlNue = SqlNue & " and scoope.tipfactu = " & DBLet(CliTar, "N")
+                        Else
+                            ' no miramos si es por cliente o por tarjeta
+                '            Sql = Sql & " and scoope.tipfactu <= " & DBLet(CliTar, "N") & ") "
+                            SqlNue = SqlNue & " and scoope.tipfactu in (0,1) "
+                        End If
+                    Else
+                        SqlNue = SqlNue & " and scoope.tipfactu = " & DBLet(CliTar, "N")
+                    End If
+                    
+                    Select Case TipoClien
+                        Case "0"
+                        
+                        Case "1"
+                            SqlNue = SqlNue & " and ssocio.bonifesp = 1"
+                        Case "2"
+                            SqlNue = SqlNue & " and ssocio.bonifesp = 0"
+                    End Select
+                    
+                    
+                    SqlNue = SqlNue & ") "
+                    
+                    SqlNue = SqlNue & " and scaalb.codartic in (select codartic from sartic where (1=1) "
+                    
+                    If vParamAplic.Cooperativa = 4 Then
+                        '[Monica]30/06/2014: antes solo se facturaba para pobla los articulos no combustibles (resto de productos)
+                        Select Case TipoArt
+                            Case 0 ' resto de productos
+                                SqlNue = SqlNue & "  and sartic.tipogaso = 0 "
+                            Case 1 ' gasolinas
+                                SqlNue = SqlNue & "  and sartic.tipogaso in (1,2,4) "
+                            Case 2 ' gasoleo B
+                                SqlNue = SqlNue & "  and sartic.tipogaso = 3 "
+                        End Select
+                    End If
+                    '[Monica]07/03/2018: solo los articulos que no se facturan
+                    SqlNue = SqlNue & " and facturar = 0) and scaalb.numfactu = 0 and scaalb.codforpa <> 98 "
+                    
+                    If DesFec <> "" Then SqlNue = SqlNue & " and scaalb.fecalbar >= '" & Format(CDate(DesFec), FormatoFecha) & "' "
+                    If HasFec <> "" Then SqlNue = SqlNue & " and scaalb.fecalbar <= '" & Format(CDate(HasFec), FormatoFecha) & "' "
+                    If dessoc <> "" Then SqlNue = SqlNue & " and scaalb.codsocio >= " & DBSet(dessoc, "N")
+                    If hassoc <> "" Then SqlNue = SqlNue & " and scaalb.codsocio <= " & DBSet(hassoc, "N")
+                    
+                    '[Monica]29/12/2016: solo en el caso de ribarroja si es contado seleccionamos los de contado
+                    If vParamAplic.Cooperativa = 5 Then
+                        If EsContado Then
+                            SqlNue = SqlNue & " and scaalb.codforpa in (select codforpa from sforpa where tipforpa in (0,6))"
+                        Else
+                            SqlNue = SqlNue & " and scaalb.codforpa in (select codforpa from sforpa where not tipforpa in (0,6))"
+                        End If
+                    End If
+                    
+                    
+                    If vParamAplic.Cooperativa = 1 Or vParamAplic.Cooperativa = 2 Then
+                        Select Case TipoGasoB
+                            Case 0
+                                SqlNue = SqlNue & " and not scaalb.codartic in (select codartic from sartic where tipogaso = 3 union " & _
+                                                                         "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3)"
+                            Case 1
+                                SqlNue = SqlNue & " and scaalb.codartic in (select codartic from sartic where tipogaso = 3 And esdomiciliado = 0 union " & _
+                                                                     "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3 And esdomiciliado = 0)"
+                            Case 2
+                                SqlNue = SqlNue & " and scaalb.codartic in (select codartic from sartic where tipogaso = 3 And esdomiciliado = 1 union " & _
+                                                                     "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3 And esdomiciliado = 1)"
+                        End Select
+                    End If
+                               
+                                               
+                    NumError = BorrarAlbaranes(db, SqlNue)
+                           
+                           
+               End If
+               
+               
+               
+               
         End If
     End If
 eFacturacion:
     Facturacion = NumError
     Exit Function
 End Function
+
+Private Function BorrarAlbaranes(ByRef db As BaseDatos, SQL As String) As Long
+
+    On Error GoTo eBorrarAlbaranes
+
+    NumError = db.ejecutar(SQL)
+    
+eBorrarAlbaranes:
+    If Err.Number <> 0 Then NumError = Err.Number
+    
+    BorrarAlbaranes = NumError
+    Exit Function
+End Function
+
+
 
 Private Function InsertarVencimientos(ByRef db As BaseDatos, Serie As String, Factura As String, FecFactura As String, ForPago As String) As Long
 Dim SQL As String
@@ -1381,18 +1493,22 @@ Dim NumError As Long
     If dessoc <> "" Then SQL = SQL & " and scaalb.codsocio >= " & DBSet(dessoc, "N")
     If hassoc <> "" Then SQL = SQL & " and scaalb.codsocio <= " & DBSet(hassoc, "N")
     
+    '[Monica]07/03/2018: seleccionamos los albaranes de articulos que se facturen: facturar = 1
+    SQL = SQL & " and scaalb.codartic in (select codartic from sartic where facturar = 1) "
+
     '[Monica]19/06/2013: si son facturas normales o de gasoleo b
     Select Case TipoGasoB
         Case 0
             SQL = SQL & " and not scaalb.codartic in (select codartic from sartic where tipogaso = 3 union " & _
-                                                     "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3)"
+                                                     "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3  )"
         Case 1
             SQL = SQL & " and scaalb.codartic in (select codartic from sartic where tipogaso = 3 And esdomiciliado = 0 union " & _
-                                                 "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3 And esdomiciliado = 0)"
+                                                 "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3 And esdomiciliado = 0 )"
         Case 2
             SQL = SQL & " and scaalb.codartic in (select codartic from sartic where tipogaso = 3 And esdomiciliado = 1 union " & _
-                                                 "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3 And esdomiciliado = 1)"
+                                                 "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3 And esdomiciliado = 1 )"
     End Select
+    
     
     SQL = SQL & " order by scaalb.codsocio, scaalb.codforpa, scaalb.fecalbar, scaalb.horalbar "
     
@@ -1518,13 +1634,17 @@ Dim NumError As Long
                End If
                If NumError = 0 Then NumError = InsertCabe(db, baseimpo, vCont.Contador, FecFactura, AntSocio, AntForpa, 1)
                
+            '[Monica]07/03/2018: eliminamos los albaranes de los articulos a no facturar
+            If NumError = 0 Then
+                NumError = BorrarAlbaranesArtNoFacturan(db, DesFec, HasFec, dessoc, hassoc, coope, TipoGasoB)
+            End If
         End If
         ' hemos de incluir la factura global de la cooperativa, partiendo de la temporal que tenemos grabada.
         If NumError = 0 Then
             NumError = InsertarFacturaGlobal(db, coope, FecFactura, 0, Pb1, TipoGasoB)
         End If
         
-        
+ 
         
     End If
     
@@ -1532,6 +1652,47 @@ eFacturacion:
     FacturacionAjena = NumError
     Exit Function
 End Function
+
+Private Function BorrarAlbaranesArtNoFacturan(db As BaseDatos, DesFec As String, HasFec As String, dessoc As String, hassoc As String, coope As String, TipoGasoB As Byte) As Long
+Dim SQL As String
+
+
+On Error GoTo eBorrarAlbaranesArtNoFacturan
+
+
+    SQL = "delete from scaalb "
+    SQL = SQL & " where scaalb.numfactu = 0 "
+    SQL = SQL & " and scaalb.codsocio in (select codsocio from ssocio where ssocio.codcoope = " & DBSet(coope, "N") & ") "
+    If DesFec <> "" Then SQL = SQL & " and scaalb.fecalbar >= '" & Format(CDate(DesFec), FormatoFecha) & "' "
+    If HasFec <> "" Then SQL = SQL & " and scaalb.fecalbar <= '" & Format(CDate(HasFec), FormatoFecha) & "' "
+    If dessoc <> "" Then SQL = SQL & " and scaalb.codsocio >= " & DBSet(dessoc, "N")
+    If hassoc <> "" Then SQL = SQL & " and scaalb.codsocio <= " & DBSet(hassoc, "N")
+    
+    '[Monica]07/03/2018: seleccionamos los articulos que no se facturan: facturar = 0
+    SQL = SQL & " and scaalb.codartic in (select codartic from sartic where facturar = 0) "
+    
+    
+    '[Monica]19/06/2013: si son facturas normales o de gasoleo b
+    Select Case TipoGasoB
+        Case 0
+            SQL = SQL & " and not scaalb.codartic in (select codartic from sartic where tipogaso = 3 union " & _
+                                                     "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3 )"
+        Case 1
+            SQL = SQL & " and scaalb.codartic in (select codartic from sartic where tipogaso = 3 And esdomiciliado = 0 union " & _
+                                                 "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3 And esdomiciliado = 0 )"
+        Case 2
+            SQL = SQL & " and scaalb.codartic in (select codartic from sartic where tipogaso = 3 And esdomiciliado = 1 union " & _
+                                                 "select if(artdto is null, -1, artdto) from sartic where tipogaso = 3 And esdomiciliado = 1 )"
+    End Select
+    
+    NumError = db.ejecutar(SQL)
+
+eBorrarAlbaranesArtNoFacturan:
+    If Err.Number <> 0 Then NumError = Err.Number
+    
+    BorrarAlbaranesArtNoFacturan = NumError
+End Function
+
 
 ' funcion que nos permite insertar la factura global que se le hace a la cooperativa
 ' se utiliza en la facturacion ajena del Regaixo
@@ -1728,7 +1889,7 @@ Dim sql2 As String
 Dim AntSocio As String, ActSocio As String
 Dim vsocio As CSocio
 Dim cantidad As Currency
-Dim Importe As Currency
+Dim IMPORTE As Currency
 Dim precio As Currency
 Dim b As Boolean
 Dim Linea As Integer
@@ -1831,13 +1992,13 @@ On Error GoTo eFacturacionAbonoCliente
         End If
         
         precio = Rs.Fields(2).Value * (-1)
-        Importe = Round2(precio * Rs.Fields(3).Value, 2)
+        IMPORTE = Round2(precio * Rs.Fields(3).Value, 2)
         
-        baseimpo(Val(Codigo)) = DBLet(baseimpo(Val(Codigo)), "N") + DBLet(Importe, "N")
+        baseimpo(Val(Codigo)) = DBLet(baseimpo(Val(Codigo)), "N") + DBLet(IMPORTE, "N")
         v_linea = v_linea + 1
         
 
-        NumError = InsertaLineaFacturaAbono(db, Rs, numser, vCont.Contador, CDate(fecFac), Hora, v_linea, Rs.Fields(3).Value, precio, Importe, ArtDto, 0)
+        NumError = InsertaLineaFacturaAbono(db, Rs, numser, vCont.Contador, CDate(fecFac), Hora, v_linea, Rs.Fields(3).Value, precio, IMPORTE, ArtDto, 0)
         Rs.MoveNext
     Wend
     
@@ -1859,7 +2020,7 @@ End Function
 
 
 
-Public Function InsertaLineaFacturaAbono(ByRef db As BaseDatos, ByRef Rs As ADODB.Recordset, numser As String, numFac As Long, fecFac As Date, Hora As String, Linea As Integer, cantidad As Currency, precio As Currency, Importe As Currency, ArtDto As String, Tipo As Byte) As Long
+Public Function InsertaLineaFacturaAbono(ByRef db As BaseDatos, ByRef Rs As ADODB.Recordset, numser As String, numFac As Long, fecFac As Date, Hora As String, Linea As Integer, cantidad As Currency, precio As Currency, IMPORTE As Currency, ArtDto As String, Tipo As Byte) As Long
 Dim Numtarje As String
 ' tipo = 0 facturacion
 ' tipo = 1 facturacion ajena
@@ -1885,7 +2046,7 @@ Dim Numtarje As String
            "values " & _
            "(" & db.Texto(numser) & "," & db.numero(numFac) & "," & db.Fecha(fecFac) & "," & db.numero(Linea) & ",'BONIFICA'," & _
            db.Fecha(fecFac) & "," & db.fechahora(fecFac & " " & Format(Hora, "hh:mm:ss")) & "," & db.numero(1) & "," & db.numero(Numtarje) & "," & db.numero(ArtDto) & "," & _
-           db.numero(cantidad) & "," & db.numero(precio) & "," & db.numero(Importe) & ")"
+           db.numero(cantidad) & "," & db.numero(precio) & "," & db.numero(IMPORTE) & ")"
            
     InsertaLineaFacturaAbono = db.ejecutar(SQL)
 
@@ -2021,18 +2182,18 @@ Dim ArtDto As String
         precio = DevuelveDesdeBDNew(cPTours, "sartic", "bonigral", "codartic", Rs.Fields(1).Value, "N")
         
         v_precio = CCur(precio) * (-1)
-        Importe = Round2(v_precio * Rs.Fields(2).Value, 2)
+        IMPORTE = Round2(v_precio * Rs.Fields(2).Value, 2)
         
         ' insertamos en la temporal para hacer la factura a la cooperativa
         If NumError = 0 Then ' añadida condicion 12/07/2007
-            NumError = InsertaLineaFacturaTemporal(db, CStr(ArtDto), CStr(Rs.Fields(2).Value), CStr(Importe))
+            NumError = InsertaLineaFacturaTemporal(db, CStr(ArtDto), CStr(Rs.Fields(2).Value), CStr(IMPORTE))
         End If
         
-        baseimpo(Val(Codigo)) = DBLet(baseimpo(Val(Codigo)), "N") + DBLet(Importe, "N")
+        baseimpo(Val(Codigo)) = DBLet(baseimpo(Val(Codigo)), "N") + DBLet(IMPORTE, "N")
         v_linea = v_linea + 1
         
         If NumError = 0 Then ' añadida condicion 12/07/2007
-            NumError = InsertaLineaFacturaAbono(db, Rs, numser, vCont.Contador, CDate(fecFac), Hora, v_linea, Rs.Fields(2).Value, CCur(v_precio), CCur(Importe), CStr(ArtDto), 1)
+            NumError = InsertaLineaFacturaAbono(db, Rs, numser, vCont.Contador, CDate(fecFac), Hora, v_linea, Rs.Fields(2).Value, CCur(v_precio), CCur(IMPORTE), CStr(ArtDto), 1)
         End If
         Rs.MoveNext
     Wend
@@ -2396,6 +2557,8 @@ Dim NumError As Long
     '[Monica]04/01/2013: efectivos
     SQL = SQL & ") inner join sforpa on scaalb.codforpa = sforpa.codforpa and sforpa.tipforpa <> 0 and sforpa.tipforpa <> 6) "
     SQL = SQL & " where scaalb.numfactu = 0 and scaalb.codforpa <> 98 "
+    '[Monica]07/03/2018: solo los articulos q se facturen
+    SQL = SQL & " and scaalb.codartic in (select codartic from sartic where facturar = 1) "
     If DesFec <> "" Then SQL = SQL & " and scaalb.fecalbar >= '" & Format(CDate(DesFec), FormatoFecha) & "' "
     If HasFec <> "" Then SQL = SQL & " and scaalb.fecalbar <= '" & Format(CDate(HasFec), FormatoFecha) & "' "
     If dessoc <> "" Then SQL = SQL & " and scaalb.codsocio >= " & DBSet(dessoc, "N")
@@ -2627,7 +2790,7 @@ Dim Codigo As String
 Dim NumError As Long
 Dim numFac As Long
 
-Dim tipoMov As String
+Dim TipoMov As String
 Dim nRegs As Integer
 Dim SqlAct As String
 Dim TipForpa As String
@@ -2852,7 +3015,7 @@ eFacturacion:
     MensError = Err.Description
 End Function
 
-Public Function InsertaLineaDescuentoSimula(numFac As Long, Socio As Long, cantidad As Currency, Importe As Currency, precio As Currency, Tarjeta As Long) As Boolean
+Public Function InsertaLineaDescuentoSimula(numFac As Long, Socio As Long, cantidad As Currency, IMPORTE As Currency, precio As Currency, TARJETA As Long) As Boolean
     Dim SQL As String
     Dim ImpLinea As Currency
     Dim Texto As String
@@ -2872,8 +3035,8 @@ Public Function InsertaLineaDescuentoSimula(numFac As Long, Socio As Long, canti
            "cantidad, preciove, implinea) " & _
            "values " & _
            "(" & DBSet(Socio, "N") & "," & DBSet(numFac, "N") & "," & DBSet(Texto, "T") & "," & _
-           DBSet(Now, "F") & "," & DBSet(Now, "FH") & ",1," & DBSet(Tarjeta, "N") & "," & DBSet(vParamAplic.ArticDto, "N") & "," & _
-           DBSet(cantidad, "N") & "," & DBSet(precio, "N") & "," & DBSet(Importe, "N") & ")"
+           DBSet(Now, "F") & "," & DBSet(Now, "FH") & ",1," & DBSet(TARJETA, "N") & "," & DBSet(vParamAplic.ArticDto, "N") & "," & _
+           DBSet(cantidad, "N") & "," & DBSet(precio, "N") & "," & DBSet(IMPORTE, "N") & ")"
     
     Conn.Execute SQL
            
