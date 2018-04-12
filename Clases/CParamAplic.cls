@@ -96,6 +96,10 @@ Private mvarFechaCamIva As String ' fecha de cambio de iva 01/09/2012
 Private mvarContabilidadNueva As Boolean
 
 
+Private mvarFamGenerica As Integer 'Familia generica en compras solo para alzira
+
+
+
 Private SQL As String  'Para la sentencia
 Private Mens As String    'Para los mensajes
 
@@ -401,6 +405,15 @@ Public Property Get TipoPrecio() As Byte
 End Property
 
 
+Public Property Let FamGenerica(ByVal vData As Integer)
+     mvarFamGenerica = vData
+End Property
+
+Public Property Get FamGenerica() As Integer
+     FamGenerica = mvarFamGenerica
+End Property
+
+
 
 ' FACTURACION INTERNA
 ' codigo de iva exento
@@ -619,6 +632,11 @@ On Error GoTo Err3
         mvarFechaCamIva = DBLet(Rs!feccambioiva, "F") ' fecha de cambio de iva
         
         mvarContabilidadNueva = DBLet(Rs!NuevaContabilidad, "N") = 1
+        
+        '[Monica]05/04/2018: familia generica de compras solo para Alzira
+        mvarFamGenerica = DBLet(Rs!FamGenerica, "N")
+        
+        
         Leer = 0
     End If
 
@@ -700,6 +718,9 @@ On Error GoTo eModificar
     SQL = SQL & ", codiva3= " & DBSet(mvarCodIvaSRedu, "N")
     SQL = SQL & ", codiva1old= " & DBSet(mvarCodIvaGnralAnt, "N")
     SQL = SQL & ", codiva2old= " & DBSet(mvarCodIvaReduAnt, "N")
+    
+    '[Monica]05/04/2018: familia generica compras solo para alzira
+    SQL = SQL & ", famgenerica= " & DBSet(mvarFamGenerica, "N", "S")
     
     
     SQL = SQL & " WHERE codparam =" & Codigo & ";"

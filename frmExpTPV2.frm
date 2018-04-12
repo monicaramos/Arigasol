@@ -391,21 +391,21 @@ Attribute frmC.VB_VarHelpID = -1
 
 
 
-Dim sql As String
-Dim rs As ADODB.Recordset
+Dim SQL As String
+Dim Rs As ADODB.Recordset
 Dim Rs2 As ADODB.Recordset
 Dim NF1 As Integer
 Dim NF2 As Integer
 Dim NF3 As Integer
 Dim NF4 As Integer
 Dim NF5 As Integer
-Dim Registro As String
+Dim registro As String
 Dim mAux As String
 '-- Variables de apoyo para montar luego registros
 Dim TARJETA As String
 Dim Tipo As String
 Dim PRODUCTO As String
-Dim CLIENTE As String
+Dim Cliente As String
 Dim ACTIVA As String
 Dim RIESGO As String
 Dim IMPORTE As String
@@ -493,7 +493,7 @@ Private Function Exp_Tarjetas(dTar As String, hTar As String) As Boolean
     Dim Nombre As String
     Dim Provincia As String
     Dim CodPostal As String
-    Dim i, i2, NumLin As Long
+    Dim I, i2, NumLin As Long
     Dim L1 As String ' Linea de grabación para fichero 1
     Dim L2 As String ' Linea de grabación para fichero 2
     Dim L3 As String ' Linea de grabación para fichero 3
@@ -517,28 +517,28 @@ Private Function Exp_Tarjetas(dTar As String, hTar As String) As Boolean
     Open Text1(3) For Output As #NF4
     NF5 = FreeFile()
     Open Text1(4) For Output As #NF5
-    sql = "SELECT * FROM starje WHERE (1=1) "
-    If dTar <> "" Then sql = sql & " and numtarje >= " & DBSet(dTar, "N")
-    If hTar <> "" Then sql = sql & " AND numtarje <= " & DBSet(hTar, "N")
+    SQL = "SELECT * FROM starje WHERE (1=1) "
+    If dTar <> "" Then SQL = SQL & " and numtarje >= " & DBSet(dTar, "N")
+    If hTar <> "" Then SQL = SQL & " AND numtarje <= " & DBSet(hTar, "N")
     
     '[Monica]29/05/2014: añadida la fecha de alta de tarjetas
-    If txtCodigo(14).Text <> "" Then sql = sql & " and fecalta >= " & DBSet(txtCodigo(14).Text, "F")
-    If txtCodigo(15).Text <> "" Then sql = sql & " and fecalta <= " & DBSet(txtCodigo(15).Text, "F")
+    If txtCodigo(14).Text <> "" Then SQL = SQL & " and fecalta >= " & DBSet(txtCodigo(14).Text, "F")
+    If txtCodigo(15).Text <> "" Then SQL = SQL & " and fecalta <= " & DBSet(txtCodigo(15).Text, "F")
     
     Select Case Combo1.ListIndex
         Case 0 'todas
         Case 1 'inactivas
-            sql = sql & " and (Estado = 1 Or Estado = 4)"
+            SQL = SQL & " and (Estado = 1 Or Estado = 4)"
         Case 2 'activas
-            sql = sql & " and not (Estado = 1 Or Estado = 4)"
+            SQL = SQL & " and not (Estado = 1 Or Estado = 4)"
     End Select
     
-    Set rs = New ADODB.Recordset
-    rs.Open sql, Conn, , , adCmdText
-    If rs.EOF Then
+    Set Rs = New ADODB.Recordset
+    Rs.Open SQL, Conn, , , adCmdText
+    If Rs.EOF Then
         MsgBox "No hay tarjetas a exportar entre esos límites", vbExclamation
         
-        rs.Close
+        Rs.Close
         
         Close #NF1
         Close #NF2
@@ -550,6 +550,9 @@ Private Function Exp_Tarjetas(dTar As String, hTar As String) As Boolean
     Else
         '-- Grabación de las líneas de cabecera
         L1 = "CODIGOCLIENTE" & TABULADOR ' codigocliente
+        '[Monica]05/04/2018: añadimos la columna de socio
+        L1 = L1 & "SOCIO" & TABULADOR ' CODIGO SOCIO
+        
         L1 = L1 & "DESCRIPCION" & TABULADOR ' descripcion
         L1 = L1 & "CAE" & TABULADOR ' cae
         L1 = L1 & "NOMBRE" & TABULADOR ' nombre
@@ -590,9 +593,9 @@ Private Function Exp_Tarjetas(dTar As String, hTar As String) As Boolean
         If L3 <> "" Then Print #NF3, L3
         If L4 <> "" Then Print #NF4, L4
         If L5 <> "" Then Print #NF5, L5
-        rs.MoveFirst
-        i2 = rs.RecordCount
-        While Not rs.EOF
+        Rs.MoveFirst
+        i2 = Rs.RecordCount
+        While Not Rs.EOF
             '-- Inicializamos las líneas de grabación
             L1 = "": L2 = "": L3 = "": L4 = "": L5 = ""
             '-- Vemos cuales se procesan en funcion de lo solicitado y del estado
@@ -601,34 +604,34 @@ Private Function Exp_Tarjetas(dTar As String, hTar As String) As Boolean
                 Case 0 ' se procesan todas
                     Procesar = True
                 Case 1 ' solo inactivas
-                    If rs!Estado = 1 Or rs!Estado = 4 Then Procesar = True
+                    If Rs!Estado = 1 Or Rs!Estado = 4 Then Procesar = True
                 Case 2 ' solo activas
-                    If rs!Estado <> 1 And rs!Estado <> 4 Then Procesar = True
+                    If Rs!Estado <> 1 And Rs!Estado <> 4 Then Procesar = True
             End Select
             If Procesar Then
-                i = i + 1
+                I = I + 1
                 NumLin = 0
-                lblInf.Caption = "Procesando registro " & CStr(i)
-                lblInf.Refresh
+                lblinf.Caption = "Procesando registro " & CStr(I)
+                lblinf.Refresh
                 '-- Montamos L1 --
-                TARJETA = "9724000030" & Format(DBLet(rs!Numtarje), "000000")
-                CLIENTE = Right(TARJETA, 5)
-                MATRICULA = DBLet(rs!MATRICUL)
+                TARJETA = "9724000030" & Format(DBLet(Rs!Numtarje), "000000")
+                Cliente = Right(TARJETA, 5)
+                MATRICULA = DBLet(Rs!matricul)
                 PRODUCTO = "N" '--Se supone que carburanteantes era C [3.6.20]
 '[Monica]29/05/2014: controlamos gasoleo b, que en nuestro caso es tiptarje
 '                If rs!GasoleoB <> 0 Then
 '                    PRODUCTO = "R" '--Ahora controla si hay Gasoleo B [3.6.20]
 '                End If
-                If rs!tiptarje = 1 Then
+                If Rs!tiptarje = 1 Then
                     PRODUCTO = "R" '--Ahora controla si hay Gasoleo B [3.6.20]
                 End If
 
 
 
                 '-- Ahora en el lugar del descuento tiene que figurar la entidad"
-                sql = "select * from ssocio where codsocio = " & CStr(rs!codsocio)
+                SQL = "select * from ssocio where codsocio = " & CStr(Rs!codsocio)
                 Set Rs2 = New ADODB.Recordset
-                Rs2.Open sql, Conn, , , adCmdText
+                Rs2.Open SQL, Conn, , , adCmdText
                 If Not Rs2.EOF Then
                     Entidad = CStr(Rs2!codcoope)
                 Else
@@ -640,15 +643,15 @@ Private Function Exp_Tarjetas(dTar As String, hTar As String) As Boolean
 '                Else
 '                    mAux = Trim(rs.Fields("Apellido1")) & " " & Trim(rs.Fields("Apellido2")) & ", " & Trim(rs.Fields("Nombre"))
 '                End If
-                mAux = DBLet(rs!nomtarje, "T")
+                mAux = DBLet(Rs!nomtarje, "T")
                 
                 Nombre = DBLet(mAux)
 '[Monica]29/05/2014: el nif es el del socio
-                NIF = DBLet(Rs2!NIFsocio)
+                NIF = DBLet(Rs2!nifsocio)
                 
-                sql = "select * from ssocio where codsocio = " & CStr(rs!codsocio)
+                SQL = "select * from ssocio where codsocio = " & CStr(Rs!codsocio)
                 Set Rs2 = New ADODB.Recordset
-                Rs2.Open sql, Conn, , , adCmdText
+                Rs2.Open SQL, Conn, , , adCmdText
                 If Not Rs2.EOF Then
                     DIRECCION = DBLet(Rs2!domsocio)
                     POBLACION = DBLet(Rs2!pobsocio)
@@ -661,7 +664,10 @@ Private Function Exp_Tarjetas(dTar As String, hTar As String) As Boolean
                     Provincia = ""
                 End If
                 '-- Montaje de LINEAS
-                L1 = CLIENTE & TABULADOR ' codigocliente
+                L1 = Cliente & TABULADOR ' codigocliente
+                '[Monica]05/04/2018: añadimos el codigo de socio con un 0
+                L1 = L1 & "0" & TABULADOR ' codigo de socio
+                
                 L1 = L1 & "" & TABULADOR ' descripcion
                 L1 = L1 & "" & TABULADOR ' cae
                 L1 = L1 & Nombre & TABULADOR ' nombre
@@ -681,19 +687,19 @@ Private Function Exp_Tarjetas(dTar As String, hTar As String) As Boolean
                 End If
                 '-- L2
                 L2 = "1" & TABULADOR ' idbase
-                L2 = L2 & CLIENTE & TABULADOR ' cliente
+                L2 = L2 & Cliente & TABULADOR ' cliente
                 L2 = L2 & "1" ' activo
                 '-- L3
                 L3 = TARJETA & TABULADOR ' idcodigoalt
                 L3 = L3 & "5" & TABULADOR ' tipocodigo
-                L3 = L3 & CLIENTE & TABULADOR ' idcliente
-                L3 = L3 & CLIENTE & TABULADOR ' idvehiculo
+                L3 = L3 & Cliente & TABULADOR ' idcliente
+                L3 = L3 & Cliente & TABULADOR ' idvehiculo
                 L3 = L3 & "0" ' tipotarjeta
                 '-- L4
-                L4 = CLIENTE & TABULADOR ' idvehiculo
+                L4 = Cliente & TABULADOR ' idvehiculo
                 L4 = L4 & MATRICULA & TABULADOR 'matricula
                 L4 = L4 & "" & TABULADOR ' descricpcion
-                L4 = L4 & CLIENTE & TABULADOR ' idcliente
+                L4 = L4 & Cliente & TABULADOR ' idcliente
                 L4 = L4 & "1" & TABULADOR ' numvehiculo
                 If PRODUCTO = "R" Then
                     L4 = L4 & "2"  ' productesaut (Gasóleo B)
@@ -703,7 +709,7 @@ Private Function Exp_Tarjetas(dTar As String, hTar As String) As Boolean
                 '-- L5
                 If Entidad <> "" And Entidad <> "0" And Entidad <> "6" Then
                     L5 = Entidad & TABULADOR ' idpromocion
-                    L5 = L5 & CLIENTE & TABULADOR 'idcliente
+                    L5 = L5 & Cliente & TABULADOR 'idcliente
                     L5 = L5 & "1" ' idbase
                 End If
                 '-- Y ahora a grabar la información
@@ -713,10 +719,10 @@ Private Function Exp_Tarjetas(dTar As String, hTar As String) As Boolean
                 If L4 <> "" Then Print #NF4, L4
                 If L5 <> "" Then Print #NF5, L5
             End If
-            rs.MoveNext
+            Rs.MoveNext
         Wend
     End If
-    rs.Close
+    Rs.Close
     Close #NF1
     Close #NF2
     Close #NF3
@@ -739,19 +745,19 @@ End Function
 
 
 
-Private Function NumRegistros(Tabla As String) As Long
-    Dim sql As String
-    Dim rs As ADODB.Recordset
-    sql = "Select Count(*) from " & Tabla
+Private Function NumRegistros(tabla As String) As Long
+    Dim SQL As String
+    Dim Rs As ADODB.Recordset
+    SQL = "Select Count(*) from " & tabla
     NumRegistros = 0
-    Set rs = New ADODB.Recordset
-    rs.Open sql, Conn, , , adCmdText
-    If Not rs.EOF Then
-        If Not IsNull(rs.Fields(0)) Then
-            NumRegistros = rs.Fields(0)
+    Set Rs = New ADODB.Recordset
+    Rs.Open SQL, Conn, , , adCmdText
+    If Not Rs.EOF Then
+        If Not IsNull(Rs.Fields(0)) Then
+            NumRegistros = Rs.Fields(0)
         End If
     End If
-    rs.Close
+    Rs.Close
 End Function
 
 Private Sub frmC_Selec(vFecha As Date)

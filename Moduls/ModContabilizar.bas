@@ -1605,6 +1605,7 @@ Dim Sql5 As String
 Dim Rs2 As ADODB.Recordset
 Dim CodigoDeIva As Integer
 Dim BaseLin As Currency
+Dim IvaLin As Currency
 Dim Sql3 As String
 Dim codmacta As String
 Dim ImporteBase As Currency
@@ -1652,7 +1653,9 @@ Dim TrozoComunInsert As String
     
     
         'Traer la baIfaccl y e tp1faccl
-        sql2 = "select baseimp" & I & " baseimp ,tipoiva" & I & " tipoiva from schfac where letraser = " & DBSet(Rs!Letraser, "T") & " and numfactu = " & DBSet(Rs!numfactu, "N") & " and fecfactu = " & DBSet(Rs!Fecfactu, "F")
+        
+        ' añadimos el importe de iva
+        sql2 = "select baseimp" & I & " baseimp ,tipoiva" & I & " tipoiva, impoiva" & I & " impoiva from schfac where letraser = " & DBSet(Rs!Letraser, "T") & " and numfactu = " & DBSet(Rs!numfactu, "N") & " and fecfactu = " & DBSet(Rs!Fecfactu, "F")
         
         Set Rs2 = New ADODB.Recordset
         Rs2.Open sql2, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
@@ -1661,6 +1664,8 @@ Dim TrozoComunInsert As String
         If Not Rs2.EOF Then
             If Not IsNull(Rs2!TipoIVA) Then
                 BaseLin = DBLet(Rs2!BaseImp, "N")
+                '[Monica]05/04/2018: añadido el importe iva
+                IvaLin = DBLet(Rs2!impoiva, "N")
                 CodigoDeIva = Rs2!TipoIVA
             End If
         End If
@@ -1684,14 +1689,16 @@ Dim TrozoComunInsert As String
                         porRec = Rs!PorcRec
                         
                         codmacta = Rs!codmacta
-                        ImporteBase = Rs!Importe
+                        ImporteBase = Rs!IMPORTE
                         ImporteBase = Round2(ImporteBase / (1 + (Rs!PorcIva / 100)), 2)
                         ImpRec1 = DBLet(Rs!PorcRec, "N")
                         If ImpRec1 > 0 Then Stop: ImpRec1 = Round2(ImporteBase / ((Rs!PorcRec / 100)), 2)
                         
-                        ImpIv1 = Rs!Importe - ImporteBase
+                        ImpIv1 = Rs!IMPORTE - ImporteBase
                         
                         BaseLin = BaseLin - ImporteBase
+                        '[Monica]05/04/2018
+                        IvaLin = IvaLin - ImpIv1
                         
                         Rs.MoveNext
                              
@@ -1711,7 +1718,10 @@ Dim TrozoComunInsert As String
                                 
                                
                                 ImporteBase = ImporteBase + BaseLin
-                                ImpIv1 = Round2(ImporteBase * ((PorIva / 100)), 2)
+                       '[Monica]05/04/2018: cambiado por la linea de abajo
+                       '         ImpIv1 = Round2(ImporteBase * ((PorIva / 100)), 2)
+                       
+                                ImpIv1 = ImpIv1 + IvaLin
                                 ImpRec1 = 0
                                 
                             End If
@@ -3935,9 +3945,9 @@ Dim TieneAnalitica As String
         'calculamos la Base Imp del total del importe para cada cta cble ventas
         '---- Laura: 10/10/2006
         'ImpLinea = RS!Importe - CCur(CalcularDto(CStr(RS!Importe), CStr(DtoPPago)))
-        ImpLinea = Rs!Importe - CCur(CalcularPorcentaje(Rs!Importe, DtoPPago, 2))
+        ImpLinea = Rs!IMPORTE - CCur(CalcularPorcentaje(Rs!IMPORTE, DtoPPago, 2))
         'ImpLinea = ImpLinea - CCur(CalcularDto(CStr(RS!Importe), CStr(DtoGnral)))
-        ImpLinea = ImpLinea - CCur(CalcularPorcentaje(Rs!Importe, DtoGnral, 2))
+        ImpLinea = ImpLinea - CCur(CalcularPorcentaje(Rs!IMPORTE, DtoGnral, 2))
         'ImpLinea = Round(ImpLinea, 2)
         '----
         totimp = totimp + ImpLinea
@@ -4936,8 +4946,8 @@ Dim K As Byte
         If NumeroIVA > 100 Then Err.Raise 513, "Error obteniendo IVA: " & Rs!CodigIVA
         
         
-        ImpLinea = Rs!Importe - CCur(CalcularPorcentaje(Rs!Importe, DtoPPago, 2))
-        ImpLinea = ImpLinea - CCur(CalcularPorcentaje(Rs!Importe, DtoGnral, 2))
+        ImpLinea = Rs!IMPORTE - CCur(CalcularPorcentaje(Rs!IMPORTE, DtoPPago, 2))
+        ImpLinea = ImpLinea - CCur(CalcularPorcentaje(Rs!IMPORTE, DtoGnral, 2))
         '----
         totimp = totimp + ImpLinea
         
