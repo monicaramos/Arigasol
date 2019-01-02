@@ -314,6 +314,10 @@ Public Sub SubmnE_Util_Click(Index As Integer)
         Case 11: frmDeshacerFact.Show vbModal ' deshacer facturacion
         Case 12: frmBackUP.Show vbModal
         Case 13: frmExpTPV2.Show vbModal
+    
+        Case 14: frmCambioSocio.Show vbModal
+    
+    
     End Select
 End Sub
 

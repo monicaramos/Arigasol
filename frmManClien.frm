@@ -3008,7 +3008,7 @@ Dim SQL As String
         Case 1 'documentos de alta baja de socios/campos
             Set frmLis = New frmListado
             frmLis.Socio = Text1(0).Text
-            frmLis.Tarjeta = Me.AdoAux(0).Recordset!Numtarje
+            frmLis.TARJETA = Me.AdoAux(0).Recordset!Numtarje
             frmLis.OpcionListado = 16
             frmLis.Show vbModal
             Set frmLis = Nothing
@@ -4115,7 +4115,7 @@ Dim Eliminar As Boolean
             
         Case 2 'margenes
             SQL = "¿Seguro que desea eliminar el Margen del Artículo?"
-            SQL = SQL & vbCrLf & "Código: " & AdoAux(Index).Recordset!codArtic
+            SQL = SQL & vbCrLf & "Código: " & AdoAux(Index).Recordset!codartic
             If MsgBox(SQL, vbQuestion + vbYesNo) = vbYes Then
                 Eliminar = True
                 SQL = "DELETE FROM smargen"
@@ -5663,6 +5663,14 @@ Dim Cad As String
 
     On Error GoTo eModificarDatosCuentaContable
 
+    '[Monica]25/04/2018: en el caso de alzira tienen gessocial
+    If vParamAplic.Cooperativa = 1 Then
+        Cad = "No se va a realizar ningún cambio en el Ariconta"
+        MsgBox Cad, vbExclamation
+        Exit Sub
+    End If
+
+
 
     If Text1(1).Text <> NombreAnt Or Text1(18).Text <> BancoAnt Or Text1(19).Text <> SucurAnt Or Text1(20).Text <> DigitoAnt Or Text1(21).Text <> CuentaAnt Or _
        DirecAnt <> Text1(3).Text Or cPostalAnt <> Text1(4).Text Or PoblaAnt <> Text1(5).Text Or ProviAnt <> Text1(6).Text Or NifAnt <> Text1(2).Text Or _
@@ -5755,7 +5763,7 @@ Private Function HayCobrosPagosPendientes(vCodmacta As String) As Boolean
 Dim SQL As String
 Dim sql2 As String
 Dim Rs As ADODB.Recordset
-Dim NRegs As Long
+Dim nRegs As Long
 
     On Error GoTo eHayCobrosPagosPendientes
 
@@ -5771,7 +5779,7 @@ Dim NRegs As Long
     Set Rs = New ADODB.Recordset
     Rs.Open SQL, ConnConta, adOpenForwardOnly, adLockPessimistic, adCmdText
     If Not Rs.EOF Then
-        If DBLet(Rs.Fields(0).Value) <> 0 Then NRegs = DBLet(Rs.Fields(0).Value)
+        If DBLet(Rs.Fields(0).Value) <> 0 Then nRegs = DBLet(Rs.Fields(0).Value)
     End If
             
     If vParamAplic.ContabilidadNueva Then
@@ -5786,11 +5794,11 @@ Dim NRegs As Long
     Set Rs = New ADODB.Recordset
     Rs.Open SQL, ConnConta, adOpenForwardOnly, adLockPessimistic, adCmdText
     If Not Rs.EOF Then
-        If DBLet(Rs.Fields(0).Value) <> 0 Then NRegs = NRegs + DBLet(Rs.Fields(0).Value)
+        If DBLet(Rs.Fields(0).Value) <> 0 Then nRegs = nRegs + DBLet(Rs.Fields(0).Value)
     End If
     Set Rs = Nothing
     
-    HayCobrosPagosPendientes = (NRegs <> 0)
+    HayCobrosPagosPendientes = (nRegs <> 0)
     Exit Function
     
 eHayCobrosPagosPendientes:

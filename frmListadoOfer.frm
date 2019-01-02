@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.2#0"; "MSCOMCTL.OCX"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Begin VB.Form frmListadoOfer 
    BorderStyle     =   3  'Fixed Dialog
@@ -2491,12 +2491,12 @@ End Sub
 
 Private Sub cmdAceptarAlbCom_Click()
 'Solicitar datos para Generar Albaran  a partir de Pedido de Compras
-Dim cad As String
+Dim Cad As String
 
-    cad = "" 'txtCodigo(47).Text & "|"
-    cad = cad & txtCodigo(48).Text & "|"
-    cad = cad & txtCodigo(49).Text & "|"
-    RaiseEvent DatoSeleccionado(cad)
+    Cad = "" 'txtCodigo(47).Text & "|"
+    Cad = Cad & txtCodigo(48).Text & "|"
+    Cad = Cad & txtCodigo(49).Text & "|"
+    RaiseEvent DatoSeleccionado(Cad)
     Unload Me
 End Sub
 
@@ -2505,7 +2505,7 @@ End Sub
 Private Sub cmdAceptarCompras_Click()
 'Listados de Compras
 Dim campo As String
-Dim cad As String
+Dim Cad As String
 Dim tabla As String
 
     InicializarVbles
@@ -2521,8 +2521,8 @@ Dim tabla As String
      If txtCodigo(90).Text <> "" Or txtCodigo(91).Text <> "" Then
         campo = "{scafpc.codprove}"
         'Parametro Desde/Hasta Proveedor
-        cad = "pDHProve=""Proveedor: "
-        If Not PonerDesdeHasta(campo, "N", 90, 91, cad) Then Exit Sub
+        Cad = "pDHProve=""Proveedor: "
+        If Not PonerDesdeHasta(campo, "N", 90, 91, Cad) Then Exit Sub
     End If
    
     
@@ -2530,8 +2530,8 @@ Dim tabla As String
     '--------------------------------------------
     If txtCodigo(92).Text <> "" Or txtCodigo(93).Text <> "" Then
         campo = "{scafpc.fecfactu}"
-        cad = "pDHFecha=""Fecha Fact.: "
-        If Not PonerDesdeHasta(campo, "F", 92, 93, cad) Then Exit Sub
+        Cad = "pDHFecha=""Fecha Fact.: "
+        If Not PonerDesdeHasta(campo, "F", 92, 93, Cad) Then Exit Sub
     End If
     
     tabla = "scafpc"
@@ -2541,8 +2541,8 @@ Dim tabla As String
          If txtCodigo(94).Text <> "" Or txtCodigo(95).Text <> "" Then
             campo = "{sartic.codfamia}"
             'Parametro Desde/Hasta Familia
-            cad = "pDHFamilia=""Familia: "
-            If Not PonerDesdeHasta(campo, "N", 94, 95, cad) Then Exit Sub
+            Cad = "pDHFamilia=""Familia: "
+            If Not PonerDesdeHasta(campo, "N", 94, 95, Cad) Then Exit Sub
             
             tabla = "( scafpc INNER JOIN slifpc ON scafpc.codprove=slifpc.codprove AND scafpc.numfactu=slifpc.numfactu "
             tabla = tabla & " AND scafpc.fecfactu=slifpc.fecfactu )"
@@ -2583,11 +2583,11 @@ Dim tabla As String
         BorrarTempInformes
         
         'en esta opcion ver si hay albaranes
-        cad = Replace(cadSelect, tabla, "scaalp")
-        cad = Replace(cad, "fecfactu", "fechaalb")
+        Cad = Replace(cadSelect, tabla, "scaalp")
+        Cad = Replace(Cad, "fecfactu", "fechaalb")
         
         'insertar los albaranes q cumple la seleccion
-        If Not CargarTmpInformes_Compras_312("scaalp", cad) Then Exit Sub
+        If Not CargarTmpInformes_Compras_312("scaalp", Cad) Then Exit Sub
         
         
         'insertar los albaranes de facturas q cumple la seleccion
@@ -2733,7 +2733,7 @@ End Sub
 
 Private Sub cmdAceptarHco_Click()
 'pedir datos para Pasar de Albaranes a historico
-Dim cad As String
+Dim Cad As String
 
     'comprobar que todos los camos tienen valor
     If txtCodigo(50).Text = "" Or txtCodigo(51).Text = "" Or txtCodigo(52).Text = "" Then
@@ -2742,10 +2742,10 @@ Dim cad As String
     End If
 
     'datos a devolver
-    cad = txtCodigo(50).Text & "|"
+    Cad = txtCodigo(50).Text & "|"
 '    cad = cad & txtCodigo(51).Text & "|"
-    cad = cad & txtCodigo(52).Text & "|"
-    RaiseEvent DatoSeleccionado(cad)
+    Cad = Cad & txtCodigo(52).Text & "|"
+    RaiseEvent DatoSeleccionado(Cad)
     Unload Me
 
 End Sub
@@ -2876,7 +2876,7 @@ End Sub
 Private Sub cmdAceptarPte_Click()
 'LIstado Material Pendiente de recibir
 Dim Codigo As String
-Dim cad As String
+Dim Cad As String
 
     InicializarVbles
     
@@ -2887,11 +2887,11 @@ Dim cad As String
     'Pasar el ORDEN del informe como parametro
     If OpcionListado = 307 Then
         If Me.OptOrdenArt Then
-            cad = "{slippr.codartic}"
+            Cad = "{slippr.codartic}"
         Else
-            cad = "{scappr.numpedpr}"
+            Cad = "{scappr.numpedpr}"
         End If
-        cadParam = cadParam & "pOrden=" & cad & "|"
+        cadParam = cadParam & "pOrden=" & Cad & "|"
         numParam = numParam + 1
     End If
     
@@ -2905,8 +2905,8 @@ Dim cad As String
     If txtCodigo(65).Text <> "" Or txtCodigo(66).Text <> "" Then
         Codigo = "{scappr.codprove}"
         If OpcionListado = 308 Then Codigo = "{scaalp.codprove}"
-        cad = "pDHProveedor=""Proveedor: "
-        If Not PonerDesdeHasta(Codigo, "N", 65, 66, cad) Then Exit Sub
+        Cad = "pDHProveedor=""Proveedor: "
+        If Not PonerDesdeHasta(Codigo, "N", 65, 66, Cad) Then Exit Sub
     End If
     
     'Cadena para seleccion Desde y Hasta FECHA
@@ -2914,9 +2914,9 @@ Dim cad As String
     If txtCodigo(69).Text <> "" Or txtCodigo(70).Text <> "" Then
         Codigo = "{scappr.fecpedpr}"
         If OpcionListado = 308 Then Codigo = "{scaalp.fechaalb}"
-        cad = "pDHFecha=""Fecha Ped.: "
-        If OpcionListado = 308 Then cad = "pDHFecha=""Fecha Alb.: "
-        If Not PonerDesdeHasta(Codigo, "F", 69, 70, cad) Then Exit Sub
+        Cad = "pDHFecha=""Fecha Ped.: "
+        If OpcionListado = 308 Then Cad = "pDHFecha=""Fecha Alb.: "
+        If Not PonerDesdeHasta(Codigo, "F", 69, 70, Cad) Then Exit Sub
     End If
     
     If OpcionListado = 307 Then '307: List. Materia pendiente de recibir
@@ -2924,23 +2924,23 @@ Dim cad As String
         '--------------------------------------------
         If txtCodigo(67).Text <> "" Or txtCodigo(68).Text <> "" Then
             Codigo = "{slippr.codartic}"
-            cad = "pDHArticulo=""Artículo: "
-            If Not PonerDesdeHasta(Codigo, "T", 67, 68, cad) Then Exit Sub
+            Cad = "pDHArticulo=""Artículo: "
+            If Not PonerDesdeHasta(Codigo, "T", 67, 68, Cad) Then Exit Sub
         End If
     End If
     
     'Comprobar que hay datos que mostrar antes de Abrir el Informe
     If OpcionListado = 307 Then
-        cad = "scappr INNER JOIN slippr ON scappr.numpedpr=slippr.numpedpr "
+        Cad = "scappr INNER JOIN slippr ON scappr.numpedpr=slippr.numpedpr "
         Titulo = "Material Pendiente de recibir"
         nomRPT = "rComPteRecibir.rpt"
     Else
-        cad = "scaalp INNER JOIN slialp ON scaalp.numalbar=slialp.numalbar AND scaalp.fechaalb=slialp.fechaalb AND scaalp.codprove=slialp.codprove "
+        Cad = "scaalp INNER JOIN slialp ON scaalp.numalbar=slialp.numalbar AND scaalp.fechaalb=slialp.fechaalb AND scaalp.codprove=slialp.codprove "
         Titulo = "Pendiente de Factura"
         nomRPT = "rComPteFactura.rpt"
     End If
     
-    If Not HayRegParaInforme(cad, cadSelect) Then Exit Sub
+    If Not HayRegParaInforme(Cad, cadSelect) Then Exit Sub
 
     'Mostrar el Informe
     conSubRPT = False
@@ -3092,7 +3092,7 @@ Dim Rs As ADODB.Recordset
     Rs.Open NomTabla, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
     NumRegElim = 0
     While Not Rs.EOF
-        NomTabla = Rs!codsocio & "," & Rs!numfactu & ",'" & Trim(Rs!letraser) & "','" & Format(Rs!fecfactu, FormatoFecha)
+        NomTabla = Rs!codsocio & "," & Rs!numfactu & ",'" & Trim(Rs!Letraser) & "','" & Format(Rs!Fecfactu, FormatoFecha)
         
         'El tipo de informe lo guardare en el ultimo campo
         'El report es el = 12
@@ -4080,17 +4080,17 @@ End Sub
 
 
 
-Private Function AnyadirParametroDH(cad As String, indD As Byte, indH As Byte) As String
+Private Function AnyadirParametroDH(Cad As String, indD As Byte, indH As Byte) As String
 On Error Resume Next
     If txtCodigo(indD).Text <> "" Then
-        cad = cad & "desde " & txtCodigo(indD).Text
-        If txtNombre(indD).Text <> "" Then cad = cad & " - " & txtNombre(indD).Text
+        Cad = Cad & "desde " & txtCodigo(indD).Text
+        If txtNombre(indD).Text <> "" Then Cad = Cad & " - " & txtNombre(indD).Text
     End If
     If txtCodigo(indH).Text <> "" Then
-        cad = cad & "  hasta " & txtCodigo(indH).Text
-        If txtNombre(indH).Text <> "" Then cad = cad & " - " & txtNombre(indH).Text
+        Cad = Cad & "  hasta " & txtCodigo(indH).Text
+        If txtNombre(indH).Text <> "" Then Cad = Cad & " - " & txtNombre(indH).Text
     End If
-    AnyadirParametroDH = cad
+    AnyadirParametroDH = Cad
     If Err.Number <> 0 Then Err.Clear
 End Function
 
@@ -4106,7 +4106,7 @@ End Sub
 
 Private Function PonerDesdeHasta(campo As String, Tipo As String, indD As Byte, indH As Byte, param As String) As Boolean
 Dim devuelve As String
-Dim cad As String
+Dim Cad As String
 
     PonerDesdeHasta = False
     devuelve = CadenaDesdeHasta(txtCodigo(indD).Text, txtCodigo(indH).Text, campo, Tipo)
@@ -4118,8 +4118,8 @@ Dim cad As String
         If Not AnyadirAFormula(cadSelect, devuelve) Then Exit Function
     Else
         'Fecha para la Base de Datos
-        cad = CadenaDesdeHastaBD(txtCodigo(indD).Text, txtCodigo(indH).Text, campo, Tipo)
-        If Not AnyadirAFormula(cadSelect, cad) Then Exit Function
+        Cad = CadenaDesdeHastaBD(txtCodigo(indD).Text, txtCodigo(indH).Text, campo, Tipo)
+        If Not AnyadirAFormula(cadSelect, Cad) Then Exit Function
     End If
     
     If devuelve <> "" Then
@@ -4324,26 +4324,26 @@ End Sub
 
 
 Private Sub CargarIconos()
-Dim i As Integer
+Dim I As Integer
     
-    For i = 4 To 4
-        Me.imgBuscarOfer(i).Picture = frmPpal.imgListImages16.ListImages(1).Picture
-    Next i
-    For i = 28 To 29
-        Me.imgBuscarOfer(i).Picture = frmPpal.imgListImages16.ListImages(1).Picture
-    Next i
-    For i = 35 To 39
-        Me.imgBuscarOfer(i).Picture = frmPpal.imgListImages16.ListImages(1).Picture
-    Next i
-    For i = 41 To 44
-        Me.imgBuscarOfer(i).Picture = frmPpal.imgListImages16.ListImages(1).Picture
-    Next i
-    For i = 48 To 51
-        Me.imgBuscarOfer(i).Picture = frmPpal.imgListImages16.ListImages(1).Picture
-    Next i
-    For i = 56 To 57
-        Me.imgBuscarOfer(i).Picture = frmPpal.imgListImages16.ListImages(1).Picture
-    Next i
+    For I = 4 To 4
+        Me.imgBuscarOfer(I).Picture = frmPpal.imgListImages16.ListImages(1).Picture
+    Next I
+    For I = 28 To 29
+        Me.imgBuscarOfer(I).Picture = frmPpal.imgListImages16.ListImages(1).Picture
+    Next I
+    For I = 35 To 39
+        Me.imgBuscarOfer(I).Picture = frmPpal.imgListImages16.ListImages(1).Picture
+    Next I
+    For I = 41 To 44
+        Me.imgBuscarOfer(I).Picture = frmPpal.imgListImages16.ListImages(1).Picture
+    Next I
+    For I = 48 To 51
+        Me.imgBuscarOfer(I).Picture = frmPpal.imgListImages16.ListImages(1).Picture
+    Next I
+    For I = 56 To 57
+        Me.imgBuscarOfer(I).Picture = frmPpal.imgListImages16.ListImages(1).Picture
+    Next I
 
 End Sub
 

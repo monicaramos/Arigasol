@@ -521,7 +521,7 @@ Dim indCodigo As Integer
 
 Private Sub PonerModo(vModo)
 Dim b As Boolean
-Dim i As Integer
+Dim I As Integer
 
     Modo = vModo
     
@@ -532,16 +532,16 @@ Dim i As Integer
         PonerIndicador lblIndicador, Modo
     End If
     
-    For i = 0 To txtAux.Count - 1
-        txtAux(i).visible = Not b
-    Next i
-    For i = 0 To Combo1.Count - 1
-        Combo1(i).visible = Not b
-    Next i
+    For I = 0 To txtAux.Count - 1
+        txtAux(I).visible = Not b
+    Next I
+    For I = 0 To Combo1.Count - 1
+        Combo1(I).visible = Not b
+    Next I
     text2(0).visible = Not b
-    For i = 0 To btnBuscar.Count - 1
-        btnBuscar(i).visible = Not b
-    Next i
+    For I = 0 To btnBuscar.Count - 1
+        btnBuscar(I).visible = Not b
+    Next I
 
     cmdAceptar.visible = Not b
     cmdCancelar.visible = Not b
@@ -661,13 +661,13 @@ End Sub
 
 Private Sub BotonModificar()
     Dim anc As Single
-    Dim i As Integer
+    Dim I As Integer
     
     Screen.MousePointer = vbHourglass
     
     If DataGrid1.Bookmark < DataGrid1.FirstRow Or DataGrid1.Bookmark > (DataGrid1.FirstRow + DataGrid1.VisibleRows - 1) Then
-        i = DataGrid1.Bookmark - DataGrid1.FirstRow
-        DataGrid1.Scroll 0, i
+        I = DataGrid1.Bookmark - DataGrid1.FirstRow
+        DataGrid1.Scroll 0, I
         DataGrid1.Refresh
     End If
     
@@ -684,15 +684,15 @@ Private Sub BotonModificar()
     txtAux(2).Text = DataGrid1.Columns(3).Text
     txtAux(3).Text = DataGrid1.Columns(4).Text
     ' ***** canviar-ho pel nom del camp del combo *********
-    i = adodc1.Recordset!tiptarje
+    I = adodc1.Recordset!tiptarje
     ' *****************************************************
-    PosicionarCombo Me.Combo1(0), i
-    i = adodc1.Recordset!escopia
+    PosicionarCombo Me.Combo1(0), I
+    I = adodc1.Recordset!escopia
     ' *****************************************************
-    PosicionarCombo Me.Combo1(1), i
-    i = adodc1.Recordset!impresa
+    PosicionarCombo Me.Combo1(1), I
+    I = adodc1.Recordset!impresa
     ' *****************************************************
-    PosicionarCombo Me.Combo1(2), i
+    PosicionarCombo Me.Combo1(2), I
     
 
 '    For j = 0 To Combo1.ListCount - 1
@@ -710,21 +710,21 @@ Private Sub BotonModificar()
 End Sub
 
 Private Sub LLamaLineas(alto As Single, xModo As Byte)
-Dim i As Integer
+Dim I As Integer
     DeseleccionaGrid Me.DataGrid1
     PonerModo xModo
     
     'Fijamos el ancho
-    For i = 0 To txtAux.Count - 1
-        txtAux(i).Top = alto
-    Next i
-    For i = 0 To Combo1.Count - 1
-        Combo1(i).Top = alto - 15
-    Next i
+    For I = 0 To txtAux.Count - 1
+        txtAux(I).Top = alto
+    Next I
+    For I = 0 To Combo1.Count - 1
+        Combo1(I).Top = alto - 15
+    Next I
     text2(0).Top = alto
-    For i = 0 To btnBuscar.Count - 1
-        btnBuscar(i).Top = alto
-    Next i
+    For I = 0 To btnBuscar.Count - 1
+        btnBuscar(I).Top = alto
+    Next I
     
 End Sub
 
@@ -753,7 +753,7 @@ Dim temp As Boolean
         NumRegElim = adodc1.Recordset.AbsolutePosition
         SQL = "Delete from imptarjetas where codsocio= " & DBSet(adodc1.Recordset!codsocio, "N")
         SQL = SQL & " and fecha = " & DBSet(adodc1.Recordset!Fecha, "F")
-        SQL = SQL & " and hora = " & DBSet(adodc1.Recordset!hora, "FH")
+        SQL = SQL & " and hora = " & DBSet(adodc1.Recordset!Hora, "FH")
         Conn.Execute SQL
         CargaGrid CadB
 '        If CadB <> "" Then
@@ -843,7 +843,7 @@ Private Sub btnBuscar_Click(Index As Integer)
 End Sub
 
 Private Sub cmdAceptar_Click()
-    Dim i As Integer
+    Dim I As Integer
 
     Select Case Modo
         Case 1 'BUSQUEDA
@@ -877,7 +877,7 @@ Private Sub cmdAceptar_Click()
             If DatosOk Then
                 If ModificaDesdeFormulario(Me) Then
                     TerminaBloquear
-                    i = adodc1.Recordset.Fields(0)
+                    I = adodc1.Recordset.Fields(0)
                     PonerModo 2
                     CargaGrid CadB
 '                    If CadB <> "" Then
@@ -887,7 +887,7 @@ Private Sub cmdAceptar_Click()
 '                        CargaGrid
 '                        lblIndicador.Caption = ""
 '                    End If
-                    adodc1.Recordset.Find (adodc1.Recordset.Fields(0).Name & " =" & i)
+                    adodc1.Recordset.Find (adodc1.Recordset.Fields(0).Name & " =" & I)
                     PonerFocoGrid Me.DataGrid1
                 End If
             End If
@@ -921,8 +921,8 @@ Private Sub cmdCancelar_Click()
 End Sub
 
 Private Sub cmdRegresar_Click()
-Dim cad As String
-Dim i As Integer
+Dim Cad As String
+Dim I As Integer
 Dim J As Integer
 Dim Aux As String
 
@@ -930,18 +930,18 @@ Dim Aux As String
         MsgBox "Ningún registro devuelto.", vbExclamation
         Exit Sub
     End If
-    cad = ""
-    i = 0
+    Cad = ""
+    I = 0
     Do
-        J = i + 1
-        i = InStr(J, DatosADevolverBusqueda, "|")
-        If i > 0 Then
-            Aux = Mid(DatosADevolverBusqueda, J, i - J)
+        J = I + 1
+        I = InStr(J, DatosADevolverBusqueda, "|")
+        If I > 0 Then
+            Aux = Mid(DatosADevolverBusqueda, J, I - J)
             J = Val(Aux)
-            cad = cad & adodc1.Recordset.Fields(J) & "|"
+            Cad = Cad & adodc1.Recordset.Fields(J) & "|"
         End If
-    Loop Until i = 0
-    RaiseEvent DatoSeleccionado(cad)
+    Loop Until I = 0
+    RaiseEvent DatoSeleccionado(Cad)
     Unload Me
 End Sub
 
@@ -1059,7 +1059,9 @@ Dim SQL As String
         If Not (Mid(Format(adodc1.Recordset!Numtarje, "0000000000000"), 2, 4) = "3120" Or Mid(Format(adodc1.Recordset!Numtarje, "0000000000000"), 2, 4) = "3121" Or _
            Mid(Format(adodc1.Recordset!Numtarje, "0000000000000"), 2, 4) = "3110" Or Mid(Format(adodc1.Recordset!Numtarje, "0000000000000"), 2, 4) = "3111" Or _
            Mid(Format(adodc1.Recordset!Numtarje, "0000000000000"), 2, 4) = "3130" Or Mid(Format(adodc1.Recordset!Numtarje, "0000000000000"), 2, 4) = "3131" Or _
-           Mid(Format(adodc1.Recordset!Numtarje, "0000000000000"), 1, 2) = "95") Then
+           Mid(Format(adodc1.Recordset!Numtarje, "0000000000000"), 1, 2) = "95" Or _
+           Mid(Format(adodc1.Recordset!Numtarje, "0000000000000"), 1, 2) = "94") Then
+           '[Monica]29/11/2018: añadida que empiece por 94
             MsgBox "El número de tarjeta a imprimir es incorrecto. Revise.", vbExclamation
             Exit Sub
         End If
@@ -1116,7 +1118,7 @@ Dim SQL As String
 
     SQL = "update imptarjetas set impresa = 1 where codsocio = " & adodc1.Recordset!codsocio
     SQL = SQL & " and numtarje = " & adodc1.Recordset!Numtarje & " and fecha = " & DBSet(adodc1.Recordset!Fecha, "F")
-    SQL = SQL & " and hora = " & DBSet(adodc1.Recordset!hora, "FH")
+    SQL = SQL & " and hora = " & DBSet(adodc1.Recordset!Hora, "FH")
 
     Conn.Execute SQL
 
@@ -1344,7 +1346,7 @@ Dim Mens As String
 End Function
 
 Private Sub CargaCombo()
-Dim cad As String
+Dim Cad As String
 Dim Rs As ADODB.Recordset
 
     On Error GoTo ErrCarga
@@ -1436,12 +1438,12 @@ Private Sub XPDefaultPrinter(PrinterName As String)
     Dim DeviceName As String
     Dim DriverName As String
     Dim PrinterPort As String
-    Dim r As Long
+    Dim R As Long
     ' Get the printer information for the currently selected
     ' printer in the list. The information is taken from the
     ' WIN.INI file.
     Buffer = Space(1024)
-    r = GetProfileString("PrinterPorts", PrinterName, "", _
+    R = GetProfileString("PrinterPorts", PrinterName, "", _
         Buffer, Len(Buffer))
 
     ' Parse the driver name and port name out of the buffer
@@ -1482,12 +1484,12 @@ End Sub
 Private Sub SetDefaultPrinter(ByVal PrinterName As String, _
     ByVal DriverName As String, ByVal PrinterPort As String)
     Dim DeviceLine As String
-    Dim r As Long
+    Dim R As Long
     Dim L As Long
     DeviceLine = PrinterName & "," & DriverName & "," & PrinterPort
     ' Store the new printer information in the [WINDOWS] section of
     ' the WIN.INI file for the DEVICE= item
-    r = WriteProfileString("windows", "Device", DeviceLine)
+    R = WriteProfileString("windows", "Device", DeviceLine)
     ' Cause all applications to reload the INI file:
     L = SendMessage(HWND_BROADCAST, WM_WININICHANGE, 0, "windows")
 End Sub

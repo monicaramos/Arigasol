@@ -5,7 +5,7 @@ Begin VB.MDIForm MDIppal
    Caption         =   "AriGasol"
    ClientHeight    =   7860
    ClientLeft      =   225
-   ClientTop       =   1170
+   ClientTop       =   1155
    ClientWidth     =   11160
    Icon            =   "MDIppal.frx":0000
    LinkTopic       =   "MDIForm1"
@@ -580,6 +580,10 @@ Begin VB.MDIForm MDIppal
          Caption         =   "&Exportación TPV"
          Index           =   13
       End
+      Begin VB.Menu mnE_Util 
+         Caption         =   "Asignacion de codigos cliente"
+         Index           =   14
+      End
    End
    Begin VB.Menu mnSoporte 
       Caption         =   "&Soporte"
@@ -606,7 +610,7 @@ Private PrimeraVez As Boolean
 Dim TieneEditorDeMenus As Boolean
 
 Public Sub GetIconsFromLibrary(ByVal sLibraryFilePath As String, ByVal op As Integer, ByVal tam As Integer)
-    Dim I As Integer
+    Dim i As Integer
     Dim tRes As ResType, iCount As Integer
         
     opcio = op
@@ -658,7 +662,7 @@ Private Sub MDIForm_Activate()
 End Sub
 
 Private Sub MDIForm_Load()
-Dim Cad As String
+Dim cad As String
 
     PrimeraVez = True
     CargarImagen
@@ -667,7 +671,7 @@ Dim Cad As String
     If vEmpresa Is Nothing Then
         Caption = "AriGasol" & " ver. " & App.Major & "." & App.Minor & "." & App.Revision & "   -  " & " FALTA CONFIGURAR"
     Else
-        Caption = "AriGasol" & " ver. " & App.Major & "." & App.Minor & "." & App.Revision & "   -  Empresa: " & vEmpresa.nomEmpre & Cad & _
+        Caption = "AriGasol" & " ver. " & App.Major & "." & App.Minor & "." & App.Revision & "   -  Empresa: " & vEmpresa.nomEmpre & cad & _
                   "   -  Usuario: " & vSesion.Nombre
     End If
 
@@ -858,11 +862,11 @@ End Sub
 ' ### [Monica] 05/09/2006
 Private Sub HabilitarSoloPrametros_o_Empresas(Habilitar As Boolean)
 Dim T As Control
-Dim Cad As String
+Dim cad As String
 
     On Error Resume Next
     For Each T In Me
-        Cad = T.Name
+        cad = T.Name
         If Mid(T.Name, 1, 2) = "mn" Then
             'If LCase(Mid(T.Name, 1, 8)) <> "mn_b" Then
                 T.Enabled = Habilitar
@@ -960,8 +964,8 @@ EDevuelveCadenaMenu:
 End Function
 
 Private Sub LanzaHome(Opcion As String)
-    Dim I As Integer
-    Dim Cad As String
+    Dim i As Integer
+    Dim cad As String
     On Error GoTo ELanzaHome
     
     'Obtenemos la pagina web de los parametros
@@ -971,17 +975,17 @@ Private Sub LanzaHome(Opcion As String)
         Exit Sub
     End If
         
-    I = FreeFile
-    Cad = ""
-    Open App.path & "\lanzaexp.dat" For Input As #I
-    Line Input #I, Cad
-    Close #I
+    i = FreeFile
+    cad = ""
+    Open App.path & "\lanzaexp.dat" For Input As #i
+    Line Input #i, cad
+    Close #i
     
     'Lanzamos
-    If Cad <> "" Then Shell Cad & " " & CadenaDesdeOtroForm, vbMaximizedFocus
+    If cad <> "" Then Shell cad & " " & CadenaDesdeOtroForm, vbMaximizedFocus
     
 ELanzaHome:
-    If Err.Number <> 0 Then MuestraError Err.Number, Cad & vbCrLf & Err.Description
+    If Err.Number <> 0 Then MuestraError Err.Number, cad & vbCrLf & Err.Description
     CadenaDesdeOtroForm = ""
 End Sub
 
@@ -1035,6 +1039,13 @@ Dim b As Boolean
     '[Monica]29/05/2014: el traspaso de tarjetas de tpv solo la hace Alzira
     Me.mnE_Util(13).visible = (vParamAplic.Cooperativa = 1)
     Me.mnE_Util(13).Enabled = (vParamAplic.Cooperativa = 1)
+    
+    
+    '[Monica]02/01/2019: Asignacion de nuevo cliente (solo lo hace ribarroja)
+    Me.mnE_Util(14).visible = (vParamAplic.Cooperativa = 5)
+    Me.mnE_Util(14).Enabled = (vParamAplic.Cooperativa = 5)
+    
+    
     
     '[Monica]26/06/2014: la impresion de tarjetas no la ve Alzira pq tiene la propia en el mto.de socios
     Me.mnE_Util(2).visible = (vParamAplic.Cooperativa <> 1)
@@ -1092,7 +1103,7 @@ Dim b As Boolean
 End Sub
 
 Public Sub mnCambioEmpresa()
-Dim Cad As String
+Dim cad As String
 
     'Borramos temporal
     Conn.Execute "Delete from zbloqueos where codusu = " & vSesion.Codigo
@@ -1129,7 +1140,7 @@ Dim Cad As String
     If vEmpresa Is Nothing Then
         Caption = "AriGasol" & " ver. " & App.Major & "." & App.Minor & "." & App.Revision & "   -  " & " FALTA CONFIGURAR"
     Else
-        Caption = "AriGasol" & " ver. " & App.Major & "." & App.Minor & "." & App.Revision & "   -  Empresa: " & vEmpresa.nomEmpre & Cad & _
+        Caption = "AriGasol" & " ver. " & App.Major & "." & App.Minor & "." & App.Revision & "   -  Empresa: " & vEmpresa.nomEmpre & cad & _
                   "   -  Usuario: " & vSesion.Nombre
     End If
     

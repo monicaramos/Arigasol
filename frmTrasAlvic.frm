@@ -224,8 +224,8 @@ Dim indCodigo As Integer 'indice para txtCodigo
 'Se inicializan para cada Informe (tabla de BD a la que hace referencia
 Dim Codigo As String 'Código para FormulaSelection de Crystal Report
 Dim TipCod As String
-Dim Cad As String
-Dim cadTabla As String
+Dim cad As String
+Dim cadTABLA As String
 
 Dim vContad As Long
 
@@ -244,8 +244,8 @@ End Sub
 
 
 Private Sub cmdAceptar_Click()
-Dim SQL As String
-Dim I As Byte
+Dim Sql As String
+Dim i As Byte
 Dim cadWhere As String
 Dim b As Boolean
 Dim NomFic As String
@@ -255,7 +255,7 @@ Dim cadena1 As String
 On Error GoTo eError
 
 
-    If Not DatosOk Then Exit Sub
+    If Not DatosOK Then Exit Sub
     
     If vParamAplic.Cooperativa = 2 Then
         TraspasoRegaixo
@@ -285,9 +285,9 @@ On Error GoTo eError
 '[Monica]10/11/2010 añadimos las compras en alzira
         If Dir(Replace(Me.CommonDialog1.FileName, "ventas", "compras"), vbArchive) <> "" And Check1.Value Then
             If Not ComprobarFechaAlbaran(Replace(Me.CommonDialog1.FileName, "ventas", "compras")) Then
-                SQL = "select count(*) from tmpinformes where codusu = " & vSesion.Codigo
+                Sql = "select count(*) from tmpinformes where codusu = " & vSesion.Codigo
                 
-                If TotalRegistros(SQL) <> 0 Then
+                If TotalRegistros(Sql) <> 0 Then
                     If MsgBox("Hay albaranes de compra con fecha distinta a la del turno. ¿ Desea continuar con ventas ? ", vbQuestion + vbYesNo + vbDefaultButton1) = vbNo Then
                         Exit Sub
                     End If
@@ -301,11 +301,11 @@ On Error GoTo eError
                         Exit Sub
                     End If
                 Else
-                    cadTabla = "tmpinformes"
+                    cadTABLA = "tmpinformes"
                     cadFormula = "{tmpinformes.codusu} = " & vSesion.Codigo
                     
-                    SQL = "select count(*) from tmpinformes where codusu = " & vSesion.Codigo
-                    If TotalRegistros(SQL) <> 0 Then
+                    Sql = "select count(*) from tmpinformes where codusu = " & vSesion.Codigo
+                    If TotalRegistros(Sql) <> 0 Then
                         cadTitulo = "Informe de Acciones a revisar"
                         cadNombreRPT = "rInfARevisar.rpt"
                         LlamarImprimir
@@ -316,13 +316,13 @@ On Error GoTo eError
         InicializarTabla
 'fin
           If ProcesarFichero2(Me.CommonDialog1.FileName) Then
-                cadTabla = "tmpinformes"
+                cadTABLA = "tmpinformes"
                 cadFormula = "{tmpinformes.codusu} = " & vSesion.Codigo
                 
-                SQL = "select count(*) from tmpinformes where codusu = " & vSesion.Codigo
-                SQL = SQL & " and importeb1 is null "
+                Sql = "select count(*) from tmpinformes where codusu = " & vSesion.Codigo
+                Sql = Sql & " and importeb1 is null "
                 
-                If TotalRegistros(SQL) <> 0 Then
+                If TotalRegistros(Sql) <> 0 Then
 '                If HayRegParaInforme(cadTABLA, cadSelect) Then
                     MsgBox "Hay errores en el Traspaso de Postes. Debe corregirlos previamente.", vbExclamation
                     cadTitulo = "Errores de Traspaso de Poste"
@@ -330,10 +330,10 @@ On Error GoTo eError
                     LlamarImprimir
                     Exit Sub
                 Else
-                    SQL = "select count(*) from tmpinformes where codusu = " & vSesion.Codigo
-                    SQL = SQL & " and importeb1 = 0 "
+                    Sql = "select count(*) from tmpinformes where codusu = " & vSesion.Codigo
+                    Sql = Sql & " and importeb1 = 0 "
                     
-                    If TotalRegistros(SQL) <> 0 Then
+                    If TotalRegistros(Sql) <> 0 Then
                         MsgBox "Hay errores en el Traspaso de Postes. Revise.", vbExclamation
                         cadTitulo = "Errores de Traspaso de Poste"
                         cadNombreRPT = "rErroresTrasPoste3.rpt"
@@ -401,10 +401,10 @@ End Sub
 
 
 Private Function TraspasoRegaixo() As Boolean
-Dim SQL As String
+Dim Sql As String
 Dim b As Boolean
 Dim Cadena As String
-Dim I As Integer
+Dim i As Integer
 
     On Error GoTo eTraspasoRegaixo
     
@@ -427,14 +427,14 @@ Dim I As Integer
         Shell App.path & "\trasarigasol.exe /I|" & vSesion.CadenaConexion & "|" & vSesion.Codigo & "|" & Me.CommonDialog1.FileName & "|", vbNormalFocus
 
             
-        I = 0
-        While Dir(App.path & "\trasarigasol.z") = "" And I < 300
+        i = 0
+        While Dir(App.path & "\trasarigasol.z") = "" And i < 300
             Me.lblProgres(0).Caption = "Procesando Insercion "
             DoEvents
             
             espera 1
             
-            I = I + 1
+            i = i + 1
         Wend
         
         
@@ -452,19 +452,19 @@ Dim I As Integer
         End If
         
         
-        SQL = "select count(*) from tmptraspaso where codusu = " & vSesion.Codigo
+        Sql = "select count(*) from tmptraspaso where codusu = " & vSesion.Codigo
         
-        If TotalRegistros(SQL) <> 0 Then
+        If TotalRegistros(Sql) <> 0 Then
     
             InicializarTabla
               If ProcesarFicheroRegaixo2() Then
-                    cadTabla = "tmpinformes"
+                    cadTABLA = "tmpinformes"
                     cadFormula = "{tmpinformes.codusu} = " & vSesion.Codigo
                     
-                    SQL = "select count(*) from tmpinformes where codusu = " & vSesion.Codigo
+                    Sql = "select count(*) from tmpinformes where codusu = " & vSesion.Codigo
 '                    Sql = Sql & " and importeb1 = 0 "
                     
-                    If TotalRegistros(SQL) <> 0 Then
+                    If TotalRegistros(Sql) <> 0 Then
                         MsgBox "Hay errores en el Traspaso de Postes. Revise.", vbExclamation
                         cadTitulo = "Errores de Traspaso de Poste"
                         cadNombreRPT = "rErroresTrasPoste3.rpt"
@@ -659,7 +659,7 @@ Private Sub KEYFecha(KeyAscii As Integer, indice As Integer)
 End Sub
 
 Private Sub txtCodigo_LostFocus(Index As Integer)
-Dim Cad As String, cadTipo As String 'tipo cliente
+Dim cad As String, cadTipo As String 'tipo cliente
 
     'Quitar espacios en blanco por los lados
     txtCodigo(Index).Text = Trim(txtCodigo(Index).Text)
@@ -720,9 +720,9 @@ End Function
 
  
 
-Private Function DatosOk() As Boolean
+Private Function DatosOK() As Boolean
 Dim b As Boolean
-Dim SQL As String
+Dim Sql As String
    b = True
 
    If txtCodigo(0).Text = "" And b Then
@@ -741,11 +741,11 @@ Dim SQL As String
     If b Then
         '[Monica]10/01/2013: en la cooperativa 5 no se graba srecau
         If vParamAplic.Cooperativa = 5 Then
-            SQL = "SELECT count(*) FROM scaalb WHERE fecalbar = " & DBSet(txtCodigo(0).Text, "F")
+            Sql = "SELECT count(*) FROM scaalb WHERE fecalbar = " & DBSet(txtCodigo(0).Text, "F")
             
-            If txtCodigo(1).Text <> "" Then SQL = SQL & " AND codturno = " & DBSet(txtCodigo(1).Text, "N")
+            If txtCodigo(1).Text <> "" Then Sql = Sql & " AND codturno = " & DBSet(txtCodigo(1).Text, "N")
             
-            If TotalRegistros(SQL) <> 0 Then
+            If TotalRegistros(Sql) <> 0 Then
                 MsgBox "Este Turno ya ha sido traspasado. Reintroduzca.", vbExclamation
                 b = False
                 PonerFoco txtCodigo(1)
@@ -753,16 +753,16 @@ Dim SQL As String
         Else
             ' faltaba comprobar que en el regaixo que no llevan turnos no se haya hecho ya el traspaso
             If vParamAplic.Cooperativa = 2 Then
-                SQL = "SELECT count(*) FROM srecau WHERE fechatur = " & DBSet(txtCodigo(0).Text, "F")
-                If TotalRegistros(SQL) <> 0 Then
+                Sql = "SELECT count(*) FROM srecau WHERE fechatur = " & DBSet(txtCodigo(0).Text, "F")
+                If TotalRegistros(Sql) <> 0 Then
                     MsgBox "Este Turno ya ha sido traspasado. Reintroduzca.", vbExclamation
                     b = False
                     PonerFoco txtCodigo(1)
                 End If
             Else
-                SQL = "SELECT count(*) FROM srecau WHERE fechatur = " & DBSet(txtCodigo(0).Text, "F") & _
+                Sql = "SELECT count(*) FROM srecau WHERE fechatur = " & DBSet(txtCodigo(0).Text, "F") & _
                       " AND codturno = " & DBSet(txtCodigo(1).Text, "N")
-                If TotalRegistros(SQL) <> 0 Then
+                If TotalRegistros(Sql) <> 0 Then
                     MsgBox "Este Turno ya ha sido traspasado. Reintroduzca.", vbExclamation
                     b = False
                     PonerFoco txtCodigo(1)
@@ -772,7 +772,7 @@ Dim SQL As String
     
     End If
  
-    DatosOk = b
+    DatosOK = b
 End Function
 
 
@@ -783,22 +783,22 @@ Dim nf As Integer
     RecuperaFichero = False
     nf = FreeFile
     Open App.path For Input As #nf ' & "\BV" & Format(CDate(txtcodigo(0).Text), "ddmmyy") & "." & Format(txtcodigo(1).Text, "000") For Input As #NF
-    Line Input #nf, Cad
+    Line Input #nf, cad
     Close #nf
-    If Cad <> "" Then RecuperaFichero = True
+    If cad <> "" Then RecuperaFichero = True
     
 End Function
 
 
 Private Function ProcesarFichero(nomFich As String) As Boolean
 Dim nf As Long
-Dim Cad As String
-Dim I As Integer
+Dim cad As String
+Dim i As Integer
 Dim longitud As Long
 Dim Rs As ADODB.Recordset
 Dim RS1 As ADODB.Recordset
 Dim Numreg As Long
-Dim SQL As String
+Dim Sql As String
 Dim Sql1 As String
 Dim total As Long
 Dim v_cant As Currency
@@ -812,8 +812,8 @@ Dim NomFic As String
     
     Open nomFich For Input As #nf ' & "\BV" & Format(CDate(txtcodigo(0).Text), "ddmmyy") & "." & Format(txtcodigo(1).Text, "000") For Input As #NF
     
-    Line Input #nf, Cad
-    I = 0
+    Line Input #nf, cad
+    i = 0
     
     lblProgres(0).Caption = "Procesando Fichero: " & nomFich
     longitud = FileLen(nomFich)
@@ -825,19 +825,19 @@ Dim NomFic As String
         
     b = True
     While Not EOF(nf)
-        I = I + 1
+        i = i + 1
         
-        Me.Pb1.Value = Me.Pb1.Value + Len(Cad)
-        lblProgres(1).Caption = "Linea " & I
+        Me.Pb1.Value = Me.Pb1.Value + Len(cad)
+        lblProgres(1).Caption = "Linea " & i
         Me.Refresh
         
         '[Monica]09/01/2013: Nueva cooperativa de Ribarroja
         If vParamAplic.Cooperativa = 1 Then
-            b = InsertarLineaAlz(Cad)
+            b = InsertarLineaAlz(cad)
         ElseIf vParamAplic.Cooperativa = 5 Then
-            b = InsertarLineaRib(Cad)
+            b = InsertarLineaRib(cad)
         Else
-            b = InsertarLinea(Cad)
+            b = InsertarLinea(cad)
         End If
         
 '--monica: insertamos recaudacion leyendo de fichero al final del proceso y solo para Alzira
@@ -847,7 +847,7 @@ Dim NomFic As String
         
         '[Monica]09/01/2013: nueva cooperativa de Ribarroja
         If vParamAplic.Cooperativa <> 1 And vParamAplic.Cooperativa <> 5 Then ' regaixo
-            If b Then b = InsertarRecaudacion(Cad)
+            If b Then b = InsertarRecaudacion(cad)
         End If
         
         If b = False Then
@@ -855,18 +855,18 @@ Dim NomFic As String
             Exit Function
         End If
         
-        Line Input #nf, Cad
+        Line Input #nf, cad
     Wend
     Close #nf
     
-    If Cad <> "" Then
+    If cad <> "" Then
         '[Monica]09/01/2013: Nueva cooperativa Ribarroja
         If vParamAplic.Cooperativa = 1 Then
-            b = InsertarLineaAlz(Cad)
+            b = InsertarLineaAlz(cad)
         ElseIf vParamAplic.Cooperativa = 5 Then
-            b = InsertarLineaRib(Cad)
+            b = InsertarLineaRib(cad)
         Else
-            b = InsertarLinea(Cad)
+            b = InsertarLinea(cad)
         End If
 '--monica: insertamos recaudacion leyendo de fichero al final del proceso y solo para Alzira
 '        If b Then b = InsertarRecaudacion(cad)
@@ -875,7 +875,7 @@ Dim NomFic As String
 '          para alzira
         '[Monica]09/01/2013: nueva cooperativa de Ribarroja
         If vParamAplic.Cooperativa <> 1 And vParamAplic.Cooperativa <> 5 Then ' regaixo
-            If b Then b = InsertarRecaudacion(Cad)
+            If b Then b = InsertarRecaudacion(cad)
         End If
 
         If b = False Then
@@ -907,13 +907,13 @@ End Function
                 
 Private Function ProcesarFichero2(nomFich As String) As Boolean
 Dim nf As Long
-Dim Cad As String
-Dim I As Integer
+Dim cad As String
+Dim i As Integer
 Dim longitud As Long
 Dim Rs As ADODB.Recordset
 Dim RS1 As ADODB.Recordset
 Dim Numreg As Long
-Dim SQL As String
+Dim Sql As String
 Dim Sql1 As String
 Dim total As Long
 Dim v_cant As Currency
@@ -928,8 +928,8 @@ Dim b As Boolean
     nf = FreeFile
     Open nomFich For Input As #nf ' & "\BV" & Format(CDate(txtcodigo(0).Text), "ddmmyy") & "." & Format(txtcodigo(1).Text, "000") For Input As #NF
     
-    Line Input #nf, Cad
-    I = 0
+    Line Input #nf, cad
+    i = 0
     
     lblProgres(0).Caption = "Insertando en Tabla temporal: " & nomFich
     longitud = FileLen(nomFich)
@@ -943,37 +943,37 @@ Dim b As Boolean
     b = True
 
     While Not EOF(nf) And b
-        I = I + 1
+        i = i + 1
         
-        Me.Pb1.Value = Me.Pb1.Value + Len(Cad)
-        lblProgres(1).Caption = "Linea " & I
+        Me.Pb1.Value = Me.Pb1.Value + Len(cad)
+        lblProgres(1).Caption = "Linea " & i
         Me.Refresh
         '[Monica]09/01/2013: nueva cooperativa de Ribarroja
         If vParamAplic.Cooperativa = 1 Then
-            b = ComprobarRegistroAlz(Cad)
+            b = ComprobarRegistroAlz(cad)
         ElseIf vParamAplic.Cooperativa = 5 Then
-            b = ComprobarRegistroRib(Cad)
+            b = ComprobarRegistroRib(cad)
         Else
-            b = ComprobarRegistro(Cad)
+            b = ComprobarRegistro(cad)
         End If
         
-        Line Input #nf, Cad
+        Line Input #nf, cad
     Wend
     Close #nf
     
-    If Cad <> "" Then
-        I = I + 1
+    If cad <> "" Then
+        i = i + 1
         
-        Me.Pb1.Value = Me.Pb1.Value + Len(Cad)
-        lblProgres(1).Caption = "Linea " & I
+        Me.Pb1.Value = Me.Pb1.Value + Len(cad)
+        lblProgres(1).Caption = "Linea " & i
         Me.Refresh
         '[Monica]09/01/2013: nueva cooperativa de Ribarroja
         If vParamAplic.Cooperativa = 1 Then
-            b = ComprobarRegistroAlz(Cad)
+            b = ComprobarRegistroAlz(cad)
         ElseIf vParamAplic.Cooperativa = 5 Then
-            b = ComprobarRegistroRib(Cad)
+            b = ComprobarRegistroRib(cad)
         Else
-            b = ComprobarRegistro(Cad)
+            b = ComprobarRegistro(cad)
         End If
     End If
     
@@ -988,7 +988,7 @@ eProcesarFichero2:
     ProcesarFichero2 = False
 End Function
                 
-Private Function InsertarCabecera(Cad As String) As Boolean
+Private Function InsertarCabecera(cad As String) As Boolean
 Dim numfactu As String
 Dim TipDocu As String
 Dim FechaCa As String
@@ -1003,23 +1003,23 @@ Dim NifCli As String
 Dim Ticket As String
 Dim CtaConta As String ' cuenta contable de clientes contado
 Dim codsoc As String
-Dim SQL As String
+Dim Sql As String
 
     On Error GoTo eInsertarCabecera
 
     InsertarCabecera = False
 
     numfactu = 0
-    TipDocu = Mid(Cad, 10, 1)
-    FechaCa = Mid(Cad, 11, 2) & Mid(Cad, 13, 2) & "20" & Mid(Cad, 15, 2)
-    Turno = Mid(Cad, 17, 1)
-    Hora = Mid(Cad, 18, 2) & ":" & Mid(Cad, 21, 2) & ":00"
-    Forpa = Mid(Cad, 49, 2)
-    Tarje = Mid(Cad, 53, 7)
-    Tarje1 = Mid(Cad, 60, 5)
-    Matric = Mid(Cad, 65, 10)
-    NomCli = Mid(Cad, 91, 25)
-    NifCli = Mid(Cad, 116, 9)
+    TipDocu = Mid(cad, 10, 1)
+    FechaCa = Mid(cad, 11, 2) & Mid(cad, 13, 2) & "20" & Mid(cad, 15, 2)
+    Turno = Mid(cad, 17, 1)
+    Hora = Mid(cad, 18, 2) & ":" & Mid(cad, 21, 2) & ":00"
+    Forpa = Mid(cad, 49, 2)
+    Tarje = Mid(cad, 53, 7)
+    Tarje1 = Mid(cad, 60, 5)
+    Matric = Mid(cad, 65, 10)
+    NomCli = Mid(cad, 91, 25)
+    NifCli = Mid(cad, 116, 9)
             
     '06/03/2007 añadida estas 2 lineas que faltaba
     If CInt(Forpa) <> 2 And Trim(Tarje) <> Trim(Tarje1) Then Tarje = Tarje1
@@ -1027,14 +1027,14 @@ Dim SQL As String
     
     Select Case TipDocu
         Case "O"
-            Ticket = Mid(Cad, 2, 8)
+            Ticket = Mid(cad, 2, 8)
         Case "T"
-            Ticket = Mid(Cad, 23, 8)
+            Ticket = Mid(cad, 23, 8)
         Case "A"
-            Ticket = Mid(Cad, 31, 8)
+            Ticket = Mid(cad, 31, 8)
         Case "F"
-            Ticket = Mid(Cad, 2, 8)
-            numfactu = Mid(Cad, 39, 8)
+            Ticket = Mid(cad, 2, 8)
+            numfactu = Mid(cad, 39, 8)
         
             'SOLAMENTE EN EL CASO DE QUE SEA FACTURA COMPRUEBO QUE EXISTA EL NIF DEL SOCIO
             'Y SI NO EXISTE INTRODUCIRLO EN LA TABLA DE SOCIOS Y TARJETAS
@@ -1046,7 +1046,7 @@ Dim SQL As String
                 CtaConta = ""
                 CtaConta = DevuelveDesdeBD("ctaconta", "sparam", "codparam", "0", "N")
                 
-                SQL = "INSERT INTO ssocio (codsocio, codcoope, nomsocio, domsocio, codposta, pobsocio, " & _
+                Sql = "INSERT INTO ssocio (codsocio, codcoope, nomsocio, domsocio, codposta, pobsocio, " & _
                       "prosocio, nifsocio, telsocio, faxsocio, movsocio, maisocio, wwwsocio, fechaalt, " & _
                       "fechabaj, codtarif, codbanco, codsucur, digcontr, cuentaba, impfactu, dtolitro, " & _
                       "codforpa, tipsocio, bonifbas, bonifesp, codsitua, codmacta, obssocio) VALUES (" & _
@@ -1056,13 +1056,13 @@ Dim SQL As String
                       ValorNulo & ",0," & ValorNulo & "," & ValorNulo & "," & ValorNulo & "," & ValorNulo & ",0,0," & _
                       "0,0,0,0,0," & ValorNulo & "," & ValorNulo & ")"
                       
-                Conn.Execute SQL
+                Conn.Execute Sql
                       
-                SQL = "INSERT INTO starje (codsocio, numlinea, numtarje, nomtarje, codbanco, codsucur, " & _
+                Sql = "INSERT INTO starje (codsocio, numlinea, numtarje, nomtarje, codbanco, codsucur, " & _
                       "digcontr, cuentaba, tiptarje) VALUES (" & DBSet(Tarje, "N") & ",1," & DBSet(NomCli, "T") & "," & ValorNulo & "," & ValorNulo & "," & _
                       ValorNulo & "," & ValorNulo & ",0)"
                 
-                Conn.Execute SQL
+                Conn.Execute Sql
             End If
     End Select
    
@@ -1073,21 +1073,21 @@ Dim SQL As String
     If Tarje = "       " Then Tarje = "0000000"
     If codsoc = "" Then
     
-        SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre1) values (" & _
+        Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre1) values (" & _
               vSesion.Codigo & "," & DBSet(Ticket, "N") & ",'" & Mid(FechaCa, 5, 4) & Mid(FechaCa, 3, 2) & Mid(FechaCa, 1, 2) & "'," & DBSet(Format(Hora, "hh"), "N") & _
               "," & DBSet(Format(Hora, "mm"), "N") & "," & DBSet(Tarje, "N") & ",'Nro. Tarjeta no existe') "
               
-        Conn.Execute SQL
+        Conn.Execute Sql
         
         
     Else
-        SQL = "update scaalb set codsocio = " & DBSet(codsoc, "N") & ", numtarje = " & DBSet(Tarje, "N") & ", numalbar = " & _
+        Sql = "update scaalb set codsocio = " & DBSet(codsoc, "N") & ", numtarje = " & DBSet(Tarje, "N") & ", numalbar = " & _
                DBSet(Ticket, "T") & ", horalbar = " & DBSet(txtCodigo(0).Text & " " & Hora, "FH") & ", matricul = " & DBSet(Matric, "T") & _
                ", codforpa = " & DBSet(Forpa, "N") & ", numfactu = " & DBSet(numfactu, "N") & _
                " where fecalbar = " & DBSet(txtCodigo(0).Text, "F") & " and codturno = " & DBSet(txtCodigo(1).Text, "N") & _
                " and numalbar = " & DBSet(vContad, "T")
                
-        Conn.Execute SQL
+        Conn.Execute Sql
     End If
     
     vContad = vContad + 1
@@ -1101,8 +1101,8 @@ eInsertarCabecera:
 
 End Function
             
-Private Function ComprobarRegistro(Cad As String) As Boolean
-Dim SQL As String
+Private Function ComprobarRegistro(cad As String) As Boolean
+Dim Sql As String
 
 Dim base As String
 Dim NombreBase As String
@@ -1114,20 +1114,20 @@ Dim NombreVendedor As String
 Dim fechahora As String
 Dim CodigoCliente As String
 Dim NombreCliente As String
-Dim MATRICULA As String
+Dim Matricula As String
 Dim CodigoProducto As String
 Dim Surtidor As String
 Dim Manguera As String
 Dim PrecioLitro As String
 Dim PrecioSinDto As String
 Dim cantidad As String
-Dim IMPORTE As String
+Dim Importe As String
 Dim IdTipoPago As String
 Dim DescrTipoPago As String
 Dim CodigoTipoPago As String
 Dim NifCliente As String
 Dim IdProducto As String
-Dim TARJETA As String
+Dim Tarjeta As String
 Dim Tarje As String
 
 
@@ -1148,49 +1148,49 @@ Dim codsoc As String
 
     ComprobarRegistro = True
 
-    base = Mid(Cad, 1, 10)
-    NombreBase = Mid(Cad, 11, 50)
-    Turno = Mid(Cad, 982, 10) 'txtcodigo(1).Text ' el que yo le diga, antes : Mid(cad, 61, 10)
+    base = Mid(cad, 1, 10)
+    NombreBase = Mid(cad, 11, 50)
+    Turno = Mid(cad, 982, 10) 'txtcodigo(1).Text ' el que yo le diga, antes : Mid(cad, 61, 10)
     If CByte(Turno) > 9 Then Turno = "9"
     
-    NumAlbaran = Mid(Cad, 72, 19)
-    NumFactura = Mid(Cad, 94, 17) 'antes 91,20
-    IdVendedor = Mid(Cad, 121, 10)
-    NombreVendedor = Mid(Cad, 131, 50)
-    fechahora = Mid(Cad, 181, 14)
+    NumAlbaran = Mid(cad, 72, 19)
+    NumFactura = Mid(cad, 94, 17) 'antes 91,20
+    IdVendedor = Mid(cad, 121, 10)
+    NombreVendedor = Mid(cad, 131, 50)
+    fechahora = Mid(cad, 181, 14)
     Fecha = Mid(fechahora, 7, 2) & "/" & Mid(fechahora, 5, 2) & "/" & Mid(fechahora, 1, 4)
     Hora = Mid(fechahora, 9, 6)
-    CodigoCliente = Mid(Cad, 195, 20)
-    NombreCliente = Mid(Cad, 215, 70)
-    TARJETA = Mid(Cad, 290, 20)
-    MATRICULA = Mid(Cad, 370, 20)
-    IdProducto = Mid(Cad, 493, 20)
-    Surtidor = Mid(Cad, 538, 10)
-    Manguera = Mid(Cad, 548, 10)
+    CodigoCliente = Mid(cad, 195, 20)
+    NombreCliente = Mid(cad, 215, 70)
+    Tarjeta = Mid(cad, 290, 20)
+    Matricula = Mid(cad, 370, 20)
+    IdProducto = Mid(cad, 493, 20)
+    Surtidor = Mid(cad, 538, 10)
+    Manguera = Mid(cad, 548, 10)
     
     
     '[Monica]24/08/2015: el precio es sin el descuento en la linea 864, antes ponia 568
-    PrecioLitro = Mid(Cad, 864, 18)
+    PrecioLitro = Mid(cad, 864, 18)
     
-    cantidad = Mid(Cad, 650, 18)
-    IMPORTE = Mid(Cad, 668, 18)
-    IdTipoPago = Mid(Cad, 784, 10)
-    DescrTipoPago = Mid(Cad, 794, 25)
-    CodigoTipoPago = Mid(Cad, 1, 10)
-    NifCliente = Mid(Cad, 834, 9)
+    cantidad = Mid(cad, 650, 18)
+    Importe = Mid(cad, 668, 18)
+    IdTipoPago = Mid(cad, 784, 10)
+    DescrTipoPago = Mid(cad, 794, 25)
+    CodigoTipoPago = Mid(cad, 1, 10)
+    NifCliente = Mid(cad, 834, 9)
     
     '[Monica]24/06/2013: introducimos los kms em el traspaso
-    Kilometros = Mid(Cad, 415, 18)
+    Kilometros = Mid(cad, 415, 18)
     
     
-    If Trim(IMPORTE) = "" Then
+    If Trim(Importe) = "" Then
         Exit Function
     Else
-        If CCur(IMPORTE) = 0 Then Exit Function
+        If CCur(Importe) = 0 Then Exit Function
     End If
     
     c_Cantidad = Round2(CCur(cantidad) / 100, 2)
-    c_Importe = Round2(CCur(IMPORTE) / 100, 2)
+    c_Importe = Round2(CCur(Importe) / 100, 2)
     c_Precio = Round2(CCur(PrecioLitro) / 100000, 5)
     
     If Trim(NumFactura) <> "" Then
@@ -1204,7 +1204,7 @@ Dim codsoc As String
 '                CtaConta = ""
 '                CtaConta = DevuelveDesdeBD("ctaconta", "sparam", "codparam", "01", "N")
             
-            SQL = "INSERT INTO ssocio (codsocio, codcoope, nomsocio, domsocio, codposta, pobsocio, " & _
+            Sql = "INSERT INTO ssocio (codsocio, codcoope, nomsocio, domsocio, codposta, pobsocio, " & _
                   "prosocio, nifsocio, telsocio, faxsocio, movsocio, maisocio, wwwsocio, fechaalt, " & _
                   "fechabaj, codtarif, codbanco, codsucur, digcontr, cuentaba, impfactu, dtolitro, " & _
                   "codforpa, tipsocio, bonifbas, bonifesp, codsitua, codmacta, obssocio) VALUES (" & _
@@ -1214,33 +1214,33 @@ Dim codsoc As String
                   ValorNulo & ",0," & ValorNulo & "," & ValorNulo & "," & ValorNulo & "," & ValorNulo & ",0,0," & _
                   "0,0,0,0,0," & DBSet(vParamAplic.CtaContable, "T") & "," & ValorNulo & ")"
                   
-            Conn.Execute SQL
+            Conn.Execute Sql
                   
-            SQL = "INSERT INTO starje (codsocio, numlinea, numtarje, nomtarje, codbanco, codsucur, " & _
+            Sql = "INSERT INTO starje (codsocio, numlinea, numtarje, nomtarje, codbanco, codsucur, " & _
                   "digcontr, cuentaba, tiptarje) VALUES (" & DBSet(Tarje, "N") & ",1," & DBSet(Tarje, "N") & "," & DBSet(NombreCliente, "T") & "," & ValorNulo & "," & ValorNulo & "," & _
                   ValorNulo & "," & ValorNulo & ",0)"
             
-            Conn.Execute SQL
+            Conn.Execute Sql
         End If
     End If
     
     'MIRAMOS SI EXISTE LA TARJETA
     '[Monica]17/06/2013: añadida la condicion de que la tarjeta no venga con asteriscos: instr(1, Tarjeta, "*") = 0
-    If Mid(TARJETA, 1, 4) <> "****" And Trim(TARJETA) <> "" And InStr(1, TARJETA, "*") = 0 Then
+    If Mid(Tarjeta, 1, 4) <> "****" And Trim(Tarjeta) <> "" And InStr(1, Tarjeta, "*") = 0 Then
         '++monica: 15/02/2008 las tarjetas profesionales tienen 16 caracteres solo analizo los 8 últimos
-        If Len(Trim(TARJETA)) = 16 Then
-            TARJETA = Mid(TARJETA, 9, 16)
+        If Len(Trim(Tarjeta)) = 16 Then
+            Tarjeta = Mid(Tarjeta, 9, 16)
         End If
         '++
         codsoc = ""
-        codsoc = DevuelveDesdeBD("codsocio", "starje", "numtarje", TARJETA, "T")
+        codsoc = DevuelveDesdeBD("codsocio", "starje", "numtarje", Tarjeta, "T")
         If codsoc = "" Then
             Mens = "Nro. Tarjeta no existe"
-            SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, importe4, importe5, nombre1) values (" & _
+            Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, importe4, importe5, nombre1) values (" & _
                   vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N") & _
-                  "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(TARJETA, "T") & "," & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
+                  "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(Tarjeta, "T") & "," & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
                   
-            Conn.Execute SQL
+            Conn.Execute Sql
             
         End If
     End If
@@ -1248,86 +1248,86 @@ Dim codsoc As String
     'Comprobamos fechas
     If Not EsFechaOK(Fecha) Then
             Mens = "Fecha incorrecta"
-            SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, " & _
+            Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, " & _
                   "importe4, importe5, nombre1) values (" & _
                   vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N")
-            SQL = SQL & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(Fecha, "T") & "," & _
+            Sql = Sql & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(Fecha, "T") & "," & _
                   DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
             
-            Conn.Execute SQL
+            Conn.Execute Sql
     Else
         If CDate(Fecha) <> CDate(txtCodigo(0).Text) Or CByte(Turno) <> CByte(txtCodigo(1).Text) Then
             Mens = "Fecha incorrecta" ' o no es del turno"
-            SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, " & _
+            Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, " & _
                   "importe4, importe5, nombre1) values (" & _
                   vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N")
-            SQL = SQL & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(Fecha, "T") & "," & _
+            Sql = Sql & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(Fecha, "T") & "," & _
                   DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
             
-            Conn.Execute SQL
+            Conn.Execute Sql
         End If
     End If
     
     
     'Comprobamos que el articulo existe en sartic
-    SQL = ""
-    SQL = DevuelveDesdeBDNew(cPTours, "sartic", "codartic", "codartic", IdProducto, "N")
-    If SQL = "" Then
+    Sql = ""
+    Sql = DevuelveDesdeBDNew(cPTours, "sartic", "codartic", "codartic", IdProducto, "N")
+    If Sql = "" Then
         Mens = "No existe el artículo"
-        SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
+        Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
               "importe3, importe4, importe5, nombre1) values (" & _
               vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N")
-        SQL = SQL & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(IdProducto, "T") & "," & _
+        Sql = Sql & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(IdProducto, "T") & "," & _
               DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
               
-        Conn.Execute SQL
+        Conn.Execute Sql
     End If
     
     
     'Comprobamos que el socio existe
     If CodigoCliente <> "" Then
-        SQL = ""
-        SQL = DevuelveDesdeBDNew(cPTours, "ssocio", "codsocio", "codsocio", CodigoCliente, "N")
-        If SQL = "" Then
+        Sql = ""
+        Sql = DevuelveDesdeBDNew(cPTours, "ssocio", "codsocio", "codsocio", CodigoCliente, "N")
+        If Sql = "" Then
             Mens = "No existe el cliente"
-            SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, " & _
+            Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, " & _
                   "importe4, importe5, nombre1) values (" & _
                   vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N")
-            SQL = SQL & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(CodigoCliente, "T") & "," & _
+            Sql = Sql & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(CodigoCliente, "T") & "," & _
                     DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
             
-            Conn.Execute SQL
+            Conn.Execute Sql
         End If
     End If
     
     'Comprobamos que la forma de pago existe
     If IdTipoPago <> "" Then
-        SQL = ""
-        SQL = DevuelveDesdeBDNew(cPTours, "sforpa", "codforpa", "forpaalvic", IdTipoPago, "N")
-        If SQL = "" Then
+        Sql = ""
+        Sql = DevuelveDesdeBDNew(cPTours, "sforpa", "codforpa", "forpaalvic", IdTipoPago, "N")
+        If Sql = "" Then
             Mens = "No existe la forma de pago Alvic"
-            SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
+            Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
                   "importe3, importe4, importe5, nombre1) values (" & _
                   vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N")
-            SQL = SQL & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(IdTipoPago, "T") & "," & _
+            Sql = Sql & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(IdTipoPago, "T") & "," & _
                     DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
             
-            Conn.Execute SQL
+            Conn.Execute Sql
         End If
     End If
     
     'Comprobamos que el codigo de trabajador existe
-    SQL = ""
-    SQL = DevuelveDesdeBDNew(cPTours, "straba", "codtraba", "codtraba", IdVendedor, "N")
-    If SQL = "" Then
+    Sql = ""
+    Sql = DevuelveDesdeBDNew(cPTours, "straba", "codtraba", "codtraba", IdVendedor, "N")
+    If Sql = "" Then
         Mens = "No existe el trabajador"
-        SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
+        Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
               "importe3, importe4, importe5, nombre1) values (" & _
               vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N")
-        SQL = SQL & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(IdVendedor, "T") & "," & _
+        Sql = Sql & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(IdVendedor, "T") & "," & _
               DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
               
-        Conn.Execute SQL
+        Conn.Execute Sql
     End If
 eComprobarRegistro:
     If Err.Number <> 0 Then
@@ -1335,8 +1335,8 @@ eComprobarRegistro:
     End If
 End Function
 
-Private Function ComprobarRegistroAlz(Cad As String) As Boolean
-Dim SQL As String
+Private Function ComprobarRegistroAlz(cad As String) As Boolean
+Dim Sql As String
 
 Dim base As String
 Dim NombreBase As String
@@ -1348,20 +1348,20 @@ Dim NombreVendedor As String
 Dim fechahora As String
 Dim CodigoCliente As String
 Dim NombreCliente As String
-Dim MATRICULA As String
+Dim Matricula As String
 Dim CodigoProducto As String
 Dim Surtidor As String
 Dim Manguera As String
 Dim PrecioLitro As String
 Dim cantidad As String
-Dim IMPORTE As String
+Dim Importe As String
 Dim DESCUENTO As String
 Dim IdTipoPago As String
 Dim DescrTipoPago As String
 Dim CodigoTipoPago As String
 Dim NifCliente As String
 Dim IdProducto As String
-Dim TARJETA As String
+Dim Tarjeta As String
 Dim Tarje As String
 
 
@@ -1391,61 +1391,61 @@ Dim PorcIva As Currency
 
     ComprobarRegistroAlz = True
 
-    base = Mid(Cad, 1, 10)
-    NombreBase = Mid(Cad, 11, 50)
-    Turno = Mid(Cad, 982, 10) 'txtcodigo(1).Text ' el que yo le diga, antes : Mid(cad, 61, 10)
+    base = Mid(cad, 1, 10)
+    NombreBase = Mid(cad, 11, 50)
+    Turno = Mid(cad, 982, 10) 'txtcodigo(1).Text ' el que yo le diga, antes : Mid(cad, 61, 10)
     If CByte(Turno) > 9 Then Turno = "9"
     
-    NumAlbaran = Mid(Cad, 71, 20)
-    NumFactura = Mid(Cad, 94, 17) 'antes 91,20
-    IdVendedor = Mid(Cad, 121, 10)
-    NombreVendedor = Mid(Cad, 131, 50)
-    fechahora = Mid(Cad, 181, 14)
+    NumAlbaran = Mid(cad, 71, 20)
+    NumFactura = Mid(cad, 94, 17) 'antes 91,20
+    IdVendedor = Mid(cad, 121, 10)
+    NombreVendedor = Mid(cad, 131, 50)
+    fechahora = Mid(cad, 181, 14)
     Fecha = Mid(fechahora, 7, 2) & "/" & Mid(fechahora, 5, 2) & "/" & Mid(fechahora, 1, 4)
     Hora = Mid(fechahora, 9, 6)
 '    CodigoCliente = Mid(cad, 195, 20)
-    NombreCliente = Mid(Cad, 215, 70)
+    NombreCliente = Mid(cad, 215, 70)
 '    Tarjeta = Mid(cad, 290, 20)
-    TARJETA = Mid(Cad, 195, 20)
-    MATRICULA = Mid(Cad, 370, 20)
-    IdProducto = Mid(Cad, 493, 20)
-    Surtidor = Mid(Cad, 538, 10)
-    Manguera = Mid(Cad, 548, 10)
+    Tarjeta = Mid(cad, 195, 20)
+    Matricula = Mid(cad, 370, 20)
+    IdProducto = Mid(cad, 493, 20)
+    Surtidor = Mid(cad, 538, 10)
+    Manguera = Mid(cad, 548, 10)
 
-    PrecioLitro = Mid(Cad, 568, 18)
+    PrecioLitro = Mid(cad, 568, 18)
     
     '[Monica]29/10/2015:faltaban ¿?¿?
-    cantidad = Mid(Cad, 650, 18)
-    IMPORTE = Mid(Cad, 668, 18)
+    cantidad = Mid(cad, 650, 18)
+    Importe = Mid(cad, 668, 18)
     
     
     
     
-    DESCUENTO = Mid(Cad, 586, 18)
-    IdTipoPago = Mid(Cad, 784, 10)
-    DescrTipoPago = Mid(Cad, 794, 25)
-    CodigoTipoPago = Mid(Cad, 1, 10)
-    NifCliente = Mid(Cad, 834, 9)
+    DESCUENTO = Mid(cad, 586, 18)
+    IdTipoPago = Mid(cad, 784, 10)
+    DescrTipoPago = Mid(cad, 794, 25)
+    CodigoTipoPago = Mid(cad, 1, 10)
+    NifCliente = Mid(cad, 834, 9)
     
     '[Monica]25/06/2013: comprobamos el nombre del articulo y el iva
     '                    en el caso de que el nombre del articulo no coincida mostramos informe pero dejamos continuar
     '                    en el caso de que no coincida el iva mostramos informe y NO dejamos continuar
-    IvaArticulo = Mid(Cad, 609, 5) ' 5 posiciones 2 decimales implicitos
-    NombreArticulo = Mid(Cad, 513, 25) ' nombre del articulo para comprobarlo
+    IvaArticulo = Mid(cad, 609, 5) ' 5 posiciones 2 decimales implicitos
+    NombreArticulo = Mid(cad, 513, 25) ' nombre del articulo para comprobarlo
     
     
     '[Monica]24/06/2013: introducimos los kms em el traspaso
-    Kilometros = Mid(Cad, 415, 18)
+    Kilometros = Mid(cad, 415, 18)
     
     
-    If Trim(IMPORTE) = "" Then
+    If Trim(Importe) = "" Then
         Exit Function
     Else
-        If CCur(IMPORTE) = 0 Then Exit Function
+        If CCur(Importe) = 0 Then Exit Function
     End If
     
     c_Cantidad = Round2(CCur(cantidad) / 100, 2)
-    c_Importe = Round2(CCur(IMPORTE) / 100, 2)
+    c_Importe = Round2(CCur(Importe) / 100, 2)
     c_Precio = Round2(CCur(PrecioLitro) / 100000, 5)
     
     If Trim(DESCUENTO) <> "" Then
@@ -1461,7 +1461,7 @@ Dim PorcIva As Currency
     End If
     
 '[Monica]30/11/2010: añadida la segunda condicion
-    If Trim(NumFactura) <> "" And InStr(1, TARJETA, "Z") <> 0 Then
+    If Trim(NumFactura) <> "" And InStr(1, Tarjeta, "Z") <> 0 Then
         'SOLAMENTE EN EL CASO DE QUE SEA FACTURA COMPRUEBO QUE EXISTA EL NIF DEL SOCIO
         'Y SI NO EXISTE INTRODUCIRLO EN LA TABLA DE SOCIOS Y TARJETAS
         Tarje = DevuelveDesdeBDNew(cPTours, "ssocio", "codsocio", "nifsocio", NifCliente, "T")
@@ -1472,7 +1472,7 @@ Dim PorcIva As Currency
 '                CtaConta = ""
 '                CtaConta = DevuelveDesdeBD("ctaconta", "sparam", "codparam", "01", "N")
             
-            SQL = "INSERT INTO ssocio (codsocio, codcoope, nomsocio, domsocio, codposta, pobsocio, " & _
+            Sql = "INSERT INTO ssocio (codsocio, codcoope, nomsocio, domsocio, codposta, pobsocio, " & _
                   "prosocio, nifsocio, telsocio, faxsocio, movsocio, maisocio, wwwsocio, fechaalt, " & _
                   "fechabaj, codtarif, codbanco, codsucur, digcontr, cuentaba, impfactu, dtolitro, " & _
                   "codforpa, tipsocio, bonifbas, bonifesp, codsitua, codmacta, obssocio) VALUES (" & _
@@ -1482,33 +1482,33 @@ Dim PorcIva As Currency
                   ValorNulo & ",0," & ValorNulo & "," & ValorNulo & "," & ValorNulo & "," & ValorNulo & ",0,0," & _
                   "0,0,0,0,0," & DBSet(vParamAplic.CtaContable, "T") & "," & ValorNulo & ")"
                   
-            Conn.Execute SQL
+            Conn.Execute Sql
                   
-            SQL = "INSERT INTO starje (codsocio, numlinea, numtarje, nomtarje, codbanco, codsucur, " & _
+            Sql = "INSERT INTO starje (codsocio, numlinea, numtarje, nomtarje, codbanco, codsucur, " & _
                   "digcontr, cuentaba, tiptarje) VALUES (" & DBSet(Tarje, "N") & ",1," & DBSet(Tarje, "N") & "," & DBSet(NombreCliente, "T") & "," & ValorNulo & "," & ValorNulo & "," & _
                   ValorNulo & "," & ValorNulo & ",0)"
             
-            Conn.Execute SQL
+            Conn.Execute Sql
             
         Else '[Monica]07/02/2011: caso de que sea un socio que quiere la factura ( me viene en fichero nro de factura y Z )
              ' añadida esta parte del else que no estaba
             If CLng(Tarje) >= 900000 Then
                 ' miro si existe tarjeta sino la creo
-                SQL = "select count(*) from starje where codsocio= " & DBSet(Tarje, "N")
-                If TotalRegistros(SQL) = 0 Then
-                    SQL = "INSERT INTO starje (codsocio, numlinea, numtarje, nomtarje, codbanco, codsucur, " & _
+                Sql = "select count(*) from starje where codsocio= " & DBSet(Tarje, "N")
+                If TotalRegistros(Sql) = 0 Then
+                    Sql = "INSERT INTO starje (codsocio, numlinea, numtarje, nomtarje, codbanco, codsucur, " & _
                           "digcontr, cuentaba, tiptarje) VALUES (" & DBSet(Tarje, "N") & ",1," & DBSet(Tarje, "N") & "," & DBSet(NombreCliente, "T") & "," & ValorNulo & "," & ValorNulo & "," & _
                           ValorNulo & "," & ValorNulo & ",0)"
                     
-                    Conn.Execute SQL
+                    Conn.Execute Sql
                 End If
             Else
                 ' el socio es inferior a 900000 miro si hay tarjeta dependiendo del producto
                 Dim TipArtic As Integer
                 TipArtic = DevuelveValor("select tipogaso from sartic where codartic = " & DBSet(IdProducto, "N"))
                 If TipArtic = 3 Then ' si el articulo es gasoleo bonificado
-                    SQL = "select count(*) from starje where codsocio= " & DBSet(Tarje, "N") & " and tiptarje = 1"
-                    If TotalRegistros(SQL) = 0 Then
+                    Sql = "select count(*) from starje where codsocio= " & DBSet(Tarje, "N") & " and tiptarje = 1"
+                    If TotalRegistros(Sql) = 0 Then
                         
                         '[Monica]22/11/2011: si es un cliente de paso y no tiene tarjeta de bonificado le ponemos la que tenga
                         ' he quitado el control de que no existe tarjeta de gasoleo bonificado
@@ -1533,12 +1533,12 @@ Dim PorcIva As Currency
 '                            Conn.Execute SQL
 '                        End If
 
-                        SQL = "select codsocio from ssocio where codsocio >= 900000 and nifsocio = " & DBSet(NifCliente, "T")
-                        If TotalRegistrosConsulta(SQL) = 0 Then
+                        Sql = "select codsocio from ssocio where codsocio >= 900000 and nifsocio = " & DBSet(NifCliente, "T")
+                        If TotalRegistrosConsulta(Sql) = 0 Then
                             Tarje = 900000
                             Tarje = SugerirCodigoSiguienteStr("ssocio", "codsocio", "codsocio >= 900000 and codsocio <= 999998")
                             
-                            SQL = "INSERT INTO ssocio (codsocio, codcoope, nomsocio, domsocio, codposta, pobsocio, " & _
+                            Sql = "INSERT INTO ssocio (codsocio, codcoope, nomsocio, domsocio, codposta, pobsocio, " & _
                                   "prosocio, nifsocio, telsocio, faxsocio, movsocio, maisocio, wwwsocio, fechaalt, " & _
                                   "fechabaj, codtarif, codbanco, codsucur, digcontr, cuentaba, impfactu, dtolitro, " & _
                                   "codforpa, tipsocio, bonifbas, bonifesp, codsitua, codmacta, obssocio) VALUES (" & _
@@ -1548,17 +1548,17 @@ Dim PorcIva As Currency
                                   ValorNulo & ",0," & ValorNulo & "," & ValorNulo & "," & ValorNulo & "," & ValorNulo & ",0,0," & _
                                   "0,0,0,0,0," & DBSet(vParamAplic.CtaContable, "T") & "," & ValorNulo & ")"
                                   
-                            Conn.Execute SQL
+                            Conn.Execute Sql
                                   
-                            SQL = "INSERT INTO starje (codsocio, numlinea, numtarje, nomtarje, codbanco, codsucur, " & _
+                            Sql = "INSERT INTO starje (codsocio, numlinea, numtarje, nomtarje, codbanco, codsucur, " & _
                                   "digcontr, cuentaba, tiptarje) VALUES (" & DBSet(Tarje, "N") & ",1," & DBSet(Tarje, "N") & "," & DBSet(NombreCliente, "T") & "," & ValorNulo & "," & ValorNulo & "," & _
                                   ValorNulo & "," & ValorNulo & ",1)"
                             
-                            Conn.Execute SQL
+                            Conn.Execute Sql
                         Else
-                            Tarje = DevuelveValor(SQL)
-                            SQL = "select * from starje where codsocio =" & DBSet(Tarje, "N") & " and tiptarje = 1"
-                            If TotalRegistrosConsulta(SQL) = 0 Then
+                            Tarje = DevuelveValor(Sql)
+                            Sql = "select * from starje where codsocio =" & DBSet(Tarje, "N") & " and tiptarje = 1"
+                            If TotalRegistrosConsulta(Sql) = 0 Then
                             '[Monica]08/11/2017: no la inserto la meto como error para que la inserten
 
 '                                SQL = "INSERT INTO starje (codsocio, numlinea, numtarje, nomtarje, codbanco, codsucur, " & _
@@ -1567,23 +1567,23 @@ Dim PorcIva As Currency
 '                                Conn.Execute SQL
 
                                 Mens = "Nro. Tarjeta no existe"
-                                SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, importe4, importe5, nombre1) values (" & _
+                                Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, importe4, importe5, nombre1) values (" & _
                                       vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N") & _
                                       "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(Tarje, "N") & "," & DBSet(Tarje, "T") & "," & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
                                 
-                                Conn.Execute SQL
+                                Conn.Execute Sql
                             End If
                         End If
                     End If
                 Else
-                    SQL = "select count(*) from starje where codsocio= " & DBSet(Tarje, "N") & " and tiptarje = 0"
-                    If TotalRegistros(SQL) = 0 Then
+                    Sql = "select count(*) from starje where codsocio= " & DBSet(Tarje, "N") & " and tiptarje = 0"
+                    If TotalRegistros(Sql) = 0 Then
                         Mens = "Nro. Tarjeta no existe"
-                        SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, importe4, importe5, nombre1) values (" & _
+                        Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, importe4, importe5, nombre1) values (" & _
                               vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N") & _
                               "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(Tarje, "N") & "," & DBSet(Tarje, "T") & "," & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
                         
-                        Conn.Execute SQL
+                        Conn.Execute Sql
                     End If
                 End If
             End If '07/02/2011: hasta aqui la parte añadida
@@ -1597,28 +1597,28 @@ Dim PorcIva As Currency
         '[Monica]25/06/2013: el importeb1 ponemos si dejamos o no continuar cuando es 0 no dejamos continuar con 1 sí
         
         '++monica:050508 el numero de tarjeta puede venir a blanco--> dar error
-        If Trim(TARJETA) <> "" Then codsoc = DevuelveDesdeBD("codsocio", "starje", "numtarje", TARJETA, "N")
+        If Trim(Tarjeta) <> "" Then codsoc = DevuelveDesdeBD("codsocio", "starje", "numtarje", Tarjeta, "N")
         If codsoc = "" Then
             Mens = "Nro. Tarjeta no existe"
-            SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, importe4, importe5, nombre1) values (" & _
+            Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, importe4, importe5, nombre1) values (" & _
                   vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N") & _
-                  "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(TARJETA, "T") & "," & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
+                  "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(Tarjeta, "T") & "," & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
                   
-            Conn.Execute SQL
+            Conn.Execute Sql
         Else
             ' comprobamos que el socio existe
             ' no haria falta pq hay clave referencial a ssocio
-            SQL = ""
-            SQL = DevuelveDesdeBDNew(cPTours, "ssocio", "codsocio", "codsocio", codsoc, "N")
-            If SQL = "" Then
+            Sql = ""
+            Sql = DevuelveDesdeBDNew(cPTours, "ssocio", "codsocio", "codsocio", codsoc, "N")
+            If Sql = "" Then
                 Mens = "No existe el cliente"
-                SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, " & _
+                Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, " & _
                       "importe4, importe5, nombre1) values (" & _
                       vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N")
-                SQL = SQL & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(codsoc, "N") & "," & DBSet(codsoc, "T") & "," & _
+                Sql = Sql & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(codsoc, "N") & "," & DBSet(codsoc, "T") & "," & _
                         DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
                 
-                Conn.Execute SQL
+                Conn.Execute Sql
             End If
         End If
     End If
@@ -1661,23 +1661,23 @@ Dim PorcIva As Currency
     'Comprobamos fechas
     If Not EsFechaOK(Fecha) Then
             Mens = "Fecha incorrecta"
-            SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, " & _
+            Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, " & _
                   "importe4, importe5, nombre1) values (" & _
                   vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N")
-            SQL = SQL & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(Fecha, "T") & "," & _
+            Sql = Sql & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(Fecha, "T") & "," & _
                   DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
             
-            Conn.Execute SQL
+            Conn.Execute Sql
     Else
         If CDate(Fecha) <> CDate(txtCodigo(0).Text) Or CByte(Turno) <> CByte(txtCodigo(1).Text) Then
             Mens = "Fecha incorrecta" ' o no es del turno"
-            SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, " & _
+            Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, " & _
                   "importe4, importe5, nombre1) values (" & _
                   vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N")
-            SQL = SQL & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(Fecha, "T") & "," & _
+            Sql = Sql & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(Fecha, "T") & "," & _
                   DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
             
-            Conn.Execute SQL
+            Conn.Execute Sql
         End If
     End If
     
@@ -1685,30 +1685,30 @@ Dim PorcIva As Currency
     'Comprobamos que el articulo existe en sartic
     NomArtic = "nomartic"
     
-    SQL = ""
-    SQL = DevuelveDesdeBDNew(cPTours, "sartic", "codartic", "codartic", IdProducto, "N", NomArtic)
-    If SQL = "" Then
+    Sql = ""
+    Sql = DevuelveDesdeBDNew(cPTours, "sartic", "codartic", "codartic", IdProducto, "N", NomArtic)
+    If Sql = "" Then
         Mens = "No existe el artículo"
         Dim IdProducto1 As Currency
         IdProducto1 = CCur(IdProducto)
-        SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
+        Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
               "importe3, importe4, importe5, nombre1) values (" & _
               vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N")
-        SQL = SQL & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(IdProducto1, "T") & "," & _
+        Sql = Sql & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(IdProducto1, "T") & "," & _
               DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
               
-        Conn.Execute SQL
+        Conn.Execute Sql
     Else
         '[Monica]25/06/2013: añadimos el else de si el nombre es distinto y es distinto iva
         If Trim(NomArtic) <> Trim(NombreArticulo) And Not EsArticuloCombustible(IdProducto) Then
             Mens = "Nombre art." & Format(IdProducto, "000000") & " no coincide"
-            SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
+            Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
                   "importe3, importe4, importe5, nombre1, importeb1) values (" & _
                   vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N")
-            SQL = SQL & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(NomArtic, "T") & "," & _
+            Sql = Sql & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(NomArtic, "T") & "," & _
                   DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ",0)"
                   
-            Conn.Execute SQL
+            Conn.Execute Sql
         End If
         
         CodIVA = ""
@@ -1721,13 +1721,13 @@ Dim PorcIva As Currency
         ' aquí no dejamos continuar
         If PorcIva <> Round2(CInt(ComprobarCero(IvaArticulo)) / 100, 0) Then
             Mens = "Porcentaje de iva distinto"
-            SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
+            Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
                   "importe3, importe4, importe5, nombre1) values (" & _
                   vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N")
-            SQL = SQL & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(IdProducto, "T") & "," & _
+            Sql = Sql & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(IdProducto, "T") & "," & _
                   DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
                   
-            Conn.Execute SQL
+            Conn.Execute Sql
         End If
     End If
     
@@ -1750,47 +1750,47 @@ Dim PorcIva As Currency
     
     'Comprobamos que la forma de pago existe
     If IdTipoPago <> "" Then
-        SQL = ""
-        SQL = DevuelveDesdeBDNew(cPTours, "sforpa", "codforpa", "forpaalvic", IdTipoPago, "N")
-        If SQL = "" Then
+        Sql = ""
+        Sql = DevuelveDesdeBDNew(cPTours, "sforpa", "codforpa", "forpaalvic", IdTipoPago, "N")
+        If Sql = "" Then
             Mens = "No existe la forma de pago Alvic"
-            SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
+            Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
                   "importe3, importe4, importe5, nombre1) values (" & _
                   vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N")
-            SQL = SQL & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(IdTipoPago, "T") & "," & _
+            Sql = Sql & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(IdTipoPago, "T") & "," & _
                     DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
             
-            Conn.Execute SQL
+            Conn.Execute Sql
         End If
     End If
     
     'Comprobamos que el codigo de trabajador existe
-    SQL = ""
-    SQL = DevuelveDesdeBDNew(cPTours, "straba", "codtraba", "codtraba", IdVendedor, "N")
-    If SQL = "" Then
+    Sql = ""
+    Sql = DevuelveDesdeBDNew(cPTours, "straba", "codtraba", "codtraba", IdVendedor, "N")
+    If Sql = "" Then
         Mens = "No existe el trabajador"
-        SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
+        Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
               "importe3, importe4, importe5, nombre1) values (" & _
               vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N")
-        SQL = SQL & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(IdVendedor, "T") & "," & _
+        Sql = Sql & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(IdVendedor, "T") & "," & _
               DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
               
-        Conn.Execute SQL
+        Conn.Execute Sql
     End If
     
     'Comprobamos si hay descuento que el codigo de articulo de dto existe
     If c_Descuento <> 0 Then
-        SQL = ""
-        SQL = DevuelveDesdeBDNew(cPTours, "sartic", "artdto", "codartic", IdProducto, "N")
-        If SQL = "" Then
+        Sql = ""
+        Sql = DevuelveDesdeBDNew(cPTours, "sartic", "artdto", "codartic", IdProducto, "N")
+        If Sql = "" Then
             Mens = "No tiene artículo de descuento"
-            SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
+            Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
                   "importe3, importe4, importe5, nombre1) values (" & _
                   vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N")
-            SQL = SQL & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(IdProducto, "T") & "," & _
+            Sql = Sql & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(IdProducto, "T") & "," & _
                   DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
                   
-            Conn.Execute SQL
+            Conn.Execute Sql
         End If
     End If
     
@@ -1801,8 +1801,8 @@ eComprobarRegistroAlz:
 End Function
             
             
-Private Function ComprobarRegistroRib(Cad As String) As Boolean
-Dim SQL As String
+Private Function ComprobarRegistroRib(cad As String) As Boolean
+Dim Sql As String
 
 Dim base As String
 Dim NombreBase As String
@@ -1814,20 +1814,20 @@ Dim NombreVendedor As String
 Dim fechahora As String
 Dim CodigoCliente As String
 Dim NombreCliente As String
-Dim MATRICULA As String
+Dim Matricula As String
 Dim CodigoProducto As String
 Dim Surtidor As String
 Dim Manguera As String
 Dim PrecioLitro As String
 Dim cantidad As String
-Dim IMPORTE As String
+Dim Importe As String
 Dim DESCUENTO As String
 Dim IdTipoPago As String
 Dim DescrTipoPago As String
 Dim CodigoTipoPago As String
 Dim NifCliente As String
 Dim IdProducto As String
-Dim TARJETA As String
+Dim Tarjeta As String
 Dim Tarje As String
 
 
@@ -1851,47 +1851,47 @@ Dim codsoc As String
 
     ComprobarRegistroRib = True
 
-    base = Mid(Cad, 1, 10)
-    NombreBase = Mid(Cad, 11, 50)
-    Turno = Mid(Cad, 982, 10) 'txtcodigo(1).Text ' el que yo le diga, antes : Mid(cad, 61, 10)
+    base = Mid(cad, 1, 10)
+    NombreBase = Mid(cad, 11, 50)
+    Turno = Mid(cad, 982, 10) 'txtcodigo(1).Text ' el que yo le diga, antes : Mid(cad, 61, 10)
     If CByte(Turno) > 9 Then Turno = "9"
     
-    NumAlbaran = Mid(Cad, 71, 20)
-    NumFactura = Mid(Cad, 92, 7) 'antes 91,20
-    IdVendedor = Mid(Cad, 121, 10)
-    NombreVendedor = Mid(Cad, 131, 50)
-    fechahora = Mid(Cad, 181, 14)
+    NumAlbaran = Mid(cad, 71, 20)
+    NumFactura = Mid(cad, 92, 7) 'antes 91,20
+    IdVendedor = Mid(cad, 121, 10)
+    NombreVendedor = Mid(cad, 131, 50)
+    fechahora = Mid(cad, 181, 14)
     Fecha = Mid(fechahora, 7, 2) & "/" & Mid(fechahora, 5, 2) & "/" & Mid(fechahora, 1, 4)
     Hora = Mid(fechahora, 9, 6)
 '    CodigoCliente = Mid(cad, 195, 20)
-    NombreCliente = Mid(Cad, 215, 70)
-    TARJETA = Mid(Cad, 195, 20)
-    MATRICULA = Mid(Cad, 370, 20)
-    IdProducto = Mid(Cad, 493, 20)
-    Surtidor = Mid(Cad, 538, 10)
-    Manguera = Mid(Cad, 548, 10)
-    PrecioLitro = Mid(Cad, 568, 18)
-    cantidad = Mid(Cad, 650, 18)
-    IMPORTE = Mid(Cad, 668, 18)
-    DESCUENTO = Mid(Cad, 586, 18)
-    IdTipoPago = Mid(Cad, 784, 10)
-    DescrTipoPago = Mid(Cad, 794, 25)
-    CodigoTipoPago = Mid(Cad, 1, 10)
-    NifCliente = Mid(Cad, 834, 9)
+    NombreCliente = Mid(cad, 215, 70)
+    Tarjeta = Mid(cad, 195, 20)
+    Matricula = Mid(cad, 370, 20)
+    IdProducto = Mid(cad, 493, 20)
+    Surtidor = Mid(cad, 538, 10)
+    Manguera = Mid(cad, 548, 10)
+    PrecioLitro = Mid(cad, 568, 18)
+    cantidad = Mid(cad, 650, 18)
+    Importe = Mid(cad, 668, 18)
+    DESCUENTO = Mid(cad, 586, 18)
+    IdTipoPago = Mid(cad, 784, 10)
+    DescrTipoPago = Mid(cad, 794, 25)
+    CodigoTipoPago = Mid(cad, 1, 10)
+    NifCliente = Mid(cad, 834, 9)
     
     '[Monica]24/06/2013: introducimos los kms em el traspaso
-    Kilometros = Mid(Cad, 415, 18)
+    Kilometros = Mid(cad, 415, 18)
     
     
     
-    If Trim(IMPORTE) = "" Then
+    If Trim(Importe) = "" Then
         Exit Function
     Else
-        If CCur(IMPORTE) = 0 Then Exit Function
+        If CCur(Importe) = 0 Then Exit Function
     End If
     
     c_Cantidad = Round2(CCur(cantidad) / 100, 2)
-    c_Importe = Round2(CCur(IMPORTE) / 100, 2)
+    c_Importe = Round2(CCur(Importe) / 100, 2)
     c_Precio = Round2(CCur(PrecioLitro) / 100000, 5)
     
     If Trim(DESCUENTO) <> "" Then
@@ -1907,18 +1907,26 @@ Dim codsoc As String
     End If
     
 '[Monica]30/11/2010: añadida la segunda condicion
-    If Trim(NumFactura) <> "" And InStr(1, TARJETA, "Z") <> 0 Then
+    If Trim(NumFactura) <> "" And InStr(1, Tarjeta, "Z") <> 0 Then
         'SOLAMENTE EN EL CASO DE QUE SEA FACTURA COMPRUEBO QUE EXISTA EL NIF DEL SOCIO
         'Y SI NO EXISTE INTRODUCIRLO EN LA TABLA DE SOCIOS Y TARJETAS
         Tarje = DevuelveDesdeBDNew(cPTours, "ssocio", "codsocio", "nifsocio", NifCliente, "T")
         If Tarje = "" Then
-            Tarje = 900000
-            Tarje = SugerirCodigoSiguienteStr("ssocio", "codsocio", "codsocio >= 900000 and codsocio <= 999998")
+            Tarje = 8000 '900000
+            '[Monica]02/01/2019: ahora los clientes de paso tienen que estar entre 8001 y 9998 antes entre 900000 y 999998
+            Tarje = SugerirCodigoSiguienteStr("ssocio", "codsocio", "codsocio >= 8001 codsocio <= 9998")
             
 '                CtaConta = ""
 '                CtaConta = DevuelveDesdeBD("ctaconta", "sparam", "codparam", "01", "N")
             
-            SQL = "INSERT INTO ssocio (codsocio, codcoope, nomsocio, domsocio, codposta, pobsocio, " & _
+            
+            NuevaCuenta = "43." & Tarje
+            
+            'Rellenamos si procede
+            NuevaCuenta = RellenaCodigoCuenta(NuevaCuenta)
+            
+            
+            Sql = "INSERT INTO ssocio (codsocio, codcoope, nomsocio, domsocio, codposta, pobsocio, " & _
                   "prosocio, nifsocio, telsocio, faxsocio, movsocio, maisocio, wwwsocio, fechaalt, " & _
                   "fechabaj, codtarif, codbanco, codsucur, digcontr, cuentaba, impfactu, dtolitro, " & _
                   "codforpa, tipsocio, bonifbas, bonifesp, codsitua, codmacta, obssocio) VALUES (" & _
@@ -1926,35 +1934,41 @@ Dim codsoc As String
                   "'VALENCIA'," & DBSet(NifCliente, "T") & "," & ValorNulo & "," & ValorNulo & "," & ValorNulo & "," & ValorNulo & "," & ValorNulo & "," & _
                   DBSet(txtCodigo(0).Text, "F") & "," & _
                   ValorNulo & ",0," & ValorNulo & "," & ValorNulo & "," & ValorNulo & "," & ValorNulo & ",0,0," & _
-                  "1,0,0,0,0," & DBSet(vParamAplic.CtaContable, "T") & "," & ValorNulo & ")"
+                  "1,0,0,0,0," & DBSet(NuevaCuenta, "T") & "," & ValorNulo & ")" ' antes vParamAplic.CtaContable
                   
-            Conn.Execute SQL
+            Conn.Execute Sql
                   
-            SQL = "INSERT INTO starje (codsocio, numlinea, numtarje, nomtarje, codbanco, codsucur, " & _
+            Sql = "INSERT INTO starje (codsocio, numlinea, numtarje, nomtarje, codbanco, codsucur, " & _
                   "digcontr, cuentaba, tiptarje) VALUES (" & DBSet(Tarje, "N") & ",1," & DBSet(Tarje, "N") & "," & DBSet(NombreCliente, "T") & "," & ValorNulo & "," & ValorNulo & "," & _
                   ValorNulo & "," & ValorNulo & ",0)"
             
-            Conn.Execute SQL
+            Conn.Execute Sql
+            
+            Sql = "insert into cuentas (codmacta,nommacta,apudirec,razosoci,dirdatos,codposta,despobla,desprovi,nifdatos) values ("
+            Sql = Sql & DBSet(NuevaCuenta, "T") & "," & DBSet(NombreCliente, "T") & ",'S'," & DBSet(NombreCliente, "T") & ",'DESCONOCIDA',"
+            Sql = Sql & "46,'VALENCIA','VALENCIA'," & DBSet(NifCliente, "T") & ")"
+            
+            ConnConta.Execute Sql
             
         Else '[Monica]07/02/2011: caso de que sea un socio que quiere la factura ( me viene en fichero nro de factura y Z )
              ' añadida esta parte del else que no estaba
             If CLng(Tarje) >= 900000 Then
                 ' miro si existe tarjeta sino la creo
-                SQL = "select count(*) from starje where codsocio= " & DBSet(Tarje, "N")
-                If TotalRegistros(SQL) = 0 Then
-                    SQL = "INSERT INTO starje (codsocio, numlinea, numtarje, nomtarje, codbanco, codsucur, " & _
+                Sql = "select count(*) from starje where codsocio= " & DBSet(Tarje, "N")
+                If TotalRegistros(Sql) = 0 Then
+                    Sql = "INSERT INTO starje (codsocio, numlinea, numtarje, nomtarje, codbanco, codsucur, " & _
                           "digcontr, cuentaba, tiptarje) VALUES (" & DBSet(Tarje, "N") & ",1," & DBSet(Tarje, "N") & "," & DBSet(NombreCliente, "T") & "," & ValorNulo & "," & ValorNulo & "," & _
                           ValorNulo & "," & ValorNulo & ",0)"
                     
-                    Conn.Execute SQL
+                    Conn.Execute Sql
                 End If
             Else
                 ' el socio es inferior a 900000 miro si hay tarjeta dependiendo del producto
                 Dim TipArtic As Integer
                 TipArtic = DevuelveValor("select tipogaso from sartic where codartic = " & DBSet(IdProducto, "N"))
                 If TipArtic = 3 Then ' si el articulo es gasoleo bonificado
-                    SQL = "select count(*) from starje where codsocio= " & DBSet(Tarje, "N") & " and tiptarje = 1"
-                    If TotalRegistros(SQL) = 0 Then
+                    Sql = "select count(*) from starje where codsocio= " & DBSet(Tarje, "N") & " and tiptarje = 1"
+                    If TotalRegistros(Sql) = 0 Then
                         
                         '[Monica]22/11/2011: si es un cliente de paso y no tiene tarjeta de bonificado le ponemos la que tenga
                         ' he quitado el control de que no existe tarjeta de gasoleo bonificado
@@ -1967,25 +1981,25 @@ Dim codsoc As String
                         
                         '[Monica]22/11/2011: si es un cliente de paso y no tiene tarjeta de bonificado le ponemos la que tenga
                         '                    le pongo la primera tarjeta que exista o se la creo si no existe ninguna
-                        SQL = "select count(*) from starje where codsocio= " & DBSet(Tarje, "N")
-                        If TotalRegistros(SQL) = 0 Then
-                            SQL = "INSERT INTO starje (codsocio, numlinea, numtarje, nomtarje, codbanco, codsucur, " & _
+                        Sql = "select count(*) from starje where codsocio= " & DBSet(Tarje, "N")
+                        If TotalRegistros(Sql) = 0 Then
+                            Sql = "INSERT INTO starje (codsocio, numlinea, numtarje, nomtarje, codbanco, codsucur, " & _
                                   "digcontr, cuentaba, tiptarje) VALUES (" & DBSet(Tarje, "N") & ",1," & DBSet(Tarje, "N") & "," & DBSet(NombreCliente, "T") & "," & ValorNulo & "," & ValorNulo & "," & _
                                   ValorNulo & "," & ValorNulo & ",0)"
 
-                            Conn.Execute SQL
+                            Conn.Execute Sql
                         End If
 
                     End If
                 Else
-                    SQL = "select count(*) from starje where codsocio= " & DBSet(Tarje, "N") & " and tiptarje = 0"
-                    If TotalRegistros(SQL) = 0 Then
+                    Sql = "select count(*) from starje where codsocio= " & DBSet(Tarje, "N") & " and tiptarje = 0"
+                    If TotalRegistros(Sql) = 0 Then
                         Mens = "Nro. Tarjeta no existe"
-                        SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, importe4, importe5, nombre1) values (" & _
+                        Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, importe4, importe5, nombre1) values (" & _
                               vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N") & _
                               "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(Tarje, "N") & "," & DBSet(Tarje, "T") & "," & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
                         
-                        Conn.Execute SQL
+                        Conn.Execute Sql
                     End If
                 End If
             End If '07/02/2011: hasta aqui la parte añadida
@@ -1996,28 +2010,28 @@ Dim codsoc As String
         ' en alzira lo pongo dentro
         codsoc = ""
         '++monica:050508 el numero de tarjeta puede venir a blanco--> dar error
-        If Trim(TARJETA) <> "" Then codsoc = DevuelveDesdeBD("codsocio", "starje", "numtarje", TARJETA, "N")
+        If Trim(Tarjeta) <> "" Then codsoc = DevuelveDesdeBD("codsocio", "starje", "numtarje", Tarjeta, "N")
         If codsoc = "" Then
             Mens = "Nro. Tarjeta no existe"
-            SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, importe4, importe5, nombre1) values (" & _
+            Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, importe4, importe5, nombre1) values (" & _
                   vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N") & _
-                  "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(TARJETA, "T") & "," & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
+                  "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(Tarjeta, "T") & "," & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
                   
-            Conn.Execute SQL
+            Conn.Execute Sql
         Else
             ' comprobamos que el socio existe
             ' no haria falta pq hay clave referencial a ssocio
-            SQL = ""
-            SQL = DevuelveDesdeBDNew(cPTours, "ssocio", "codsocio", "codsocio", codsoc, "N")
-            If SQL = "" Then
+            Sql = ""
+            Sql = DevuelveDesdeBDNew(cPTours, "ssocio", "codsocio", "codsocio", codsoc, "N")
+            If Sql = "" Then
                 Mens = "No existe el cliente"
-                SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, " & _
+                Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, " & _
                       "importe4, importe5, nombre1) values (" & _
                       vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N")
-                SQL = SQL & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(codsoc, "N") & "," & DBSet(codsoc, "T") & "," & _
+                Sql = Sql & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(codsoc, "N") & "," & DBSet(codsoc, "T") & "," & _
                         DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
                 
-                Conn.Execute SQL
+                Conn.Execute Sql
             End If
         End If
     End If
@@ -2025,86 +2039,86 @@ Dim codsoc As String
     'Comprobamos fechas
     If Not EsFechaOK(Fecha) Then
             Mens = "Fecha incorrecta"
-            SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, " & _
+            Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, " & _
                   "importe4, importe5, nombre1) values (" & _
                   vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N")
-            SQL = SQL & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(Fecha, "T") & "," & _
+            Sql = Sql & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(Fecha, "T") & "," & _
                   DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
             
-            Conn.Execute SQL
+            Conn.Execute Sql
     Else
         '[Monica]09/01/2013: en Ribarroja meten todos los turnos del dia a diferencia de Alzira
         If CDate(Fecha) <> CDate(txtCodigo(0).Text) Then
             Mens = "Fecha incorrecta"
-            SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, " & _
+            Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, " & _
                   "importe4, importe5, nombre1) values (" & _
                   vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N")
-            SQL = SQL & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(Fecha, "T") & "," & _
+            Sql = Sql & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(Fecha, "T") & "," & _
                   DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
             
-            Conn.Execute SQL
+            Conn.Execute Sql
         End If
     End If
     
     'Comprobamos que el articulo existe en sartic
-    SQL = ""
-    SQL = DevuelveDesdeBDNew(cPTours, "sartic", "codartic", "codartic", IdProducto, "N")
-    If SQL = "" Then
+    Sql = ""
+    Sql = DevuelveDesdeBDNew(cPTours, "sartic", "codartic", "codartic", IdProducto, "N")
+    If Sql = "" Then
         Mens = "No existe el artículo"
         Dim IdProducto1 As Currency
         IdProducto1 = CCur(IdProducto)
-        SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
+        Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
               "importe3, importe4, importe5, nombre1) values (" & _
               vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N")
-        SQL = SQL & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(IdProducto1, "T") & "," & _
+        Sql = Sql & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(IdProducto1, "T") & "," & _
               DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
               
-        Conn.Execute SQL
+        Conn.Execute Sql
     End If
     
     'Comprobamos que la forma de pago existe
     If IdTipoPago <> "" Then
-        SQL = ""
-        SQL = DevuelveDesdeBDNew(cPTours, "sforpa", "codforpa", "forpaalvic", IdTipoPago, "N")
-        If SQL = "" Then
+        Sql = ""
+        Sql = DevuelveDesdeBDNew(cPTours, "sforpa", "codforpa", "forpaalvic", IdTipoPago, "N")
+        If Sql = "" Then
             Mens = "No existe la forma de pago Alvic"
-            SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
+            Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
                   "importe3, importe4, importe5, nombre1) values (" & _
                   vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N")
-            SQL = SQL & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(IdTipoPago, "T") & "," & _
+            Sql = Sql & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(IdTipoPago, "T") & "," & _
                     DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
             
-            Conn.Execute SQL
+            Conn.Execute Sql
         End If
     End If
     
     'Comprobamos que el codigo de trabajador existe
-    SQL = ""
-    SQL = DevuelveDesdeBDNew(cPTours, "straba", "codtraba", "codtraba", IdVendedor, "N")
-    If SQL = "" Then
+    Sql = ""
+    Sql = DevuelveDesdeBDNew(cPTours, "straba", "codtraba", "codtraba", IdVendedor, "N")
+    If Sql = "" Then
         Mens = "No existe el trabajador"
-        SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
+        Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
               "importe3, importe4, importe5, nombre1) values (" & _
               vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N")
-        SQL = SQL & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(IdVendedor, "T") & "," & _
+        Sql = Sql & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(IdVendedor, "T") & "," & _
               DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
               
-        Conn.Execute SQL
+        Conn.Execute Sql
     End If
     
     'Comprobamos si hay descuento que el codigo de articulo de dto existe
     If c_Descuento <> 0 Then
-        SQL = ""
-        SQL = DevuelveDesdeBDNew(cPTours, "sartic", "artdto", "codartic", IdProducto, "N")
-        If SQL = "" Then
+        Sql = ""
+        Sql = DevuelveDesdeBDNew(cPTours, "sartic", "artdto", "codartic", IdProducto, "N")
+        If Sql = "" Then
             Mens = "No tiene artículo de descuento"
-            SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
+            Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
                   "importe3, importe4, importe5, nombre1) values (" & _
                   vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N")
-            SQL = SQL & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(IdProducto, "T") & "," & _
+            Sql = Sql & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(IdProducto, "T") & "," & _
                   DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
                   
-            Conn.Execute SQL
+            Conn.Execute Sql
         End If
     End If
     
@@ -2115,7 +2129,7 @@ eComprobarRegistroRib:
 End Function
             
 Private Function ComprobarRegistroReg(ByRef Rs As Recordset) As Boolean
-Dim SQL As String
+Dim Sql As String
 
 Dim base As String
 Dim NombreBase As String
@@ -2127,20 +2141,20 @@ Dim NombreVendedor As String
 Dim fechahora As String
 Dim CodigoCliente As String
 Dim NombreCliente As String
-Dim MATRICULA As String
+Dim Matricula As String
 Dim CodigoProducto As String
 Dim Surtidor As String
 Dim Manguera As String
 Dim PrecioLitro As String
 Dim PrecioSinDto As String
 Dim cantidad As String
-Dim IMPORTE As String
+Dim Importe As String
 Dim IdTipoPago As String
 Dim DescrTipoPago As String
 Dim CodigoTipoPago As String
 Dim NifCliente As String
 Dim IdProducto As String
-Dim TARJETA As String
+Dim Tarjeta As String
 Dim Tarje As String
 
 
@@ -2178,8 +2192,8 @@ Dim codsoc As String
     Hora = Mid(fechahora, 9, 6)
     CodigoCliente = DBLet(Rs!Cliente, "T")
     NombreCliente = DBLet(Rs!nomclien, "T")
-    TARJETA = DBLet(Rs!TARJETA, "N")
-    MATRICULA = DBLet(Rs!MATRICULA, "T")
+    Tarjeta = DBLet(Rs!Tarjeta, "N")
+    Matricula = DBLet(Rs!Matricula, "T")
     IdProducto = DBLet(Rs!PRODUCTO, "N")
     Surtidor = DBLet(Rs!Surtidor, "N")
     Manguera = DBLet(Rs!Manguera, "N")
@@ -2188,7 +2202,7 @@ Dim codsoc As String
     PrecioLitro = DBLet(Rs!precio, "N")
     
     cantidad = DBLet(Rs!cantidad, "N")
-    IMPORTE = DBLet(Rs!IMPORTE, "N")
+    Importe = DBLet(Rs!Importe, "N")
     IdTipoPago = DBLet(Rs!IdTipoPago, "N")
     DescrTipoPago = DBLet(Rs!desctipopago, "T")
     CodigoTipoPago = DBLet(Rs!IdTipoPago, "N")
@@ -2200,25 +2214,25 @@ Dim codsoc As String
     If CodigoCliente = "" And NombreCliente = "" Then
         CodigoCliente = DevuelveDesdeBDNew(cPTours, "sforpa", "codsocio", "forpaalvic", IdTipoPago, "N")
         NombreCliente = DevuelveDesdeBDNew(cPTours, "ssocio", "nomsocio", "codsocio", CodigoCliente, "N")
-        TARJETA = CodigoCliente
-        If TARJETA = "0" Then TARJETA = CodigoCliente
+        Tarjeta = CodigoCliente
+        If Tarjeta = "0" Then Tarjeta = CodigoCliente
     End If
     '++
     If Mid(CodigoCliente, 1, 2) = "1Z" Then
         CodigoCliente = DevuelveDesdeBDNew(cPTours, "ssocio", "codsocio", "nifsocio", NifCliente, "T")
-        If TARJETA = "0" Then TARJETA = CodigoCliente
+        If Tarjeta = "0" Then Tarjeta = CodigoCliente
     
     End If
     
     
-    If Trim(IMPORTE) = "" Then
+    If Trim(Importe) = "" Then
         Exit Function
     Else
-        If CCur(IMPORTE) = 0 Then Exit Function
+        If CCur(Importe) = 0 Then Exit Function
     End If
     
     c_Cantidad = cantidad
-    c_Importe = IMPORTE
+    c_Importe = Importe
     c_Precio = PrecioLitro
     
     
@@ -2240,7 +2254,7 @@ Dim codsoc As String
 '                CtaConta = DevuelveDesdeBD("ctaconta", "sparam", "codparam", "01", "N")
             
             
-            SQL = "INSERT INTO ssocio (codsocio, codcoope, nomsocio, domsocio, codposta, pobsocio, " & _
+            Sql = "INSERT INTO ssocio (codsocio, codcoope, nomsocio, domsocio, codposta, pobsocio, " & _
                   "prosocio, nifsocio, telsocio, faxsocio, movsocio, maisocio, wwwsocio, fechaalt, " & _
                   "fechabaj, codtarif, codbanco, codsucur, digcontr, cuentaba, impfactu, dtolitro, " & _
                   "codforpa, tipsocio, bonifbas, bonifesp, codsitua, codmacta, obssocio) VALUES (" & _
@@ -2250,30 +2264,30 @@ Dim codsoc As String
                   ValorNulo & ",0," & ValorNulo & "," & ValorNulo & "," & ValorNulo & "," & ValorNulo & ",0,0," & _
                   "0,0,0,0,0," & DBSet(vParamAplic.CtaContable, "T") & "," & ValorNulo & ")"
                   
-            Conn.Execute SQL
+            Conn.Execute Sql
                   
-            SQL = "INSERT INTO starje (codsocio, numlinea, numtarje, nomtarje, codbanco, codsucur, " & _
+            Sql = "INSERT INTO starje (codsocio, numlinea, numtarje, nomtarje, codbanco, codsucur, " & _
                   "digcontr, cuentaba, tiptarje) VALUES (" & DBSet(Tarje, "N") & ",1," & DBSet(Tarje, "N") & "," & DBSet(NombreCliente, "T") & "," & ValorNulo & "," & ValorNulo & "," & _
                   ValorNulo & "," & ValorNulo & ",0)"
             
-            Conn.Execute SQL
+            Conn.Execute Sql
             
-            TARJETA = Tarje
+            Tarjeta = Tarje
             
         End If
     End If
     
     'MIRAMOS SI EXISTE LA TARJETA
-    If Trim(TARJETA) <> "0" Then
+    If Trim(Tarjeta) <> "0" Then
         codsoc = ""
-        codsoc = DevuelveDesdeBD("codsocio", "starje", "numtarje", TARJETA, "N")
+        codsoc = DevuelveDesdeBD("codsocio", "starje", "numtarje", Tarjeta, "N")
         If codsoc = "" Then
             Mens = "Nro. Tarjeta no existe"
-            SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, importe4, importe5, nombre1) values (" & _
+            Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, importe4, importe5, nombre1) values (" & _
                   vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N") & _
-                  "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(TARJETA, "T") & "," & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
+                  "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(Tarjeta, "T") & "," & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
                   
-            Conn.Execute SQL
+            Conn.Execute Sql
         End If
     Else
         'COGEMOS LA PRIMERA TARJETA DEPENDIENDO DEL TIPO DE ARTICULO
@@ -2284,21 +2298,21 @@ Dim codsoc As String
                 Tarje = DevuelveDesdeBDNew(cPTours, "starje", "numtarje", "tiptarje", "1", "N", , "codsocio", CodigoCliente, "N")
                 If Tarje = "" Then
                     Mens = "Nro.Tarjeta Bonif.no existe"
-                    SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, importe4, importe5, nombre1) values (" & _
+                    Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, importe4, importe5, nombre1) values (" & _
                           vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N") & _
                           "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(Tarje, "T") & "," & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
                           
-                    Conn.Execute SQL
+                    Conn.Execute Sql
                 End If
             Case "0", "1", "2", "4"
                 Tarje = DevuelveValor("select numtarje from starje where tiptarje <> 1 and codsocio =" & DBSet(CodigoCliente, "N"))
                 If Tarje = "0" Then
                     Mens = "Nro.Tarjeta no existe"
-                    SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, importe4, importe5, nombre1) values (" & _
+                    Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, importe4, importe5, nombre1) values (" & _
                           vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N") & _
                           "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(Tarje, "T") & "," & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
                           
-                    Conn.Execute SQL
+                    Conn.Execute Sql
                 End If
         End Select
     End If
@@ -2306,79 +2320,79 @@ Dim codsoc As String
     'Comprobamos fechas
     If Not EsFechaOK(Fecha) Then
             Mens = "Fecha incorrecta"
-            SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, " & _
+            Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, " & _
                   "importe4, importe5, nombre1) values (" & _
                   vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N")
-            SQL = SQL & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(Fecha, "T") & "," & _
+            Sql = Sql & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(Fecha, "T") & "," & _
                   DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
             
-            Conn.Execute SQL
+            Conn.Execute Sql
     Else
         If CDate(Fecha) <> CDate(txtCodigo(0).Text) Then
             Mens = "Fecha incorrecta"
-            SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, " & _
+            Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, " & _
                   "importe4, importe5, nombre1) values (" & _
                   vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N")
-            SQL = SQL & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(Fecha, "T") & "," & _
+            Sql = Sql & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(Fecha, "T") & "," & _
                   DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
             
-            Conn.Execute SQL
+            Conn.Execute Sql
         End If
     End If
     
     
     'Comprobamos que el articulo existe en sartic
-    SQL = ""
-    SQL = DevuelveDesdeBDNew(cPTours, "sartic", "codartic", "codartic", IdProducto, "N")
-    If SQL = "" Then
+    Sql = ""
+    Sql = DevuelveDesdeBDNew(cPTours, "sartic", "codartic", "codartic", IdProducto, "N")
+    If Sql = "" Then
         Mens = "No existe el artículo"
-        SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
+        Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
               "importe3, importe4, importe5, nombre1) values (" & _
               vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N")
-        SQL = SQL & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(IdProducto, "T") & "," & _
+        Sql = Sql & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(IdProducto, "T") & "," & _
               DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
               
-        Conn.Execute SQL
+        Conn.Execute Sql
     End If
     
     
     'Comprobamos que el socio existe
     If CodigoCliente <> "" Then
-        SQL = ""
-        SQL = DevuelveDesdeBDNew(cPTours, "ssocio", "codsocio", "codsocio", CodigoCliente, "N")
-        If SQL = "" Then
+        Sql = ""
+        Sql = DevuelveDesdeBDNew(cPTours, "ssocio", "codsocio", "codsocio", CodigoCliente, "N")
+        If Sql = "" Then
             Mens = "No existe el cliente"
-            SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, " & _
+            Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, importe3, " & _
                   "importe4, importe5, nombre1) values (" & _
                   vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N")
-            SQL = SQL & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(CodigoCliente, "T") & "," & _
+            Sql = Sql & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(CodigoCliente, "T") & "," & _
                     DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
             
-            Conn.Execute SQL
+            Conn.Execute Sql
         End If
     End If
     
     'Comprobamos que la forma de pago existe
     If IdTipoPago <> "" Then
-        SQL = ""
-        SQL = DevuelveDesdeBDNew(cPTours, "sforpa", "codforpa", "forpaalvic", IdTipoPago, "N")
+        Sql = ""
+        Sql = DevuelveDesdeBDNew(cPTours, "sforpa", "codforpa", "forpaalvic", IdTipoPago, "N")
         
         
-        If SQL = "" Then
+        If Sql = "" Then
             
             '[Monica]05/01/2015: si el socio es de catadau o llombai cogemos su forma de pago (la del cliente)
-            SQL = "select codforpa from ssocio where codsocio = " & DBSet(CodigoCliente, "N") & " and codcoope in (1,2) "
-            If TotalRegistrosConsulta(SQL) <> 0 Then Exit Function
+            Sql = "select codforpa from ssocio where codsocio = " & DBSet(CodigoCliente, "N") & " and codcoope in (1,2) "
+            If TotalRegistrosConsulta(Sql) <> 0 Then Exit Function
             
             
             Mens = "No existe la forma de pago Alvic"
-            SQL = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
+            Sql = "insert into tmpinformes (codusu, importe1, fecha1, campo1, campo2, importe2, nombre2, " & _
                   "importe3, importe4, importe5, nombre1) values (" & _
                   vSesion.Codigo & "," & DBSet(NumAlbaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mid(Hora, 1, 2), "N")
-            SQL = SQL & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(IdTipoPago, "T") & "," & _
+            Sql = Sql & "," & DBSet(Mid(Hora, 3, 2), "N") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(IdTipoPago, "T") & "," & _
                     DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(c_Importe, "N") & "," & DBSet(Mens, "T") & ")"
             
-            Conn.Execute SQL
+            Conn.Execute Sql
         End If
     End If
     
@@ -2392,7 +2406,7 @@ End Function
             
             
             
-Private Function InsertarLinea(Cad As String) As Boolean
+Private Function InsertarLinea(cad As String) As Boolean
 Dim NumLin As String
 Dim codpro As String
 Dim articulo As String
@@ -2402,7 +2416,7 @@ Dim ImpDes As String
 Dim CodIVA As String
 Dim b As Boolean
 Dim Codclave As String
-Dim SQL As String
+Dim Sql As String
 
 Dim Import As Currency
 
@@ -2418,15 +2432,15 @@ Dim Fecha As String
 Dim Hora As String
 Dim CodigoCliente As String
 Dim NombreCliente As String
-Dim MATRICULA As String
-Dim TARJETA As String
+Dim Matricula As String
+Dim Tarjeta As String
 Dim CodigoProducto As String
 Dim Surtidor As String
 Dim Manguera As String
 Dim PrecioLitro As String
 Dim DESCUENTO As String
 Dim cantidad As String
-Dim IMPORTE As String
+Dim Importe As String
 Dim IdTipoPago As String
 Dim DescrTipoPago As String
 Dim CodigoTipoPago As String
@@ -2455,49 +2469,49 @@ Dim NomArtic As String
     InsertarLinea = True
     
 
-    base = Mid(Cad, 1, 10)
-    NombreBase = Mid(Cad, 11, 50)
-    Turno = Mid(Cad, 982, 10) 'txtcodigo(1).Text 'el turno que yo le diga, antes: Mid(cad, 61, 10)
+    base = Mid(cad, 1, 10)
+    NombreBase = Mid(cad, 11, 50)
+    Turno = Mid(cad, 982, 10) 'txtcodigo(1).Text 'el turno que yo le diga, antes: Mid(cad, 61, 10)
     If CByte(Turno) > 9 Then Turno = "9"
-    NumAlbaran = Mid(Cad, 72, 19)
-    NumFactura = Mid(Cad, 94, 17)
-    IdVendedor = Mid(Cad, 121, 10)
-    NombreVendedor = Mid(Cad, 131, 50)
-    fechahora = Mid(Cad, 181, 14)
+    NumAlbaran = Mid(cad, 72, 19)
+    NumFactura = Mid(cad, 94, 17)
+    IdVendedor = Mid(cad, 121, 10)
+    NombreVendedor = Mid(cad, 131, 50)
+    fechahora = Mid(cad, 181, 14)
     Fecha = Mid(fechahora, 7, 2) & "/" & Mid(fechahora, 5, 2) & "/" & Mid(fechahora, 1, 4)
     Hora = Mid(fechahora, 9, 2) & ":" & Mid(fechahora, 11, 2) & ":" & Mid(fechahora, 13, 2)
-    CodigoCliente = Mid(Cad, 195, 20)
-    NombreCliente = Mid(Cad, 215, 70)
-    TARJETA = Mid(Cad, 290, 20)
-    MATRICULA = Mid(Cad, 370, 20)
-    IdProducto = Mid(Cad, 493, 20)
-    Surtidor = Mid(Cad, 538, 10)
-    Manguera = Mid(Cad, 548, 10)
+    CodigoCliente = Mid(cad, 195, 20)
+    NombreCliente = Mid(cad, 215, 70)
+    Tarjeta = Mid(cad, 290, 20)
+    Matricula = Mid(cad, 370, 20)
+    IdProducto = Mid(cad, 493, 20)
+    Surtidor = Mid(cad, 538, 10)
+    Manguera = Mid(cad, 548, 10)
     '[Monica]24/08/2015: ahora el precio es el de la posicion 864 antes era sin el de la 568
-    PrecioLitro = Mid(Cad, 864, 18)
+    PrecioLitro = Mid(cad, 864, 18)
     '[Monica]24/08/2015: añadimos el descuento
-    DESCUENTO = Mid(Cad, 586, 18)
+    DESCUENTO = Mid(cad, 586, 18)
     
-    cantidad = Mid(Cad, 650, 18)
-    IMPORTE = Mid(Cad, 668, 18)
-    IdTipoPago = Mid(Cad, 784, 10)
-    DescrTipoPago = Mid(Cad, 794, 25)
-    CodigoTipoPago = Mid(Cad, 1, 10)
-    NifCliente = Mid(Cad, 834, 9)
+    cantidad = Mid(cad, 650, 18)
+    Importe = Mid(cad, 668, 18)
+    IdTipoPago = Mid(cad, 784, 10)
+    DescrTipoPago = Mid(cad, 794, 25)
+    CodigoTipoPago = Mid(cad, 1, 10)
+    NifCliente = Mid(cad, 834, 9)
     
     '[Monica]24/06/2013: introducimos los kms em el traspaso
-    Kilometros = Mid(Cad, 415, 18)
+    Kilometros = Mid(cad, 415, 18)
     
     
     
-    If Trim(IMPORTE) = "" Then
+    If Trim(Importe) = "" Then
         Exit Function
     Else
-        If CCur(IMPORTE) = 0 Then Exit Function
+        If CCur(Importe) = 0 Then Exit Function
     End If
     
     c_Cantidad = Round2(CCur(cantidad) / 100, 2)
-    c_Importe = Round2(CCur(IMPORTE) / 100, 2)
+    c_Importe = Round2(CCur(Importe) / 100, 2)
     c_Precio = Round2(CCur(PrecioLitro) / 100000, 5)
     c_Descuento = Round2(CCur(DESCUENTO) / 100000, 5)
     
@@ -2511,15 +2525,15 @@ Dim NomArtic As String
 '    'hasta aqui
     
     'VRS:4.0.1(0) actualizamos el precio de articulo
-    SQL = "update sartic set preventa = " & DBSet(c_Precio, "N") & _
+    Sql = "update sartic set preventa = " & DBSet(c_Precio, "N") & _
           " where codartic = " & DBSet(IdProducto, "N")
-    Conn.Execute SQL
+    Conn.Execute Sql
     
     If DevuelveValor("select ctrstock from sartic where codartic = " & DBSet(IdProducto, "N")) = 1 Then
-        SQL = "update sartic set " & _
+        Sql = "update sartic set " & _
               "  canstock = canstock - " & DBSet(c_Cantidad, "N") & _
               " where codartic = " & DBSet(IdProducto, "N")
-        Conn.Execute SQL
+        Conn.Execute Sql
     End If
     
     ' insertamos en la tabla de albaranes
@@ -2531,72 +2545,72 @@ Dim NomArtic As String
     If Trim(NumFactura) <> "" Then
         codsoc = DevuelveDesdeBDNew(cPTours, "ssocio", "codsocio", "nifsocio", NifCliente, "T")
         '[Monica]17/06/2013: miramos si la tarjeta viene con algun asterisco
-        If Mid(TARJETA, 1, 4) = "****" Or Trim(TARJETA) = "" Or InStr(1, TARJETA, "*") <> 0 Then
-            TARJETA = codsoc
+        If Mid(Tarjeta, 1, 4) = "****" Or Trim(Tarjeta) = "" Or InStr(1, Tarjeta, "*") <> 0 Then
+            Tarjeta = codsoc
         Else '++monica: 15/02/2008 las tarjetas profesionales tienen 16 caracteres solo analizo los 8 últimos
-            If Len(Trim(TARJETA)) = 16 Then
-                TARJETA = Mid(TARJETA, 9, 16)
+            If Len(Trim(Tarjeta)) = 16 Then
+                Tarjeta = Mid(Tarjeta, 9, 16)
             End If
             '++
         End If
         'fechahora--> txtcodigo(0).Text & " " & Time
         
-        SQL = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
+        Sql = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
               "codturno, codartic, cantidad, preciove, importel, codforpa, matricul, codtraba, " & _
-              "numfactu, numlinea, kilometros, dtoalvic) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(codsoc, "N") & "," & DBSet(TARJETA, "N") & "," & _
+              "numfactu, numlinea, kilometros, dtoalvic) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(codsoc, "N") & "," & DBSet(Tarjeta, "N") & "," & _
                DBSet(NumAlbaran, "T") & "," & DBSet(txtCodigo(0).Text, "F") & "," & DBSet(txtCodigo(0).Text & " " & Hora, "FH") & "," & DBSet(txtCodigo(1).Text, "N") & "," & _
                DBSet(IdProducto, "N") & "," & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & _
-               DBSet(c_Importe, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(MATRICULA, "T") & "," & DBSet(IdVendedor, "N") & ","
+               DBSet(c_Importe, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(Matricula, "T") & "," & DBSet(IdVendedor, "N") & ","
     
         NumLinea = SugerirCodigoSiguienteStr("scaalb", "numlinea", "numfactu = " & DBSet(NumFactura, "N"))
-        SQL = SQL & DBSet(NumFactura, "N") & "," & DBSet(NumLinea, "N") & ","
+        Sql = Sql & DBSet(NumFactura, "N") & "," & DBSet(NumLinea, "N") & ","
     Else
         '[Monica]16/01/2014: si me viene una factura tpv sin nro pregunto sobre que cliente la pongo visa o contado
         If InStr(1, CodigoCliente, "1Z") <> 0 Then
             NomArtic = DevuelveDesdeBDNew(cPTours, "sartic", "nomartic", "codartic", IdProducto, "N")
             If MsgBox("Factura de cliente de paso sin número de factura. " & vbCrLf & vbCrLf & "Albaran: " & NumAlbaran & vbCrLf & "Fecha: " & txtCodigo(0).Text & " " & Hora & vbCrLf & "Articulo: " & NomArtic & vbCrLf & "Importe: " & c_Importe & vbCrLf & vbCrLf & "¿ Asignar a ventas contado ? " & vbCrLf & "(en caso negativo se asignará a ventas tarjeta)" & vbCrLf & vbCrLf, vbQuestion + vbYesNo + vbDefaultButton1) = vbYes Then
-                TARJETA = "900000"
+                Tarjeta = "900000"
             Else
-                TARJETA = "900002"
+                Tarjeta = "900002"
             End If
             
-            SQL = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
+            Sql = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
                   "codturno, codartic, cantidad, preciove, importel, codforpa, matricul, codtraba, " & _
-                  "numfactu, numlinea, kilometros, dtoalvic) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(TARJETA, "N") & "," & DBSet(TARJETA, "N") & "," & _
+                  "numfactu, numlinea, kilometros, dtoalvic) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(Tarjeta, "N") & "," & DBSet(Tarjeta, "N") & "," & _
                    DBSet(NumAlbaran, "T") & "," & DBSet(txtCodigo(0).Text, "F") & "," & DBSet(txtCodigo(0).Text & " " & Hora, "FH") & "," & DBSet(txtCodigo(1).Text, "N") & "," & _
                    DBSet(IdProducto, "N") & "," & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & _
-                   DBSet(c_Importe, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(MATRICULA, "T") & "," & DBSet(IdVendedor, "N") & ","
-            SQL = SQL & "0,0,"
+                   DBSet(c_Importe, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(Matricula, "T") & "," & DBSet(IdVendedor, "N") & ","
+            Sql = Sql & "0,0,"
         Else
         
             '[Monica]17/06/2013: miramos si la tarjeta viene con algun asterisco
-            If Mid(TARJETA, 1, 4) = "****" Or Trim(TARJETA) = "" Or InStr(1, TARJETA, "*") <> 0 Then
-                TARJETA = CodigoCliente
+            If Mid(Tarjeta, 1, 4) = "****" Or Trim(Tarjeta) = "" Or InStr(1, Tarjeta, "*") <> 0 Then
+                Tarjeta = CodigoCliente
             Else '++monica: 15/02/2008 las tarjetas profesionales tienen 16 caracteres solo analizo los 8 últimos
-                If Len(Trim(TARJETA)) = 16 Then
-                    TARJETA = Mid(TARJETA, 9, 16)
+                If Len(Trim(Tarjeta)) = 16 Then
+                    Tarjeta = Mid(Tarjeta, 9, 16)
                 End If
                 '++
             End If
-            SQL = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
+            Sql = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
                   "codturno, codartic, cantidad, preciove, importel, codforpa, matricul, codtraba, " & _
-                  "numfactu, numlinea, kilometros, dtoalvic) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(TARJETA, "N") & "," & _
+                  "numfactu, numlinea, kilometros, dtoalvic) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(Tarjeta, "N") & "," & _
                    DBSet(NumAlbaran, "T") & "," & DBSet(txtCodigo(0).Text, "F") & "," & DBSet(txtCodigo(0).Text & " " & Hora, "FH") & "," & DBSet(txtCodigo(1).Text, "N") & "," & _
                    DBSet(IdProducto, "N") & "," & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & _
-                   DBSet(c_Importe, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(MATRICULA, "T") & "," & DBSet(IdVendedor, "N") & ","
-            SQL = SQL & "0,0,"
+                   DBSet(c_Importe, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(Matricula, "T") & "," & DBSet(IdVendedor, "N") & ","
+            Sql = Sql & "0,0,"
             
         End If
     End If
     
     '[monica]24/06/2013: añadimos los kilometros
-    SQL = SQL & DBSet(Round2(ComprobarCero(Trim(Kilometros)) / 100, 0), "N", "S") & "," '& ")"
+    Sql = Sql & DBSet(Round2(ComprobarCero(Trim(Kilometros)) / 100, 0), "N", "S") & "," '& ")"
  
  
     '[Monica]24/08/2015: añadimos el descuento
-    SQL = SQL & DBSet(c_Descuento, "N") & ")"
+    Sql = Sql & DBSet(c_Descuento, "N") & ")"
  
-    Conn.Execute SQL
+    Conn.Execute Sql
     
 EInsertarLinea:
     If Err.Number <> 0 Then
@@ -2606,7 +2620,7 @@ EInsertarLinea:
 End Function
             
             
-Private Function InsertarLineaAlz(Cad As String) As Boolean
+Private Function InsertarLineaAlz(cad As String) As Boolean
 Dim NumLin As String
 Dim codpro As String
 Dim articulo As String
@@ -2616,7 +2630,7 @@ Dim ImpDes As String
 Dim CodIVA As String
 Dim b As Boolean
 Dim Codclave As String
-Dim SQL As String
+Dim Sql As String
 
 Dim Import As Currency
 
@@ -2632,14 +2646,14 @@ Dim Fecha As String
 Dim Hora As String
 Dim CodigoCliente As String
 Dim NombreCliente As String
-Dim MATRICULA As String
-Dim TARJETA As String
+Dim Matricula As String
+Dim Tarjeta As String
 Dim CodigoProducto As String
 Dim Surtidor As String
 Dim Manguera As String
 Dim PrecioLitro As String
 Dim cantidad As String
-Dim IMPORTE As String
+Dim Importe As String
 Dim DESCUENTO As String
 Dim IdTipoPago As String
 Dim DescrTipoPago As String
@@ -2672,45 +2686,45 @@ Dim Kilometros As String
     InsertarLineaAlz = True
     
 
-    base = Mid(Cad, 1, 10)
-    NombreBase = Mid(Cad, 11, 50)
-    Turno = Mid(Cad, 982, 10) 'txtcodigo(1).Text 'el turno que yo le diga, antes: Mid(cad, 61, 10)
+    base = Mid(cad, 1, 10)
+    NombreBase = Mid(cad, 11, 50)
+    Turno = Mid(cad, 982, 10) 'txtcodigo(1).Text 'el turno que yo le diga, antes: Mid(cad, 61, 10)
     If CByte(Turno) > 9 Then Turno = "9"
-    NumAlbaran = Mid(Cad, 71, 20)
-    NumFactura = Mid(Cad, 94, 17)
-    IdVendedor = Mid(Cad, 121, 10)
-    NombreVendedor = Mid(Cad, 131, 50)
-    fechahora = Mid(Cad, 181, 14)
+    NumAlbaran = Mid(cad, 71, 20)
+    NumFactura = Mid(cad, 94, 17)
+    IdVendedor = Mid(cad, 121, 10)
+    NombreVendedor = Mid(cad, 131, 50)
+    fechahora = Mid(cad, 181, 14)
     Fecha = Mid(fechahora, 7, 2) & "/" & Mid(fechahora, 5, 2) & "/" & Mid(fechahora, 1, 4)
     Hora = Mid(fechahora, 9, 2) & ":" & Mid(fechahora, 11, 2) & ":" & Mid(fechahora, 13, 2)
 '    CodigoCliente = Mid(cad, 195, 20)
-    NombreCliente = Mid(Cad, 215, 70)
+    NombreCliente = Mid(cad, 215, 70)
 '    Tarjeta = Mid(cad, 290, 20)
-    TARJETA = Mid(Cad, 195, 20)
-    MATRICULA = Mid(Cad, 370, 20)
-    IdProducto = Mid(Cad, 493, 20)
-    Surtidor = Mid(Cad, 538, 10)
-    Manguera = Mid(Cad, 548, 10)
-    PrecioLitro = Mid(Cad, 568, 18)
-    cantidad = Mid(Cad, 650, 18)
-    IMPORTE = Mid(Cad, 668, 18)
-    DESCUENTO = Mid(Cad, 586, 18)
-    IdTipoPago = Mid(Cad, 784, 10)
-    DescrTipoPago = Mid(Cad, 794, 25)
-    CodigoTipoPago = Mid(Cad, 1, 10)
-    NifCliente = Mid(Cad, 834, 9)
+    Tarjeta = Mid(cad, 195, 20)
+    Matricula = Mid(cad, 370, 20)
+    IdProducto = Mid(cad, 493, 20)
+    Surtidor = Mid(cad, 538, 10)
+    Manguera = Mid(cad, 548, 10)
+    PrecioLitro = Mid(cad, 568, 18)
+    cantidad = Mid(cad, 650, 18)
+    Importe = Mid(cad, 668, 18)
+    DESCUENTO = Mid(cad, 586, 18)
+    IdTipoPago = Mid(cad, 784, 10)
+    DescrTipoPago = Mid(cad, 794, 25)
+    CodigoTipoPago = Mid(cad, 1, 10)
+    NifCliente = Mid(cad, 834, 9)
     
     '[Monica]24/06/2013: introducimos los kms em el traspaso
-    Kilometros = Mid(Cad, 415, 18)
+    Kilometros = Mid(cad, 415, 18)
     
-    If Trim(IMPORTE) = "" Then
+    If Trim(Importe) = "" Then
         Exit Function
     Else
-        If CCur(IMPORTE) = 0 Then Exit Function
+        If CCur(Importe) = 0 Then Exit Function
     End If
     
     c_Cantidad = Round2(CCur(cantidad) / 100, 2)
-    c_Importe = Round2(CCur(IMPORTE) / 100, 2)
+    c_Importe = Round2(CCur(Importe) / 100, 2)
     c_Precio = Round2(CCur(PrecioLitro) / 100000, 5)
 
     If Trim(DESCUENTO) <> "" Then
@@ -2737,10 +2751,10 @@ Dim Kilometros As String
 '    'hasta aqui
     
     'VRS:4.0.1(0) actualizamos el precio de articulo
-    SQL = "update sartic set preventa = " & DBSet(c_Precio, "N") & _
+    Sql = "update sartic set preventa = " & DBSet(c_Precio, "N") & _
           ", canstock = canstock - " & DBSet(c_Cantidad, "N") & _
           " where codartic = " & DBSet(IdProducto, "N")
-    Conn.Execute SQL
+    Conn.Execute Sql
     
 '    If DevuelveValor("select ctrstock from sartic where codartic = " & DBSet(IdProducto, "N")) = 1 Then
 '        SQL = "update sartic set " & _
@@ -2759,155 +2773,155 @@ Dim Kilometros As String
 
     
     '[Monica]30/11/2011 añadida segunda condicion
-    If Trim(NumFactura) <> "" And InStr(1, TARJETA, "Z") <> 0 Then
+    If Trim(NumFactura) <> "" And InStr(1, Tarjeta, "Z") <> 0 Then
         codsoc = DevuelveDesdeBDNew(cPTours, "ssocio", "codsocio", "nifsocio", NifCliente, "T")
-        If Mid(TARJETA, 1, 4) = "****" Or Trim(TARJETA) = "" Then
-            TARJETA = codsoc
+        If Mid(Tarjeta, 1, 4) = "****" Or Trim(Tarjeta) = "" Then
+            Tarjeta = codsoc
             
         Else '[Monica]07/02/2011 buscamos la tarjeta que corresponda para meter pq me viene Z
             If codsoc >= 900000 Then
-                TARJETA = DevuelveValor("select numtarje from starje where codsocio= " & DBSet(codsoc, "N"))
+                Tarjeta = DevuelveValor("select numtarje from starje where codsocio= " & DBSet(codsoc, "N"))
             Else
                 ' el socio es inferior a 900000 miro si hay tarjeta dependiendo del producto
                 Dim TipArtic As Integer
                 TipArtic = DevuelveValor("select tipogaso from sartic where codartic = " & DBSet(IdProducto, "N"))
                 If TipArtic = 3 Then ' si el articulo es gasoleo bonificado
-                    TARJETA = DevuelveValor("select numtarje from starje where codsocio= " & DBSet(codsoc, "N") & " and tiptarje = 1")
+                    Tarjeta = DevuelveValor("select numtarje from starje where codsocio= " & DBSet(codsoc, "N") & " and tiptarje = 1")
                     
 '[Monica]02/02/2017: quitamos esto pq lo que quiere Martin es que cojamos la tarjeta creada como cliente de paso
 '                    '[Monica]22/11/2011: si no tiene tarjeta de gasoleo bonificado le meto la primera tarjeta que encuentre
 '                    If Tarjeta = "0" Then
 '                        Tarjeta = DevuelveValor("select numtarje from starje where codsocio = " & DBSet(codsoc, "N"))
 '                    End If
-                    If TARJETA = "0" Then
+                    If Tarjeta = "0" Then
                         codsoc = DevuelveValor("select codsocio from ssocio where codsocio >= 900000 and nifsocio = " & DBSet(NifCliente, "T"))
-                        TARJETA = DevuelveValor("select numtarje from starje where codsocio = " & DBSet(codsoc, "N") & " and tiptarje = 1")
+                        Tarjeta = DevuelveValor("select numtarje from starje where codsocio = " & DBSet(codsoc, "N") & " and tiptarje = 1")
                     Else
-                        TARJETA = DevuelveValor("select numtarje from starje where codsocio= " & DBSet(codsoc, "N") & " and tiptarje = 1")
+                        Tarjeta = DevuelveValor("select numtarje from starje where codsocio= " & DBSet(codsoc, "N") & " and tiptarje = 1")
                     End If
                 Else
-                    TARJETA = DevuelveValor("select numtarje from starje where codsocio= " & DBSet(codsoc, "N") & " and tiptarje = 0")
+                    Tarjeta = DevuelveValor("select numtarje from starje where codsocio= " & DBSet(codsoc, "N") & " and tiptarje = 0")
                 End If
             End If
             '[Monica]07/02/2011 hasta aqui
         End If
         'fechahora--> txtcodigo(0).Text & " " & Time
         
-        SQL = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
+        Sql = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
               "codturno, codartic, cantidad, preciove, importel, codforpa, matricul, codtraba, " & _
-              "numfactu, numlinea, kilometros) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(codsoc, "N") & "," & DBSet(TARJETA, "N") & "," & _
+              "numfactu, numlinea, kilometros) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(codsoc, "N") & "," & DBSet(Tarjeta, "N") & "," & _
                DBSet(NumAlbaran, "T") & "," & DBSet(txtCodigo(0).Text, "F") & "," & DBSet(txtCodigo(0).Text & " " & Hora, "FH") & "," & DBSet(txtCodigo(1).Text, "N") & "," & _
                DBSet(IdProducto, "N") & "," & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & _
-               DBSet(c_Importe, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(MATRICULA, "T") & "," & DBSet(IdVendedor, "N") & ","
+               DBSet(c_Importe, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(Matricula, "T") & "," & DBSet(IdVendedor, "N") & ","
     
         NumLinea = SugerirCodigoSiguienteStr("scaalb", "numlinea", "numfactu = " & DBSet(NumFactura, "N"))
-        SQL = SQL & DBSet(NumFactura, "N") & "," & DBSet(NumLinea, "N") & ","
+        Sql = Sql & DBSet(NumFactura, "N") & "," & DBSet(NumLinea, "N") & ","
         
         '[monica]24/06/2013: añadimos los kilometros
-        SQL = SQL & DBSet(Round2(ComprobarCero(Trim(Kilometros)) / 100, 0), "N", "S") & ")"
+        Sql = Sql & DBSet(Round2(ComprobarCero(Trim(Kilometros)) / 100, 0), "N", "S") & ")"
    
-        Conn.Execute SQL
+        Conn.Execute Sql
         
         If c_Descuento <> 0 Then
-            SQL = "update sartic set preventa = " & DBSet(c_Precio2, "N") & _
+            Sql = "update sartic set preventa = " & DBSet(c_Precio2, "N") & _
                   " where codartic = " & DBSet(IdProductoDes, "N")
-            Conn.Execute SQL
+            Conn.Execute Sql
             
             Codclave = SugerirCodigoSiguienteStr("scaalb", "codclave")
            
-            SQL = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
+            Sql = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
                   "codturno, codartic, cantidad, preciove, importel, codforpa, matricul, codtraba, " & _
                   "numfactu, numlinea, kilometros) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(codsoc, "N") & "," & DBSet(codsoc, "N") & "," & _
                    DBSet(NumAlbaran, "T") & "," & DBSet(txtCodigo(0).Text, "F") & "," & DBSet(txtCodigo(0).Text & " " & Hora, "FH") & "," & DBSet(txtCodigo(1).Text, "N") & "," & _
                    DBSet(IdProductoDes, "N") & "," & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio2, "N") & "," & _
-                   DBSet(c_Importe2, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(MATRICULA, "T") & "," & DBSet(IdVendedor, "N") & ","
+                   DBSet(c_Importe2, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(Matricula, "T") & "," & DBSet(IdVendedor, "N") & ","
         
             NumLinea = NumLinea + 1
-            SQL = SQL & DBSet(NumFactura, "N") & "," & DBSet(NumLinea, "N") & ","
+            Sql = Sql & DBSet(NumFactura, "N") & "," & DBSet(NumLinea, "N") & ","
             
             '[monica]24/06/2013: añadimos los kilometros
-            SQL = SQL & DBSet(Round2(ComprobarCero(Trim(Kilometros)) / 100, 0), "N", "S") & ")"
+            Sql = Sql & DBSet(Round2(ComprobarCero(Trim(Kilometros)) / 100, 0), "N", "S") & ")"
         
-            Conn.Execute SQL
+            Conn.Execute Sql
         End If
         
     Else
         '[Monica]30/11/2010
         If Trim(NumFactura) <> "" Then
-            codsoc = DevuelveDesdeBDNew(cPTours, "starje", "codsocio", "numtarje", TARJETA, "N")
-            If Mid(TARJETA, 1, 4) = "****" Or Trim(TARJETA) = "" Then
-                TARJETA = codsoc
+            codsoc = DevuelveDesdeBDNew(cPTours, "starje", "codsocio", "numtarje", Tarjeta, "N")
+            If Mid(Tarjeta, 1, 4) = "****" Or Trim(Tarjeta) = "" Then
+                Tarjeta = codsoc
             End If
             'fechahora--> txtcodigo(0).Text & " " & Time
             
-            SQL = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
+            Sql = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
                   "codturno, codartic, cantidad, preciove, importel, codforpa, matricul, codtraba, " & _
-                  "numfactu, numlinea, kilometros) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(codsoc, "N") & "," & DBSet(TARJETA, "N") & "," & _
+                  "numfactu, numlinea, kilometros) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(codsoc, "N") & "," & DBSet(Tarjeta, "N") & "," & _
                    DBSet(NumAlbaran, "T") & "," & DBSet(txtCodigo(0).Text, "F") & "," & DBSet(txtCodigo(0).Text & " " & Hora, "FH") & "," & DBSet(txtCodigo(1).Text, "N") & "," & _
                    DBSet(IdProducto, "N") & "," & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & _
-                   DBSet(c_Importe, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(MATRICULA, "T") & "," & DBSet(IdVendedor, "N") & ","
+                   DBSet(c_Importe, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(Matricula, "T") & "," & DBSet(IdVendedor, "N") & ","
         
             NumLinea = SugerirCodigoSiguienteStr("scaalb", "numlinea", "numfactu = " & DBSet(NumFactura, "N"))
-            SQL = SQL & DBSet(NumFactura, "N") & "," & DBSet(NumLinea, "N") & ","
+            Sql = Sql & DBSet(NumFactura, "N") & "," & DBSet(NumLinea, "N") & ","
             
             '[monica]24/06/2013: añadimos los kilometros
-            SQL = SQL & DBSet(Round2(ComprobarCero(Trim(Kilometros)) / 100, 0), "N", "S") & ")"
+            Sql = Sql & DBSet(Round2(ComprobarCero(Trim(Kilometros)) / 100, 0), "N", "S") & ")"
             
             
-            Conn.Execute SQL
+            Conn.Execute Sql
             
             If c_Descuento <> 0 Then
-                SQL = "update sartic set preventa = " & DBSet(c_Precio2, "N") & _
+                Sql = "update sartic set preventa = " & DBSet(c_Precio2, "N") & _
                       " where codartic = " & DBSet(IdProductoDes, "N")
-                Conn.Execute SQL
+                Conn.Execute Sql
                 
                 Codclave = SugerirCodigoSiguienteStr("scaalb", "codclave")
                
-                SQL = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
+                Sql = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
                       "codturno, codartic, cantidad, preciove, importel, codforpa, matricul, codtraba, " & _
-                      "numfactu, numlinea) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(codsoc, "N") & "," & DBSet(TARJETA, "N") & "," & _
+                      "numfactu, numlinea) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(codsoc, "N") & "," & DBSet(Tarjeta, "N") & "," & _
                        DBSet(NumAlbaran, "T") & "," & DBSet(txtCodigo(0).Text, "F") & "," & DBSet(txtCodigo(0).Text & " " & Hora, "FH") & "," & DBSet(txtCodigo(1).Text, "N") & "," & _
                        DBSet(IdProductoDes, "N") & "," & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio2, "N") & "," & _
-                       DBSet(c_Importe2, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(MATRICULA, "T") & "," & DBSet(IdVendedor, "N") & ","
+                       DBSet(c_Importe2, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(Matricula, "T") & "," & DBSet(IdVendedor, "N") & ","
             
                 NumLinea = NumLinea + 1
-                SQL = SQL & DBSet(NumFactura, "N") & "," & DBSet(NumLinea, "N") & ")"
+                Sql = Sql & DBSet(NumFactura, "N") & "," & DBSet(NumLinea, "N") & ")"
             
-                Conn.Execute SQL
+                Conn.Execute Sql
             End If
         
         Else
-            CodigoCliente = DevuelveDesdeBDNew(cPTours, "starje", "codsocio", "numtarje", TARJETA, "N")
-            SQL = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
+            CodigoCliente = DevuelveDesdeBDNew(cPTours, "starje", "codsocio", "numtarje", Tarjeta, "N")
+            Sql = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
                   "codturno, codartic, cantidad, preciove, importel, codforpa, matricul, codtraba, " & _
-                  "numfactu, numlinea, kilometros) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(TARJETA, "N") & "," & _
+                  "numfactu, numlinea, kilometros) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(Tarjeta, "N") & "," & _
                    DBSet(NumAlbaran, "T") & "," & DBSet(txtCodigo(0).Text, "F") & "," & DBSet(txtCodigo(0).Text & " " & Hora, "FH") & "," & DBSet(txtCodigo(1).Text, "N") & "," & _
                    DBSet(IdProducto, "N") & "," & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & _
-                   DBSet(c_Importe, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(MATRICULA, "T") & "," & DBSet(IdVendedor, "N") & ","
-            SQL = SQL & "0,0,"
+                   DBSet(c_Importe, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(Matricula, "T") & "," & DBSet(IdVendedor, "N") & ","
+            Sql = Sql & "0,0,"
             
             '[monica]24/06/2013: añadimos los kilometros
-            SQL = SQL & DBSet(Round2(ComprobarCero(Trim(Kilometros)) / 100, 0), "N", "S") & ")"
+            Sql = Sql & DBSet(Round2(ComprobarCero(Trim(Kilometros)) / 100, 0), "N", "S") & ")"
             
             
-            Conn.Execute SQL
+            Conn.Execute Sql
             
             If c_Descuento <> 0 Then
-                SQL = "update sartic set preventa = " & DBSet(c_Precio2, "N") & _
+                Sql = "update sartic set preventa = " & DBSet(c_Precio2, "N") & _
                       " where codartic = " & DBSet(IdProductoDes, "N")
-                Conn.Execute SQL
+                Conn.Execute Sql
                 
                 Codclave = SugerirCodigoSiguienteStr("scaalb", "codclave")
                 
-                SQL = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
+                Sql = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
                       "codturno, codartic, cantidad, preciove, importel, codforpa, matricul, codtraba, " & _
-                      "numfactu, numlinea) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(TARJETA, "N") & "," & _
+                      "numfactu, numlinea) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(Tarjeta, "N") & "," & _
                        DBSet(NumAlbaran, "T") & "," & DBSet(txtCodigo(0).Text, "F") & "," & DBSet(txtCodigo(0).Text & " " & Hora, "FH") & "," & DBSet(txtCodigo(1).Text, "N") & "," & _
                        DBSet(IdProductoDes, "N") & "," & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio2, "N") & "," & _
-                       DBSet(c_Importe2, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(MATRICULA, "T") & "," & DBSet(IdVendedor, "N") & ","
-                SQL = SQL & "0,0)"
+                       DBSet(c_Importe2, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(Matricula, "T") & "," & DBSet(IdVendedor, "N") & ","
+                Sql = Sql & "0,0)"
             
-                Conn.Execute SQL
+                Conn.Execute Sql
             End If
         End If
     End If
@@ -2922,7 +2936,7 @@ eInsertarLineaAlz:
 End Function
             
 ' la diferencia con Alzira es que inserta el turno del fichero no del frame
-Private Function InsertarLineaRib(Cad As String) As Boolean
+Private Function InsertarLineaRib(cad As String) As Boolean
 Dim NumLin As String
 Dim codpro As String
 Dim articulo As String
@@ -2932,7 +2946,7 @@ Dim ImpDes As String
 Dim CodIVA As String
 Dim b As Boolean
 Dim Codclave As String
-Dim SQL As String
+Dim Sql As String
 
 Dim Import As Currency
 
@@ -2948,14 +2962,14 @@ Dim Fecha As String
 Dim Hora As String
 Dim CodigoCliente As String
 Dim NombreCliente As String
-Dim MATRICULA As String
-Dim TARJETA As String
+Dim Matricula As String
+Dim Tarjeta As String
 Dim CodigoProducto As String
 Dim Surtidor As String
 Dim Manguera As String
 Dim PrecioLitro As String
 Dim cantidad As String
-Dim IMPORTE As String
+Dim Importe As String
 Dim DESCUENTO As String
 Dim IdTipoPago As String
 Dim DescrTipoPago As String
@@ -2988,46 +3002,46 @@ Dim Kilometros As String
     InsertarLineaRib = True
     
 
-    base = Mid(Cad, 1, 10)
-    NombreBase = Mid(Cad, 11, 50)
-    Turno = Mid(Cad, 982, 10) 'txtcodigo(1).Text 'el turno que yo le diga, antes: Mid(cad, 61, 10)
+    base = Mid(cad, 1, 10)
+    NombreBase = Mid(cad, 11, 50)
+    Turno = Mid(cad, 982, 10) 'txtcodigo(1).Text 'el turno que yo le diga, antes: Mid(cad, 61, 10)
     If CByte(Turno) > 9 Then Turno = "9"
-    NumAlbaran = Mid(Cad, 71, 20)
-    NumFactura = Mid(Cad, 92, 7) '14/05/2013 antes 94,17
-    IdVendedor = Mid(Cad, 121, 10)
-    NombreVendedor = Mid(Cad, 131, 50)
-    fechahora = Mid(Cad, 181, 14)
+    NumAlbaran = Mid(cad, 71, 20)
+    NumFactura = Mid(cad, 92, 7) '14/05/2013 antes 94,17
+    IdVendedor = Mid(cad, 121, 10)
+    NombreVendedor = Mid(cad, 131, 50)
+    fechahora = Mid(cad, 181, 14)
     Fecha = Mid(fechahora, 7, 2) & "/" & Mid(fechahora, 5, 2) & "/" & Mid(fechahora, 1, 4)
     Hora = Mid(fechahora, 9, 2) & ":" & Mid(fechahora, 11, 2) & ":" & Mid(fechahora, 13, 2)
 '    CodigoCliente = Mid(cad, 195, 20)
-    NombreCliente = Mid(Cad, 215, 70)
+    NombreCliente = Mid(cad, 215, 70)
 '    Tarjeta = Mid(cad, 290, 20)
-    TARJETA = Mid(Cad, 195, 20)
-    MATRICULA = Mid(Cad, 370, 20)
-    IdProducto = Mid(Cad, 493, 20)
-    Surtidor = Mid(Cad, 538, 10)
-    Manguera = Mid(Cad, 548, 10)
-    PrecioLitro = Mid(Cad, 568, 18)
-    cantidad = Mid(Cad, 650, 18)
-    IMPORTE = Mid(Cad, 668, 18)
-    DESCUENTO = Mid(Cad, 586, 18)
-    IdTipoPago = Mid(Cad, 784, 10)
-    DescrTipoPago = Mid(Cad, 794, 25)
-    CodigoTipoPago = Mid(Cad, 1, 10)
-    NifCliente = Mid(Cad, 834, 9)
+    Tarjeta = Mid(cad, 195, 20)
+    Matricula = Mid(cad, 370, 20)
+    IdProducto = Mid(cad, 493, 20)
+    Surtidor = Mid(cad, 538, 10)
+    Manguera = Mid(cad, 548, 10)
+    PrecioLitro = Mid(cad, 568, 18)
+    cantidad = Mid(cad, 650, 18)
+    Importe = Mid(cad, 668, 18)
+    DESCUENTO = Mid(cad, 586, 18)
+    IdTipoPago = Mid(cad, 784, 10)
+    DescrTipoPago = Mid(cad, 794, 25)
+    CodigoTipoPago = Mid(cad, 1, 10)
+    NifCliente = Mid(cad, 834, 9)
     
     '[Monica]24/06/2013: insertamos los kilometros
-    Kilometros = Mid(Cad, 415, 18)
+    Kilometros = Mid(cad, 415, 18)
     
     
-    If Trim(IMPORTE) = "" Then
+    If Trim(Importe) = "" Then
         Exit Function
     Else
-        If CCur(IMPORTE) = 0 Then Exit Function
+        If CCur(Importe) = 0 Then Exit Function
     End If
     
     c_Cantidad = Round2(CCur(cantidad) / 100, 2)
-    c_Importe = Round2(CCur(IMPORTE) / 100, 2)
+    c_Importe = Round2(CCur(Importe) / 100, 2)
     c_Precio = Round2(CCur(PrecioLitro) / 100000, 5)
 
     If Trim(DESCUENTO) <> "" Then
@@ -3054,10 +3068,10 @@ Dim Kilometros As String
 '    'hasta aqui
     
     'VRS:4.0.1(0) actualizamos el precio de articulo
-    SQL = "update sartic set preventa = " & DBSet(c_Precio, "N") & _
+    Sql = "update sartic set preventa = " & DBSet(c_Precio, "N") & _
           ", canstock = canstock - " & DBSet(c_Cantidad, "N") & _
           " where codartic = " & DBSet(IdProducto, "N")
-    Conn.Execute SQL
+    Conn.Execute Sql
     
 '    If DevuelveValor("select ctrstock from sartic where codartic = " & DBSet(IdProducto, "N")) = 1 Then
 '        SQL = "update sartic set " & _
@@ -3074,146 +3088,146 @@ Dim Kilometros As String
     Forpa = DevuelveDesdeBDNew(cPTours, "sforpa", "codforpa", "forpaalvic", IdTipoPago, "N")
     
     '[Monica]30/11/2011 añadida segunda condicion
-    If Trim(NumFactura) <> "" And InStr(1, TARJETA, "Z") <> 0 Then
+    If Trim(NumFactura) <> "" And InStr(1, Tarjeta, "Z") <> 0 Then
         codsoc = DevuelveDesdeBDNew(cPTours, "ssocio", "codsocio", "nifsocio", NifCliente, "T")
-        If Mid(TARJETA, 1, 4) = "****" Or Trim(TARJETA) = "" Then
-            TARJETA = codsoc
+        If Mid(Tarjeta, 1, 4) = "****" Or Trim(Tarjeta) = "" Then
+            Tarjeta = codsoc
             
         Else '[Monica]07/02/2011 buscamos la tarjeta que corresponda para meter pq me viene Z
             If codsoc >= 900000 Then
-                TARJETA = DevuelveValor("select numtarje from starje where codsocio= " & DBSet(codsoc, "N"))
+                Tarjeta = DevuelveValor("select numtarje from starje where codsocio= " & DBSet(codsoc, "N"))
             Else
                 ' el socio es inferior a 900000 miro si hay tarjeta dependiendo del producto
                 Dim TipArtic As Integer
                 TipArtic = DevuelveValor("select tipogaso from sartic where codartic = " & DBSet(IdProducto, "N"))
                 If TipArtic = 3 Then ' si el articulo es gasoleo bonificado
-                    TARJETA = DevuelveValor("select numtarje from starje where codsocio= " & DBSet(codsoc, "N") & " and tiptarje = 1")
+                    Tarjeta = DevuelveValor("select numtarje from starje where codsocio= " & DBSet(codsoc, "N") & " and tiptarje = 1")
                     
                     '[Monica]22/11/2011: si no tiene tarjeta de gasoleo bonificado le meto la primera tarjeta que encuentre
-                    If TARJETA = "0" Then
-                        TARJETA = DevuelveValor("select numtarje from starje where codsocio = " & DBSet(codsoc, "N"))
+                    If Tarjeta = "0" Then
+                        Tarjeta = DevuelveValor("select numtarje from starje where codsocio = " & DBSet(codsoc, "N"))
                     End If
                     
                 Else
-                    TARJETA = DevuelveValor("select numtarje from starje where codsocio= " & DBSet(codsoc, "N") & " and tiptarje = 0")
+                    Tarjeta = DevuelveValor("select numtarje from starje where codsocio= " & DBSet(codsoc, "N") & " and tiptarje = 0")
                 End If
             End If
             '[Monica]07/02/2011 hasta aqui
         End If
         'fechahora--> txtcodigo(0).Text & " " & Time
         
-        SQL = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
+        Sql = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
               "codturno, codartic, cantidad, preciove, importel, codforpa, matricul, codtraba, " & _
-              "numfactu, numlinea, kilometros) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(codsoc, "N") & "," & DBSet(TARJETA, "N") & "," & _
+              "numfactu, numlinea, kilometros) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(codsoc, "N") & "," & DBSet(Tarjeta, "N") & "," & _
                DBSet(NumAlbaran, "T") & "," & DBSet(txtCodigo(0).Text, "F") & "," & DBSet(txtCodigo(0).Text & " " & Hora, "FH") & "," & DBSet(Turno, "N") & "," & _
                DBSet(IdProducto, "N") & "," & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & _
-               DBSet(c_Importe, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(MATRICULA, "T") & "," & DBSet(IdVendedor, "N") & ","
+               DBSet(c_Importe, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(Matricula, "T") & "," & DBSet(IdVendedor, "N") & ","
     
         NumLinea = SugerirCodigoSiguienteStr("scaalb", "numlinea", "numfactu = " & DBSet(NumFactura, "N"))
-        SQL = SQL & DBSet(NumFactura, "N") & "," & DBSet(NumLinea, "N") & ","
+        Sql = Sql & DBSet(NumFactura, "N") & "," & DBSet(NumLinea, "N") & ","
         
         '[monica]24/06/2013: añadimos los kilometros
-        SQL = SQL & DBSet(Round2(ComprobarCero(Trim(Kilometros)) / 100, 0), "N", "S") & ")"
+        Sql = Sql & DBSet(Round2(ComprobarCero(Trim(Kilometros)) / 100, 0), "N", "S") & ")"
         
         
-        Conn.Execute SQL
+        Conn.Execute Sql
         
         If c_Descuento <> 0 Then
-            SQL = "update sartic set preventa = " & DBSet(c_Precio2, "N") & _
+            Sql = "update sartic set preventa = " & DBSet(c_Precio2, "N") & _
                   " where codartic = " & DBSet(IdProductoDes, "N")
-            Conn.Execute SQL
+            Conn.Execute Sql
             
             Codclave = SugerirCodigoSiguienteStr("scaalb", "codclave")
            
-            SQL = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
+            Sql = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
                   "codturno, codartic, cantidad, preciove, importel, codforpa, matricul, codtraba, " & _
                   "numfactu, numlinea) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(codsoc, "N") & "," & DBSet(codsoc, "N") & "," & _
                    DBSet(NumAlbaran, "T") & "," & DBSet(txtCodigo(0).Text, "F") & "," & DBSet(txtCodigo(0).Text & " " & Hora, "FH") & "," & DBSet(Turno, "N") & "," & _
                    DBSet(IdProductoDes, "N") & "," & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio2, "N") & "," & _
-                   DBSet(c_Importe2, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(MATRICULA, "T") & "," & DBSet(IdVendedor, "N") & ","
+                   DBSet(c_Importe2, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(Matricula, "T") & "," & DBSet(IdVendedor, "N") & ","
         
             NumLinea = NumLinea + 1
-            SQL = SQL & DBSet(NumFactura, "N") & "," & DBSet(NumLinea, "N") & ")"
+            Sql = Sql & DBSet(NumFactura, "N") & "," & DBSet(NumLinea, "N") & ")"
         
-            Conn.Execute SQL
+            Conn.Execute Sql
         End If
         
     Else
         '[Monica]30/11/2010
         If Trim(NumFactura) <> "" Then
-            codsoc = DevuelveDesdeBDNew(cPTours, "starje", "codsocio", "numtarje", TARJETA, "N")
-            If Mid(TARJETA, 1, 4) = "****" Or Trim(TARJETA) = "" Then
-                TARJETA = codsoc
+            codsoc = DevuelveDesdeBDNew(cPTours, "starje", "codsocio", "numtarje", Tarjeta, "N")
+            If Mid(Tarjeta, 1, 4) = "****" Or Trim(Tarjeta) = "" Then
+                Tarjeta = codsoc
             End If
             'fechahora--> txtcodigo(0).Text & " " & Time
             
-            SQL = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
+            Sql = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
                   "codturno, codartic, cantidad, preciove, importel, codforpa, matricul, codtraba, " & _
-                  "numfactu, numlinea, kilometros) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(codsoc, "N") & "," & DBSet(TARJETA, "N") & "," & _
+                  "numfactu, numlinea, kilometros) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(codsoc, "N") & "," & DBSet(Tarjeta, "N") & "," & _
                    DBSet(NumAlbaran, "T") & "," & DBSet(txtCodigo(0).Text, "F") & "," & DBSet(txtCodigo(0).Text & " " & Hora, "FH") & "," & DBSet(Turno, "N") & "," & _
                    DBSet(IdProducto, "N") & "," & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & _
-                   DBSet(c_Importe, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(MATRICULA, "T") & "," & DBSet(IdVendedor, "N") & ","
+                   DBSet(c_Importe, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(Matricula, "T") & "," & DBSet(IdVendedor, "N") & ","
         
             NumLinea = SugerirCodigoSiguienteStr("scaalb", "numlinea", "numfactu = " & DBSet(NumFactura, "N"))
-            SQL = SQL & DBSet(NumFactura, "N") & "," & DBSet(NumLinea, "N") & ","
+            Sql = Sql & DBSet(NumFactura, "N") & "," & DBSet(NumLinea, "N") & ","
             
             '[monica]24/06/2013: añadimos los kilometros
-            SQL = SQL & DBSet(Round2(ComprobarCero(Trim(Kilometros)) / 100, 0), "N", "S") & ")"
+            Sql = Sql & DBSet(Round2(ComprobarCero(Trim(Kilometros)) / 100, 0), "N", "S") & ")"
             
-            Conn.Execute SQL
+            Conn.Execute Sql
             
             If c_Descuento <> 0 Then
-                SQL = "update sartic set preventa = " & DBSet(c_Precio2, "N") & _
+                Sql = "update sartic set preventa = " & DBSet(c_Precio2, "N") & _
                       " where codartic = " & DBSet(IdProductoDes, "N")
-                Conn.Execute SQL
+                Conn.Execute Sql
                 
                 Codclave = SugerirCodigoSiguienteStr("scaalb", "codclave")
                
-                SQL = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
+                Sql = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
                       "codturno, codartic, cantidad, preciove, importel, codforpa, matricul, codtraba, " & _
-                      "numfactu, numlinea) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(codsoc, "N") & "," & DBSet(TARJETA, "N") & "," & _
+                      "numfactu, numlinea) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(codsoc, "N") & "," & DBSet(Tarjeta, "N") & "," & _
                        DBSet(NumAlbaran, "T") & "," & DBSet(txtCodigo(0).Text, "F") & "," & DBSet(txtCodigo(0).Text & " " & Hora, "FH") & "," & DBSet(Turno, "N") & "," & _
                        DBSet(IdProductoDes, "N") & "," & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio2, "N") & "," & _
-                       DBSet(c_Importe2, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(MATRICULA, "T") & "," & DBSet(IdVendedor, "N") & ","
+                       DBSet(c_Importe2, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(Matricula, "T") & "," & DBSet(IdVendedor, "N") & ","
             
                 NumLinea = NumLinea + 1
-                SQL = SQL & DBSet(NumFactura, "N") & "," & DBSet(NumLinea, "N") & ")"
+                Sql = Sql & DBSet(NumFactura, "N") & "," & DBSet(NumLinea, "N") & ")"
             
-                Conn.Execute SQL
+                Conn.Execute Sql
             End If
         
         Else
-            CodigoCliente = DevuelveDesdeBDNew(cPTours, "starje", "codsocio", "numtarje", TARJETA, "N")
-            SQL = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
+            CodigoCliente = DevuelveDesdeBDNew(cPTours, "starje", "codsocio", "numtarje", Tarjeta, "N")
+            Sql = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
                   "codturno, codartic, cantidad, preciove, importel, codforpa, matricul, codtraba, " & _
-                  "numfactu, numlinea, kilometros) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(TARJETA, "N") & "," & _
+                  "numfactu, numlinea, kilometros) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(Tarjeta, "N") & "," & _
                    DBSet(NumAlbaran, "T") & "," & DBSet(txtCodigo(0).Text, "F") & "," & DBSet(txtCodigo(0).Text & " " & Hora, "FH") & "," & DBSet(Turno, "N") & "," & _
                    DBSet(IdProducto, "N") & "," & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & _
-                   DBSet(c_Importe, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(MATRICULA, "T") & "," & DBSet(IdVendedor, "N") & ","
-            SQL = SQL & "0,0,"
+                   DBSet(c_Importe, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(Matricula, "T") & "," & DBSet(IdVendedor, "N") & ","
+            Sql = Sql & "0,0,"
             
             '[monica]24/06/2013: añadimos los kilometros
-            SQL = SQL & DBSet(Round2(ComprobarCero(Trim(Kilometros)) / 100, 0), "N", "S") & ")"
+            Sql = Sql & DBSet(Round2(ComprobarCero(Trim(Kilometros)) / 100, 0), "N", "S") & ")"
                     
             
-            Conn.Execute SQL
+            Conn.Execute Sql
             
             If c_Descuento <> 0 Then
-                SQL = "update sartic set preventa = " & DBSet(c_Precio2, "N") & _
+                Sql = "update sartic set preventa = " & DBSet(c_Precio2, "N") & _
                       " where codartic = " & DBSet(IdProductoDes, "N")
-                Conn.Execute SQL
+                Conn.Execute Sql
                 
                 Codclave = SugerirCodigoSiguienteStr("scaalb", "codclave")
                 
-                SQL = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
+                Sql = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
                       "codturno, codartic, cantidad, preciove, importel, codforpa, matricul, codtraba, " & _
-                      "numfactu, numlinea) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(TARJETA, "N") & "," & _
+                      "numfactu, numlinea) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(Tarjeta, "N") & "," & _
                        DBSet(NumAlbaran, "T") & "," & DBSet(txtCodigo(0).Text, "F") & "," & DBSet(txtCodigo(0).Text & " " & Hora, "FH") & "," & DBSet(Turno, "N") & "," & _
                        DBSet(IdProductoDes, "N") & "," & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio2, "N") & "," & _
-                       DBSet(c_Importe2, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(MATRICULA, "T") & "," & DBSet(IdVendedor, "N") & ","
-                SQL = SQL & "0,0)"
+                       DBSet(c_Importe2, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(Matricula, "T") & "," & DBSet(IdVendedor, "N") & ","
+                Sql = Sql & "0,0)"
             
-                Conn.Execute SQL
+                Conn.Execute Sql
             End If
         End If
     End If
@@ -3234,10 +3248,10 @@ End Function
             
             
             
-Private Function InsertarRecaudacion(Cad As String) As Boolean
+Private Function InsertarRecaudacion(cad As String) As Boolean
 Dim Forpa As String
-Dim IMPORTE As String
-Dim SQL As String
+Dim Importe As String
+Dim Sql As String
 Dim vImporte As String
 Dim IdTipoPago As String
 Dim Existe As String
@@ -3247,16 +3261,16 @@ Dim Existe As String
     InsertarRecaudacion = True
 '    forpa = Mid(cad, 2, 2)
 '    Importe = Mid(cad, 14, 8) & "," & Mid(cad, 22, 2)
-    IMPORTE = Mid(Cad, 668, 18)
+    Importe = Mid(cad, 668, 18)
     
-    If Trim(IMPORTE) = "" Then
+    If Trim(Importe) = "" Then
         Exit Function
     Else
-        If CCur(IMPORTE) = 0 Then Exit Function
+        If CCur(Importe) = 0 Then Exit Function
     End If
     
-    IdTipoPago = Mid(Cad, 784, 10)
-    vImporte = Round2(CCur(IMPORTE) / 100, 2)
+    IdTipoPago = Mid(cad, 784, 10)
+    vImporte = Round2(CCur(Importe) / 100, 2)
 
     Forpa = ""
     Forpa = DevuelveDesdeBDNew(cPTours, "sforpa", "codforpa", "forpaalvic", IdTipoPago, "N")
@@ -3265,16 +3279,16 @@ Dim Existe As String
         Existe = ""
         Existe = DevuelveDesdeBDNew(cPTours, "srecau", "codforpa", "fechatur", txtCodigo(0).Text, "F", , "codturno", txtCodigo(1).Text, "N", "codforpa", Forpa, "N")
         If Existe = "" Then
-            SQL = "insert into srecau (fechatur, codturno, codforpa, importel, intconta) values (" & _
+            Sql = "insert into srecau (fechatur, codturno, codforpa, importel, intconta) values (" & _
                   DBSet(txtCodigo(0).Text, "F") & "," & DBSet(txtCodigo(1).Text, "N") & "," & _
                   DBSet(CInt(Forpa), "N") & "," & DBSet(vImporte, "N") & ",0)"
         Else
-            SQL = "update srecau set importel = importel + " & DBSet(vImporte, "N")
-            SQL = SQL & " where fechatur = " & DBSet(txtCodigo(0).Text, "F")
-            SQL = SQL & " and codturno = " & DBSet(txtCodigo(1).Text, "N")
-            SQL = SQL & " and codforpa = " & DBSet(Forpa, "N")
+            Sql = "update srecau set importel = importel + " & DBSet(vImporte, "N")
+            Sql = Sql & " where fechatur = " & DBSet(txtCodigo(0).Text, "F")
+            Sql = Sql & " and codturno = " & DBSet(txtCodigo(1).Text, "N")
+            Sql = Sql & " and codforpa = " & DBSet(Forpa, "N")
         End If
-        Conn.Execute SQL
+        Conn.Execute Sql
     End If
 eInsertarRecaudacion:
     If Err.Number <> 0 Then
@@ -3284,30 +3298,30 @@ eInsertarRecaudacion:
     
 End Function
 
-Private Function InsertarSalida(Cad As String) As Boolean
+Private Function InsertarSalida(cad As String) As Boolean
 Dim tipMov As String
-Dim IMPORTE As Currency
-Dim SQL As String
-Dim I  As Integer
+Dim Importe As Currency
+Dim Sql As String
+Dim i  As Integer
 
     On Error GoTo eInsertarSalida
     
     
     InsertarSalida = False
-    tipMov = Mid(Cad, 2, 6)
-    I = InStr(Mid(Cad, 8, 10), "-")
-    If I = 0 Then
-        IMPORTE = Format(CCur(TransformaPuntosComas(Mid(Cad, 8, 10))), "######0.00")
+    tipMov = Mid(cad, 2, 6)
+    i = InStr(Mid(cad, 8, 10), "-")
+    If i = 0 Then
+        Importe = Format(CCur(TransformaPuntosComas(Mid(cad, 8, 10))), "######0.00")
     Else
-        IMPORTE = Format(CCur(Replace(TransformaPuntosComas(Mid(Cad, 8, 10)), "-", "") * (-1)), "######0.00")
+        Importe = Format(CCur(Replace(TransformaPuntosComas(Mid(cad, 8, 10)), "-", "") * (-1)), "######0.00")
     End If
     
-    If tipMov = "MOVIMI" And CCur(IMPORTE) <> 0 Then
-        SQL = "insert into srecau (fechatur, codturno, codforpa, importel, intconta) values (" & _
+    If tipMov = "MOVIMI" And CCur(Importe) <> 0 Then
+        Sql = "insert into srecau (fechatur, codturno, codforpa, importel, intconta) values (" & _
               DBSet(txtCodigo(0).Text, "F") & "," & DBSet(txtCodigo(1).Text, "N") & "," & _
-              "99, " & DBSet(IMPORTE, "N") & ",0)"
+              "99, " & DBSet(Importe, "N") & ",0)"
               
-        Conn.Execute SQL
+        Conn.Execute Sql
     End If
     InsertarSalida = True
 eInsertarSalida:
@@ -3316,41 +3330,41 @@ eInsertarSalida:
     End If
 End Function
 
-Private Sub InsertarLineaTurno(Cad As String)
+Private Sub InsertarLineaTurno(cad As String)
 Dim codpro As String
 Dim cantidad As String
 Dim precio As String
-Dim IMPORTE As String
-Dim SQL As String
+Dim Importe As String
+Dim Sql As String
 Dim NumLin As Long
 Dim cWhere As String
 
 
-    codpro = Mid(Cad, 35, 2)
-    cantidad = Mid(Cad, 54, 6) & "," & Mid(Cad, 60, 2)
-    precio = Mid(Cad, 42, 2) & "," & Mid(Cad, 44, 2)
-    IMPORTE = Mid(Cad, 47, 5) & "," & Mid(Cad, 52, 2)
+    codpro = Mid(cad, 35, 2)
+    cantidad = Mid(cad, 54, 6) & "," & Mid(cad, 60, 2)
+    precio = Mid(cad, 42, 2) & "," & Mid(cad, 44, 2)
+    Importe = Mid(cad, 47, 5) & "," & Mid(cad, 52, 2)
     
-    SQL = ""
-    SQL = DevuelveDesdeBDNew(cPTours, "sturno", "codturno", "fechatur", txtCodigo(0).Text, "F", , "codturno", txtCodigo(1).Text, "N", "codartic", codpro, "N")
-    If SQL = "" Then
+    Sql = ""
+    Sql = DevuelveDesdeBDNew(cPTours, "sturno", "codturno", "fechatur", txtCodigo(0).Text, "F", , "codturno", txtCodigo(1).Text, "N", "codartic", codpro, "N")
+    If Sql = "" Then
     
         cWhere = "fechatur=" & DBSet(txtCodigo(0).Text, "F") & " and codturno = " & DBSet(txtCodigo(1).Text, "N")
         NumLin = CLng(SugerirCodigoSiguienteStr("sturno", "numlinea", cWhere))
         'insertamos
-        SQL = "INSERT INTO sturno (fechatur, codturno, numlinea, tiporegi, numtanqu, nummangu, " & _
+        Sql = "INSERT INTO sturno (fechatur, codturno, numlinea, tiporegi, numtanqu, nummangu, " & _
               " codartic, litrosve, importel, containi, contafin, tipocred) VALUES (" & _
               DBSet(txtCodigo(0).Text, "F") & "," & DBSet(txtCodigo(1).Text, "N") & "," & DBSet(NumLin, "N") & ",2,1,1," & _
-              DBSet(codpro, "N") & "," & DBSet(cantidad, "N") & "," & DBSet(IMPORTE, "N") & ",0,0,0)"
+              DBSet(codpro, "N") & "," & DBSet(cantidad, "N") & "," & DBSet(Importe, "N") & ",0,0,0)"
               
-        Conn.Execute SQL
+        Conn.Execute Sql
     Else
         'actualizamos
-        SQL = "UPDATE sturno SET importel = importel + " & DBSet(IMPORTE, "N") & ", litrosve = litrosve +  " & DBSet(cantidad, "N") & " WHERE fechatur = " & _
+        Sql = "UPDATE sturno SET importel = importel + " & DBSet(Importe, "N") & ", litrosve = litrosve +  " & DBSet(cantidad, "N") & " WHERE fechatur = " & _
               DBSet(txtCodigo(0).Text, "F") & " AND codturno = " & DBSet(txtCodigo(1).Text, "N") & " AND codartic = " & _
               DBSet(codpro, "N")
               
-        Conn.Execute SQL
+        Conn.Execute Sql
     End If
 End Sub
 
@@ -3377,10 +3391,10 @@ Private Sub LlamarImprimir()
 End Sub
 
 Private Sub InicializarTabla()
-Dim SQL As String
-    SQL = "delete from tmpinformes where codusu = " & vSesion.Codigo
+Dim Sql As String
+    Sql = "delete from tmpinformes where codusu = " & vSesion.Codigo
     
-    Conn.Execute SQL
+    Conn.Execute Sql
 End Sub
 
 'Public Function CrearTMPCargas(cadTABLA As String, cadwhere As String) As Boolean
@@ -3436,13 +3450,13 @@ End Sub
 
 Private Function InsertarRecaudacionAlz(fic As String) As Boolean
 Dim nf As Long
-Dim I As Long
+Dim i As Long
 Dim longitud As Long
 
 Dim Forpa As String
-Dim IMPORTE As String
-Dim TipoMov As String
-Dim SQL As String
+Dim Importe As String
+Dim tipoMov As String
+Dim Sql As String
 Dim IdTipoPago As String
 Dim Existe As String
 Dim Forpa1 As String
@@ -3465,8 +3479,8 @@ Dim Fic1 As String
     
         Open fic For Input As #nf '
         
-        Line Input #nf, Cad
-        I = 0
+        Line Input #nf, cad
+        i = 0
         
         lblProgres(0).Caption = "Procesando Fichero: " & fic
         longitud = FileLen(fic)
@@ -3477,51 +3491,51 @@ Dim Fic1 As String
         Me.Pb1.Value = 0
         
         While Not EOF(nf)
-            I = I + 1
+            i = i + 1
             
-            Me.Pb1.Value = Me.Pb1.Value + Len(Cad)
-            lblProgres(1).Caption = "Linea " & I
+            Me.Pb1.Value = Me.Pb1.Value + Len(cad)
+            lblProgres(1).Caption = "Linea " & i
             Me.Refresh
         
-            Forpa = Mid(Cad, 71, 10)
-            TipoMov = Mid(Cad, 106, 10)
-            IMPORTE = Mid(Cad, 141, 18)
+            Forpa = Mid(cad, 71, 10)
+            tipoMov = Mid(cad, 106, 10)
+            Importe = Mid(cad, 141, 18)
             
-            If CCur(Forpa) <> 0 And CCur(TipoMov) = 0 And CCur(IMPORTE) <> 0 Then
+            If CCur(Forpa) <> 0 And CCur(tipoMov) = 0 And CCur(Importe) <> 0 Then
                 Forpa1 = DevuelveDesdeBDNew(cPTours, "sforpa", "codforpa", "forpaalvic", Forpa, "N")
-                Importe1 = Round2(CCur(IMPORTE) / 100000, 5)
+                Importe1 = Round2(CCur(Importe) / 100000, 5)
             
-                SQL = "insert into srecau (fechatur, codturno, codforpa, importel, intconta) values ("
-                SQL = SQL & DBSet(txtCodigo(0).Text, "F")
-                SQL = SQL & "," & DBSet(txtCodigo(1).Text, "N")
-                SQL = SQL & "," & DBSet(CInt(Forpa1), "N")
-                SQL = SQL & "," & DBSet(Importe1, "N") & ",0)"
+                Sql = "insert into srecau (fechatur, codturno, codforpa, importel, intconta) values ("
+                Sql = Sql & DBSet(txtCodigo(0).Text, "F")
+                Sql = Sql & "," & DBSet(txtCodigo(1).Text, "N")
+                Sql = Sql & "," & DBSet(CInt(Forpa1), "N")
+                Sql = Sql & "," & DBSet(Importe1, "N") & ",0)"
                 
-                Conn.Execute SQL
+                Conn.Execute Sql
             End If
             
-            Line Input #nf, Cad
+            Line Input #nf, cad
         Wend
-        If Cad <> "" Then
-            Me.Pb1.Value = Me.Pb1.Value + Len(Cad)
-            lblProgres(1).Caption = "Linea " & I
+        If cad <> "" Then
+            Me.Pb1.Value = Me.Pb1.Value + Len(cad)
+            lblProgres(1).Caption = "Linea " & i
             Me.Refresh
         
-            Forpa = Mid(Cad, 71, 10)
-            TipoMov = Mid(Cad, 106, 10)
-            IMPORTE = Mid(Cad, 141, 18)
+            Forpa = Mid(cad, 71, 10)
+            tipoMov = Mid(cad, 106, 10)
+            Importe = Mid(cad, 141, 18)
             
-            If CCur(Forpa) <> 0 And CCur(TipoMov) = 0 And CCur(IMPORTE) <> 0 Then
+            If CCur(Forpa) <> 0 And CCur(tipoMov) = 0 And CCur(Importe) <> 0 Then
                 Forpa1 = DevuelveDesdeBDNew(cPTours, "sforpa", "codforpa", "forpaalvic", Forpa, "N")
-                Importe1 = Round2(CCur(IMPORTE) / 100000, 5)
+                Importe1 = Round2(CCur(Importe) / 100000, 5)
             
-                SQL = "insert into srecau (fechatur, codturno, codforpa, importel, intconta) values ("
-                SQL = SQL & DBSet(txtCodigo(0).Text, "F")
-                SQL = SQL & "," & DBSet(txtCodigo(1).Text, "N")
-                SQL = SQL & "," & DBSet(CInt(Forpa1), "N")
-                SQL = SQL & "," & DBSet(Importe1, "N") & ",0)"
+                Sql = "insert into srecau (fechatur, codturno, codforpa, importel, intconta) values ("
+                Sql = Sql & DBSet(txtCodigo(0).Text, "F")
+                Sql = Sql & "," & DBSet(txtCodigo(1).Text, "N")
+                Sql = Sql & "," & DBSet(CInt(Forpa1), "N")
+                Sql = Sql & "," & DBSet(Importe1, "N") & ",0)"
                 
-                Conn.Execute SQL
+                Conn.Execute Sql
             End If
         End If
         Close #nf
@@ -3541,9 +3555,9 @@ Dim Fic1 As String
     Else
         Open Fic1 For Input As #nf '
     
-        Line Input #nf, Cad
+        Line Input #nf, cad
     
-        I = 0
+        i = 0
     
         lblProgres(0).Caption = "Procesando Fichero: " & Fic1
         longitud = FileLen(Fic1)
@@ -3553,116 +3567,116 @@ Dim Fic1 As String
         Me.Refresh
         Me.Pb1.Value = 0
         While Not EOF(nf)
-            I = I + 1
+            i = i + 1
     
-            Me.Pb1.Value = Me.Pb1.Value + Len(Cad)
-            lblProgres(1).Caption = "Linea " & I
+            Me.Pb1.Value = Me.Pb1.Value + Len(cad)
+            lblProgres(1).Caption = "Linea " & i
             Me.Refresh
     
-            TipoMov = Mid(Cad, 254, 10)
-            IMPORTE = Mid(Cad, 236, 18)
+            tipoMov = Mid(cad, 254, 10)
+            Importe = Mid(cad, 236, 18)
     
-            If CCur(TipoMov) = 1 And CCur(IMPORTE) <> 0 Then
-                Importe1 = Round2(CCur(IMPORTE) / 100000, 5)
+            If CCur(tipoMov) = 1 And CCur(Importe) <> 0 Then
+                Importe1 = Round2(CCur(Importe) / 100000, 5)
     
-                SQL = "select count(*) from srecau where fechatur = " & DBSet(txtCodigo(0).Text, "F")
-                SQL = SQL & " and codturno = " & DBSet(txtCodigo(1).Text, "N")
-                SQL = SQL & " and codforpa = 99"
-                If TotalRegistros(SQL) = 0 Then
-                    SQL = "insert into srecau (fechatur, codturno, codforpa, importel, intconta) values ("
-                    SQL = SQL & DBSet(txtCodigo(0).Text, "F")
-                    SQL = SQL & "," & DBSet(txtCodigo(1).Text, "N")
-                    SQL = SQL & ",99" ' Introducimos a piñon la forpa 99
-                    SQL = SQL & "," & DBSet(Importe1, "N") & ",0)"
+                Sql = "select count(*) from srecau where fechatur = " & DBSet(txtCodigo(0).Text, "F")
+                Sql = Sql & " and codturno = " & DBSet(txtCodigo(1).Text, "N")
+                Sql = Sql & " and codforpa = 99"
+                If TotalRegistros(Sql) = 0 Then
+                    Sql = "insert into srecau (fechatur, codturno, codforpa, importel, intconta) values ("
+                    Sql = Sql & DBSet(txtCodigo(0).Text, "F")
+                    Sql = Sql & "," & DBSet(txtCodigo(1).Text, "N")
+                    Sql = Sql & ",99" ' Introducimos a piñon la forpa 99
+                    Sql = Sql & "," & DBSet(Importe1, "N") & ",0)"
                 Else
-                    SQL = "update srecau set importel = importel + " & DBSet(Importe1, "N")
-                    SQL = SQL & " where fechatur = " & DBSet(txtCodigo(0).Text, "F")
-                    SQL = SQL & " and codturno = " & DBSet(txtCodigo(1).Text, "N")
-                    SQL = SQL & " and codforpa = 99"
+                    Sql = "update srecau set importel = importel + " & DBSet(Importe1, "N")
+                    Sql = Sql & " where fechatur = " & DBSet(txtCodigo(0).Text, "F")
+                    Sql = Sql & " and codturno = " & DBSet(txtCodigo(1).Text, "N")
+                    Sql = Sql & " and codforpa = 99"
                 End If
     
-                Conn.Execute SQL
+                Conn.Execute Sql
             End If
     
             '++monica: 09/05/08 introducimos tambien seguridad
-            If CCur(TipoMov) = 3 And CCur(IMPORTE) <> 0 Then
-                Importe1 = Round2(CCur(IMPORTE) / 100000, 5)
+            If CCur(tipoMov) = 3 And CCur(Importe) <> 0 Then
+                Importe1 = Round2(CCur(Importe) / 100000, 5)
     
-                SQL = "select count(*) from srecau where fechatur = " & DBSet(txtCodigo(0).Text, "F")
-                SQL = SQL & " and codturno = " & DBSet(txtCodigo(1).Text, "N")
-                SQL = SQL & " and codforpa = 97"
-                If TotalRegistros(SQL) = 0 Then
-                    SQL = "insert into srecau (fechatur, codturno, codforpa, importel, intconta) values ("
-                    SQL = SQL & DBSet(txtCodigo(0).Text, "F")
-                    SQL = SQL & "," & DBSet(txtCodigo(1).Text, "N")
-                    SQL = SQL & ",97" ' Introducimos a piñon la forpa 97
-                    SQL = SQL & "," & DBSet(Importe1, "N") & ",0)"
+                Sql = "select count(*) from srecau where fechatur = " & DBSet(txtCodigo(0).Text, "F")
+                Sql = Sql & " and codturno = " & DBSet(txtCodigo(1).Text, "N")
+                Sql = Sql & " and codforpa = 97"
+                If TotalRegistros(Sql) = 0 Then
+                    Sql = "insert into srecau (fechatur, codturno, codforpa, importel, intconta) values ("
+                    Sql = Sql & DBSet(txtCodigo(0).Text, "F")
+                    Sql = Sql & "," & DBSet(txtCodigo(1).Text, "N")
+                    Sql = Sql & ",97" ' Introducimos a piñon la forpa 97
+                    Sql = Sql & "," & DBSet(Importe1, "N") & ",0)"
                 Else
-                    SQL = "update srecau set importel = importel + " & DBSet(Importe1, "N")
-                    SQL = SQL & " where fechatur = " & DBSet(txtCodigo(0).Text, "F")
-                    SQL = SQL & " and codturno = " & DBSet(txtCodigo(1).Text, "N")
-                    SQL = SQL & " and codforpa = 97"
+                    Sql = "update srecau set importel = importel + " & DBSet(Importe1, "N")
+                    Sql = Sql & " where fechatur = " & DBSet(txtCodigo(0).Text, "F")
+                    Sql = Sql & " and codturno = " & DBSet(txtCodigo(1).Text, "N")
+                    Sql = Sql & " and codforpa = 97"
                 End If
     
-                Conn.Execute SQL
+                Conn.Execute Sql
             End If
     
     
-            Line Input #nf, Cad
+            Line Input #nf, cad
         Wend
-        If Cad <> "" Then
-            I = I + 1
+        If cad <> "" Then
+            i = i + 1
     
-            Me.Pb1.Value = Me.Pb1.Value + Len(Cad)
-            lblProgres(1).Caption = "Linea " & I
+            Me.Pb1.Value = Me.Pb1.Value + Len(cad)
+            lblProgres(1).Caption = "Linea " & i
             Me.Refresh
     
-            TipoMov = Mid(Cad, 254, 10)
-            IMPORTE = Mid(Cad, 236, 18)
+            tipoMov = Mid(cad, 254, 10)
+            Importe = Mid(cad, 236, 18)
     
-            If CCur(TipoMov) = 1 And CCur(IMPORTE) <> 0 Then
-                Importe1 = Round2(CCur(IMPORTE) / 100000, 5)
+            If CCur(tipoMov) = 1 And CCur(Importe) <> 0 Then
+                Importe1 = Round2(CCur(Importe) / 100000, 5)
     
-                SQL = "select count(*) from srecau where fechatur = " & DBSet(txtCodigo(0).Text, "F")
-                SQL = SQL & " and codturno = " & DBSet(txtCodigo(1).Text, "N")
-                SQL = SQL & " and codforpa = 99"
-                If TotalRegistros(SQL) = 0 Then
-                    SQL = "insert into srecau (fechatur, codturno, codforpa, importel, intconta) values ("
-                    SQL = SQL & DBSet(txtCodigo(0).Text, "F")
-                    SQL = SQL & "," & DBSet(txtCodigo(1).Text, "N")
-                    SQL = SQL & ",99" ' Introducimos a piñon la forpa 99
-                    SQL = SQL & "," & DBSet(Importe1, "N") & ",0)"
+                Sql = "select count(*) from srecau where fechatur = " & DBSet(txtCodigo(0).Text, "F")
+                Sql = Sql & " and codturno = " & DBSet(txtCodigo(1).Text, "N")
+                Sql = Sql & " and codforpa = 99"
+                If TotalRegistros(Sql) = 0 Then
+                    Sql = "insert into srecau (fechatur, codturno, codforpa, importel, intconta) values ("
+                    Sql = Sql & DBSet(txtCodigo(0).Text, "F")
+                    Sql = Sql & "," & DBSet(txtCodigo(1).Text, "N")
+                    Sql = Sql & ",99" ' Introducimos a piñon la forpa 99
+                    Sql = Sql & "," & DBSet(Importe1, "N") & ",0)"
                 Else
-                    SQL = "update srecau set importel = importel + " & DBSet(Importe1, "N")
-                    SQL = SQL & " where fechatur = " & DBSet(txtCodigo(0).Text, "F")
-                    SQL = SQL & " and codturno = " & DBSet(txtCodigo(1).Text, "N")
-                    SQL = SQL & " and codforpa = 99"
+                    Sql = "update srecau set importel = importel + " & DBSet(Importe1, "N")
+                    Sql = Sql & " where fechatur = " & DBSet(txtCodigo(0).Text, "F")
+                    Sql = Sql & " and codturno = " & DBSet(txtCodigo(1).Text, "N")
+                    Sql = Sql & " and codforpa = 99"
                 End If
     
-                Conn.Execute SQL
+                Conn.Execute Sql
             End If
             
             '++monica: 09/05/08 incluimos seguridad
-            If CCur(TipoMov) = 3 And CCur(IMPORTE) <> 0 Then
-                Importe1 = Round2(CCur(IMPORTE) / 100000, 5)
+            If CCur(tipoMov) = 3 And CCur(Importe) <> 0 Then
+                Importe1 = Round2(CCur(Importe) / 100000, 5)
     
-                SQL = "select count(*) from srecau where fechatur = " & DBSet(txtCodigo(0).Text, "F")
-                SQL = SQL & " and codturno = " & DBSet(txtCodigo(1).Text, "N")
-                SQL = SQL & " and codforpa = 97"
-                If TotalRegistros(SQL) = 0 Then
-                    SQL = "insert into srecau (fechatur, codturno, codforpa, importel, intconta) values ("
-                    SQL = SQL & DBSet(txtCodigo(0).Text, "F")
-                    SQL = SQL & "," & DBSet(txtCodigo(1).Text, "N")
-                    SQL = SQL & ",97" ' Introducimos a piñon la forpa 97
-                    SQL = SQL & "," & DBSet(Importe1, "N") & ",0)"
+                Sql = "select count(*) from srecau where fechatur = " & DBSet(txtCodigo(0).Text, "F")
+                Sql = Sql & " and codturno = " & DBSet(txtCodigo(1).Text, "N")
+                Sql = Sql & " and codforpa = 97"
+                If TotalRegistros(Sql) = 0 Then
+                    Sql = "insert into srecau (fechatur, codturno, codforpa, importel, intconta) values ("
+                    Sql = Sql & DBSet(txtCodigo(0).Text, "F")
+                    Sql = Sql & "," & DBSet(txtCodigo(1).Text, "N")
+                    Sql = Sql & ",97" ' Introducimos a piñon la forpa 97
+                    Sql = Sql & "," & DBSet(Importe1, "N") & ",0)"
                 Else
-                    SQL = "update srecau set importel = importel + " & DBSet(Importe1, "N")
-                    SQL = SQL & " where fechatur = " & DBSet(txtCodigo(0).Text, "F")
-                    SQL = SQL & " and codturno = " & DBSet(txtCodigo(1).Text, "N")
-                    SQL = SQL & " and codforpa = 97"
+                    Sql = "update srecau set importel = importel + " & DBSet(Importe1, "N")
+                    Sql = Sql & " where fechatur = " & DBSet(txtCodigo(0).Text, "F")
+                    Sql = Sql & " and codturno = " & DBSet(txtCodigo(1).Text, "N")
+                    Sql = Sql & " and codforpa = 97"
                 End If
     
-                Conn.Execute SQL
+                Conn.Execute Sql
             End If
         
         Close #nf
@@ -3679,15 +3693,15 @@ End Function
 
 Private Function InsertarLineaTurnoNew(fic As String) As Boolean
 Dim nf As Long
-Dim I As Long
+Dim i As Long
 Dim longitud As Long
 
 
 Dim codpro As String
 Dim cantidad As String
 Dim precio As String
-Dim IMPORTE As String
-Dim SQL As String
+Dim Importe As String
+Dim Sql As String
 Dim NumLin As Long
 Dim cWhere As String
 
@@ -3716,8 +3730,8 @@ Dim vFinal As Currency
         
         Open fic For Input As #nf '
         
-        Line Input #nf, Cad
-        I = 0
+        Line Input #nf, cad
+        i = 0
         
         lblProgres(0).Caption = "Procesando Fichero: " & fic
         longitud = FileLen(fic)
@@ -3728,17 +3742,17 @@ Dim vFinal As Currency
         Me.Pb1.Value = 0
         
         While Not EOF(nf)
-            I = I + 1
+            i = i + 1
             
-            Me.Pb1.Value = Me.Pb1.Value + Len(Cad)
-            lblProgres(1).Caption = "Linea " & I
+            Me.Pb1.Value = Me.Pb1.Value + Len(cad)
+            lblProgres(1).Caption = "Linea " & i
             Me.Refresh
         
-            codpro = Mid(Cad, 162, 10)
-            Surtidor = Mid(Cad, 71, 10)
-            Manguera = Mid(Cad, 91, 10)
-            Inicial = Mid(Cad, 115, 18)
-            Final = Mid(Cad, 133, 18)
+            codpro = Mid(cad, 162, 10)
+            Surtidor = Mid(cad, 71, 10)
+            Manguera = Mid(cad, 91, 10)
+            Inicial = Mid(cad, 115, 18)
+            Final = Mid(cad, 133, 18)
             vInicial = Round2(CCur(Inicial) / 100, 2)
             vFinal = Round2(CCur(Final / 100), 2)
             
@@ -3747,17 +3761,17 @@ Dim vFinal As Currency
                 cWhere = "fechatur=" & DBSet(txtCodigo(0).Text, "F") & " and codturno = " & DBSet(txtCodigo(1).Text, "N")
                 NumLin = CLng(SugerirCodigoSiguienteStr("sturno", "numlinea", cWhere))
                 'insertamos
-                SQL = "INSERT INTO sturno (fechatur, codturno, numlinea, tiporegi, numtanqu, nummangu, " & _
+                Sql = "INSERT INTO sturno (fechatur, codturno, numlinea, tiporegi, numtanqu, nummangu, " & _
                       " codartic, litrosve, importel, containi, contafin, tipocred) VALUES (" & _
                       DBSet(txtCodigo(0).Text, "F") & "," & DBSet(txtCodigo(1).Text, "N") & "," & DBSet(NumLin, "N") & ",0," & _
                       DBSet(Surtidor, "N") & "," & DBSet(Manguera, "N") & "," & _
                       DBSet(codpro, "N") & ",0,0," & DBSet(vInicial, "N") & "," & DBSet(vFinal, "N") & ",0)"
                   
                 
-                Conn.Execute SQL
+                Conn.Execute Sql
             End If
             
-            Line Input #nf, Cad
+            Line Input #nf, cad
         Wend
         Close #nf
     End If
@@ -3847,13 +3861,13 @@ End Function
 
 Private Function ProcesarFicheroCompras(nomFich As String) As Boolean
 Dim nf As Long
-Dim Cad As String
-Dim I As Integer
+Dim cad As String
+Dim i As Integer
 Dim longitud As Long
 Dim Rs As ADODB.Recordset
 Dim RS1 As ADODB.Recordset
 Dim Numreg As Long
-Dim SQL As String
+Dim Sql As String
 Dim Sql1 As String
 Dim total As Long
 Dim v_cant As Currency
@@ -3870,8 +3884,8 @@ Dim MensError As String
     
     Open nomFich For Input As #nf ' & "\BV" & Format(CDate(txtcodigo(0).Text), "ddmmyy") & "." & Format(txtcodigo(1).Text, "000") For Input As #NF
     
-    Line Input #nf, Cad
-    I = 0
+    Line Input #nf, cad
+    i = 0
     
     lblProgres(0).Caption = "Procesando Fichero Compras: " & nomFich
     longitud = FileLen(nomFich)
@@ -3897,20 +3911,20 @@ Dim MensError As String
     b = True
     MensError = "Error Insertando Linea de Albarán de Compras:"
     While Not EOF(nf) And b
-        I = I + 1
+        i = i + 1
         
-        Me.Pb1.Value = Me.Pb1.Value + Len(Cad)
-        lblProgres(1).Caption = "Linea " & I
+        Me.Pb1.Value = Me.Pb1.Value + Len(cad)
+        lblProgres(1).Caption = "Linea " & i
         Me.Refresh
         
-        b = InsertarLineaCompras(Cad, MensError)
+        b = InsertarLineaCompras(cad, MensError)
         
-        Line Input #nf, Cad
+        Line Input #nf, cad
     Wend
     Close #nf
     
-    If Cad <> "" And b Then
-        b = InsertarLineaCompras(Cad, MensError)
+    If cad <> "" And b Then
+        b = InsertarLineaCompras(cad, MensError)
         
         If b Then
             b = PasarTemporales()
@@ -3943,8 +3957,8 @@ eProcesarFicheroCompras:
 End Function
 
 
-Private Function InsertarLineaCompras(Cad As String, ByRef MensError As String) As Boolean
-Dim SQL As String
+Private Function InsertarLineaCompras(cad As String, ByRef MensError As String) As Boolean
+Dim Sql As String
 
 Dim c_Cantidad As Currency
 Dim c_Importe As Currency
@@ -3963,7 +3977,7 @@ Dim NomArtic As String
 Dim cantidad As String
 Dim PorcIva As String
 Dim precio As String
-Dim IMPORTE As String
+Dim Importe As String
 
 Dim Forpa As String
 Dim Banco As String
@@ -3989,24 +4003,24 @@ Dim Rsf As ADODB.Recordset
     InsertarLineaCompras = False
     
 
-    Albaran = Trim(Mid(Cad, 92, 15))
+    Albaran = Trim(Mid(cad, 92, 15))
     ' si la longitud es mayor de 10 cogemos los 10 ultimos caracteres
     If Len(Albaran) > 10 Then Albaran = Mid(Albaran, Len(Albaran) - 9, 10)
-    fechahora = Mid(Cad, 122, 14)
-    Proveedor = Mid(Cad, 136, 10)
-    NomProve = Mid(Cad, 146, 40)
-    IdProducto = Mid(Cad, 580, 15)
-    NomArtic = Mid(Cad, 333, 25)
-    cantidad = Mid(Cad, 453, 18)
-    PorcIva = Mid(Cad, 471, 18)
-    precio = Mid(Cad, 543, 18)
-    IMPORTE = Mid(Cad, 561, 18)
+    fechahora = Mid(cad, 122, 14)
+    Proveedor = Mid(cad, 136, 10)
+    NomProve = Mid(cad, 146, 40)
+    IdProducto = Mid(cad, 580, 15)
+    NomArtic = Mid(cad, 333, 25)
+    cantidad = Mid(cad, 453, 18)
+    PorcIva = Mid(cad, 471, 18)
+    precio = Mid(cad, 543, 18)
+    Importe = Mid(cad, 561, 18)
     
     Fecha = Mid(fechahora, 7, 2) & "/" & Mid(fechahora, 5, 2) & "/" & Mid(fechahora, 1, 4)
     fechahora = Mid(fechahora, 1, 4) & "-" & Mid(fechahora, 5, 2) & "-" & Mid(fechahora, 7, 2) & " " & Mid(fechahora, 9, 2) & ":" & Mid(fechahora, 11, 2) & ":" & Mid(fechahora, 13, 2)
 
     c_Cantidad = Round2(CCur(cantidad) / 100, 2)
-    c_Importe = Round2(CCur(IMPORTE) / 100, 2)
+    c_Importe = Round2(CCur(Importe) / 100, 2)
     c_Precio = Round2(CDbl(precio) / 100000, 5)
 
 
@@ -4045,13 +4059,13 @@ Dim Rsf As ADODB.Recordset
         NIFProv = "A"
         TelProv = ""
         
-        SQL = "insert into proveedor (codprove,nomprove,nomcomer,domprove,codpobla,pobprove,proprove,nifprove,fecprove,codmacta,codforpa,codbanpr,fechamov) values ("
-        SQL = SQL & DBSet(Proveedor, "N") & "," & DBSet(NomProve, "T") & "," & DBSet(NomProve, "T") & ","
-        SQL = SQL & "'AUTOMATICO'," & DBSet(CPostalProv, "T") & "," & DBSet(PobProv, "T") & "," & DBSet(ProProv, "T") & ","
-        SQL = SQL & DBSet(NIFProv, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(vParamAplic.CtaFamDefecto, "T") & ","
-        SQL = SQL & DBSet(Forpa, "N") & "," & DBSet(Banco, "N") & "," & DBSet(Fecha, "F") & ")"
+        Sql = "insert into proveedor (codprove,nomprove,nomcomer,domprove,codpobla,pobprove,proprove,nifprove,fecprove,codmacta,codforpa,codbanpr,fechamov) values ("
+        Sql = Sql & DBSet(Proveedor, "N") & "," & DBSet(NomProve, "T") & "," & DBSet(NomProve, "T") & ","
+        Sql = Sql & "'AUTOMATICO'," & DBSet(CPostalProv, "T") & "," & DBSet(PobProv, "T") & "," & DBSet(ProProv, "T") & ","
+        Sql = Sql & DBSet(NIFProv, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(vParamAplic.CtaFamDefecto, "T") & ","
+        Sql = Sql & DBSet(Forpa, "N") & "," & DBSet(Banco, "N") & "," & DBSet(Fecha, "F") & ")"
         
-        Conn.Execute SQL
+        Conn.Execute Sql
     End If
     
     ' Comprobamos que existe el articulo sino lo creamos con los datos basicos que tengamos
@@ -4065,12 +4079,12 @@ Dim Rsf As ADODB.Recordset
         ' si existe, si no crearla
         Familia = Mid(Format(IdProducto, "00000"), 1, 2)
         
-        SQL = "select count(*) from sfamia where codfamia = " & DBSet(Familia, "N")
-        If TotalRegistros(SQL) <> 0 Then
-            SQL = "select * from sartic where codfamia = " & DBSet(Familia, "N")
+        Sql = "select count(*) from sfamia where codfamia = " & DBSet(Familia, "N")
+        If TotalRegistros(Sql) <> 0 Then
+            Sql = "select * from sartic where codfamia = " & DBSet(Familia, "N")
             
             Set Rsf = New ADODB.Recordset
-            Rsf.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+            Rsf.Open Sql, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
         
             codmacta = ""
             CodmacCl = ""
@@ -4086,57 +4100,57 @@ Dim Rsf As ADODB.Recordset
                 Familia = vParamAplic.FamGenerica
                 ArtFamGenerica = ArtFamGenerica & ", " & IdProducto
             Else
-                SQL = "insert into sfamia (codfamia,nomfamia,tipfamia) values (" & DBSet(Familia, "N") & ","
-                SQL = SQL & "'AUTOMATICO',0)"
+                Sql = "insert into sfamia (codfamia,nomfamia,tipfamia) values (" & DBSet(Familia, "N") & ","
+                Sql = Sql & "'AUTOMATICO',0)"
                 
-                Conn.Execute SQL
+                Conn.Execute Sql
             End If
         End If
         
-        SQL = "insert into sartic (codartic,nomartic,codfamia,codmacta,codmaccl,codigiva,canstock,preciopmp,ultpreci,ultfecha,ctrstock,ctacompr,artnuevo) values ("
-        SQL = SQL & DBSet(IdProducto, "N") & "," & DBSet(NomArtic, "T")
-        SQL = SQL & "," & DBSet(Familia, "N") & "," ' ",0," ' la famlia la marcada por el articulo
-        SQL = SQL & DBSet(codmacta, "T") & "," 'DBSet(vParamAplic.CtaFamDefecto, "T") & ","
-        SQL = SQL & DBSet(CodmacCl, "T") & "," 'DBSet(vParamAplic.CtaFamDefecto, "T") & ","
-        SQL = SQL & DBSet(TipoIVA, "N") & "," & DBSet(c_Cantidad, "N") & ","
-        SQL = SQL & DBSet(c_Precio, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(Fecha, "F") & "," & DBSet(vParamAplic.ControlStock, "N") & "," & DBSet(vParamAplic.CtaFamDefecto, "T")
-        SQL = SQL & ",1)" ' lo marcamos como articulo nuevo
+        Sql = "insert into sartic (codartic,nomartic,codfamia,codmacta,codmaccl,codigiva,canstock,preciopmp,ultpreci,ultfecha,ctrstock,ctacompr,artnuevo) values ("
+        Sql = Sql & DBSet(IdProducto, "N") & "," & DBSet(NomArtic, "T")
+        Sql = Sql & "," & DBSet(Familia, "N") & "," ' ",0," ' la famlia la marcada por el articulo
+        Sql = Sql & DBSet(codmacta, "T") & "," 'DBSet(vParamAplic.CtaFamDefecto, "T") & ","
+        Sql = Sql & DBSet(CodmacCl, "T") & "," 'DBSet(vParamAplic.CtaFamDefecto, "T") & ","
+        Sql = Sql & DBSet(TipoIVA, "N") & "," & DBSet(c_Cantidad, "N") & ","
+        Sql = Sql & DBSet(c_Precio, "N") & "," & DBSet(c_Precio, "N") & "," & DBSet(Fecha, "F") & "," & DBSet(vParamAplic.ControlStock, "N") & "," & DBSet(vParamAplic.CtaFamDefecto, "T")
+        Sql = Sql & ",1)" ' lo marcamos como articulo nuevo
         
-        Conn.Execute SQL
+        Conn.Execute Sql
     Else
         ' si existe el articulo el nombre que vale es el que tengo grabado en arigasol
         NomArtic = DevuelveValor("select nomartic from sartic where codartic = " & DBSet(IdProducto, "N"))
     End If
     
     
-    SQL = "select count(*) from tmpscaalp where numalbar = " & DBSet(Trim(Albaran), "T") & " and fechaalb = " & DBSet(Fecha, "F") & " and codprove = " & DBSet(Proveedor, "N")
-    If TotalRegistros(SQL) = 0 Then
-        SQL = "insert into tmpscaalp (numalbar,fechaalb,codprove,nomprove,domprove,codpobla,pobprove,proprove,"
-        SQL = SQL & "nifprove,codforpa,dtoppago,dtognral,fecturno,codturno) values (" & DBSet(Albaran, "T") & "," & DBSet(Fecha, "F") & ","
-        SQL = SQL & DBSet(Proveedor, "N") & "," & DBSet(NomProve, "T") & "," & DBSet(DomProv, "T") & "," & DBSet(CPostalProv, "T") & ","
-        SQL = SQL & DBSet(PobProv, "T") & "," & DBSet(ProProv, "T") & "," & DBSet(NIFProv, "T") & "," & DBSet(Forpa, "N") & ","
-        SQL = SQL & "0,0," & DBSet(txtCodigo(0).Text, "F") & ","
+    Sql = "select count(*) from tmpscaalp where numalbar = " & DBSet(Trim(Albaran), "T") & " and fechaalb = " & DBSet(Fecha, "F") & " and codprove = " & DBSet(Proveedor, "N")
+    If TotalRegistros(Sql) = 0 Then
+        Sql = "insert into tmpscaalp (numalbar,fechaalb,codprove,nomprove,domprove,codpobla,pobprove,proprove,"
+        Sql = Sql & "nifprove,codforpa,dtoppago,dtognral,fecturno,codturno) values (" & DBSet(Albaran, "T") & "," & DBSet(Fecha, "F") & ","
+        Sql = Sql & DBSet(Proveedor, "N") & "," & DBSet(NomProve, "T") & "," & DBSet(DomProv, "T") & "," & DBSet(CPostalProv, "T") & ","
+        Sql = Sql & DBSet(PobProv, "T") & "," & DBSet(ProProv, "T") & "," & DBSet(NIFProv, "T") & "," & DBSet(Forpa, "N") & ","
+        Sql = Sql & "0,0," & DBSet(txtCodigo(0).Text, "F") & ","
         
         If txtCodigo(1).Text <> "" Then
-            SQL = SQL & DBSet(txtCodigo(1).Text, "N") & ")"
+            Sql = Sql & DBSet(txtCodigo(1).Text, "N") & ")"
         Else
             '[Monica]15/01/2013: en el caso de Ribarroja no meten el turno de traspaso, meto un 1 por defecto
-            SQL = SQL & "1)"
+            Sql = Sql & "1)"
         End If
             
     
-        Conn.Execute SQL
+        Conn.Execute Sql
     End If
     
     NumLinea = DevuelveValor("select max(numlinea) + 1 from tmpslialp where numalbar = " & DBSet(Albaran, "T") & " and fechaalb = " & DBSet(Fecha, "F") & " and codprove = " & DBSet(Proveedor, "N"))
     If NumLinea = 0 Then NumLinea = 1
-    SQL = "insert into tmpslialp (numalbar,fechaalb,codprove,numlinea,codartic,codalmac,nomartic,ampliaci,cantidad,precioar,dtoline1,dtoline2,importel,fechahora) values ("
-    SQL = SQL & DBSet(Albaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Proveedor, "N") & "," & DBSet(NumLinea, "N") & ","
-    SQL = SQL & DBSet(IdProducto, "N") & ",1," ' el almacen siempre va a ser 1
-    SQL = SQL & DBSet(NomArtic, "T") & "," & ValorNulo & ","
-    SQL = SQL & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & ",0,0," & DBSet(c_Importe, "N") & "," & DBSet(fechahora, "FH") & ")"
+    Sql = "insert into tmpslialp (numalbar,fechaalb,codprove,numlinea,codartic,codalmac,nomartic,ampliaci,cantidad,precioar,dtoline1,dtoline2,importel,fechahora) values ("
+    Sql = Sql & DBSet(Albaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Proveedor, "N") & "," & DBSet(NumLinea, "N") & ","
+    Sql = Sql & DBSet(IdProducto, "N") & ",1," ' el almacen siempre va a ser 1
+    Sql = Sql & DBSet(NomArtic, "T") & "," & ValorNulo & ","
+    Sql = Sql & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & ",0,0," & DBSet(c_Importe, "N") & "," & DBSet(fechahora, "FH") & ")"
     
-    Conn.Execute SQL
+    Conn.Execute Sql
         
     InsertarLineaCompras = True
     Exit Function
@@ -4149,50 +4163,50 @@ End Function
 
 Private Function CrearTMP() As Boolean
 ' temporales de lineas para insertar posteriormente en scaalp y slialp
-Dim SQL As String
+Dim Sql As String
     
     On Error GoTo ECrear
     
     CrearTMP = False
     
     'tabla temporal con la que cargaremos: scaalp
-    SQL = "CREATE TEMPORARY TABLE tmpscaalp ( " '
-    SQL = SQL & "`numalbar` varchar(10) NOT NULL default '', "
-    SQL = SQL & "`fechaalb` date NOT NULL default '0000-00-00', "
-    SQL = SQL & "`codprove` int(6) unsigned NOT NULL default '0',"
-    SQL = SQL & "`nomprove` varchar(40) NOT NULL, "
-    SQL = SQL & "`domprove` varchar(35) NOT NULL, "
-    SQL = SQL & "`codpobla` varchar(6) NOT NULL default '46',"
-    SQL = SQL & "`pobprove` varchar(30) NOT NULL default 'A',"
-    SQL = SQL & "`proprove` varchar(30) NOT NULL default 'A',"
-    SQL = SQL & "`nifprove` varchar(15) NOT NULL default 'A',"
-    SQL = SQL & "`telprove` varchar(15) default NULL,"
-    SQL = SQL & "`codforpa` smallint(2) NOT NULL default '0',"
-    SQL = SQL & "`dtoppago` decimal(4,2) NOT NULL default '0.00',"
-    SQL = SQL & "`dtognral` decimal(4,2) NOT NULL default '0.00',"
-    SQL = SQL & "`fecturno` date NOT NULL default '0000-00-00', "
-    SQL = SQL & "`codturno` tinyint(1) NOT NULL) "
+    Sql = "CREATE TEMPORARY TABLE tmpscaalp ( " '
+    Sql = Sql & "`numalbar` varchar(10) NOT NULL default '', "
+    Sql = Sql & "`fechaalb` date NOT NULL default '0000-00-00', "
+    Sql = Sql & "`codprove` int(6) unsigned NOT NULL default '0',"
+    Sql = Sql & "`nomprove` varchar(40) NOT NULL, "
+    Sql = Sql & "`domprove` varchar(35) NOT NULL, "
+    Sql = Sql & "`codpobla` varchar(6) NOT NULL default '46',"
+    Sql = Sql & "`pobprove` varchar(30) NOT NULL default 'A',"
+    Sql = Sql & "`proprove` varchar(30) NOT NULL default 'A',"
+    Sql = Sql & "`nifprove` varchar(15) NOT NULL default 'A',"
+    Sql = Sql & "`telprove` varchar(15) default NULL,"
+    Sql = Sql & "`codforpa` smallint(2) NOT NULL default '0',"
+    Sql = Sql & "`dtoppago` decimal(4,2) NOT NULL default '0.00',"
+    Sql = Sql & "`dtognral` decimal(4,2) NOT NULL default '0.00',"
+    Sql = Sql & "`fecturno` date NOT NULL default '0000-00-00', "
+    Sql = Sql & "`codturno` tinyint(1) NOT NULL) "
     
-    Conn.Execute SQL
+    Conn.Execute Sql
     
     'tabla temporal con la que cargaremos: slialp
-    SQL = "CREATE TEMPORARY TABLE tmpslialp ( " 'TEMPORARY
-    SQL = SQL & "`numalbar` varchar(10) NOT NULL default '',"
-    SQL = SQL & "`fechaalb` date NOT NULL default '0000-00-00',"
-    SQL = SQL & "`codprove` int(6) unsigned NOT NULL default '0',"
-    SQL = SQL & "`numlinea` smallint(5) unsigned NOT NULL default '0',"
-    SQL = SQL & "`codartic` int(6) NOT NULL,"
-    SQL = SQL & "`codalmac` smallint(3) unsigned NOT NULL default '0',"
-    SQL = SQL & "`nomartic` varchar(40) NOT NULL default '',"
-    SQL = SQL & "`ampliaci` varchar(60) default NULL, "
-    SQL = SQL & "`cantidad` decimal(12,2) default NULL,"
-    SQL = SQL & "`precioar` decimal(10,5) NOT NULL default '0.00000',"
-    SQL = SQL & "`dtoline1` decimal(4,2) NOT NULL default '0.00',"
-    SQL = SQL & "`dtoline2` decimal(4,2) NOT NULL default '0.00',"
-    SQL = SQL & "`importel` decimal(12,2) NOT NULL default '0.00',"
-    SQL = SQL & "`fechahora` datetime)"
+    Sql = "CREATE TEMPORARY TABLE tmpslialp ( " 'TEMPORARY
+    Sql = Sql & "`numalbar` varchar(10) NOT NULL default '',"
+    Sql = Sql & "`fechaalb` date NOT NULL default '0000-00-00',"
+    Sql = Sql & "`codprove` int(6) unsigned NOT NULL default '0',"
+    Sql = Sql & "`numlinea` smallint(5) unsigned NOT NULL default '0',"
+    Sql = Sql & "`codartic` int(6) NOT NULL,"
+    Sql = Sql & "`codalmac` smallint(3) unsigned NOT NULL default '0',"
+    Sql = Sql & "`nomartic` varchar(40) NOT NULL default '',"
+    Sql = Sql & "`ampliaci` varchar(60) default NULL, "
+    Sql = Sql & "`cantidad` decimal(12,2) default NULL,"
+    Sql = Sql & "`precioar` decimal(10,5) NOT NULL default '0.00000',"
+    Sql = Sql & "`dtoline1` decimal(4,2) NOT NULL default '0.00',"
+    Sql = Sql & "`dtoline2` decimal(4,2) NOT NULL default '0.00',"
+    Sql = Sql & "`importel` decimal(12,2) NOT NULL default '0.00',"
+    Sql = Sql & "`fechahora` datetime)"
     
-    Conn.Execute SQL
+    Conn.Execute Sql
      
     CrearTMP = True
     
@@ -4200,10 +4214,10 @@ ECrear:
      If Err.Number <> 0 Then
         CrearTMP = False
         'Borrar la tabla temporal
-        SQL = " DROP TABLE IF EXISTS tmpscaalp;"
-        Conn.Execute SQL
-        SQL = " DROP TABLE IF EXISTS tmpslialp;"
-        Conn.Execute SQL
+        Sql = " DROP TABLE IF EXISTS tmpscaalp;"
+        Conn.Execute Sql
+        Sql = " DROP TABLE IF EXISTS tmpslialp;"
+        Conn.Execute Sql
     End If
 End Function
 
@@ -4219,7 +4233,7 @@ End Sub
 
 
 Private Function PasarTemporales() As Boolean
-Dim SQL As String
+Dim Sql As String
 Dim Rs As ADODB.Recordset
 
 On Error GoTo ePasar
@@ -4227,80 +4241,80 @@ On Error GoTo ePasar
     Conn.Execute "delete from tmpinformes where codusu = " & vSesion.Codigo
     
     ' insertamos en tmpinformes: los albaranes que ya estaban en la scaalp CAMPO1 = 1
-    SQL = "insert into tmpinformes (codusu, nombre1, fecha1, codigo1, campo1) "
-    SQL = SQL & " select " & vSesion.Codigo & ", numalbar, fechaalb, codprove, 1 from tmpscaalp "
-    SQL = SQL & " where (numalbar, fechaalb, codprove) in (select numalbar,fechaalb,codprove from scaalp) "
+    Sql = "insert into tmpinformes (codusu, nombre1, fecha1, codigo1, campo1) "
+    Sql = Sql & " select " & vSesion.Codigo & ", numalbar, fechaalb, codprove, 1 from tmpscaalp "
+    Sql = Sql & " where (numalbar, fechaalb, codprove) in (select numalbar,fechaalb,codprove from scaalp) "
 
-    Conn.Execute SQL
+    Conn.Execute Sql
 
 
     Conn.Execute " INSERT INTO scaalp (numalbar,fechaalb,codprove,nomprove,domprove,codpobla,pobprove,proprove,nifprove,telprove,codforpa,dtoppago,dtognral,fecturno,codturno) SELECT * FROM tmpscaalp where (numalbar, fechaalb, codprove) not in (select nombre1,fecha1,codigo1 from tmpinformes where codusu = " & vSesion.Codigo & ") ; "
     Conn.Execute " INSERT INTO slialp (numalbar,fechaalb,codprove,numlinea,codartic,codalmac,nomartic,ampliaci,cantidad,precioar,dtoline1,dtoline2,importel) SELECT numalbar,fechaalb,codprove,numlinea,codartic,codalmac,nomartic,ampliaci,cantidad,precioar,dtoline1,dtoline2,importel FROM tmpslialp where (numalbar, fechaalb, codprove) not in (select nombre1,fecha1,codigo1 from tmpinformes where codusu = " & vSesion.Codigo & ") ; "
     
     'aqui es donde tenemos que actualizar la cantidad en stock, la fecha y ultimo precio de compra del articulo
-    SQL = "SELECT * FROM tmpslialp where (numalbar, fechaalb, codprove) not in (select nombre1,fecha1,codigo1 from tmpinformes where codusu = " & vSesion.Codigo & ")"
+    Sql = "SELECT * FROM tmpslialp where (numalbar, fechaalb, codprove) not in (select nombre1,fecha1,codigo1 from tmpinformes where codusu = " & vSesion.Codigo & ")"
     Set Rs = New ADODB.Recordset
-    Rs.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+    Rs.Open Sql, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
     While Not Rs.EOF
-        SQL = "update sartic set ultpreci = " & DBSet(Rs!precioar, "N") & _
+        Sql = "update sartic set ultpreci = " & DBSet(Rs!precioar, "N") & _
               ", ultfecha = " & DBSet(txtCodigo(0).Text, "F") & _
               " where codartic = " & DBSet(Rs!codartic, "N") & _
               " and ultfecha < " & DBSet(txtCodigo(0).Text, "F")
-        Conn.Execute SQL
+        Conn.Execute Sql
 '        ' solo si tiene control de stock
 '        If DevuelveValor("select ctrstock from sartic where codartic = " & DBSet(RS!codArtic, "N")) = 1 Then
-            SQL = "update sartic set canstock = canstock + " & DBSet(Rs!cantidad, "N") & _
+            Sql = "update sartic set canstock = canstock + " & DBSet(Rs!cantidad, "N") & _
                   " where codartic = " & DBSet(Rs!codartic, "N")
-            Conn.Execute SQL
+            Conn.Execute Sql
 '        End If
         ' falta insertar en la smoval
-        SQL = "insert into smoval (codartic,codalmac,fechamov,horamovi,tipomovi,detamovi,cantidad,impormov,codigope,letraser,document,numlinea) values ("
-        SQL = SQL & DBSet(Rs!codartic, "N") & ",1,"
-        SQL = SQL & DBSet(Rs!fechaalb, "F") & ","
-        SQL = SQL & DBSet(Rs!fechahora, "FH") & ","
-        SQL = SQL & "'S','ALC'," & DBSet(Rs!cantidad, "N") & ","
-        SQL = SQL & DBSet(Rs!importel, "N") & ","
-        SQL = SQL & DBSet(Rs!CodProve, "N") & ","
-        SQL = SQL & ValorNulo & ","
-        SQL = SQL & DBSet(Rs!numalbar, "T") & ","
-        SQL = SQL & DBSet(Rs!NumLinea, "N") & ")"
+        Sql = "insert into smoval (codartic,codalmac,fechamov,horamovi,tipomovi,detamovi,cantidad,impormov,codigope,letraser,document,numlinea) values ("
+        Sql = Sql & DBSet(Rs!codartic, "N") & ",1,"
+        Sql = Sql & DBSet(Rs!fechaalb, "F") & ","
+        Sql = Sql & DBSet(Rs!fechahora, "FH") & ","
+        Sql = Sql & "'S','ALC'," & DBSet(Rs!cantidad, "N") & ","
+        Sql = Sql & DBSet(Rs!importel, "N") & ","
+        Sql = Sql & DBSet(Rs!CodProve, "N") & ","
+        Sql = Sql & ValorNulo & ","
+        Sql = Sql & DBSet(Rs!numalbar, "T") & ","
+        Sql = Sql & DBSet(Rs!NumLinea, "N") & ")"
         
-        Conn.Execute SQL
+        Conn.Execute Sql
         
         Rs.MoveNext
     Wend
     Set Rs = Nothing
     
     ' actualizamos la fecha de ultimo movimiento del proveedor
-    SQL = "SELECT * FROM tmpscaalp where (numalbar, fechaalb, codprove) not in (select nombre1,fecha1,codigo1 from tmpinformes where codusu = " & vSesion.Codigo & ")"
+    Sql = "SELECT * FROM tmpscaalp where (numalbar, fechaalb, codprove) not in (select nombre1,fecha1,codigo1 from tmpinformes where codusu = " & vSesion.Codigo & ")"
     Set Rs = New ADODB.Recordset
-    Rs.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+    Rs.Open Sql, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
     While Not Rs.EOF
-        SQL = "update proveedor set fechamov = " & DBSet(txtCodigo(0).Text, "F") & _
+        Sql = "update proveedor set fechamov = " & DBSet(txtCodigo(0).Text, "F") & _
               " where codprove = " & DBSet(Rs!CodProve, "N") & _
               " and fechamov < " & DBSet(txtCodigo(0).Text, "F")
-        Conn.Execute SQL
+        Conn.Execute Sql
         Rs.MoveNext
     Wend
     Set Rs = Nothing
     
     ' insertamos en tmpinformes: los proveedores que estan introducidos automaticamente CAMPO1 = 2
-    SQL = "insert into tmpinformes (codusu, nombre1, fecha1, codigo1, campo1, nombre2) "
-    SQL = SQL & " select " & vSesion.Codigo & ", '' ," & ValorNulo & ", codprove, 2, nomprove from proveedor where domprove = 'AUTOMATICO'"
+    Sql = "insert into tmpinformes (codusu, nombre1, fecha1, codigo1, campo1, nombre2) "
+    Sql = Sql & " select " & vSesion.Codigo & ", '' ," & ValorNulo & ", codprove, 2, nomprove from proveedor where domprove = 'AUTOMATICO'"
     
-    Conn.Execute SQL
+    Conn.Execute Sql
     
     ' insertamos en tmpinformes: los articulos que estan introducidos automaticamente CAMPO1 = 3
-    SQL = "insert into tmpinformes (codusu, nombre1, fecha1, codigo1, campo1, nombre2) "
-    SQL = SQL & " select " & vSesion.Codigo & ", '', " & ValorNulo & ", codartic, 3, nomartic from sartic where artnuevo = 1 "
+    Sql = "insert into tmpinformes (codusu, nombre1, fecha1, codigo1, campo1, nombre2) "
+    Sql = Sql & " select " & vSesion.Codigo & ", '', " & ValorNulo & ", codartic, 3, nomartic from sartic where artnuevo = 1 "
         
-    Conn.Execute SQL
+    Conn.Execute Sql
     
     ' insertamos en tmpinformes: las familias que se han generado automaticamente CAMPO1 = 4
-    SQL = "insert into tmpinformes (codusu, nombre1, fecha1, codigo1, campo1, nombre2) "
-    SQL = SQL & " select " & vSesion.Codigo & ", '', " & ValorNulo & ", codfamia, 4, nomfamia from sfamia where nomfamia = 'AUTOMATICO'"
+    Sql = "insert into tmpinformes (codusu, nombre1, fecha1, codigo1, campo1, nombre2) "
+    Sql = Sql & " select " & vSesion.Codigo & ", '', " & ValorNulo & ", codfamia, 4, nomfamia from sfamia where nomfamia = 'AUTOMATICO'"
         
-    Conn.Execute SQL
+    Conn.Execute Sql
     
     
     PasarTemporales = True
@@ -4313,13 +4327,13 @@ End Function
 
 Private Function ComprobarFechaAlbaran(nomFich As String) As Boolean
 Dim nf As Long
-Dim Cad As String
-Dim I As Integer
+Dim cad As String
+Dim i As Integer
 Dim longitud As Long
 Dim Rs As ADODB.Recordset
 Dim RS1 As ADODB.Recordset
 Dim Numreg As Long
-Dim SQL As String
+Dim Sql As String
 Dim Sql1 As String
 Dim total As Long
 Dim v_cant As Currency
@@ -4331,15 +4345,15 @@ Dim b As Boolean
     
     ComprobarFechaAlbaran = False
     
-    SQL = "delete from tmpinformes where codusu = " & vSesion.Codigo
-    Conn.Execute SQL
+    Sql = "delete from tmpinformes where codusu = " & vSesion.Codigo
+    Conn.Execute Sql
     
     
     nf = FreeFile
     Open nomFich For Input As #nf ' & "\BV" & Format(CDate(txtcodigo(0).Text), "ddmmyy") & "." & Format(txtcodigo(1).Text, "000") For Input As #NF
     
-    Line Input #nf, Cad
-    I = 0
+    Line Input #nf, cad
+    i = 0
     
     lblProgres(0).Caption = "Insertando en Tabla temporal: " & nomFich
     longitud = FileLen(nomFich)
@@ -4353,26 +4367,26 @@ Dim b As Boolean
     b = True
 
     While Not EOF(nf) And b
-        I = I + 1
+        i = i + 1
         
-        Me.Pb1.Value = Me.Pb1.Value + Len(Cad)
-        lblProgres(1).Caption = "Linea " & I
+        Me.Pb1.Value = Me.Pb1.Value + Len(cad)
+        lblProgres(1).Caption = "Linea " & i
         Me.Refresh
         
-        b = ComprobarFecha(Cad)
+        b = ComprobarFecha(cad)
         
-        Line Input #nf, Cad
+        Line Input #nf, cad
     Wend
     Close #nf
     
-    If Cad <> "" Then
-        I = I + 1
+    If cad <> "" Then
+        i = i + 1
         
-        Me.Pb1.Value = Me.Pb1.Value + Len(Cad)
-        lblProgres(1).Caption = "Linea " & I
+        Me.Pb1.Value = Me.Pb1.Value + Len(cad)
+        lblProgres(1).Caption = "Linea " & i
         Me.Refresh
         
-        b = ComprobarFecha(Cad)
+        b = ComprobarFecha(cad)
     End If
     
     Pb1.visible = False
@@ -4389,8 +4403,8 @@ End Function
 
 
 
-Private Function ComprobarFecha(Cad As String) As Boolean
-Dim SQL As String
+Private Function ComprobarFecha(cad As String) As Boolean
+Dim Sql As String
 
 Dim Albaran As String
 Dim fechahora As String
@@ -4407,8 +4421,8 @@ Dim codsoc As String
 
     ComprobarFecha = True
 
-    Albaran = Mid(Cad, 92, 15)
-    fechahora = Mid(Cad, 122, 14)
+    Albaran = Mid(cad, 92, 15)
+    fechahora = Mid(cad, 122, 14)
     
     Fecha = Mid(fechahora, 7, 2) & "/" & Mid(fechahora, 5, 2) & "/" & Mid(fechahora, 1, 4)
     Hora = Mid(fechahora, 9, 2) & ":" & Mid(fechahora, 11, 2) & ":" & Mid(fechahora, 13, 2)
@@ -4417,17 +4431,17 @@ Dim codsoc As String
     'Comprobamos fechas
     If Not EsFechaOK(Fecha) Then
             Mens = "Fecha incorrecta"
-            SQL = "insert into tmpinformes (codusu, importe1, fecha1, nombre1) values (" & _
+            Sql = "insert into tmpinformes (codusu, importe1, fecha1, nombre1) values (" & _
                   vSesion.Codigo & "," & DBSet(Albaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mens, "T") & ")"
             
-            Conn.Execute SQL
+            Conn.Execute Sql
     Else
         If CDate(Fecha) <> CDate(txtCodigo(0).Text) Then
             Mens = "Fecha incorrecta"
-            SQL = "insert into tmpinformes (codusu, importe1, fecha1, nombre1) values (" & _
+            Sql = "insert into tmpinformes (codusu, importe1, fecha1, nombre1) values (" & _
                   vSesion.Codigo & "," & DBSet(Albaran, "T") & "," & DBSet(Fecha, "F") & "," & DBSet(Mens, "T") & ")"
             
-            Conn.Execute SQL
+            Conn.Execute Sql
         End If
     End If
     
@@ -4441,13 +4455,13 @@ End Function
 ' fichero de comprobacion
 Private Function ProcesarFicheroRegaixo2() As Boolean
 Dim nf As Long
-Dim Cad As String
-Dim I As Integer
+Dim cad As String
+Dim i As Integer
 Dim longitud As Long
 Dim Rs As ADODB.Recordset
 Dim RS1 As ADODB.Recordset
 Dim Numreg As Long
-Dim SQL As String
+Dim Sql As String
 Dim Sql1 As String
 Dim total As Long
 Dim v_cant As Currency
@@ -4459,14 +4473,14 @@ Dim b As Boolean
     
     ProcesarFicheroRegaixo2 = False
     
-    SQL = "select * from tmptraspaso where codusu = " & vSesion.Codigo & " and cast(mid(fecha,1,8) as date) = " & DBSet(txtCodigo(0).Text, "F")
-    SQL = SQL & " order by albaran "
+    Sql = "select * from tmptraspaso where codusu = " & vSesion.Codigo & " and cast(mid(fecha,1,8) as date) = " & DBSet(txtCodigo(0).Text, "F")
+    Sql = Sql & " order by albaran "
     
     
-    I = 0
+    i = 0
     
     lblProgres(0).Caption = "Insertando en Tabla temporal: "
-    longitud = TotalRegistrosConsulta(SQL)
+    longitud = TotalRegistrosConsulta(Sql)
     
     Pb1.visible = True
     Me.Pb1.Max = longitud
@@ -4477,13 +4491,13 @@ Dim b As Boolean
     b = True
 
     Set Rs = New ADODB.Recordset
-    Rs.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+    Rs.Open Sql, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
     
     While Not Rs.EOF And b
-        I = I + 1
+        i = i + 1
         
         Me.Pb1.Value = Me.Pb1.Value + 1
-        lblProgres(1).Caption = "Linea " & I
+        lblProgres(1).Caption = "Linea " & i
         Me.Refresh
         b = ComprobarRegistroReg(Rs)
          If Not b Then Stop
@@ -4504,13 +4518,13 @@ End Function
 'fichero de proceso
 Private Function ProcesarFicheroRegaixo() As Boolean
 Dim nf As Long
-Dim Cad As String
-Dim I As Integer
+Dim cad As String
+Dim i As Integer
 Dim longitud As Long
 Dim Rs As ADODB.Recordset
 Dim RS1 As ADODB.Recordset
 Dim Numreg As Long
-Dim SQL As String
+Dim Sql As String
 Dim Sql1 As String
 Dim total As Long
 Dim v_cant As Currency
@@ -4524,16 +4538,16 @@ Dim NomFic As String
     ProcesarFicheroRegaixo = False
     nf = FreeFile
     
-    I = 0
+    i = 0
     
-    SQL = "select turno,albaran,factura,fecha,cliente,nomclien,tarjeta,matricula,km,producto,nomprodu,surtidor,manguera,"
-    SQL = SQL & " nsuministro,precio,descuento,descuentoporc,iva,cantidad,idtipopago,desctipopago,nif,importe "
-    SQL = SQL & " from tmptraspaso where codusu = " & vSesion.Codigo & " and not idtipopago in (select forpaalvic from sforpa where tipovale in (1,2)) "
-    SQL = SQL & " and cast(mid(fecha,1,8) as date) = " & DBSet(txtCodigo(0).Text, "F")
-    SQL = SQL & " order by albaran, turno, fecha "
+    Sql = "select turno,albaran,factura,fecha,cliente,nomclien,tarjeta,matricula,km,producto,nomprodu,surtidor,manguera,"
+    Sql = Sql & " nsuministro,precio,descuento,descuentoporc,iva,cantidad,idtipopago,desctipopago,nif,importe "
+    Sql = Sql & " from tmptraspaso where codusu = " & vSesion.Codigo & " and not idtipopago in (select forpaalvic from sforpa where tipovale in (1,2)) "
+    Sql = Sql & " and cast(mid(fecha,1,8) as date) = " & DBSet(txtCodigo(0).Text, "F")
+    Sql = Sql & " order by albaran, turno, fecha "
     
     lblProgres(0).Caption = "Procesando Fichero "
-    longitud = TotalRegistrosConsulta(SQL)
+    longitud = TotalRegistrosConsulta(Sql)
     
     Pb1.visible = True
     Me.Pb1.Max = longitud
@@ -4543,14 +4557,14 @@ Dim NomFic As String
     b = True
     
     Set Rs = New ADODB.Recordset
-    Rs.Open SQL, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+    Rs.Open Sql, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
     
     
     While Not Rs.EOF
-        I = I + 1
+        i = i + 1
         
         Me.Pb1.Value = Me.Pb1.Value + 1
-        lblProgres(1).Caption = "Linea " & I
+        lblProgres(1).Caption = "Linea " & i
         Me.Refresh
         
         b = InsertarLineaReg(Rs)
@@ -4589,7 +4603,7 @@ Dim ImpDes As String
 Dim CodIVA As String
 Dim b As Boolean
 Dim Codclave As String
-Dim SQL As String
+Dim Sql As String
 
 Dim Import As Currency
 
@@ -4605,8 +4619,8 @@ Dim Fecha As String
 Dim Hora As String
 Dim CodigoCliente As String
 Dim NombreCliente As String
-Dim MATRICULA As String
-Dim TARJETA As String
+Dim Matricula As String
+Dim Tarjeta As String
 Dim CodigoProducto As String
 Dim Surtidor As String
 Dim Manguera As String
@@ -4614,7 +4628,7 @@ Dim PrecioLitro As String
 Dim DESCUENTO As String
 Dim PorcDescuento As Currency
 Dim cantidad As String
-Dim IMPORTE As String
+Dim Importe As String
 Dim IdTipoPago As String
 Dim DescrTipoPago As String
 Dim CodigoTipoPago As String
@@ -4668,15 +4682,15 @@ Dim NomArtic As String
     CodigoCliente = DBLet(Rs!Cliente, "T")
     NombreCliente = DBLet(Rs!nomclien, "T")
     
-    TARJETA = DBLet(Rs!TARJETA, "N")
-    MATRICULA = DBLet(Rs!MATRICULA, "T")
+    Tarjeta = DBLet(Rs!Tarjeta, "N")
+    Matricula = DBLet(Rs!Matricula, "T")
     IdProducto = DBLet(Rs!PRODUCTO, "N")
     Surtidor = DBLet(Rs!Surtidor, "N")
     Manguera = DBLet(Rs!Manguera, "N")
     
     PrecioLitro = DBLet(Rs!precio, "N")
     cantidad = DBLet(Rs!cantidad, "N")
-    IMPORTE = DBLet(Rs!IMPORTE, "N")
+    Importe = DBLet(Rs!Importe, "N")
     IdTipoPago = DBLet(Rs!IdTipoPago, "N")
     DescrTipoPago = DBLet(Rs!desctipopago, "T")
     CodigoTipoPago = DBLet(Rs!IdTipoPago, "N")
@@ -4686,17 +4700,17 @@ Dim NomArtic As String
     If CodigoCliente = "" And NombreCliente = "" Then
         CodigoCliente = DevuelveDesdeBDNew(cPTours, "sforpa", "codsocio", "forpaalvic", IdTipoPago, "N")
         NombreCliente = DevuelveDesdeBDNew(cPTours, "ssocio", "nomsocio", "codsocio", CodigoCliente, "N")
-        TARJETA = CodigoCliente
+        Tarjeta = CodigoCliente
     End If
     
     Kilometros = DBLet(Rs!km, "N")
     PorcDescuento = DBLet(Rs!descuentoporc, "N")
     DESCUENTO = Round(PrecioLitro * PorcDescuento / 100, 3)
     
-    If Trim(IMPORTE) = "" Then
+    If Trim(Importe) = "" Then
         Exit Function
     Else
-        If CCur(IMPORTE) = 0 Then Exit Function
+        If CCur(Importe) = 0 Then Exit Function
     End If
     
 '    If NifCliente = "20763891C" Then
@@ -4704,7 +4718,7 @@ Dim NomArtic As String
 '    End If
     
     c_Cantidad = cantidad 'Round2(CCur(cantidad) / 100, 2)
-    c_Importe = IMPORTE 'Round2(CCur(Importe) / 100, 2)
+    c_Importe = Importe 'Round2(CCur(Importe) / 100, 2)
     
     
     '[Monica]03/01/2017: antes estaba preciolitro - descuento
@@ -4729,7 +4743,7 @@ Dim NomArtic As String
     Set RsVale = New ADODB.Recordset
     RsVale.Open SqlVale, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
     If Not RsVale.EOF Then
-        c_Vale = DBLet(RsVale!IMPORTE, "N")
+        c_Vale = DBLet(RsVale!Importe, "N")
     End If
     Set RsVale = Nothing
     
@@ -4743,7 +4757,7 @@ Dim NomArtic As String
     Set RsVale = New ADODB.Recordset
     RsVale.Open SqlVale, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
     If Not RsVale.EOF Then
-        c_Devolucion = DBLet(RsVale!IMPORTE, "N")
+        c_Devolucion = DBLet(RsVale!Importe, "N")
     End If
     Set RsVale = Nothing
     
@@ -4760,15 +4774,15 @@ Dim NomArtic As String
 '    'hasta aqui
     
     'VRS:4.0.1(0) actualizamos el precio de articulo
-    SQL = "update sartic set preventa = " & DBSet(PrecioLitro, "N") & _
+    Sql = "update sartic set preventa = " & DBSet(PrecioLitro, "N") & _
           " where codartic = " & DBSet(IdProducto, "N")
-    Conn.Execute SQL
+    Conn.Execute Sql
     
     If DevuelveValor("select ctrstock from sartic where codartic = " & DBSet(IdProducto, "N")) = 1 Then
-        SQL = "update sartic set " & _
+        Sql = "update sartic set " & _
               "  canstock = canstock - " & DBSet(c_Cantidad, "N") & _
               " where codartic = " & DBSet(IdProducto, "N")
-        Conn.Execute SQL
+        Conn.Execute Sql
     End If
     
     ' insertamos en la tabla de albaranes
@@ -4785,16 +4799,16 @@ Dim NomArtic As String
         If codsoc = "" Then
             CodigoCliente = DevuelveDesdeBDNew(cPTours, "sforpa", "codsocio", "forpaalvic", IdTipoPago, "N")
             NombreCliente = DevuelveDesdeBDNew(cPTours, "ssocio", "nomsocio", "codsocio", CodigoCliente, "N")
-            TARJETA = CodigoCliente
-            If TARJETA = "0" Then TARJETA = CodigoCliente
+            Tarjeta = CodigoCliente
+            If Tarjeta = "0" Then Tarjeta = CodigoCliente
             codsoc = CodigoCliente
         Else
             '[Monica]17/06/2013: miramos si la tarjeta viene con algun asterisco
-            If Mid(TARJETA, 1, 4) = "****" Or Trim(TARJETA) = "0" Or InStr(1, TARJETA, "*") <> 0 Then
-                TARJETA = codsoc
+            If Mid(Tarjeta, 1, 4) = "****" Or Trim(Tarjeta) = "0" Or InStr(1, Tarjeta, "*") <> 0 Then
+                Tarjeta = codsoc
             Else '++monica: 15/02/2008 las tarjetas profesionales tienen 16 caracteres solo analizo los 8 últimos
-                If Len(Trim(TARJETA)) = 16 Then
-                    TARJETA = Mid(TARJETA, 9, 16)
+                If Len(Trim(Tarjeta)) = 16 Then
+                    Tarjeta = Mid(Tarjeta, 9, 16)
                 End If
                 '++
             End If
@@ -4802,40 +4816,40 @@ Dim NomArtic As String
         End If
         
         
-        SQL = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
+        Sql = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
               "codturno, codartic, cantidad, preciove, importel, codforpa, matricul, codtraba, " & _
-              "numfactu, numlinea, kilometros, dtoalvic, importevale) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(codsoc, "N") & "," & DBSet(TARJETA, "N") & "," & _
+              "numfactu, numlinea, kilometros, dtoalvic, importevale) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(codsoc, "N") & "," & DBSet(Tarjeta, "N") & "," & _
                DBSet(NumAlbaran, "T") & "," & DBSet(txtCodigo(0).Text, "F") & "," & DBSet(txtCodigo(0).Text & " " & Hora, "FH") & "," & DBSet(txtCodigo(1).Text, "N") & "," & _
                DBSet(IdProducto, "N") & "," & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & _
-               DBSet(c_Importe, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(MATRICULA, "T") & "," & DBSet(IdVendedor, "N") & ","
+               DBSet(c_Importe, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(Matricula, "T") & "," & DBSet(IdVendedor, "N") & ","
     
         NumLinea = SugerirCodigoSiguienteStr("scaalb", "numlinea", "numfactu = " & DBSet(NumFactura, "N"))
-        SQL = SQL & DBSet(NumFactura, "N") & "," & DBSet(NumLinea, "N") & ","
+        Sql = Sql & DBSet(NumFactura, "N") & "," & DBSet(NumLinea, "N") & ","
     Else
         If InStr(1, CodigoCliente, "1Z") <> 0 Then
             
             codsoc = DevuelveDesdeBDNew(cPTours, "ssocio", "codsocio", "nifsocio", NifCliente, "T")
             
-            If TARJETA = "0" Then
-                Tarje = DevuelveDesdeBDNew(cPTours, "starje", "numtarje", "numtarje", TARJETA, "T")
-                If Tarje = "" Then TARJETA = codsoc
+            If Tarjeta = "0" Then
+                Tarje = DevuelveDesdeBDNew(cPTours, "starje", "numtarje", "numtarje", Tarjeta, "T")
+                If Tarje = "" Then Tarjeta = codsoc
             End If
             
             '[Monica]05/01/2015: si el socio es de catadau o llombai cogemos su forma de pago (la del cliente)
-            SQL = "select codforpa from ssocio where codsocio = " & DBSet(codsoc, "N") & " and codcoope in (1,2) "
-            If TotalRegistrosConsulta(SQL) <> 0 Then
-                Forpa = DevuelveValor(SQL)
+            Sql = "select codforpa from ssocio where codsocio = " & DBSet(codsoc, "N") & " and codcoope in (1,2) "
+            If TotalRegistrosConsulta(Sql) <> 0 Then
+                Forpa = DevuelveValor(Sql)
             End If
             
             
             
-            SQL = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
+            Sql = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
                   "codturno, codartic, cantidad, preciove, importel, codforpa, matricul, codtraba, " & _
-                  "numfactu, numlinea, kilometros, dtoalvic, importevale) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(codsoc, "N") & "," & DBSet(TARJETA, "N") & "," & _
+                  "numfactu, numlinea, kilometros, dtoalvic, importevale) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(codsoc, "N") & "," & DBSet(Tarjeta, "N") & "," & _
                    DBSet(NumAlbaran, "T") & "," & DBSet(txtCodigo(0).Text, "F") & "," & DBSet(txtCodigo(0).Text & " " & Hora, "FH") & "," & DBSet(txtCodigo(1).Text, "N") & "," & _
                    DBSet(IdProducto, "N") & "," & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & _
-                   DBSet(c_Importe, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(MATRICULA, "T") & "," & DBSet(IdVendedor, "N") & ","
-            SQL = SQL & "0,0,"
+                   DBSet(c_Importe, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(Matricula, "T") & "," & DBSet(IdVendedor, "N") & ","
+            Sql = Sql & "0,0,"
         Else
         
             '[Monica]17/06/2013: miramos si la tarjeta viene con algun asterisco
@@ -4848,45 +4862,45 @@ Dim NomArtic As String
 '                '++
 '            End If
             
-            If TARJETA = "0" Then
+            If Tarjeta = "0" Then
                 'COGEMOS LA PRIMERA TARJETA DEPENDIENDO DEL TIPO DE ARTICULO
                 Dim tipogaso As String
                 tipogaso = DevuelveDesdeBD("tipogaso", "sartic", "codartic", IdProducto, "N")
                 Select Case tipogaso
                     Case "3" ' bonificado
-                        TARJETA = DevuelveDesdeBDNew(cPTours, "starje", "numtarje", "tiptarje", "1", "N", , "codsocio", CodigoCliente, "N")
+                        Tarjeta = DevuelveDesdeBDNew(cPTours, "starje", "numtarje", "tiptarje", "1", "N", , "codsocio", CodigoCliente, "N")
                     Case "0", "1", "2", "4"
-                        TARJETA = DevuelveValor("select numtarje from starje where tiptarje <> 1 and codsocio = " & DBSet(CodigoCliente, "N"))
+                        Tarjeta = DevuelveValor("select numtarje from starje where tiptarje <> 1 and codsocio = " & DBSet(CodigoCliente, "N"))
                 End Select
             End If
             
             '[Monica]05/01/2015: si el socio es de catadau o llombai cogemos su forma de pago (la del cliente)
-            SQL = "select codforpa from ssocio where codsocio = " & DBSet(CodigoCliente, "N") & " and codcoope in (1,2) "
-            If TotalRegistrosConsulta(SQL) <> 0 Then
-                Forpa = DevuelveValor(SQL)
+            Sql = "select codforpa from ssocio where codsocio = " & DBSet(CodigoCliente, "N") & " and codcoope in (1,2) "
+            If TotalRegistrosConsulta(Sql) <> 0 Then
+                Forpa = DevuelveValor(Sql)
             End If
             
             
             
-            SQL = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
+            Sql = "INSERT INTO scaalb (codclave, codsocio, numtarje, numalbar, fecalbar, horalbar, " & _
                   "codturno, codartic, cantidad, preciove, importel, codforpa, matricul, codtraba, " & _
-                  "numfactu, numlinea, kilometros, dtoalvic, importevale) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(TARJETA, "N") & "," & _
+                  "numfactu, numlinea, kilometros, dtoalvic, importevale) VALUES (" & DBSet(Codclave, "T") & "," & DBSet(CodigoCliente, "N") & "," & DBSet(Tarjeta, "N") & "," & _
                    DBSet(NumAlbaran, "T") & "," & DBSet(txtCodigo(0).Text, "F") & "," & DBSet(txtCodigo(0).Text & " " & Hora, "FH") & "," & DBSet(txtCodigo(1).Text, "N") & "," & _
                    DBSet(IdProducto, "N") & "," & DBSet(c_Cantidad, "N") & "," & DBSet(c_Precio, "N") & "," & _
-                   DBSet(c_Importe, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(MATRICULA, "T") & "," & DBSet(IdVendedor, "N") & ","
-            SQL = SQL & "0,0,"
+                   DBSet(c_Importe, "N") & "," & DBSet(Forpa, "N") & "," & DBSet(Matricula, "T") & "," & DBSet(IdVendedor, "N") & ","
+            Sql = Sql & "0,0,"
             
         End If
     End If
     
     '[monica]24/06/2013: añadimos los kilometros
-    SQL = SQL & DBSet(Round2(ComprobarCero(Trim(Kilometros)) / 100, 0), "N", "S") & "," '& ")"
+    Sql = Sql & DBSet(Round2(ComprobarCero(Trim(Kilometros)) / 100, 0), "N", "S") & "," '& ")"
  
  
     '[Monica]24/08/2015: añadimos el descuento
-    SQL = SQL & DBSet(c_Descuento, "N") & "," & DBSet(c_Vale, "N") & ")"
+    Sql = Sql & DBSet(c_Descuento, "N") & "," & DBSet(c_Vale, "N") & ")"
  
-    Conn.Execute SQL
+    Conn.Execute Sql
     
 EInsertarLinea:
     If Err.Number <> 0 Then
@@ -4897,15 +4911,15 @@ End Function
 
 Private Function InsertarLineaTurnoReg(ByRef Rs As ADODB.Recordset) As Boolean
 Dim nf As Long
-Dim I As Long
+Dim i As Long
 Dim longitud As Long
 
 
 Dim codpro As String
 Dim cantidad As String
 Dim precio As String
-Dim IMPORTE As String
-Dim SQL As String
+Dim Importe As String
+Dim Sql As String
 Dim NumLin As Long
 Dim cWhere As String
 
@@ -4924,31 +4938,31 @@ Dim vFinal As Currency
     codpro = DBLet(Rs!PRODUCTO, "N")
     cantidad = DBLet(Rs!cantidad, "N")
     precio = DBLet(Rs!precio, "N")
-    IMPORTE = DBLet(Rs!IMPORTE, "N")
+    Importe = DBLet(Rs!Importe, "N")
     Surtidor = DBLet(Rs!Surtidor, "N")
     Manguera = DBLet(Rs!Manguera, "N")
     
-    SQL = ""
-    SQL = DevuelveDesdeBDNew(cPTours, "sturno", "codturno", "fechatur", txtCodigo(0).Text, "F", , "codturno", txtCodigo(1).Text, "N", "codartic", codpro, "N")
-    If SQL = "" Then
+    Sql = ""
+    Sql = DevuelveDesdeBDNew(cPTours, "sturno", "codturno", "fechatur", txtCodigo(0).Text, "F", , "codturno", txtCodigo(1).Text, "N", "codartic", codpro, "N")
+    If Sql = "" Then
     
         cWhere = "fechatur=" & DBSet(txtCodigo(0).Text, "F") & " and codturno = " & DBSet(txtCodigo(1).Text, "N")
         NumLin = CLng(SugerirCodigoSiguienteStr("sturno", "numlinea", cWhere))
         'insertamos
         ' antes surtidor y manguera: 1,1,
-        SQL = "INSERT INTO sturno (fechatur, codturno, numlinea, tiporegi, numtanqu, nummangu, " & _
+        Sql = "INSERT INTO sturno (fechatur, codturno, numlinea, tiporegi, numtanqu, nummangu, " & _
               " codartic, litrosve, importel, containi, contafin, tipocred) VALUES (" & _
               DBSet(txtCodigo(0).Text, "F") & "," & DBSet(txtCodigo(1).Text, "N") & "," & DBSet(NumLin, "N") & ",2," & DBSet(Surtidor, "N") & "," & DBSet(Manguera, "N") & "," & _
-              DBSet(codpro, "N") & "," & DBSet(cantidad, "N") & "," & DBSet(IMPORTE, "N") & ",0,0,0)"
+              DBSet(codpro, "N") & "," & DBSet(cantidad, "N") & "," & DBSet(Importe, "N") & ",0,0,0)"
               
-        Conn.Execute SQL
+        Conn.Execute Sql
     Else
         'actualizamos
-        SQL = "UPDATE sturno SET importel = importel + " & DBSet(IMPORTE, "N") & ", litrosve = litrosve +  " & DBSet(cantidad, "N") & " WHERE fechatur = " & _
+        Sql = "UPDATE sturno SET importel = importel + " & DBSet(Importe, "N") & ", litrosve = litrosve +  " & DBSet(cantidad, "N") & " WHERE fechatur = " & _
               DBSet(txtCodigo(0).Text, "F") & " AND codturno = " & DBSet(txtCodigo(1).Text, "N") & " AND codartic = " & _
               DBSet(codpro, "N")
               
-        Conn.Execute SQL
+        Conn.Execute Sql
     End If
             
 eInsertarLineaTurnoNew:
@@ -4960,8 +4974,8 @@ End Function
 
 Private Function InsertarRecaudacionReg() As Boolean
 Dim Forpa As String
-Dim IMPORTE As String
-Dim SQL As String
+Dim Importe As String
+Dim Sql As String
 Dim vImporte As String
 Dim vForpaVale As String
 Dim IdTipoPago As String
@@ -4971,22 +4985,22 @@ Dim Existe As String
 
     InsertarRecaudacionReg = True
     
-    SQL = "insert into srecau (fechatur, codturno, codforpa, importel, intconta) "
-    SQL = SQL & " select " & DBSet(txtCodigo(0).Text, "F") & "," & DBSet(txtCodigo(1).Text, "N") & ", codforpa, sum(importel-coalesce(importevale,0)), 0 "
-    SQL = SQL & " from scaalb where fecalbar = " & DBSet(txtCodigo(0).Text, "F") & " and codturno = " & DBSet(txtCodigo(1).Text, "N")
-    SQL = SQL & " group by 1,2,3 "
-    SQL = SQL & " order by 1,2,3 "
+    Sql = "insert into srecau (fechatur, codturno, codforpa, importel, intconta) "
+    Sql = Sql & " select " & DBSet(txtCodigo(0).Text, "F") & "," & DBSet(txtCodigo(1).Text, "N") & ", codforpa, sum(importel-coalesce(importevale,0)), 0 "
+    Sql = Sql & " from scaalb where fecalbar = " & DBSet(txtCodigo(0).Text, "F") & " and codturno = " & DBSet(txtCodigo(1).Text, "N")
+    Sql = Sql & " group by 1,2,3 "
+    Sql = Sql & " order by 1,2,3 "
     
-    Conn.Execute SQL
+    Conn.Execute Sql
 
-    SQL = "select sum(coalesce(importevale,0)) from scaalb where fecalbar = " & DBSet(txtCodigo(0).Text, "F") & " and codturno = " & DBSet(txtCodigo(1).Text, "N")
-    vImporte = DevuelveValor(SQL)
+    Sql = "select sum(coalesce(importevale,0)) from scaalb where fecalbar = " & DBSet(txtCodigo(0).Text, "F") & " and codturno = " & DBSet(txtCodigo(1).Text, "N")
+    vImporte = DevuelveValor(Sql)
     vForpaVale = DevuelveValor("select codforpa from sforpa where tipovale = 1")
     If vImporte <> 0 Then
-        SQL = "insert into srecau (fechatur, codturno, codforpa, importel, intconta) values ("
-        SQL = SQL & DBSet(txtCodigo(0).Text, "F") & "," & DBSet(txtCodigo(1).Text, "N") & "," & DBSet(vForpaVale, "N") & "," & DBSet(vImporte, "N") & ",0) "
+        Sql = "insert into srecau (fechatur, codturno, codforpa, importel, intconta) values ("
+        Sql = Sql & DBSet(txtCodigo(0).Text, "F") & "," & DBSet(txtCodigo(1).Text, "N") & "," & DBSet(vForpaVale, "N") & "," & DBSet(vImporte, "N") & ",0) "
     
-        Conn.Execute SQL
+        Conn.Execute Sql
     End If
 
 
