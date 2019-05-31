@@ -110,54 +110,58 @@ Begin VB.MDIForm MDIppal
          Index           =   9
       End
       Begin VB.Menu mnP_Generales 
-         Caption         =   "&Empleados"
+         Caption         =   "&Departamentos"
          Index           =   10
       End
       Begin VB.Menu mnP_Generales 
-         Caption         =   "&Familias"
+         Caption         =   "&Empleados"
          Index           =   11
       End
       Begin VB.Menu mnP_Generales 
-         Caption         =   "&Artículos"
+         Caption         =   "&Familias"
          Index           =   12
       End
       Begin VB.Menu mnP_Generales 
-         Caption         =   "&Situaciones"
+         Caption         =   "&Artículos"
          Index           =   13
       End
       Begin VB.Menu mnP_Generales 
-         Caption         =   "F&ormas de pago"
+         Caption         =   "&Situaciones"
          Index           =   14
       End
       Begin VB.Menu mnP_Generales 
-         Caption         =   "Bancos &propios"
+         Caption         =   "F&ormas de pago"
          Index           =   15
       End
       Begin VB.Menu mnP_Generales 
-         Caption         =   "&Grupo de Empresas"
+         Caption         =   "Bancos &propios"
          Index           =   16
       End
       Begin VB.Menu mnP_Generales 
-         Caption         =   "&Proveedores"
+         Caption         =   "&Grupo de Empresas"
          Index           =   17
+      End
+      Begin VB.Menu mnP_Generales 
+         Caption         =   "&Proveedores"
+         Index           =   18
       End
       Begin VB.Menu mnP_Generales 
          Caption         =   "Entidades Domiciliarias"
          Enabled         =   0   'False
-         Index           =   18
+         Index           =   19
          Visible         =   0   'False
       End
       Begin VB.Menu mnP_Generales 
          Caption         =   "-"
-         Index           =   19
-      End
-      Begin VB.Menu mnP_Generales 
-         Caption         =   "Cambio Empresa"
          Index           =   20
       End
       Begin VB.Menu mnP_Generales 
-         Caption         =   "&Salir"
+         Caption         =   "Cambio Empresa"
          Index           =   21
+      End
+      Begin VB.Menu mnP_Generales 
+         Caption         =   "&Salir"
+         Index           =   22
       End
    End
    Begin VB.Menu mnGeneral 
@@ -592,9 +596,12 @@ Begin VB.MDIForm MDIppal
       End
       Begin VB.Menu mnp_Barra2 
          Caption         =   "-"
+         Visible         =   0   'False
       End
       Begin VB.Menu mnE_Soporte2 
          Caption         =   "&Acerca de"
+         Enabled         =   0   'False
+         Visible         =   0   'False
       End
    End
 End
@@ -610,7 +617,7 @@ Private PrimeraVez As Boolean
 Dim TieneEditorDeMenus As Boolean
 
 Public Sub GetIconsFromLibrary(ByVal sLibraryFilePath As String, ByVal op As Integer, ByVal tam As Integer)
-    Dim i As Integer
+    Dim I As Integer
     Dim tRes As ResType, iCount As Integer
         
     opcio = op
@@ -662,7 +669,7 @@ Private Sub MDIForm_Activate()
 End Sub
 
 Private Sub MDIForm_Load()
-Dim cad As String
+Dim Cad As String
 
     PrimeraVez = True
     CargarImagen
@@ -671,7 +678,7 @@ Dim cad As String
     If vEmpresa Is Nothing Then
         Caption = "AriGasol" & " ver. " & App.Major & "." & App.Minor & "." & App.Revision & "   -  " & " FALTA CONFIGURAR"
     Else
-        Caption = "AriGasol" & " ver. " & App.Major & "." & App.Minor & "." & App.Revision & "   -  Empresa: " & vEmpresa.nomEmpre & cad & _
+        Caption = "AriGasol" & " ver. " & App.Major & "." & App.Minor & "." & App.Revision & "   -  Empresa: " & vEmpresa.nomEmpre & Cad & _
                   "   -  Usuario: " & vSesion.Nombre
     End If
 
@@ -797,7 +804,7 @@ Private Sub Toolbar1_ButtonClick(ByVal Button As MSComctlLib.Button)
         Case 1 'Clientes
             SubmnP_Generales_Click (9)
         Case 2 'Articulos
-            SubmnP_Generales_Click (12)
+            SubmnP_Generales_Click (13)
         Case 4 'Traspaso de postes
             SubmnG_Ventas_Click (1)
         Case 5 'Albaranes
@@ -862,11 +869,11 @@ End Sub
 ' ### [Monica] 05/09/2006
 Private Sub HabilitarSoloPrametros_o_Empresas(Habilitar As Boolean)
 Dim T As Control
-Dim cad As String
+Dim Cad As String
 
     On Error Resume Next
     For Each T In Me
-        cad = T.Name
+        Cad = T.Name
         If Mid(T.Name, 1, 2) = "mn" Then
             'If LCase(Mid(T.Name, 1, 8)) <> "mn_b" Then
                 T.Enabled = Habilitar
@@ -964,8 +971,8 @@ EDevuelveCadenaMenu:
 End Function
 
 Private Sub LanzaHome(Opcion As String)
-    Dim i As Integer
-    Dim cad As String
+    Dim I As Integer
+    Dim Cad As String
     On Error GoTo ELanzaHome
     
     'Obtenemos la pagina web de los parametros
@@ -975,17 +982,17 @@ Private Sub LanzaHome(Opcion As String)
         Exit Sub
     End If
         
-    i = FreeFile
-    cad = ""
-    Open App.path & "\lanzaexp.dat" For Input As #i
-    Line Input #i, cad
-    Close #i
+    I = FreeFile
+    Cad = ""
+    Open App.path & "\lanzaexp.dat" For Input As #I
+    Line Input #I, Cad
+    Close #I
     
     'Lanzamos
-    If cad <> "" Then Shell cad & " " & CadenaDesdeOtroForm, vbMaximizedFocus
+    If Cad <> "" Then Shell Cad & " " & CadenaDesdeOtroForm, vbMaximizedFocus
     
 ELanzaHome:
-    If Err.Number <> 0 Then MuestraError Err.Number, cad & vbCrLf & Err.Description
+    If Err.Number <> 0 Then MuestraError Err.Number, Cad & vbCrLf & Err.Description
     CadenaDesdeOtroForm = ""
 End Sub
 
@@ -1059,10 +1066,10 @@ Dim b As Boolean
     End If
     
     '[Monica]12/03/2015: cambio de empresa solo para Alzira
-    Dim nRegs As Integer
-    nRegs = TotalRegistros("select count(*) from usuarios.empresasarigasol")
-    Me.mnP_Generales(20).visible = (nRegs > 1)
-    Me.mnP_Generales(20).Enabled = (nRegs > 1)
+    Dim NRegs As Integer
+    NRegs = TotalRegistros("select count(*) from usuarios.empresasarigasol")
+    Me.mnP_Generales(21).visible = (NRegs > 1)
+    Me.mnP_Generales(21).Enabled = (NRegs > 1)
     
     
    ' impresion de estadisticas por turno solo para pobla del duc
@@ -1103,7 +1110,7 @@ Dim b As Boolean
 End Sub
 
 Public Sub mnCambioEmpresa()
-Dim cad As String
+Dim Cad As String
 
     'Borramos temporal
     Conn.Execute "Delete from zbloqueos where codusu = " & vSesion.Codigo
@@ -1140,7 +1147,7 @@ Dim cad As String
     If vEmpresa Is Nothing Then
         Caption = "AriGasol" & " ver. " & App.Major & "." & App.Minor & "." & App.Revision & "   -  " & " FALTA CONFIGURAR"
     Else
-        Caption = "AriGasol" & " ver. " & App.Major & "." & App.Minor & "." & App.Revision & "   -  Empresa: " & vEmpresa.nomEmpre & cad & _
+        Caption = "AriGasol" & " ver. " & App.Major & "." & App.Minor & "." & App.Revision & "   -  Empresa: " & vEmpresa.nomEmpre & Cad & _
                   "   -  Usuario: " & vSesion.Nombre
     End If
     

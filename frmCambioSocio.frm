@@ -113,7 +113,7 @@ Begin VB.Form frmCambioSocio
          Index           =   11
          Left            =   405
          TabIndex        =   6
-         Top             =   630
+         Top             =   810
          Width           =   1020
       End
       Begin VB.Image imgBuscar 
@@ -189,14 +189,14 @@ End Sub
 Private Sub cmdAceptar_Click()
 Dim cDesde As String, cHasta As String 'cadena codigo Desde/Hasta
 Dim nDesde As String, nHasta As String 'cadena Descripcion Desde/Hasta
-Dim cadTABLA As String, cOrden As String
-Dim i As Byte
+Dim cadTabla As String, cOrden As String
+Dim I As Byte
 Dim Ajena As String
-Dim cad As String
+Dim Cad As String
 
     InicializarVbles
     
-    If Not DatosOK Then Exit Sub
+    If Not DatosOk Then Exit Sub
        
     
     If CambioDeSocio Then
@@ -208,9 +208,9 @@ Dim cad As String
 End Sub
 
 Private Function CambioDeSocio() As Boolean
-Dim Sql As String
+Dim SQL As String
 Dim NuevaCuenta As String
-Dim Iban As String
+Dim IBAN As String
 
     CambioDeSocio = False
 
@@ -225,7 +225,7 @@ Dim Iban As String
 
     '==========
     If Not EsCuentaUltimoNivel(NuevaCuenta) Then
-        devuelve = "No es cuenta de último nivel: " & Cuenta
+        'devuelve = "No es cuenta de último nivel: " & NuevaCuenta
         
         Conn.RollbackTrans
         ConnConta.RollbackTrans
@@ -233,13 +233,14 @@ Dim Iban As String
         Exit Function
     End If
     '==================
-    Dim vSocio As CSocio
-    If vSocio.LeerDatos(txtCodigo(0)) Then
+    Dim vsocio As CSocio
+    Set vsocio = New CSocio
+    If vsocio.LeerDatos(txtCodigo(0)) Then
     
-        Sql = "update ssocio set codsocio = " & DBSet(txtCodigo(1), "N") & ", codmacta = " & DBSet(NuevaCuenta, "T") & " where codsocio = " & DBSet(txtCodigo(0).Text, "N")
-        Conn.Execute Sql
+        SQL = "update ssocio set codsocio = " & DBSet(txtCodigo(1), "N") & ", codmacta = " & DBSet(NuevaCuenta, "T") & " where codsocio = " & DBSet(txtCodigo(0).Text, "N")
+        Conn.Execute SQL
         
-        Iban = vSocio.Iban & Format(vSocio.Banco, "0000") & Format(vSocio.Sucursal, "0000") & Format(vSocio.Digcontrol, "00") & Right("0000000000" & vSocio.CuentaBan, 10)
+        IBAN = vsocio.IBAN & Format(vsocio.Banco, "0000") & Format(vsocio.Sucursal, "0000") & Format(vsocio.Digcontrol, "00") & Right("0000000000" & vsocio.CuentaBan, 10)
         
         If DevuelveDesdeBDNew(cConta, "cuentas", "codmacta", "codmacta", NuevaCuenta, "T") <> "" Then
 '            Sql = "update cuentas set nommacta = " & DBSet(vSocio.Nombre, "T") & ", apudirec = 'S', razosoci = " & DBSet(vSocio.Nombre, "T") & ", dirdatos = "
@@ -258,12 +259,12 @@ Dim Iban As String
     
 
         Else
-            Sql = "insert into cuentas (codmacta,nommacta,apudirec,razosoci,dirdatos,codposta,despobla,desprovi,nifdatos,iban) values ("
-            Sql = Sql & DBSet(NuevaCuenta, "T") & "," & DBSet(vSocio.Nombre, "T") & ",'S'," & DBSet(vSocio.Nombre, "T") & "," & DBSet(vSocio.Domicilio, "T") & ","
-            Sql = Sql & DBSet(vSocio.CPostal, "T") & "," & DBSet(vSocio.POBLACION, "T") & "," & DBSet(vSocio.Provincia, "T") & "," & DBSet(vSocio.NIF, "T") & ","
-            Sql = Sql & DBSet(Iban, "T")
+            SQL = "insert into cuentas (codmacta,nommacta,apudirec,razosoci,dirdatos,codposta,despobla,desprovi,nifdatos,iban) values ("
+            SQL = SQL & DBSet(NuevaCuenta, "T") & "," & DBSet(vsocio.Nombre, "T") & ",'S'," & DBSet(vsocio.Nombre, "T") & "," & DBSet(vsocio.Domicilio, "T") & ","
+            SQL = SQL & DBSet(vsocio.CPostal, "T") & "," & DBSet(vsocio.POBLACION, "T") & "," & DBSet(vsocio.Provincia, "T") & "," & DBSet(vsocio.NIF, "T") & ","
+            SQL = SQL & DBSet(IBAN, "T") & ")"
             
-            ConnConta.Execute Sql
+            ConnConta.Execute SQL
         End If
     Else
         Conn.RollbackTrans
@@ -272,7 +273,7 @@ Dim Iban As String
         Exit Function
     End If
 
-    Set vSocio = Nothing
+    Set vsocio = Nothing
     
     CambioDeSocio = True
     
@@ -286,8 +287,6 @@ eCambioDeSocio:
     Conn.RollbackTrans
     ConnConta.RollbackTrans
 End Function
-
-
 
 Private Sub cmdCancel_Click()
     Unload Me
@@ -310,7 +309,6 @@ Dim List As Collection
 
     'IMAGES para busqueda
      Me.imgBuscar(0).Picture = frmPpal.imgListImages16.ListImages(1).Picture
-     Me.imgBuscar(1).Picture = frmPpal.imgListImages16.ListImages(1).Picture
 
     '###Descomentar
 '    CommitConexion
@@ -325,11 +323,6 @@ Dim List As Collection
     Me.Height = h + 350
 End Sub
 
-Private Sub frmC_Selec(vFecha As Date)
- 'Fecha
-    txtCodigo(CByte(imgFec(2).Tag)).Text = Format(vFecha, "dd/MM/yyyy")
-End Sub
-
 Private Sub frmCli_DatoSeleccionado(CadenaSeleccion As String)
 'Form de Consulta de Clientes
     txtCodigo(indCodigo).Text = Format(RecuperaValor(CadenaSeleccion, 1), "000000")
@@ -342,68 +335,16 @@ Private Sub frmCol_DatoSeleccionado(CadenaSeleccion As String)
     txtNombre(indCodigo).Text = RecuperaValor(CadenaSeleccion, 2)
 End Sub
 
-Private Sub imgFec_Click(Index As Integer)
-'FEchas
-    Dim esq, dalt As Long
-    Dim obj As Object
-    
-    Set frmC = New frmCal
-
-    esq = imgFec(Index).Left
-    dalt = imgFec(Index).Top
-
-    Set obj = imgFec(Index).Container
-
-    While imgFec(Index).Parent.Name <> obj.Name
-        esq = esq + obj.Left
-        dalt = dalt + obj.Top
-        Set obj = obj.Container
-    Wend
-       
-    ' es desplega dalt i cap a la esquerra
-    frmC.Left = esq + imgFec(Index).Parent.Left + 30
-    frmC.Top = dalt + imgFec(Index).Parent.Top + imgFec(Index).Height + 420 + 30
-
-    ' ***canviar l'index de imgFec pel 1r index de les imagens de buscar data***
-    imgFec(2).Tag = Index 'independentment de les dates que tinga, sempre pose l'index en la 27
-    If txtCodigo(Index).Text <> "" Then frmC.NovaData = txtCodigo(Index).Text
-
-    frmC.Show vbModal
-    Set frmC = Nothing
-    PonerFoco txtCodigo(CByte(imgFec(2).Tag) + 2)
-    ' ***************************
-End Sub
-
-Private Sub ListView1_KeyPress(KeyAscii As Integer)
-    KEYpress KeyAscii
-End Sub
 
 Private Sub imgBuscar_Click(Index As Integer)
    Select Case Index
         Case 0, 1 'CLIENTE
             AbrirFrmClientes (Index)
         
-        Case 4 'COLECTIVO
-            AbrirFrmColectivo (Index)
         
     End Select
     PonerFoco txtCodigo(indCodigo)
 End Sub
-
-Private Sub Optcodigo_KeyPress(KeyAscii As Integer)
-    If KeyAscii = 13 Then 'ENTER
-        PonerFocoBtn Me.cmdAceptar
-    ElseIf KeyAscii = 27 Then Unload Me  'ESC
-    End If
-End Sub
-
-Private Sub OptNombre_KeyPress(KeyAscii As Integer)
-    If KeyAscii = 13 Then 'ENTER
-        PonerFocoBtn Me.cmdAceptar
-    ElseIf KeyAscii = 27 Then Unload Me  'ESC
-    End If
-End Sub
-
 
 Private Sub txtCodigo_GotFocus(Index As Integer)
     ConseguirFoco txtCodigo(Index), 3
@@ -432,13 +373,9 @@ Private Sub KEYBusqueda(KeyAscii As Integer, indice As Integer)
     imgBuscar_Click (indice)
 End Sub
 
-Private Sub KEYFecha(KeyAscii As Integer, indice As Integer)
-    KeyAscii = 0
-    imgFec_Click (indice)
-End Sub
 
 Private Sub txtCodigo_LostFocus(Index As Integer)
-Dim cad As String, cadTipo As String 'tipo cliente
+Dim Cad As String, cadTipo As String 'tipo cliente
 
     'Quitar espacios en blanco por los lados
     txtCodigo(Index).Text = Trim(txtCodigo(Index).Text)
@@ -450,9 +387,12 @@ Dim cad As String, cadTipo As String 'tipo cliente
     
     Select Case Index
             
-        Case 0, 1 'CLIENTE
+        Case 0 'CLIENTE
             txtNombre(Index).Text = PonerNombreDeCod(txtCodigo(Index), "ssocio", "nomsocio", "codsocio", "N")
             If txtCodigo(Index).Text <> "" Then txtCodigo(Index).Text = Format(txtCodigo(Index).Text, "000000")
+            
+        Case 1 'Cliente
+            txtCodigo(Index).Text = Format(txtCodigo(Index), "000000")
     End Select
 End Sub
 
@@ -565,10 +505,10 @@ End Sub
 
 
 
-Private Function DatosOK() As Boolean
+Private Function DatosOk() As Boolean
 Dim b As Boolean
 
-    DatosOK = False
+    DatosOk = False
     b = True
     If txtCodigo(0).Text = "" Then
         MsgBox "Debe introducir el cliente origen.", vbExclamation
@@ -583,7 +523,7 @@ Dim b As Boolean
     End If
     
     If b Then
-        If txtcodig(1).Text = "" Then
+        If txtCodigo(1).Text = "" Then
             MsgBox "Debe introducir el cliente destino.", vbExclamation
             PonerFoco txtCodigo(1)
             b = False
@@ -595,5 +535,6 @@ Dim b As Boolean
             End If
         End If
     End If
+    DatosOk = b
     
 End Function

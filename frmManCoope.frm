@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.2#0"; "MSCOMCTL.OCX"
 Object = "{67397AA1-7FB1-11D0-B148-00A0C922E820}#6.0#0"; "MSADODC.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Begin VB.Form frmManCoope 
@@ -337,7 +337,7 @@ Begin VB.Form frmManCoope
             List            =   "frmManCoope.frx":0046
             Style           =   2  'Dropdown List
             TabIndex        =   10
-            Tag             =   "Tipo Factura|N|N|0|3|scoope|tipfactu||N|"
+            Tag             =   "Tipo Factura|N|N|0|4|scoope|tipfactu||N|"
             Top             =   330
             Width           =   1725
          End
@@ -670,7 +670,7 @@ Dim indice As Byte 'Indice del text1 donde se ponen los datos devueltos desde ot
 
 Private Sub PonerModo(vModo)
 Dim b As Boolean
-Dim NumReg As Byte
+Dim Numreg As Byte
 
     On Error GoTo EPonerModo
     
@@ -686,11 +686,11 @@ Dim NumReg As Byte
     
     '=======================================
     'Poner Flechas de desplazamiento visibles
-    NumReg = 1
+    Numreg = 1
     If Not Me.adodc1.Recordset.EOF Then
-        If adodc1.Recordset.RecordCount > 1 Then NumReg = 2 'Solo es para saber q hay + de 1 registro
+        If adodc1.Recordset.RecordCount > 1 Then Numreg = 2 'Solo es para saber q hay + de 1 registro
     End If
-    DesplazamientoVisible Me.Toolbar1, btnPrimero, b, NumReg
+    DesplazamientoVisible Me.Toolbar1, btnPrimero, b, Numreg
     
      '---------------------------------------------
     b = Modo <> 0 And Modo <> 2
@@ -787,17 +787,17 @@ Private Sub BotonVerTodos()
 End Sub
 
 Private Sub MandaBusquedaPrevia(CadB As String)
-Dim cad As String
+Dim Cad As String
 
         'Llamamos a al form
-        cad = ""
-        cad = cad & ParaGrid(Text1(0), 20, "Cód.")
-        cad = cad & ParaGrid(Text1(1), 80, "Nombre")
+        Cad = ""
+        Cad = Cad & ParaGrid(Text1(0), 20, "Cód.")
+        Cad = Cad & ParaGrid(Text1(1), 80, "Nombre")
         
-        If cad <> "" Then
+        If Cad <> "" Then
             Screen.MousePointer = vbHourglass
             Set frmB = New frmBuscaGrid
-            frmB.vCampos = cad
+            frmB.vCampos = Cad
             frmB.vTabla = NomTabla
             frmB.vSQL = CadB
             HaDevueltoDatos = False
@@ -873,7 +873,7 @@ Private Sub BotonModificar()
 End Sub
 
 Private Sub BotonEliminar()
-Dim sql As String
+Dim SQL As String
 
     On Error GoTo EEliminar
     
@@ -887,17 +887,17 @@ Dim sql As String
     If Not SepuedeBorrar Then Exit Sub
     
     '*************** canviar els noms i el DELETE **********************************
-    sql = "¿Seguro que desea eliminar el Colectivo?"
-    sql = sql & vbCrLf & "Código: " & Text1(0).Text
-    sql = sql & vbCrLf & "Nombre: " & adodc1.Recordset.Fields(1)
+    SQL = "¿Seguro que desea eliminar el Colectivo?"
+    SQL = SQL & vbCrLf & "Código: " & Text1(0).Text
+    SQL = SQL & vbCrLf & "Nombre: " & adodc1.Recordset.Fields(1)
     
-    If MsgBox(sql, vbQuestion + vbYesNo) = vbYes Then
+    If MsgBox(SQL, vbQuestion + vbYesNo) = vbYes Then
         'Hay que eliminar
         Screen.MousePointer = vbHourglass
         NumRegElim = adodc1.Recordset.AbsolutePosition
         
-        sql = "Delete from " & NomTabla & " where codcoope=" & adodc1.Recordset!codcoope
-        Conn.Execute sql
+        SQL = "Delete from " & NomTabla & " where codcoope=" & adodc1.Recordset!codcoope
+        Conn.Execute SQL
         
         If SituarDataTrasEliminar(adodc1, NumRegElim) Then
             PonerCampos
@@ -976,8 +976,8 @@ Private Sub cmdCancelar_Click()
 End Sub
 
 Private Sub cmdRegresar_Click()
-Dim cad As String
-Dim i As Integer
+Dim Cad As String
+Dim I As Integer
 Dim J As Integer
 Dim Aux As String
 
@@ -985,18 +985,18 @@ Dim Aux As String
         MsgBox "Ningún registro devuelto.", vbExclamation
         Exit Sub
     End If
-    cad = ""
-    i = 0
+    Cad = ""
+    I = 0
     Do
-        J = i + 1
-        i = InStr(J, DatosADevolverBusqueda, "|")
-        If i > 0 Then
-            Aux = Mid(DatosADevolverBusqueda, J, i - J)
+        J = I + 1
+        I = InStr(J, DatosADevolverBusqueda, "|")
+        If I > 0 Then
+            Aux = Mid(DatosADevolverBusqueda, J, I - J)
             J = Val(Aux)
-            cad = cad & adodc1.Recordset.Fields(J) & "|"
+            Cad = Cad & adodc1.Recordset.Fields(J) & "|"
         End If
-    Loop Until i = 0
-    RaiseEvent DatoSeleccionado(cad)
+    Loop Until I = 0
+    RaiseEvent DatoSeleccionado(Cad)
     Unload Me
 End Sub
 
@@ -1012,6 +1012,9 @@ Private Sub CargaCombo()
     Combo1(0).ItemData(Combo1(0).NewIndex) = 2
     Combo1(0).AddItem "Interna"
     Combo1(0).ItemData(Combo1(0).NewIndex) = 3
+    
+    Combo1(0).AddItem "Departamento"
+    Combo1(0).ItemData(Combo1(0).NewIndex) = 4
 
 '[Monica]25/09/2014: el tipo de contabilizacion pasa a estar en el socio en lugar de en el colectivo
 '    Combo1(1).Clear
@@ -1057,7 +1060,7 @@ Private Sub Form_Load()
     End With
 
     'cargar IMAGE de mail
-    Me.imgMail(0).Picture = frmPpal.imgListImages16.ListImages(2).Picture
+    Me.ImgMail(0).Picture = frmPpal.imgListImages16.ListImages(2).Picture
     CargaCombo
 
     Me.SSTab1.Tab = 0
@@ -1284,14 +1287,14 @@ Private Sub HacerBusqueda()
 End Sub
 
 Private Sub LimpiarCampos()
-Dim i As Integer
+Dim I As Integer
 
     On Error Resume Next
 
-    Limpiar Me
-    For i = 0 To Me.Combo1.Count - 1
-        Me.Combo1(i).ListIndex = -1
-    Next i
+    limpiar Me
+    For I = 0 To Me.Combo1.Count - 1
+        Me.Combo1(I).ListIndex = -1
+    Next I
     
     ' ****************************************************
     
@@ -1299,10 +1302,10 @@ Dim i As Integer
 End Sub
 
 Private Sub PosicionarData()
-Dim cad As String, Indicador As String
+Dim Cad As String, Indicador As String
 
-    cad = "(codcoope=" & Text1(0).Text & ")"
-    If SituarData(Me.adodc1, cad, Indicador) Then
+    Cad = "(codcoope=" & Text1(0).Text & ")"
+    If SituarData(Me.adodc1, Cad, Indicador) Then
         PonerModo 2
         lblIndicador.Caption = Indicador
     Else

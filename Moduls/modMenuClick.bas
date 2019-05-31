@@ -21,18 +21,19 @@ Public Sub SubmnP_Generales_Click(Index As Integer)
         
         Case 8: frmManCoope.Show vbModal
         Case 9: frmManClien.Show vbModal
-        Case 10: frmManTraba.Show vbModal
-        Case 11: frmManFamia.Show vbModal
-        Case 12: frmManArtic.Show vbModal
-        Case 13: frmManSitua.Show vbModal
-        Case 14: frmManFpago.Show vbModal
-        Case 15: frmManBanco.Show vbModal
-        Case 16: frmManGrupo.Show vbModal 'VRS:2.0.2(0)
-        Case 17: frmManProve.Show vbModal 'VRS:2.0.2(0)
-        Case 18: frmManEntidades.Show vbModal
-        Case 20: MDIppal.mnCambioEmpresa        ' cambio de empresa
+        Case 10: frmManDpto.Show vbModal
+        Case 11: frmManTraba.Show vbModal
+        Case 12: frmManFamia.Show vbModal
+        Case 13: frmManArtic.Show vbModal
+        Case 14: frmManSitua.Show vbModal
+        Case 15: frmManFpago.Show vbModal
+        Case 16: frmManBanco.Show vbModal
+        Case 17: frmManGrupo.Show vbModal 'VRS:2.0.2(0)
+        Case 18: frmManProve.Show vbModal 'VRS:2.0.2(0)
+        Case 19: frmManEntidades.Show vbModal
+        Case 21: MDIppal.mnCambioEmpresa        ' cambio de empresa
         
-        Case 21: End
+        Case 22: End
     End Select
 End Sub
 

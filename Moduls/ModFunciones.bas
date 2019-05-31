@@ -150,7 +150,7 @@ End Function
 Public Function ValorParaSQL(Valor, ByRef vtag As CTag) As String
 Dim dev As String
 Dim d As Single
-Dim i As Integer
+Dim I As Integer
 Dim V
     dev = ""
     If Valor <> "" Then
@@ -203,7 +203,7 @@ Dim Control As Object
 Dim mTag As CTag
 Dim Izda As String
 Dim Der As String
-Dim cad As String
+Dim Cad As String
     
     On Error GoTo EInsertarF
     
@@ -225,9 +225,9 @@ Dim cad As String
                         Izda = Izda & "" & mTag.columna & ""
                     
                         'Parte VALUES
-                        cad = ValorParaSQL(Control.Text, mTag)
+                        Cad = ValorParaSQL(Control.Text, mTag)
                         If Der <> "" Then Der = Der & ","
-                        Der = Der & cad
+                        Der = Der & Cad
                     End If
                 End If
             End If
@@ -240,13 +240,13 @@ Dim cad As String
                 'Izda = Izda & "[" & mTag.Columna & "]"
                 Izda = Izda & "" & mTag.columna & ""
                 If Control.Value = 1 Then
-                    cad = "1"
+                    Cad = "1"
                     Else
-                    cad = "0"
+                    Cad = "0"
                 End If
                 If Der <> "" Then Der = Der & ","
-                If mTag.TipoDato = "N" Then cad = Abs(CBool(cad))
-                Der = Der & cad
+                If mTag.TipoDato = "N" Then Cad = Abs(CBool(Cad))
+                Der = Der & Cad
             End If
         'COMBO BOX
         ElseIf TypeOf Control Is ComboBox And Control.visible = True Then
@@ -257,12 +257,12 @@ Dim cad As String
                     'Izda = Izda & "[" & mTag.Columna & "]"
                     Izda = Izda & "" & mTag.columna & ""
                     If Control.ListIndex = -1 Then
-                        cad = ValorNulo
+                        Cad = ValorNulo
                     Else
-                        cad = Control.ItemData(Control.ListIndex)
+                        Cad = Control.ItemData(Control.ListIndex)
                     End If
                     If Der <> "" Then Der = Der & ","
-                    Der = Der & cad
+                    Der = Der & Cad
                 End If
             End If
         End If
@@ -271,10 +271,10 @@ Dim cad As String
     'Ejemplo
     'INSERT INTO Empleados (Nombre,Apellido, Cargo) VALUES ('Carlos', 'Sesma', 'Prácticas');
     
-    cad = "INSERT INTO " & mTag.tabla
-    cad = cad & " (" & Izda & ") VALUES (" & Der & ");"
+    Cad = "INSERT INTO " & mTag.tabla
+    Cad = Cad & " (" & Izda & ") VALUES (" & Der & ");"
     
-    Conn.Execute cad, , adCmdText
+    Conn.Execute Cad, , adCmdText
     
     InsertarDesdeForm = True
 Exit Function
@@ -289,7 +289,7 @@ Dim Control As Object
 Dim mTag As CTag
 Dim Izda As String
 Dim Der As String
-Dim cad As String
+Dim Cad As String
     
     On Error GoTo EInsertarF
     
@@ -314,9 +314,9 @@ Dim cad As String
                             Izda = Izda & "" & mTag.columna & ""
                         
                             'Parte VALUES
-                            cad = ValorParaSQL(Control.Text, mTag)
+                            Cad = ValorParaSQL(Control.Text, mTag)
                             If Der <> "" Then Der = Der & ","
-                            Der = Der & cad
+                            Der = Der & Cad
                         End If
                     End If
                 End If
@@ -332,13 +332,13 @@ Dim cad As String
                     'Izda = Izda & "[" & mTag.Columna & "]"
                     Izda = Izda & "" & mTag.columna & ""
                     If Control.Value = 1 Then
-                        cad = "1"
+                        Cad = "1"
                         Else
-                        cad = "0"
+                        Cad = "0"
                     End If
                     If Der <> "" Then Der = Der & ","
-                    If mTag.TipoDato = "N" Then cad = Abs(CBool(cad))
-                    Der = Der & cad
+                    If mTag.TipoDato = "N" Then Cad = Abs(CBool(Cad))
+                    Der = Der & Cad
                 End If
             End If
             
@@ -352,14 +352,14 @@ Dim cad As String
                         'Izda = Izda & "[" & mTag.Columna & "]"
                         Izda = Izda & "" & mTag.columna & ""
                         If Control.ListIndex = -1 Then
-                            cad = ValorNulo
+                            Cad = ValorNulo
                         ElseIf mTag.TipoDato = "N" Then
-                            cad = Control.ItemData(Control.ListIndex)
+                            Cad = Control.ItemData(Control.ListIndex)
                         Else
-                            cad = ValorParaSQL(Control.List(Control.ListIndex), mTag)
+                            Cad = ValorParaSQL(Control.List(Control.ListIndex), mTag)
                         End If
                         If Der <> "" Then Der = Der & ","
-                        Der = Der & cad
+                        Der = Der & Cad
                     End If
                 End If
             End If
@@ -373,9 +373,9 @@ Dim cad As String
                         If Control.Value Then
                             If Izda <> "" Then Izda = Izda & ","
                             Izda = Izda & "" & mTag.columna & ""
-                            cad = Control.Index
+                            Cad = Control.Index
                             If Der <> "" Then Der = Der & ","
-                            Der = Der & cad
+                            Der = Der & Cad
                         End If
                     End If
                 End If
@@ -398,12 +398,12 @@ Dim cad As String
                         
                         'Parte VALUES
                         If Control.visible Then
-                            cad = ValorParaSQL(Control.Value, mTag)
+                            Cad = ValorParaSQL(Control.Value, mTag)
                         Else
-                            cad = ValorNulo
+                            Cad = ValorNulo
                         End If
                         If Der <> "" Then Der = Der & ","
-                        Der = Der & cad
+                        Der = Der & Cad
                     End If
                 End If
             End If
@@ -414,12 +414,12 @@ Dim cad As String
     'Ejemplo
     'INSERT INTO Empleados (Nombre,Apellido, Cargo) VALUES ('Carlos', 'Sesma', 'Prácticas');
     
-    cad = "INSERT INTO " & mTag.tabla
-    cad = cad & " (" & Izda & ") VALUES (" & Der & ");"
-    Conn.Execute cad, , adCmdText
+    Cad = "INSERT INTO " & mTag.tabla
+    Cad = Cad & " (" & Izda & ") VALUES (" & Der & ");"
+    Conn.Execute Cad, , adCmdText
     
      ' ### [Monica] 18/12/2006
-    CadenaCambio = cad
+    CadenaCambio = Cad
    
     InsertarDesdeForm2 = True
 Exit Function
@@ -435,7 +435,7 @@ Dim Control As Object
 Dim mTag As CTag
 Dim Izda As String
 Dim Der As String
-Dim cad As String
+Dim Cad As String
     
     On Error GoTo EInsertarF
     'Exit Function
@@ -456,9 +456,9 @@ Dim cad As String
                         Izda = Izda & "" & mTag.columna & ""
                     
                         'Parte VALUES
-                        cad = ValorParaSQL(Control.Text, mTag)
+                        Cad = ValorParaSQL(Control.Text, mTag)
                         If Der <> "" Then Der = Der & ","
-                        Der = Der & cad
+                        Der = Der & Cad
                     End If
                 End If
             End If
@@ -471,13 +471,13 @@ Dim cad As String
                 'Izda = Izda & "[" & mTag.Columna & "]"
                 Izda = Izda & "" & mTag.columna & ""
                 If Control.Value = 1 Then
-                    cad = "1"
+                    Cad = "1"
                     Else
-                    cad = "0"
+                    Cad = "0"
                 End If
                 If Der <> "" Then Der = Der & ","
-                If mTag.TipoDato = "N" Then cad = Abs(CBool(cad))
-                Der = Der & cad
+                If mTag.TipoDato = "N" Then Cad = Abs(CBool(Cad))
+                Der = Der & Cad
             End If
         'COMBO BOX
         ElseIf TypeOf Control Is ComboBox And Control.visible = True Then
@@ -488,12 +488,12 @@ Dim cad As String
                     'Izda = Izda & "[" & mTag.Columna & "]"
                     Izda = Izda & "" & mTag.columna & ""
                     If Control.ListIndex = -1 Then
-                        cad = ValorNulo
+                        Cad = ValorNulo
                     Else
-                        cad = Control.ItemData(Control.ListIndex)
+                        Cad = Control.ItemData(Control.ListIndex)
                     End If
                     If Der <> "" Then Der = Der & ","
-                    Der = Der & cad
+                    Der = Der & Cad
                 End If
             End If
         End If
@@ -502,11 +502,11 @@ Dim cad As String
     'Ejemplo
     'INSERT INTO Empleados (Nombre,Apellido, Cargo) VALUES ('Carlos', 'Sesma', 'Prácticas');
     
-    cad = "INSERT INTO " & mTag.tabla
-    cad = cad & " (" & Izda & ") VALUES (" & Der & ");"
+    Cad = "INSERT INTO " & mTag.tabla
+    Cad = Cad & " (" & Izda & ") VALUES (" & Der & ");"
 '    Conn.Execute cad, , adCmdText
     
-    CadenaInsertarDesdeForm = cad
+    CadenaInsertarDesdeForm = Cad
 Exit Function
 EInsertarF:
     MuestraError Err.Number, "Inserta. "
@@ -516,10 +516,10 @@ End Function
 Public Function PonerCamposForma(ByRef formulario As Form, ByRef vData As Adodc) As Boolean
 Dim Control As Object
 Dim mTag As CTag
-Dim cad As String
+Dim Cad As String
 Dim Valor As Variant
 Dim campo As String  'Campo en la base de datos
-Dim i As Integer
+Dim I As Integer
 
     Set mTag = New CTag
     PonerCamposForma = False
@@ -545,11 +545,11 @@ Dim i As Integer
                             If mTag.TipoDato = "N" Then
                                 'Es numerico, entonces formatearemos y sustituiremos
                                 ' La coma por el punto
-                                cad = Format(Valor, mTag.Formato)
+                                Cad = Format(Valor, mTag.Formato)
                                 'Antiguo
                                 'Control.Text = TransformaComasPuntos(cad)
                                 'nuevo
-                                Control.Text = cad
+                                Control.Text = Cad
                             Else
                                 Control.Text = Format(Valor, mTag.Formato)
                             End If
@@ -582,14 +582,14 @@ Dim i As Integer
                 If mTag.Cargado Then
                     campo = mTag.columna
                     Valor = DBLet(vData.Recordset.Fields(campo))
-                    i = 0
-                    For i = 0 To Control.ListCount - 1
-                        If Control.ItemData(i) = Val(Valor) Then
-                            Control.ListIndex = i
+                    I = 0
+                    For I = 0 To Control.ListCount - 1
+                        If Control.ItemData(I) = Val(Valor) Then
+                            Control.ListIndex = I
                             Exit For
                         End If
-                    Next i
-                    If i = Control.ListCount Then Control.ListIndex = -1
+                    Next I
+                    If I = Control.ListCount Then Control.ListIndex = -1
                 End If 'de cargado
             End If 'de <>""
         End If
@@ -607,10 +607,10 @@ End Function
 Public Function PonerCamposForma2(ByRef formulario As Form, ByRef vData As Adodc, Optional opcio As Integer, Optional nom_frame As String) As Boolean
 Dim Control As Object
 Dim mTag As CTag
-Dim cad As String
+Dim Cad As String
 Dim Valor As Variant
 Dim campo As String  'Campo en la base de datos
-Dim i As Integer
+Dim I As Integer
 
     Set mTag = New CTag
     PonerCamposForma2 = False
@@ -635,11 +635,11 @@ Dim i As Integer
                                 If mTag.TipoDato = "N" Then
                                     'Es numerico, entonces formatearemos y sustituiremos
                                     ' La coma por el punto
-                                    cad = Format(Valor, mTag.Formato)
+                                    Cad = Format(Valor, mTag.Formato)
                                     'Antiguo
                                     'Control.Text = TransformaComasPuntos(cad)
                                     'nuevo
-                                    Control.Text = cad
+                                    Control.Text = Cad
                                 Else
                                     Control.Text = Format(Valor, mTag.Formato)
                                 End If
@@ -676,14 +676,14 @@ Dim i As Integer
                     If mTag.Cargado Then
                         campo = mTag.columna
                         Valor = DBLet(vData.Recordset.Fields(campo))
-                        i = 0
-                        For i = 0 To Control.ListCount - 1
-                            If Control.ItemData(i) = Val(Valor) Then
-                                Control.ListIndex = i
+                        I = 0
+                        For I = 0 To Control.ListCount - 1
+                            If Control.ItemData(I) = Val(Valor) Then
+                                Control.ListIndex = I
                                 Exit For
                             End If
-                        Next i
-                        If i = Control.ListCount Then Control.ListIndex = -1
+                        Next I
+                        If I = Control.ListCount Then Control.ListIndex = -1
                     End If 'de cargado
                 End If
             End If 'de <>""
@@ -732,10 +732,10 @@ End Function
 
 Public Function ForaGrid(ByRef formulari As Form, ByRef vGrid As DataGrid, Control As Object) As Boolean
 Dim mTag As CTag
-Dim cad As String
+Dim Cad As String
 Dim Valor As Variant
 Dim camp As String  'Camp en la BDA
-Dim i As Integer
+Dim I As Integer
 
     Set mTag = New CTag
     ForaGrid = False
@@ -755,8 +755,8 @@ Dim i As Integer
                     End If
                     If mTag.Formato <> "" And CStr(Valor) <> "" Then
                         If mTag.TipoDato = "N" Then
-                            cad = Format(Valor, mTag.Formato)
-                            Control.Text = cad
+                            Cad = Format(Valor, mTag.Formato)
+                            Control.Text = Cad
                         Else
                             Control.Text = Format(Valor, mTag.Formato)
                         End If
@@ -1060,8 +1060,8 @@ Public Function ObtenerBusqueda(ByRef formulario As Form, Optional CHECK As Stri
     Dim Carga As Boolean
     Dim mTag As CTag
     Dim Aux As String
-    Dim cad As String
-    Dim Sql As String
+    Dim Cad As String
+    Dim SQL As String
     Dim tabla As String
     Dim RC As Byte
 
@@ -1070,7 +1070,7 @@ Public Function ObtenerBusqueda(ByRef formulario As Form, Optional CHECK As Stri
     'Exit Function
     Set mTag = New CTag
     ObtenerBusqueda = ""
-    Sql = ""
+    SQL = ""
 
     'Recorremos los text en busca de ">>" o "<<"
     For Each Control In formulario.Controls
@@ -1081,36 +1081,36 @@ Public Function ObtenerBusqueda(ByRef formulario As Form, Optional CHECK As Stri
                     Carga = mTag.Cargar(Control)
                     If Carga Then
                         If Aux = ">>" Then
-                            cad = " MAX("
+                            Cad = " MAX("
                         Else
-                            cad = " MIN("
+                            Cad = " MIN("
                         End If
                         'monica
                         Select Case mTag.TipoDato
                             Case "FHF"
-                                cad = cad & "date(" & mTag.columna & "))"
+                                Cad = Cad & "date(" & mTag.columna & "))"
                             Case "FHH"
-                                cad = cad & "time(" & mTag.columna & "))"
+                                Cad = Cad & "time(" & mTag.columna & "))"
                             Case Else
-                                cad = cad & mTag.columna & ")"
+                                Cad = Cad & mTag.columna & ")"
                         End Select
                         
-                        Sql = "Select " & cad & " from " & mTag.tabla
-                        If cadWhere <> "" Then Sql = Sql & " WHERE " & cadWhere
-                        Sql = ObtenerMaximoMinimo(Sql, vBD)
+                        SQL = "Select " & Cad & " from " & mTag.tabla
+                        If cadWhere <> "" Then SQL = SQL & " WHERE " & cadWhere
+                        SQL = ObtenerMaximoMinimo(SQL, vBD)
                         Select Case mTag.TipoDato
                         Case "N"
-                            Sql = mTag.tabla & "." & mTag.columna & " = " & TransformaComasPuntos(Sql)
+                            SQL = mTag.tabla & "." & mTag.columna & " = " & TransformaComasPuntos(SQL)
                         Case "F"
-                            Sql = mTag.tabla & "." & mTag.columna & " = '" & Format(Sql, "yyyy-mm-dd") & "'"
+                            SQL = mTag.tabla & "." & mTag.columna & " = '" & Format(SQL, "yyyy-mm-dd") & "'"
                         Case "FHF"
-                            Sql = "date(" & mTag.tabla & "." & mTag.columna & ") = '" & Format(Sql, "yyyy-mm-dd") & "'"
+                            SQL = "date(" & mTag.tabla & "." & mTag.columna & ") = '" & Format(SQL, "yyyy-mm-dd") & "'"
                         Case "FHH"
-                            Sql = "time(" & mTag.tabla & "." & mTag.columna & ") = '" & Format(Sql, "hh:mm:ss") & "'"
+                            SQL = "time(" & mTag.tabla & "." & mTag.columna & ") = '" & Format(SQL, "hh:mm:ss") & "'"
                         Case Else
-                            Sql = mTag.tabla & "." & mTag.columna & " = '" & Sql & "'"
+                            SQL = mTag.tabla & "." & mTag.columna & " = '" & SQL & "'"
                         End Select
-                        Sql = "(" & Sql & ")"
+                        SQL = "(" & SQL & ")"
                     End If
                 End If
             End If
@@ -1134,10 +1134,10 @@ Public Function ObtenerBusqueda(ByRef formulario As Form, Optional CHECK As Stri
                             Else
                             tabla = ""
                         End If
-                        RC = SeparaCampoBusqueda(mTag.TipoDato, tabla & mTag.columna, Aux, cad)
+                        RC = SeparaCampoBusqueda(mTag.TipoDato, tabla & mTag.columna, Aux, Cad)
                         If RC = 0 Then
-                            If Sql <> "" Then Sql = Sql & " AND "
-                            Sql = Sql & "(" & cad & ")"
+                            If SQL <> "" Then SQL = SQL & " AND "
+                            SQL = SQL & "(" & Cad & ")"
                         End If
                     End If
                 Else
@@ -1154,13 +1154,13 @@ Public Function ObtenerBusqueda(ByRef formulario As Form, Optional CHECK As Stri
                 If mTag.Cargado Then
                     If Control.ListIndex > -1 Then
                         If mTag.TipoDato = "N" Then
-                            cad = Control.ItemData(Control.ListIndex)
+                            Cad = Control.ItemData(Control.ListIndex)
                         Else
-                            cad = ValorParaSQL(Control.List(Control.ListIndex), mTag)
+                            Cad = ValorParaSQL(Control.List(Control.ListIndex), mTag)
                         End If
-                        cad = mTag.tabla & "." & mTag.columna & " = " & cad
-                        If Sql <> "" Then Sql = Sql & " AND "
-                        Sql = Sql & "(" & cad & ")"
+                        Cad = mTag.tabla & "." & mTag.columna & " = " & Cad
+                        If SQL <> "" Then SQL = SQL & " AND "
+                        SQL = SQL & "(" & Cad & ")"
                     End If
                 End If
             End If
@@ -1181,17 +1181,17 @@ Public Function ObtenerBusqueda(ByRef formulario As Form, Optional CHECK As Stri
                     End If
                     If Aux <> "" Then
 '                    If Control.Value = 1 Then
-                        cad = Control.Value
-                        cad = mTag.tabla & "." & mTag.columna & " = " & cad
-                        If Sql <> "" Then Sql = Sql & " AND "
-                        Sql = Sql & "(" & cad & ")"
+                        Cad = Control.Value
+                        Cad = mTag.tabla & "." & mTag.columna & " = " & Cad
+                        If SQL <> "" Then SQL = SQL & " AND "
+                        SQL = SQL & "(" & Cad & ")"
                     End If
                 End If
             End If
             '===================
         End If
     Next Control
-    ObtenerBusqueda = Sql
+    ObtenerBusqueda = SQL
 Exit Function
 EObtenerBusqueda:
     ObtenerBusqueda = ""
@@ -1205,8 +1205,8 @@ Public Function ObtenerBusqueda2(ByRef formulario As Form, Optional CHECK As Str
     Dim Carga As Boolean
     Dim mTag As CTag
     Dim Aux As String
-    Dim cad As String
-    Dim Sql As String
+    Dim Cad As String
+    Dim SQL As String
     Dim tabla As String
     Dim RC As Byte
 
@@ -1215,7 +1215,7 @@ Public Function ObtenerBusqueda2(ByRef formulario As Form, Optional CHECK As Str
     'Exit Function
     Set mTag = New CTag
     ObtenerBusqueda2 = ""
-    Sql = ""
+    SQL = ""
 
     'Recorremos los text en busca de ">>" o "<<"
     For Each Control In formulario.Controls
@@ -1226,21 +1226,21 @@ Public Function ObtenerBusqueda2(ByRef formulario As Form, Optional CHECK As Str
                 If Carga Then
                     If (opcio = 0) Or ((opcio = 1) And (InStr(1, Control.Container.Name, "FrameAux")) = 0) Or ((opcio = 2) And (Control.Container.Name = nom_frame)) Then
                         If Aux = ">>" Then
-                            cad = " MAX(" & mTag.columna & ")"
+                            Cad = " MAX(" & mTag.columna & ")"
                         Else
-                            cad = " MIN(" & mTag.columna & ")"
+                            Cad = " MIN(" & mTag.columna & ")"
                         End If
-                        Sql = "Select " & cad & " from " & mTag.tabla
-                        Sql = ObtenerMaximoMinimo(Sql)
+                        SQL = "Select " & Cad & " from " & mTag.tabla
+                        SQL = ObtenerMaximoMinimo(SQL)
                         Select Case mTag.TipoDato
                         Case "N"
-                            Sql = mTag.tabla & "." & mTag.columna & " = " & TransformaComasPuntos(Sql)
+                            SQL = mTag.tabla & "." & mTag.columna & " = " & TransformaComasPuntos(SQL)
                         Case "F"
-                            Sql = mTag.tabla & "." & mTag.columna & " = '" & Format(Sql, "yyyy-mm-dd") & "'"
+                            SQL = mTag.tabla & "." & mTag.columna & " = '" & Format(SQL, "yyyy-mm-dd") & "'"
                         Case Else
-                            Sql = mTag.tabla & "." & mTag.columna & " = '" & Sql & "'"
+                            SQL = mTag.tabla & "." & mTag.columna & " = '" & SQL & "'"
                         End Select
-                        Sql = "(" & Sql & ")"
+                        SQL = "(" & SQL & ")"
                     End If
                 End If
             End If
@@ -1262,10 +1262,10 @@ Public Function ObtenerBusqueda2(ByRef formulario As Form, Optional CHECK As Str
                             Else
                             tabla = ""
                         End If
-                        RC = SeparaCampoBusqueda(mTag.TipoDato, tabla & mTag.columna, Aux, cad)
+                        RC = SeparaCampoBusqueda(mTag.TipoDato, tabla & mTag.columna, Aux, Cad)
                         If RC = 0 Then
-                            If Sql <> "" Then Sql = Sql & " AND "
-                            Sql = Sql & "(" & cad & ")"
+                            If SQL <> "" Then SQL = SQL & " AND "
+                            SQL = SQL & "(" & Cad & ")"
                         End If
                     End If
                 End If
@@ -1283,10 +1283,10 @@ Public Function ObtenerBusqueda2(ByRef formulario As Form, Optional CHECK As Str
                 If mTag.Cargado Then
                     If (opcio = 0) Or ((opcio = 1) And (InStr(1, Control.Container.Name, "FrameAux")) = 0) Or ((opcio = 2) And (Control.Container.Name = nom_frame)) Then
                         If Control.ListIndex > -1 Then
-                            cad = Control.ItemData(Control.ListIndex)
-                            cad = mTag.tabla & "." & mTag.columna & " = " & cad
-                            If Sql <> "" Then Sql = Sql & " AND "
-                            Sql = Sql & "(" & cad & ")"
+                            Cad = Control.ItemData(Control.ListIndex)
+                            Cad = mTag.tabla & "." & mTag.columna & " = " & Cad
+                            If SQL <> "" Then SQL = SQL & " AND "
+                            SQL = SQL & "(" & Cad & ")"
                         End If
                     End If
                 End If
@@ -1309,17 +1309,17 @@ Public Function ObtenerBusqueda2(ByRef formulario As Form, Optional CHECK As Str
                     End If
                     If Aux <> "" Then
 '                    If Control.Value = 1 Then
-                        cad = Control.Value
-                        cad = mTag.tabla & "." & mTag.columna & " = " & cad
-                        If Sql <> "" Then Sql = Sql & " AND "
-                        Sql = Sql & "(" & cad & ")"
+                        Cad = Control.Value
+                        Cad = mTag.tabla & "." & mTag.columna & " = " & Cad
+                        If SQL <> "" Then SQL = SQL & " AND "
+                        SQL = SQL & "(" & Cad & ")"
                     End If
                 End If
             End If
             '===================
         End If
     Next Control
-    ObtenerBusqueda2 = Sql
+    ObtenerBusqueda2 = SQL
 Exit Function
 EObtenerBusqueda:
     ObtenerBusqueda2 = ""
@@ -1596,16 +1596,16 @@ End Function
 
 Public Sub FormateaCampo(vTex As TextBox)
     Dim mTag As CTag
-    Dim cad As String
+    Dim Cad As String
     On Error GoTo EFormateaCampo
     Set mTag = New CTag
     mTag.Cargar vTex
     If mTag.Cargado Then
         If vTex.Text <> "" Then
             If mTag.Formato <> "" Then
-                cad = TransformaPuntosComas(vTex.Text)
-                cad = Format(cad, mTag.Formato)
-                vTex.Text = cad
+                Cad = TransformaPuntosComas(vTex.Text)
+                Cad = Format(Cad, mTag.Formato)
+                vTex.Text = Cad
             End If
         End If
     End If
@@ -1618,7 +1618,7 @@ End Sub
 Public Function FormatoCampo(ByRef vTex As TextBox) As String
 'Devuelve el formato del campo en el TAg: "0000"
 Dim mTag As CTag
-Dim cad As String
+Dim Cad As String
     
     On Error GoTo EFormatoCampo
 
@@ -1639,7 +1639,7 @@ End Function
 Public Function FormatoCampo2(ByRef objec As Object) As String
 'Devuelve el formato del campo en el TAg: "0000"
 Dim mTag As CTag
-Dim cad As String
+Dim Cad As String
 
     On Error GoTo EFormatoCampo2
 
@@ -1657,7 +1657,7 @@ End Function
 
 Public Function TipoCamp(ByRef objec As Object) As String
 Dim mTag As CTag
-Dim cad As String
+Dim Cad As String
 
     On Error GoTo ETipoCamp
 
@@ -1676,53 +1676,53 @@ End Function
 'recupera valor desde una cadena con pipes(acabada en pipes)
 'Para ello le decimos el orden  y ya ta
 Public Function RecuperaValor(ByRef Cadena As String, Orden As Integer) As String
-Dim i As Integer
+Dim I As Integer
 Dim J As Integer
-Dim Cont As Integer
-Dim cad As String
+Dim cont As Integer
+Dim Cad As String
 
-    i = 0
-    Cont = 1
-    cad = ""
+    I = 0
+    cont = 1
+    Cad = ""
     Do
-        J = i + 1
-        i = InStr(J, Cadena, "|")
-        If i > 0 Then
-            If Cont = Orden Then
-                cad = Mid(Cadena, J, i - J)
-                i = Len(Cadena) 'Para salir del bucle
+        J = I + 1
+        I = InStr(J, Cadena, "|")
+        If I > 0 Then
+            If cont = Orden Then
+                Cad = Mid(Cadena, J, I - J)
+                I = Len(Cadena) 'Para salir del bucle
                 Else
-                    Cont = Cont + 1
+                    cont = cont + 1
             End If
         End If
-    Loop Until i = 0
-    RecuperaValor = cad
+    Loop Until I = 0
+    RecuperaValor = Cad
 End Function
 
 'recupera valor desde una cadena con pipes(acabada en pipes)
 'Para ello le decimos el orden  y ya ta
 Public Function RecuperaValorNew(ByRef Cadena As String, Separador As String, Orden As Integer) As String
-Dim i As Integer
+Dim I As Integer
 Dim J As Integer
-Dim Cont As Integer
-Dim cad As String
+Dim cont As Integer
+Dim Cad As String
 
-    i = 0
-    Cont = 1
-    cad = ""
+    I = 0
+    cont = 1
+    Cad = ""
     Do
-        J = i + 1
-        i = InStr(J, Cadena, Separador)
-        If i > 0 Then
-            If Cont = Orden Then
-                cad = Mid(Cadena, J, i - J)
-                i = Len(Cadena) 'Para salir del bucle
+        J = I + 1
+        I = InStr(J, Cadena, Separador)
+        If I > 0 Then
+            If cont = Orden Then
+                Cad = Mid(Cadena, J, I - J)
+                I = Len(Cadena) 'Para salir del bucle
                 Else
-                    Cont = Cont + 1
+                    cont = cont + 1
             End If
         End If
-    Loop Until i = 0
-    RecuperaValorNew = cad
+    Loop Until I = 0
+    RecuperaValorNew = Cad
 End Function
 
 
@@ -1735,7 +1735,7 @@ End Function
 'Para ello en el tag del button tendremos k poner un numero k nos diara hasta k nivel esta permitido
 
 Public Sub PonerOpcionesMenuGeneral(ByRef formulario As Form)
-Dim i As Integer
+Dim I As Integer
 Dim J As Integer
 'Dim bol As Boolean
 
@@ -1744,14 +1744,14 @@ On Error GoTo EPonerOpcionesMenuGeneral
 
 'Añadir, modificar y borrar deshabilitados si no nivel
 With formulario
-    For i = 1 To .Toolbar1.Buttons.Count
-        If .Toolbar1.Buttons(i).Tag <> "" Then
-            J = Val(.Toolbar1.Buttons(i).Tag)
+    For I = 1 To .Toolbar1.Buttons.Count
+        If .Toolbar1.Buttons(I).Tag <> "" Then
+            J = Val(.Toolbar1.Buttons(I).Tag)
             If J < vSesion.Nivel Then
-                .Toolbar1.Buttons(i).Enabled = False
+                .Toolbar1.Buttons(I).Enabled = False
             End If
         End If
-    Next i
+    Next I
 End With
 
 Exit Sub
@@ -1761,25 +1761,25 @@ End Sub
 
 
 Public Sub PonerModoMenuGral(ByRef formulario As Form, activo As Boolean)
-Dim i As Integer
+Dim I As Integer
 'Dim j As Integer
 
 On Error GoTo PonerModoMenuGral
 
 'Añadir, modificar y borrar deshabilitados si no Modo
     With formulario
-        For i = 1 To .Toolbar1.Buttons.Count
-            Select Case .Toolbar1.Buttons(i).ToolTipText
+        For I = 1 To .Toolbar1.Buttons.Count
+            Select Case .Toolbar1.Buttons(I).ToolTipText
                 Case "Nuevo"
-                    .Toolbar1.Buttons(i).visible = Not .DeConsulta
+                    .Toolbar1.Buttons(I).visible = Not .DeConsulta
                 Case "Modificar", "Eliminar", "Imprimir"
-                    .Toolbar1.Buttons(i).visible = Not .DeConsulta
-                    .Toolbar1.Buttons(i).Enabled = activo
+                    .Toolbar1.Buttons(I).visible = Not .DeConsulta
+                    .Toolbar1.Buttons(I).Enabled = activo
 '                Case "Modificar"
 '                Case "Eliminar"
 '                Case "Imprimir"
             End Select
-        Next i
+        Next I
         
         
         'El menu Visible
@@ -1798,7 +1798,7 @@ End Sub
 
 Public Sub PonerOpcionesMenuGeneralNew(formulario As Form)
 Dim Control As Object
-Dim i As Integer
+Dim I As Integer
 Dim J As Integer
 'Dim bol As Boolean
 
@@ -1832,7 +1832,7 @@ Dim mTag As CTag
 Dim Aux As String
 Dim cadWhere As String
 Dim cadUPDATE As String
-Dim i As Integer
+Dim I As Integer
 
 On Error GoTo EModificaDesdeFormulario
     ModificaDesdeFormularioClaves = False
@@ -2020,13 +2020,13 @@ EBLOQUEADesdeFormulario2:
 End Function
 
 
-Public Function BloqueaRegistro(cadTABLA As String, cadWhere As String) As Boolean
+Public Function BloqueaRegistro(cadTabla As String, cadWhere As String) As Boolean
 Dim Aux As String
 
     On Error GoTo EBloqueaRegistro
         
     BloqueaRegistro = False
-    Aux = "select * FROM " & cadTABLA
+    Aux = "select * FROM " & cadTabla
     Aux = Aux & " WHERE " & cadWhere & " FOR UPDATE"
 
     'Intenteamos bloquear
@@ -2102,7 +2102,7 @@ End Function
 
 Public Function DesBloqueaRegistroForm(ByRef TextBoxConTag As TextBox) As Boolean
 Dim mTag As CTag
-Dim Sql As String
+Dim SQL As String
 
 'Solo me interesa la tabla
 On Error Resume Next
@@ -2110,7 +2110,7 @@ On Error Resume Next
     mTag.Cargar TextBoxConTag
     If mTag.Cargado Then
 '        SQL = "DELETE from zBloqueos where codusu=" & vUsu.Codigo & " and tabla='" & mTag.tabla & "'"
-        Conn.Execute Sql
+        Conn.Execute SQL
         If Err.Number <> 0 Then
             Err.Clear
         End If
@@ -2130,15 +2130,15 @@ Public Function ComprobarCero(Valor As String) As String
 End Function
 
 Public Sub InsertarCambios(tabla As String, ValorAnterior As String, numalbar As String)
-Dim Sql As String
+Dim SQL As String
 Dim sql2 As String
 
-    Sql = CadenaCambio
+    SQL = CadenaCambio
 
     sql2 = "insert into cambios (codusu, fechacambio, tabla, numalbar, cadena, valoranterior) values ("
     sql2 = sql2 & DBSet(vSesion.Codusu, "N") & "," & DBSet(Now, "FH") & "," & DBSet(tabla, "T") & ","
     sql2 = sql2 & DBSet(numalbar, "T") & ","
-    sql2 = sql2 & DBSet(Sql, "T") & ","
+    sql2 = sql2 & DBSet(SQL, "T") & ","
     If ValorAnterior = ValorNulo Then
         sql2 = sql2 & ValorNulo & ")"
     Else
@@ -2153,7 +2153,7 @@ Public Sub CargarValoresAnteriores(formulario As Form, Optional opcio As Integer
 Dim Control As Object
 Dim mTag As CTag
 Dim Izda As String
-Dim cad As String
+Dim Cad As String
     Set mTag = New CTag
 
     For Each Control In formulario.Controls
@@ -2169,8 +2169,8 @@ Dim cad As String
                             'Izda = Izda & "[" & mTag.Columna & "]"
                             Izda = Izda & "" & mTag.columna & " = "
                             'Parte VALUES
-                            cad = ValorParaSQL(Control.Text, mTag)
-                            Izda = Izda & cad
+                            Cad = ValorParaSQL(Control.Text, mTag)
+                            Izda = Izda & Cad
                         End If
                     End If
                 End If
@@ -2186,12 +2186,12 @@ Dim cad As String
                     'Izda = Izda & "[" & mTag.Columna & "]"
                     Izda = Izda & "" & mTag.columna & " = "
                     If Control.Value = 1 Then
-                        cad = "1"
+                        Cad = "1"
                         Else
-                        cad = "0"
+                        Cad = "0"
                     End If
-                    If mTag.TipoDato = "N" Then cad = Abs(CBool(cad))
-                    Izda = Izda & cad
+                    If mTag.TipoDato = "N" Then Cad = Abs(CBool(Cad))
+                    Izda = Izda & Cad
                 End If
             End If
             
@@ -2205,13 +2205,13 @@ Dim cad As String
                         'Izda = Izda & "[" & mTag.Columna & "]"
                         Izda = Izda & "" & mTag.columna & " = "
                         If Control.ListIndex = -1 Then
-                            cad = ValorNulo
+                            Cad = ValorNulo
                         ElseIf mTag.TipoDato = "N" Then
-                            cad = Control.ItemData(Control.ListIndex)
+                            Cad = Control.ItemData(Control.ListIndex)
                         Else
-                            cad = ValorParaSQL(Control.List(Control.ListIndex), mTag)
+                            Cad = ValorParaSQL(Control.List(Control.ListIndex), mTag)
                         End If
-                        Izda = Izda & cad
+                        Izda = Izda & Cad
                     End If
                 End If
             End If
@@ -2225,8 +2225,8 @@ Dim cad As String
                         If Control.Value Then
                             If Izda <> "" Then Izda = Izda & " , "
                             Izda = Izda & "" & mTag.columna & " = "
-                            cad = Control.Index
-                            Izda = Izda & cad
+                            Cad = Control.Index
+                            Izda = Izda & Cad
                         End If
                     End If
                 End If
@@ -2242,11 +2242,11 @@ Dim cad As String
                         
                         'Parte VALUES
                         If Control.visible Then
-                            cad = ValorParaSQL(Control.Value, mTag)
+                            Cad = ValorParaSQL(Control.Value, mTag)
                         Else
-                            cad = ValorNulo
+                            Cad = ValorNulo
                         End If
-                        Izda = Izda & cad
+                        Izda = Izda & Cad
                     End If
                 End If
             End If
@@ -2258,7 +2258,7 @@ Dim cad As String
 
 End Sub
 
-Public Function CalcularImporte(cantidad As String, precio As String, Importe As String, Tipo As String) As String
+Public Function CalcularImporte(cantidad As String, Precio As String, Importe As String, Tipo As String) As String
 'Calcula el Importe de una linea de Oferta, Pedido, Albaran, ...
 'Importe = Cantidad * precio  Tipo <>"1"
 'Cantidad = Importe / precio Tipo ="1"
@@ -2268,21 +2268,21 @@ On Error Resume Next
 
     'Como son de tipo string comprobar que si vale "" lo ponemos a 0
     cantidad = ComprobarCero(cantidad)
-    precio = ComprobarCero(precio)
+    Precio = ComprobarCero(Precio)
     Importe = ComprobarCero(Importe)
     
     If Tipo <> "1" Then
-       vImp = CCur(ImporteFormateado(cantidad)) * CCur(ImporteFormateado(precio))
+       vImp = CCur(ImporteFormateado(cantidad)) * CCur(ImporteFormateado(Precio))
        vImp = Round2(vImp, 2)
        CalcularImporte = Format(vImp, "###,##0.00")
     Else
-       vCan = CCur(ImporteFormateado(Importe)) / CCur(ImporteFormateado(precio))
+       vCan = CCur(ImporteFormateado(Importe)) / CCur(ImporteFormateado(Precio))
        vCan = Round2(vCan, 3)
        CalcularImporte = Format(vCan, "##,##0.000")
     End If
 End Function
 
-Public Sub CalcularImporteNue(ByRef cantidad As TextBox, ByRef precio As TextBox, ByRef Importe As TextBox, Tipo As Integer)
+Public Sub CalcularImporteNue(ByRef cantidad As TextBox, ByRef Precio As TextBox, ByRef Importe As TextBox, Tipo As Integer)
 'Calcula el Importe de una linea de hcode facturas
 Dim vImp As Currency
 Dim vCan As Currency
@@ -2290,20 +2290,20 @@ On Error Resume Next
 
     'Como son de tipo string comprobar que si vale "" lo ponemos a 0
     cantidad = ComprobarCero(cantidad.Text)
-    precio = ComprobarCero(precio.Text)
+    Precio = ComprobarCero(Precio.Text)
     Importe = ComprobarCero(Importe.Text)
     
     Select Case Tipo
         Case 0 ' me han introducido la cantidad
-            vImp = CCur(ImporteFormateado(cantidad.Text)) * CCur(ImporteFormateado(precio.Text))
+            vImp = CCur(ImporteFormateado(cantidad.Text)) * CCur(ImporteFormateado(Precio.Text))
             vImp = Round2(vImp, 2)
             Importe.Text = Format(vImp, "###,##0.00")
         Case 1 ' me han introducido el precio
-            vImp = CCur(ImporteFormateado(cantidad.Text)) * CCur(ImporteFormateado(precio.Text))
+            vImp = CCur(ImporteFormateado(cantidad.Text)) * CCur(ImporteFormateado(Precio.Text))
             vImp = Round2(vImp, 2)
             Importe.Text = Format(vImp, "###,##0.00")
         Case 2 ' me han introducido el importe
-            vCan = CCur(ImporteFormateado(Importe.Text)) / CCur(ImporteFormateado(precio.Text))
+            vCan = CCur(ImporteFormateado(Importe.Text)) / CCur(ImporteFormateado(Precio.Text))
             vCan = Round2(vCan, 3)
             cantidad.Text = Format(vCan, "##,##0.000")
     End Select
@@ -2384,13 +2384,13 @@ End Function
 
 
 Public Function TotalRegistrosConsulta(cadSQL) As Long
-Dim cad As String
+Dim Cad As String
 Dim Rs As ADODB.Recordset
 
     On Error GoTo ErrTotReg
-    cad = "SELECT count(*) FROM (" & cadSQL & ") x"
+    Cad = "SELECT count(*) FROM (" & cadSQL & ") x"
     Set Rs = New ADODB.Recordset
-    Rs.Open cad, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
+    Rs.Open Cad, Conn, adOpenForwardOnly, adLockPessimistic, adCmdText
 
     If Not Rs.EOF Then
         TotalRegistrosConsulta = DBLet(Rs.Fields(0).Value, "N")
@@ -2404,7 +2404,7 @@ End Function
 
 ' del ariges de Laura
 
-Public Function BloqueoManual(cadTABLA As String, cadWhere As String)
+Public Function BloqueoManual(cadTabla As String, cadWhere As String)
 Dim Aux As String
 
 On Error GoTo EBLOQ
@@ -2412,7 +2412,7 @@ On Error GoTo EBLOQ
     If cadWhere = "" Then
         MsgBox "No se ha definido ninguna clave principal.", vbExclamation
     Else
-        Aux = "INSERT INTO zbloqueos(codusu,tabla,clave) VALUES(" & vSesion.Codigo & ",'" & cadTABLA
+        Aux = "INSERT INTO zbloqueos(codusu,tabla,clave) VALUES(" & vSesion.Codigo & ",'" & cadTabla
         Aux = Aux & "',""" & cadWhere & """)"
         Conn.Execute Aux
         BloqueoManual = True
@@ -2436,13 +2436,13 @@ EBLOQ:
 End Function
 
 
-Public Function DesBloqueoManual(cadTABLA As String) As Boolean
-Dim Sql As String
+Public Function DesBloqueoManual(cadTabla As String) As Boolean
+Dim SQL As String
 'Solo me interesa la tabla
 On Error Resume Next
 
-        Sql = "DELETE FROM zbloqueos WHERE codusu=" & vSesion.Codigo & " and tabla='" & cadTABLA & "'"
-        Conn.Execute Sql
+        SQL = "DELETE FROM zbloqueos WHERE codusu=" & vSesion.Codigo & " and tabla='" & cadTabla & "'"
+        Conn.Execute SQL
         If Err.Number <> 0 Then
             Err.Clear
         End If
@@ -2450,7 +2450,7 @@ End Function
 
 Public Function Round2(Number As Variant, Optional NumDigitsAfterDecimals As Long) As Variant
 Dim ent As Integer
-Dim cad As String
+Dim Cad As String
 
   ' Comprobaciones
 
@@ -2466,22 +2466,22 @@ Dim cad As String
 
   ' Redondeo.
 
-  cad = "0"
-  If NumDigitsAfterDecimals <> 0 Then cad = cad & "." & String(NumDigitsAfterDecimals, "0")
-  Round2 = Val(TransformaComasPuntos(Format(Number, cad)))
+  Cad = "0"
+  If NumDigitsAfterDecimals <> 0 Then Cad = Cad & "." & String(NumDigitsAfterDecimals, "0")
+  Round2 = Val(TransformaComasPuntos(Format(Number, Cad)))
 
 End Function
 
 Private Function RellenaABlancos(Cadena As String, PorLaDerecha As Boolean, longitud As Integer) As String
-Dim cad As String
+Dim Cad As String
     
-    cad = Space(longitud)
+    Cad = Space(longitud)
     If PorLaDerecha Then
-        cad = Cadena & cad
-        RellenaABlancos = Left(cad, longitud)
+        Cad = Cadena & Cad
+        RellenaABlancos = Left(Cad, longitud)
     Else
-        cad = cad & Cadena
-        RellenaABlancos = Right(cad, longitud)
+        Cad = Cad & Cadena
+        RellenaABlancos = Right(Cad, longitud)
     End If
     
 End Function
@@ -2556,7 +2556,7 @@ On Error Resume Next
 End Function
 
 
-Public Function CalcularImporteProv(cantidad As String, precio As String, Dto1 As String, Dto2 As String, TipoDto As Byte, ImpDto As String, Optional Bruto As String) As String
+Public Function CalcularImporteProv(cantidad As String, Precio As String, Dto1 As String, Dto2 As String, TipoDto As Byte, ImpDto As String, Optional Bruto As String) As String
 'Calcula el Importe de una linea de Oferta, Pedido, Albaran, ...
 'Importe=cantidad * precio - (descuentos)
 'Si DtoProv=sprove.tipodtos, calcular Importe para Proveedores y obtener el tipo de descuento
@@ -2570,7 +2570,7 @@ On Error Resume Next
 
     'Como son de tipo string comprobar que si vale "" lo ponemos a 0
     cantidad = ComprobarCero(cantidad)
-    vPre = ComprobarCero(precio)
+    vPre = ComprobarCero(Precio)
     Dto1 = ComprobarCero(Dto1)
     Dto2 = ComprobarCero(Dto2)
     
@@ -2701,24 +2701,24 @@ End Function
 
 
 Public Sub BACKUP_Tabla(ByRef Rs As ADODB.Recordset, ByRef Derecha As String, Optional canvi_nom As String, Optional canvi_valor As String)
-Dim i As Integer
+Dim I As Integer
 Dim nexo As String
 Dim Valor As String
 Dim Tipo As Integer
 
     Derecha = ""
     nexo = ""
-    For i = 0 To Rs.Fields.Count - 1
-        Tipo = Rs.Fields(i).Type
+    For I = 0 To Rs.Fields.Count - 1
+        Tipo = Rs.Fields(I).Type
         
-        If (canvi_nom <> "" And Rs.Fields(i).Name = canvi_nom) Then
+        If (canvi_nom <> "" And Rs.Fields(I).Name = canvi_nom) Then
             Valor = canvi_valor
             If Tipo = 133 Then
                 Valor = "'" & Format(Valor, "yyyy-mm-dd") & "'"
             End If
         Else
             If Tipo = 201 Then 'MEMO
-                Valor = DBLetMemo(Rs.Fields(i).Value)
+                Valor = DBLetMemo(Rs.Fields(I).Value)
                 If Valor <> "" Then
                     NombreSQL Valor
                     Valor = "'" & Valor & "'"
@@ -2727,40 +2727,40 @@ Dim Tipo As Integer
                 End If
             
             Else
-                If IsNull(Rs.Fields(i)) Then
+                If IsNull(Rs.Fields(I)) Then
                     Valor = "NULL"
                 Else
                     'pruebas
                     Select Case Tipo
                     'TEXTO
                     Case 129, 200
-                        Valor = Rs.Fields(i)
+                        Valor = Rs.Fields(I)
                         NombreSQL Valor
                         Valor = "'" & Valor & "'"
                     'Fecha
                     Case 133
-                        Valor = CStr(Rs.Fields(i))
+                        Valor = CStr(Rs.Fields(I))
                         Valor = "'" & Format(Valor, "yyyy-mm-dd") & "'"
                         
                     Case 134 'HORA
                         Valor = DBSet(Valor, "H")
                         
                     Case 135 'Fecha/Hora
-                        Valor = DBSet(Rs.Fields(i), "FH", "S")
+                        Valor = DBSet(Rs.Fields(I), "FH", "S")
                     'Numero normal, sin decimales
                     Case 2, 3, 16 To 19
-                        Valor = Rs.Fields(i)
+                        Valor = Rs.Fields(I)
                     
                     'Numero con decimales
                     Case 131, 6
-                        Valor = CStr(Rs.Fields(i))
+                        Valor = CStr(Rs.Fields(I))
                         Valor = TransformaComasPuntos(Valor)
                     Case Else
                         Valor = "Error grave. Tipo de datos no tratado." & vbCrLf
                         Valor = Valor & vbCrLf & "SQL: " & Rs.Source
-                        Valor = Valor & vbCrLf & "Pos: " & i
-                        Valor = Valor & vbCrLf & "Campo: " & Rs.Fields(i).Name
-                        Valor = Valor & vbCrLf & "Valor: " & Rs.Fields(i)
+                        Valor = Valor & vbCrLf & "Pos: " & I
+                        Valor = Valor & vbCrLf & "Campo: " & Rs.Fields(I).Name
+                        Valor = Valor & vbCrLf & "Valor: " & Rs.Fields(I)
                         MsgBox Valor, vbExclamation
                         MsgBox "El programa finalizara. Avise al soporte técnico.", vbCritical
                         End
@@ -2770,7 +2770,7 @@ Dim Tipo As Integer
         End If
         Derecha = Derecha & nexo & Valor
         nexo = ","
-    Next i
+    Next I
     Derecha = "(" & Derecha & ")"
 End Sub
 
@@ -2828,7 +2828,7 @@ Dim Rs As ADODB.Recordset
     End If
 End Function
 
-Public Function CalcularImporte2(cantidad As String, precio As String, Dto1 As String, Dto2 As String, TipoDto As Byte, ImpDto As String, Optional Bruto As String) As String
+Public Function CalcularImporte2(cantidad As String, Precio As String, Dto1 As String, Dto2 As String, TipoDto As Byte, ImpDto As String, Optional Bruto As String) As String
 'Calcula el Importe de una linea de Oferta, Pedido, Albaran, ...
 'Importe=cantidad * precio - (descuentos)
 'Si DtoProv=sprove.tipodtos, calcular Importe para Proveedores y obtener el tipo de descuento
@@ -2842,7 +2842,7 @@ On Error Resume Next
 
     'Como son de tipo string comprobar que si vale "" lo ponemos a 0
     cantidad = ComprobarCero(cantidad)
-    vPre = ComprobarCero(precio)
+    vPre = ComprobarCero(Precio)
     Dto1 = ComprobarCero(Dto1)
     Dto2 = ComprobarCero(Dto2)
     
@@ -2874,8 +2874,8 @@ Dim Control As Object
 Dim Carga As Boolean
 Dim mTag As CTag
 Dim Aux As String
-Dim cad As String
-Dim Sql As String
+Dim Cad As String
+Dim SQL As String
 Dim tabla As String, columna As String
 Dim RC As Byte
 
@@ -2884,8 +2884,8 @@ Dim RC As Byte
     'Exit Function
     Set mTag = New CTag
     ObtenerBusqueda3 = ""
-    Sql = ""
-    cad = ""
+    SQL = ""
+    Cad = ""
     
     'Recorremos los text en busca de ">>" o "<<"
     For Each Control In formulario.Controls
@@ -2896,45 +2896,45 @@ Dim RC As Byte
                 If Carga Then
                     If Aux = ">>" Then
                         If Not paraRPT Then
-                            cad = " MAX(" & mTag.columna & ")"
+                            Cad = " MAX(" & mTag.columna & ")"
                         Else
-                            cad = " MAX({" & mTag.tabla & "." & mTag.columna & "})"
+                            Cad = " MAX({" & mTag.tabla & "." & mTag.columna & "})"
                         End If
                     Else
                         If Not paraRPT Then
-                            cad = " MIN(" & mTag.columna & ")"
+                            Cad = " MIN(" & mTag.columna & ")"
                         Else
-                            cad = " MIN({" & mTag.tabla & "." & mTag.columna & "})"
+                            Cad = " MIN({" & mTag.tabla & "." & mTag.columna & "})"
                         End If
                     End If
                     If Not paraRPT Then
-                        Sql = "Select " & cad & " from " & mTag.tabla
+                        SQL = "Select " & Cad & " from " & mTag.tabla
                     Else
-                        Sql = "Select " & cad & " from {" & mTag.tabla & "}"
+                        SQL = "Select " & Cad & " from {" & mTag.tabla & "}"
                     End If
-                    Sql = ObtenerMaximoMinimo(Sql)
+                    SQL = ObtenerMaximoMinimo(SQL)
                     
                     Select Case mTag.TipoDato
                     Case "N"
                         If Not paraRPT Then
-                            Sql = mTag.tabla & "." & mTag.columna & " = " & TransformaComasPuntos(Sql)
+                            SQL = mTag.tabla & "." & mTag.columna & " = " & TransformaComasPuntos(SQL)
                         Else
-                            Sql = "{" & mTag.tabla & "." & mTag.columna & "} = " & TransformaComasPuntos(Sql)
+                            SQL = "{" & mTag.tabla & "." & mTag.columna & "} = " & TransformaComasPuntos(SQL)
                         End If
                     Case "F"
                         If Not paraRPT Then
-                            Sql = mTag.tabla & "." & mTag.columna & " = '" & Format(Sql, "yyyy-mm-dd") & "'"
+                            SQL = mTag.tabla & "." & mTag.columna & " = '" & Format(SQL, "yyyy-mm-dd") & "'"
                         Else
-                            Sql = "{" & mTag.tabla & "." & mTag.columna & "} = '" & Format(Sql, "yyyy-mm-dd") & "'"
+                            SQL = "{" & mTag.tabla & "." & mTag.columna & "} = '" & Format(SQL, "yyyy-mm-dd") & "'"
                         End If
                     Case Else
                         If Not paraRPT Then
-                            Sql = mTag.tabla & "." & mTag.columna & " = '" & Sql & "'"
+                            SQL = mTag.tabla & "." & mTag.columna & " = '" & SQL & "'"
                         Else
-                            Sql = "{" & mTag.tabla & "." & mTag.columna & "} = '" & Sql & "'"
+                            SQL = "{" & mTag.tabla & "." & mTag.columna & "} = '" & SQL & "'"
                         End If
                     End Select
-                    Sql = "(" & Sql & ")"
+                    SQL = "(" & SQL & ")"
                 End If
             End If
         End If
@@ -2948,11 +2948,11 @@ Dim RC As Byte
                 Carga = mTag.Cargar(Control)
                 If Carga Then
                     If Not paraRPT Then
-                        Sql = mTag.tabla & "." & mTag.columna & " is NULL"
+                        SQL = mTag.tabla & "." & mTag.columna & " is NULL"
                     Else
-                        Sql = "{" & mTag.tabla & "." & mTag.columna & "} is NULL"
+                        SQL = "{" & mTag.tabla & "." & mTag.columna & "} is NULL"
                     End If
-                    Sql = "(" & Sql & ")"
+                    SQL = "(" & SQL & ")"
                     Control.Text = ""
                 End If
             End If
@@ -2983,13 +2983,13 @@ Dim RC As Byte
                         Else
                             columna = mTag.columna & "}"
                         End If
-                    RC = SeparaCampoBusqueda3(mTag.TipoDato, tabla & columna, Aux, cad, paraRPT)
+                    RC = SeparaCampoBusqueda3(mTag.TipoDato, tabla & columna, Aux, Cad, paraRPT)
                     If RC = 0 Then
-                        If Sql <> "" Then Sql = Sql & " AND "
+                        If SQL <> "" Then SQL = SQL & " AND "
                         If Not paraRPT Then
-                            Sql = Sql & "(" & cad & ")"
+                            SQL = SQL & "(" & Cad & ")"
                         Else
-                            Sql = Sql & "(" & cad & ")"
+                            SQL = SQL & "(" & Cad & ")"
                         End If
                     End If
                 End If
@@ -3005,23 +3005,23 @@ Dim RC As Byte
             If mTag.Cargado Then
                 If Control.ListIndex > -1 Then
                     If mTag.TipoDato <> "T" Then
-                        cad = Control.ItemData(Control.ListIndex)
+                        Cad = Control.ItemData(Control.ListIndex)
                         If Not paraRPT Then
-                            cad = mTag.tabla & "." & mTag.columna & " = " & cad
+                            Cad = mTag.tabla & "." & mTag.columna & " = " & Cad
                         Else
-                            cad = "{" & mTag.tabla & "." & mTag.columna & "} = " & cad
+                            Cad = "{" & mTag.tabla & "." & mTag.columna & "} = " & Cad
                         End If
-                        If Sql <> "" Then Sql = Sql & " AND "
-                        Sql = Sql & "(" & cad & ")"
+                        If SQL <> "" Then SQL = SQL & " AND "
+                        SQL = SQL & "(" & Cad & ")"
                     Else
-                        cad = Control.List(Control.ListIndex)
+                        Cad = Control.List(Control.ListIndex)
                         If Not paraRPT Then
-                            cad = mTag.tabla & "." & mTag.columna & " = '" & cad & "'"
+                            Cad = mTag.tabla & "." & mTag.columna & " = '" & Cad & "'"
                         Else
-                            cad = "{" & mTag.tabla & "." & mTag.columna & "} = '" & cad & "'"
+                            Cad = "{" & mTag.tabla & "." & mTag.columna & "} = '" & Cad & "'"
                         End If
-                        If Sql <> "" Then Sql = Sql & " AND "
-                        Sql = Sql & "(" & cad & ")"
+                        If SQL <> "" Then SQL = SQL & " AND "
+                        SQL = SQL & "(" & Cad & ")"
                     End If
                 End If
             End If
@@ -3045,21 +3045,21 @@ Dim RC As Byte
                     
                     If Aux <> "" Then
                         If Not paraRPT Then
-                            cad = mTag.tabla & "." & mTag.columna
+                            Cad = mTag.tabla & "." & mTag.columna
                         Else
-                            cad = "{" & mTag.tabla & "." & mTag.columna & "} "
+                            Cad = "{" & mTag.tabla & "." & mTag.columna & "} "
                         End If
                         
-                        cad = cad & " = " & Aux
-                        If Sql <> "" Then Sql = Sql & " AND "
-                        Sql = Sql & "(" & cad & ")"
+                        Cad = Cad & " = " & Aux
+                        If SQL <> "" Then SQL = SQL & " AND "
+                        SQL = SQL & "(" & Cad & ")"
                     End If 'cargado
                 End If '<>""
             End If
         End If
     
     Next Control
-    ObtenerBusqueda3 = Sql
+    ObtenerBusqueda3 = SQL
 Exit Function
 EObtenerBusqueda3:
     ObtenerBusqueda3 = ""
@@ -3067,16 +3067,16 @@ EObtenerBusqueda3:
 End Function
 
 Public Function SeparaCampoBusqueda3(Tipo As String, campo As String, Cadena As String, ByRef DevSQL As String, Optional paraRPT) As Byte
-Dim cad As String
+Dim Cad As String
 Dim Aux As String
 Dim CH As String
 Dim Fin As Boolean
-Dim i, J As String
+Dim I, J As String
 
 On Error GoTo ErrSepara
 SeparaCampoBusqueda3 = 1
 DevSQL = ""
-cad = ""
+Cad = ""
 Select Case Tipo
 Case "N"
     '----------------  NUMERICO  ---------------------
@@ -3086,18 +3086,18 @@ Case "N"
         Cadena = TransformaComasPuntos(Cadena)
     End If
     '====================
-    i = CararacteresCorrectos(Cadena, "N")
-    If i > 0 Then Exit Function  'Ha habido un error y salimos
+    I = CararacteresCorrectos(Cadena, "N")
+    If I > 0 Then Exit Function  'Ha habido un error y salimos
     'Comprobamos si hay intervalo ':'
-    i = InStr(1, Cadena, ":")
-    If i > 0 Then
+    I = InStr(1, Cadena, ":")
+    If I > 0 Then
         'Intervalo numerico
-        cad = Mid(Cadena, 1, i - 1)
-        Aux = Mid(Cadena, i + 1)
-        If Not IsNumeric(cad) Or Not IsNumeric(Aux) Then Exit Function  'No son numeros
+        Cad = Mid(Cadena, 1, I - 1)
+        Aux = Mid(Cadena, I + 1)
+        If Not IsNumeric(Cad) Or Not IsNumeric(Aux) Then Exit Function  'No son numeros
         'Intervalo correcto
         'Construimos la cadena
-        DevSQL = campo & " >= " & cad & " AND " & campo & " <= " & Aux
+        DevSQL = campo & " >= " & Cad & " AND " & campo & " <= " & Aux
         '----
         'ELSE
         Else
@@ -3107,38 +3107,38 @@ Case "N"
                 DevSQL = "1=1"
              Else
                     Fin = False
-                    i = 1
-                    cad = ""
+                    I = 1
+                    Cad = ""
                     Aux = "NO ES NUMERO"
                     While Not Fin
-                        CH = Mid(Cadena, i, 1)
+                        CH = Mid(Cadena, I, 1)
                         If CH = ">" Or CH = "<" Or CH = "=" Then
-                            cad = cad & CH
+                            Cad = Cad & CH
                             Else
-                                Aux = Mid(Cadena, i)
+                                Aux = Mid(Cadena, I)
                                 Fin = True
                         End If
-                        i = i + 1
-                        If i > Len(Cadena) Then Fin = True
+                        I = I + 1
+                        If I > Len(Cadena) Then Fin = True
                     Wend
                     'En aux debemos tener el numero
                     If Not IsNumeric(Aux) Then Exit Function
                     'Si que es numero. Entonces, si Cad="" entronces le ponemos =
-                    If cad = "" Then cad = " = "
-                    DevSQL = campo & " " & cad & " " & Aux
+                    If Cad = "" Then Cad = " = "
+                    DevSQL = campo & " " & Cad & " " & Aux
             End If
         End If
 Case "F"
      '---------------- FECHAS ------------------
-    i = CararacteresCorrectos(Cadena, "F")
-    If i = 1 Then Exit Function
+    I = CararacteresCorrectos(Cadena, "F")
+    If I = 1 Then Exit Function
     'Comprobamos si hay intervalo ':'
-    i = InStr(1, Cadena, ":")
-    If i > 0 Then
+    I = InStr(1, Cadena, ":")
+    If I > 0 Then
         'Intervalo de fechas
-        cad = Mid(Cadena, 1, i - 1)
-        Aux = Mid(Cadena, i + 1)
-        If Not EsFechaOK(cad) Or Not EsFechaOK(Aux) Then Exit Function  'Fechas incorrectas
+        Cad = Mid(Cadena, 1, I - 1)
+        Aux = Mid(Cadena, I + 1)
+        If Not EsFechaOK(Cad) Or Not EsFechaOK(Aux) Then Exit Function  'Fechas incorrectas
         'Intervalo correcto
         'Construimos la cadena
         
@@ -3149,15 +3149,15 @@ Case "F"
 '                End If
         
         If paraRPT Then
-            cad = "Date(" & Year(cad) & "," & Month(cad) & "," & Day(cad) & ")"
+            Cad = "Date(" & Year(Cad) & "," & Month(Cad) & "," & Day(Cad) & ")"
             Aux = "Date(" & Year(Aux) & "," & Month(Aux) & "," & Day(Aux) & ")"
-            DevSQL = campo & " >=" & cad & " AND " & campo & " <= " & Aux
+            DevSQL = campo & " >=" & Cad & " AND " & campo & " <= " & Aux
         Else
-            cad = Format(cad, FormatoFecha)
+            Cad = Format(Cad, FormatoFecha)
             Aux = Format(Aux, FormatoFecha)
             'En my sql es la ' no el #
             'DevSQL = Campo & " >=#" & Cad & "# AND " & Campo & " <= #" & AUX & "#"
-            DevSQL = campo & " >='" & cad & "' AND " & campo & " <= '" & Aux & "'"
+            DevSQL = campo & " >='" & Cad & "' AND " & campo & " <= '" & Aux & "'"
         End If
         '----
         'ELSE
@@ -3167,19 +3167,19 @@ Case "F"
                   DevSQL = "1=1"
             Else
                 Fin = False
-                i = 1
-                cad = ""
+                I = 1
+                Cad = ""
                 Aux = "NO ES FECHA"
                 While Not Fin
-                    CH = Mid(Cadena, i, 1)
+                    CH = Mid(Cadena, I, 1)
                     If CH = ">" Or CH = "<" Or CH = "=" Then
-                        cad = cad & CH
+                        Cad = Cad & CH
                         Else
-                            Aux = Mid(Cadena, i)
+                            Aux = Mid(Cadena, I)
                             Fin = True
                     End If
-                    i = i + 1
-                    If i > Len(Cadena) Then Fin = True
+                    I = I + 1
+                    If I > Len(Cadena) Then Fin = True
                 Wend
                 'En aux debemos tener el numero
                 If Not EsFechaOK(Aux) Then Exit Function
@@ -3189,16 +3189,16 @@ Case "F"
                 Else
                     Aux = "Date(" & Year(Aux) & "," & Month(Aux) & "," & Day(Aux) & ")"
                 End If
-                If cad = "" Then cad = " = "
-                DevSQL = campo & " " & cad & " " & Aux
+                If Cad = "" Then Cad = " = "
+                DevSQL = campo & " " & Cad & " " & Aux
             End If
     End If
     
     
 Case "T"
     '---------------- TEXTO ------------------
-    i = CararacteresCorrectos(Cadena, "T")
-    If i = 1 Then Exit Function
+    I = CararacteresCorrectos(Cadena, "T")
+    If I = 1 Then Exit Function
     
     'Comprobamos que no es el mayor
      If Cadena = ">>" Or Cadena = "<<" Then
@@ -3207,9 +3207,23 @@ Case "T"
     End If
     
     'Comprobamos si es LIKE o NOT LIKE
-    cad = Mid(Cadena, 1, 2)
-    If cad = "<>" Then
+    Cad = Mid(Cadena, 1, 2)
+    If Cad = "<>" Then
         Cadena = Mid(Cadena, 3)
+        
+        '[Monica]06/05/2019: condicion para no poner asteriscos
+        '[Monica]28/11/2018: añado condicion para que T1 no concatene asteriscos
+        If Tipo = "T" Then
+            '[Monica]16/01/2014: añadida esta condicion para que ya no sean necesarios los asteriscos
+            If Len(Cadena) <> 0 Then
+                If InStr(1, Cadena, "*") = 0 Then
+                    Cadena = "*" & Cadena & "*"
+                End If
+            End If
+            '        16/01/2014: hasta aqui
+        End If
+        
+        
         If Left(campo, 1) <> "{" Then
             'No es consulta seleccion para Report.
             DevSQL = campo & " NOT LIKE '"
@@ -3218,13 +3232,26 @@ Case "T"
             DevSQL = "NOT (" & campo & " LIKE """ & Cadena & """)"
         End If
     Else
+        '[Monica]06/05/2019: condicion para no poner asteriscos
+        '[Monica]28/11/2018: añado condicion para que T1 no concatene asteriscos
+        If Tipo = "T" Then
+            '[Monica]16/01/2014: añadida esta condicion para que ya no sean necesarios los asteriscos
+            If Len(Cadena) <> 0 Then
+                If InStr(1, Cadena, "*") = 0 Then
+                    Cadena = "*" & Cadena & "*"
+                End If
+            End If
+            '        16/01/2014: hasta aqui
+        End If
+    
+    
         If Left(campo, 1) <> "{" Then
         'NO es para report
             DevSQL = campo & " LIKE '"
         Else  'Es para report
-            i = InStr(1, Cadena, "*")
+            I = InStr(1, Cadena, "*")
             'Poner Consulta de seleccion para Crystal Report
-            If i > 0 Then
+            If I > 0 Then
                 DevSQL = campo & " LIKE """ & Cadena & """"
             Else
                 DevSQL = campo & " = """ & Cadena & """"
@@ -3234,23 +3261,23 @@ Case "T"
     
     
     'Cambiamos el * por % puesto que en ADO es el caraacter para like
-    i = 1
+    I = 1
     Aux = Cadena
     If Not Left(campo, 1) = "{" Then
       'No es para report
-       While i <> 0
-           i = InStr(1, Aux, "*")
-           If i > 0 Then
-                Aux = Mid(Aux, 1, i - 1) & "%" & Mid(Aux, i + 1)
+       While I <> 0
+           I = InStr(1, Aux, "*")
+           If I > 0 Then
+                Aux = Mid(Aux, 1, I - 1) & "%" & Mid(Aux, I + 1)
             End If
         Wend
     End If
     
     'Cambiamos el ? por la _ pue es su omonimo
-    i = 1
-    While i <> 0
-        i = InStr(1, Aux, "?")
-        If i > 0 Then Aux = Mid(Aux, 1, i - 1) & "_" & Mid(Aux, i + 1)
+    I = 1
+    While I <> 0
+        I = InStr(1, Aux, "?")
+        If I > 0 Then Aux = Mid(Aux, 1, I - 1) & "_" & Mid(Aux, I + 1)
     Wend
     
     
@@ -3298,23 +3325,23 @@ Case "B"
     'Los booleanos. Valores buenos son
     'Verdadero , Falso, True, False, = , <>
     'Igual o distinto
-    i = InStr(1, Cadena, "<>")
-    If i = 0 Then
+    I = InStr(1, Cadena, "<>")
+    If I = 0 Then
         'IGUAL A valor
-        cad = " = "
+        Cad = " = "
         Else
             'Distinto a valor
-        cad = " <> "
+        Cad = " <> "
     End If
     'Verdadero o falso
-    i = InStr(1, Cadena, "V")
-    If i > 0 Then
+    I = InStr(1, Cadena, "V")
+    If I > 0 Then
             Aux = "True"
             Else
             Aux = "False"
     End If
     'Ponemos la cadena
-    DevSQL = campo & " " & cad & " " & Aux
+    DevSQL = campo & " " & Cad & " " & Aux
     
 Case Else
     'No hacemos nada
@@ -3366,7 +3393,7 @@ Public Sub ComprobarCobrosCliente(CodClien As String, FechaDoc As String, Option
 'Comprueba en la tabla de Cobros Pendientes (scobro) de la Base de datos de Contabilidad
 'si el cliente tiene alguna factura pendiente de cobro que ha vendido
 'con fecha de vencimiento anterior a la fecha del documento: Oferta, Pedido, ALbaran,...
-Dim Sql As String, vWhere As String
+Dim SQL As String, vWhere As String
 Dim codmacta As String
 Dim Rs As ADODB.Recordset
 Dim cadMen As String
@@ -3377,14 +3404,14 @@ Dim ImpAux As Currency
     Set Rs = New ADODB.Recordset
     ImporteCred = 0
     'Obtener la cuenta del cliente de la tabla sclien en Ariges
-    Sql = "Select nomsocio nomclien,codmacta, 0 limcredi,0 clivario from ssocio where codsocio=" & CodClien
-    Rs.Open Sql, Conn, adOpenForwardOnly, adLockOptimistic, adCmdText
+    SQL = "Select nomsocio nomclien,codmacta, 0 limcredi,0 clivario from ssocio where codsocio=" & CodClien
+    Rs.Open SQL, Conn, adOpenForwardOnly, adLockOptimistic, adCmdText
     If Rs.EOF Then
-        Sql = ""
+        SQL = ""
     Else
         'CodClien = CodClien & " - " & sql
         If DBLet(Rs!CliVario, "N") = 1 Then
-            Sql = ""
+            SQL = ""
         Else
             CodClien = CodClien & " - " & Rs!nomclien
             ImporteCred = DBLet(Rs!limcredi, "N")
@@ -3393,29 +3420,29 @@ Dim ImpAux As Currency
         End If
     End If
     Rs.Close
-    If Sql = "" Then Exit Sub
+    If SQL = "" Then Exit Sub
     
     'AHORA FEBRERO 2010
     If vParamAplic.ContabilidadNueva Then
-        Sql = "SELECT cobros.* FROM cobros INNER JOIN formapago ON cobros.codforpa=formapago.codforpa "
+        SQL = "SELECT cobros.* FROM cobros INNER JOIN formapago ON cobros.codforpa=formapago.codforpa "
         vWhere = " WHERE cobros.codmacta = '" & codmacta & "'"
         vWhere = vWhere & " AND fecvenci <= ' " & Format(FechaDoc, FormatoFecha) & "' "
         'Antes mayo 2010
         'vWhere = vWhere & " AND (sforpa.tipforpa between 0 and 3)"
         vWhere = vWhere & " AND recedocu=0 ORDER BY fecfactu, numfactu"
-        Sql = Sql & vWhere
+        SQL = SQL & vWhere
     Else
-        Sql = "SELECT scobro.* FROM scobro INNER JOIN sforpa ON scobro.codforpa=sforpa.codforpa "
+        SQL = "SELECT scobro.* FROM scobro INNER JOIN sforpa ON scobro.codforpa=sforpa.codforpa "
         vWhere = " WHERE scobro.codmacta = '" & codmacta & "'"
         vWhere = vWhere & " AND fecvenci <= ' " & Format(FechaDoc, FormatoFecha) & "' "
         'Antes mayo 2010
         'vWhere = vWhere & " AND (sforpa.tipforpa between 0 and 3)"
         vWhere = vWhere & " AND recedocu=0 ORDER BY fecfaccl, codfaccl"
-        Sql = Sql & vWhere
+        SQL = SQL & vWhere
     End If
     
     'Lee de la Base de Datos de CONTABILIDAD
-    Rs.Open Sql, ConnConta, adOpenForwardOnly, adLockPessimistic, adCmdText
+    Rs.Open SQL, ConnConta, adOpenForwardOnly, adLockPessimistic, adCmdText
     Importe = 0
     While Not Rs.EOF
     
@@ -3489,12 +3516,12 @@ End Function
 
 Public Function ObtenerLetraSerie(tipMov As String) As String
 'Devuelve la letra de serie asociada al tipo de movimiento
-Dim LEtra As String
+Dim Letra As String
 
     On Error Resume Next
     
-    LEtra = DevuelveDesdeBDNew(cPTours, "stipom", "letraser", "codtipom", tipMov, "T")
-    If LEtra = "" Then MsgBox "Las factura de venta no tienen asignada una letra de serie", vbInformation
-    ObtenerLetraSerie = LEtra
+    Letra = DevuelveDesdeBDNew(cPTours, "stipom", "letraser", "codtipom", tipMov, "T")
+    If Letra = "" Then MsgBox "Las factura de venta no tienen asignada una letra de serie", vbInformation
+    ObtenerLetraSerie = Letra
 End Function
 
